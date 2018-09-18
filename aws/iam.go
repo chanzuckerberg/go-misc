@@ -67,7 +67,7 @@ func (i *IAM) GetMFASerials(username *string) ([]string, error) {
 	return serialNumbers, nil
 }
 
-// GetAnMFASerial returns the first MFA serial on the user, errors if no MFA configured
+// GetAnMFASerial returns the first MFA serial on the user, errors if no MFA found
 func (i *IAM) GetAnMFASerial(username *string) (string, error) {
 	serials, err := i.GetMFASerials(username)
 	if err != nil {
