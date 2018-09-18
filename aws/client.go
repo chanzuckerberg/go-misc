@@ -9,7 +9,9 @@ import (
 type Client struct {
 	session *session.Session
 
-	IAM *IAM
+	IAM    *IAM
+	STS    *STS
+	Lambda *Lambda
 }
 
 // New returns a new aws client
@@ -24,9 +26,34 @@ func (c *Client) WithIAM(conf *aws.Config) *Client {
 }
 
 // WithMockIAM mocks iam svc
-func (c *Client) WithMockIAM() *Client {
-	mock := &IAM{Svc: NewMockIAM()}
-	c.IAM = mock
+func (c *Client) WithMockIAM() (*Client, *MockIAMSvc) {
+	mock := NewMockIAM()
+	c.IAM = &IAM{Svc: mock}
+	return c, mock
+}
 
+// WithSTS configures the STS service
+func (c *Client) WithSTS(conf *aws.Config) *Client {
+	c.STS = NewSTS(c.session, conf)
 	return c
+}
+
+// WithMockSTS mocks the STS service
+func (c *Client) WithMockSTS() (*Client, *MockSTSSvc) {
+	mock := NewMockSTS()
+	c.STS = &STS{Svc: mock}
+	return c, mock
+}
+
+// WithLambda configures the lambda service
+func (c *Client) WithLambda(conf *aws.Config) *Client {
+	c.Lambda = NewLambda(c.session, conf)
+	return c
+}
+
+// WithMockLambda mocks the lambda service
+func (c *Client) WithMockLambda() (*Client, *MockLambdaSvc) {
+	mock := NewMockLambda()
+	c.Lambda = &Lambda{Svc: mock}
+	return c, mock
 }
