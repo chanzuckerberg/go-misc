@@ -20,6 +20,11 @@ func New(sess *session.Session) *Client {
 	return &Client{session: sess}
 }
 
+// WithAllServices Convenience method that configures all services with the same aws.Config
+func (c *Client) WithAllServices(conf *aws.Config) *Client {
+	return c.WithIAM(conf).WithSTS(conf).WithLambda(conf).WithKMS(conf)
+}
+
 // ------- IAM -----------
 
 // WithIAM configures the IAM SVC
