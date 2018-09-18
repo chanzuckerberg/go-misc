@@ -2,7 +2,7 @@
 
 
 [[projects]]
-  digest = "1:ce36ac2a0bd42d6957c519703be041f1e87b9885a448370b9c200cd2021bed87"
+  digest = "1:919ac6531f3f21c448b1a8115ca8c8617f455230fab31f22370cf7bd7428f41e"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -27,13 +27,19 @@
     "internal/sdkuri",
     "internal/shareddefaults",
     "private/protocol",
+    "private/protocol/json/jsonutil",
+    "private/protocol/jsonrpc",
     "private/protocol/query",
     "private/protocol/query/queryutil",
     "private/protocol/rest",
+    "private/protocol/restjson",
     "private/protocol/xml/xmlutil",
     "service/iam",
     "service/iam/iamiface",
+    "service/lambda",
+    "service/lambda/lambdaiface",
     "service/sts",
+    "service/sts/stsiface",
   ]
   pruneopts = "UT"
   revision = "34699de98eac41fa94737f6ce7b83d7a621c2634"
@@ -107,6 +113,10 @@
     "github.com/aws/aws-sdk-go/aws/session",
     "github.com/aws/aws-sdk-go/service/iam",
     "github.com/aws/aws-sdk-go/service/iam/iamiface",
+    "github.com/aws/aws-sdk-go/service/lambda",
+    "github.com/aws/aws-sdk-go/service/lambda/lambdaiface",
+    "github.com/aws/aws-sdk-go/service/sts",
+    "github.com/aws/aws-sdk-go/service/sts/stsiface",
     "github.com/pkg/errors",
     "github.com/stretchr/testify/mock",
   ]
