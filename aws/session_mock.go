@@ -8,12 +8,6 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 )
 
-// Mock mocks
-type Mock struct {
-	Resp chan interface{}
-	Errs chan error
-}
-
 // NewMockSession returns a new mock aws session
 // safe for concurrent use
 // Returns the mock server as well - user is responsible for calling server.Close() to free resources

@@ -3,6 +3,7 @@ package aws
 import (
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/iam/iamiface"
+	"github.com/stretchr/testify/mock"
 )
 
 // This is a mock for the IAM Svc - mock more functions here as needed
@@ -10,7 +11,7 @@ import (
 // MockIAMSvc is a mock of IAM service
 type MockIAMSvc struct {
 	iamiface.IAMAPI
-	Mock
+	mock.Mock
 }
 
 // NewMockIAM returns a mock IAM SVC
@@ -20,39 +21,19 @@ func NewMockIAM() *MockIAMSvc {
 
 // GetUser mocks getuser
 func (i *MockIAMSvc) GetUser(in *iam.GetUserInput) (*iam.GetUserOutput, error) {
-	resp, read := <-i.Resp
-	if !read {
-		panic("No response read - queue one up")
-	}
-	err, read := <-i.Errs
-	if !read {
-		panic("No err read - queue one up")
-	}
-	typed, ok := resp.(*iam.GetUserOutput)
-	if !ok {
-		panic("resp of wrong type")
-	}
-	return typed, err
+	args := i.Called(in)
+	out := args.Get(0).(*iam.GetUserOutput)
+	return out, args.Error(1)
 }
 
 // ListMFADevicesPages lists
 func (i *MockIAMSvc) ListMFADevicesPages(in *iam.ListMFADevicesInput, fn func(*iam.ListMFADevicesOutput, bool) bool) error {
-	resp, read := <-i.Resp
-	if !read {
-		panic("No response read - queue one up")
-	}
-	err, read := <-i.Errs
-	if !read {
-		panic("No err read - queue one up")
-	}
-	typed, ok := resp.(*iam.ListMFADevicesOutput)
-	if !ok {
-		panic("resp of wrong type")
-	}
-
+	args := i.Called(in)
+	out := args.Get(0).(*iam.ListMFADevicesOutput)
+	err := args.Error(1)
 	if err != nil {
 		return err
 	}
-	fn(typed, true)
+	fn(out, true)
 	return nil
 }
