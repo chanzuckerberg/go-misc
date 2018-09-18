@@ -12,12 +12,15 @@ type Client struct {
 	IAM    *IAM
 	STS    *STS
 	Lambda *Lambda
+	KMS    *KMS
 }
 
 // New returns a new aws client
 func New(sess *session.Session) *Client {
 	return &Client{session: sess}
 }
+
+// ------- IAM -----------
 
 // WithIAM configures the IAM SVC
 func (c *Client) WithIAM(conf *aws.Config) *Client {
@@ -32,6 +35,8 @@ func (c *Client) WithMockIAM() (*Client, *MockIAMSvc) {
 	return c, mock
 }
 
+// ------- STS -----------
+
 // WithSTS configures the STS service
 func (c *Client) WithSTS(conf *aws.Config) *Client {
 	c.STS = NewSTS(c.session, conf)
@@ -45,6 +50,8 @@ func (c *Client) WithMockSTS() (*Client, *MockSTSSvc) {
 	return c, mock
 }
 
+// ------- Lambda -----------
+
 // WithLambda configures the lambda service
 func (c *Client) WithLambda(conf *aws.Config) *Client {
 	c.Lambda = NewLambda(c.session, conf)
@@ -55,5 +62,20 @@ func (c *Client) WithLambda(conf *aws.Config) *Client {
 func (c *Client) WithMockLambda() (*Client, *MockLambdaSvc) {
 	mock := NewMockLambda()
 	c.Lambda = &Lambda{Svc: mock}
+	return c, mock
+}
+
+// ------- KMS -----------
+
+// WithKMS configures the kms service
+func (c *Client) WithKMS(conf *aws.Config) *Client {
+	c.KMS = NewKMS(c.session, conf)
+	return c
+}
+
+// WithMockKMS mocks the kms service
+func (c *Client) WithMockKMS() (*Client, *MockKMSSvc) {
+	mock := NewMockKMS()
+	c.KMS = &KMS{Svc: mock}
 	return c, mock
 }
