@@ -9,6 +9,7 @@ import (
 type Client struct {
 	session *session.Session
 
+	// services
 	IAM    *IAM
 	STS    *STS
 	Lambda *Lambda
