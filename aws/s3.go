@@ -54,3 +54,12 @@ func (s *S3) GetBucketTagging(bucketName string) (*s3.GetBucketTaggingOutput, er
 	out, err := s.Svc.GetBucketTagging(input)
 	return out, errors.Wrapf(err, "Error getting bucket tags for %s", bucketName)
 }
+
+// GetBucketACL gets the bucket's ACL
+func (s *S3) GetBucketACL(bucketName string) (*s3.GetBucketAclOutput, error) {
+	input := &s3.GetBucketAclInput{}
+	input.SetBucket(bucketName)
+
+	out, err := s.Svc.GetBucketAcl(input)
+	return out, errors.Wrapf(err, "Error getting bucket %s ACL", bucketName)
+}
