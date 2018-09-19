@@ -14,6 +14,7 @@ type Client struct {
 	STS    *STS
 	Lambda *Lambda
 	KMS    *KMS
+	S3     *S3
 }
 
 // New returns a new aws client
@@ -23,8 +24,23 @@ func New(sess *session.Session) *Client {
 
 // WithAllServices Convenience method that configures all services with the same aws.Config
 func (c *Client) WithAllServices(conf *aws.Config) *Client {
-	return c.WithIAM(conf).WithSTS(conf).WithLambda(conf).WithKMS(conf)
+	return c.
+		WithIAM(conf).
+		WithSTS(conf).
+		WithLambda(conf).
+		WithKMS(conf).
+		WithS3(conf)
 }
+
+// ------- S3 -----------
+
+// WithS3 configures the s3 client
+func (c *Client) WithS3(conf *aws.Config) *Client {
+	c.S3 = NewS3(c.session, conf)
+	return c
+}
+
+// TODO s3 mock
 
 // ------- IAM -----------
 
