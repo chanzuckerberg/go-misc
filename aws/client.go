@@ -10,11 +10,12 @@ type Client struct {
 	session *session.Session
 
 	// services
+	EC2    *EC2
 	IAM    *IAM
-	STS    *STS
-	Lambda *Lambda
 	KMS    *KMS
+	Lambda *Lambda
 	S3     *S3
+	STS    *STS
 }
 
 // New returns a new aws client
@@ -29,7 +30,8 @@ func (c *Client) WithAllServices(conf *aws.Config) *Client {
 		WithSTS(conf).
 		WithLambda(conf).
 		WithKMS(conf).
-		WithS3(conf)
+		WithS3(conf).
+		WithEC2(conf)
 }
 
 // ------- S3 -----------
@@ -100,4 +102,12 @@ func (c *Client) WithMockKMS() (*Client, *MockKMSSvc) {
 	mock := NewMockKMS()
 	c.KMS = &KMS{Svc: mock}
 	return c, mock
+}
+
+// ------- EC2 -----------
+
+// WithEC2 configures an EC2 svc
+func (c *Client) WithEC2(conf *aws.Config) *Client {
+	c.EC2 = NewEC2(c.session, conf)
+	return c
 }
