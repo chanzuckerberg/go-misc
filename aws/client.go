@@ -10,11 +10,12 @@ type Client struct {
 	session *session.Session
 
 	// services
+	EC2    *EC2
 	IAM    *IAM
-	STS    *STS
-	Lambda *Lambda
 	KMS    *KMS
+	Lambda *Lambda
 	S3     *S3
+	STS    *STS
 }
 
 // New returns a new aws client
