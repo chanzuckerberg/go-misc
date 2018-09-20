@@ -90,3 +90,16 @@ func (i *IAM) ListAllUsers(f func(*iam.User)) error {
 	})
 	return nil
 }
+
+// GetLoginProfile gets the login profile for this user if it exists
+func (i *IAM) GetLoginProfile(username string) (*iam.LoginProfile, error) {
+	input := &iam.GetLoginProfileInput{UserName: &username}
+	output, err := i.Svc.GetLoginProfile(input)
+	if err != nil {
+		return nil, errors.Wrapf(err, "could not get login profile for %s", username)
+	}
+	if output.LoginProfile != nil {
+		return output.LoginProfile, nil
+	}
+	return nil, nil
+}
