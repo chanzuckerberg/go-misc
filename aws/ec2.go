@@ -5,6 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/aws/aws-sdk-go/service/ec2"
 	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
+	"github.com/pkg/errors"
 )
 
 //EC2 is an ec2 svc
@@ -33,5 +34,5 @@ func (e *EC2) GetAllInstances(f func(*ec2.Instance)) error {
 		return true
 	})
 
-	return err
+	return errors.Wrap(err, "error when getting all EC2 instances")
 }
