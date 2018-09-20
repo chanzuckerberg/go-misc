@@ -98,8 +98,6 @@ func (i *IAM) GetLoginProfile(username string) (*iam.LoginProfile, error) {
 	if err != nil {
 		return nil, errors.Wrapf(err, "could not get login profile for %s", username)
 	}
-	if output.LoginProfile != nil {
-		return output.LoginProfile, nil
-	}
-	return nil, nil
+
+	return output.LoginProfile, nil
 }
