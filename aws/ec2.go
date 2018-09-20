@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2/ec2iface"
 )
 
+//EC2 is an ec2 svc
 type EC2 struct {
 	Svc ec2iface.EC2API
 }
