@@ -5,6 +5,7 @@ all: test
 setup:
 	go get github.com/rakyll/gotest
 	go install github.com/rakyll/gotest
+	go get golang.org/x/tools/cover
 
 lint: ## run the fast go linters
 	gometalinter --vendor --fast ./...
@@ -12,14 +13,14 @@ lint: ## run the fast go linters
 lint-slow: ## run all linters, even the slow ones
 	gometalinter --vendor --deadline 120s ./...
 
-release:
-	goreleaser release --rm-dist
-
 build: ## build the binary
 	go build ${LDFLAGS} .
 
-coverage: ## run the go coverage tool, reading file coverage.out
-	go tool cover -html=coverage.out
+update-cover:
+	@go run _bin/coverage/main.go -update -exclude ./
+
+enforce-cover:
+	@go run _bin/coverage/main.go -enforce -exclude ./
 
 test: ## run the tests
 	gotest -cover ./...

@@ -4,4 +4,4 @@ go:
 install:
 - make setup
 script:
-- make
+- make enforce-cover
