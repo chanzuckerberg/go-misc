@@ -10,7 +10,7 @@ import (
 
 // Client is a slack client
 type Client struct {
-	slack  *slackClient.Client
+	Slack  *slackClient.Client
 	logger *logrus.Logger
 }
 
@@ -18,14 +18,14 @@ type Client struct {
 func New(token string, logger *logrus.Logger) *Client {
 	client := slackClient.New(token)
 	return &Client{
-		slack:  client,
+		Slack:  client,
 		logger: logger,
 	}
 }
 
 //GetSlackChannelID returns the chanel id from an email
 func (c *Client) GetSlackChannelID(email string) (string, error) {
-	user, err := c.slack.GetUserByEmail(email)
+	user, err := c.Slack.GetUserByEmail(email)
 	if err != nil {
 		return "", errors.Wrap(err, "could not find slack user for email")
 	}
@@ -33,7 +33,7 @@ func (c *Client) GetSlackChannelID(email string) (string, error) {
 		return "", errors.New("email not found")
 	}
 	c.logger.Info(fmt.Sprintf("userID: %s", user.ID))
-	_, _, channelID, err := c.slack.OpenIMChannel(user.ID)
+	_, _, channelID, err := c.Slack.OpenIMChannel(user.ID)
 	return channelID, errors.Wrap(err, "could not open dm channel with user")
 }
 
@@ -47,6 +47,6 @@ func (c *Client) PostMessage(message Message) error {
 		UnfurlLinks: true,
 		Attachments: message.Attachments,
 	}
-	_, _, err = c.slack.PostMessage(channelID, message.Text, params)
+	_, _, err = c.Slack.PostMessage(channelID, message.Text, params)
 	return errors.Wrap(err, "could not post message")
 }
