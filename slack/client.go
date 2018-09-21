@@ -5,17 +5,17 @@ import (
 
 	slackClient "github.com/nlopes/slack"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
+	"github.com/sirupsen/logrus"
 )
 
 // Client is a slack client
 type Client struct {
 	slack  *slackClient.Client
-	logger *zap.Logger
+	logger *logrus.Logger
 }
 
 // New returns a webhook client
-func New(token string, logger *zap.Logger) *Client {
+func New(token string, logger *logrus.Logger) *Client {
 	client := slackClient.New(token)
 	return &Client{
 		slack:  client,
