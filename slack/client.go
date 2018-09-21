@@ -23,8 +23,8 @@ func New(token string, logger *logrus.Logger) *Client {
 	}
 }
 
-// returns the chanel id from an email
-func (c *Client) getSlackChannelID(email string) (string, error) {
+//GetSlackChannelID returns the chanel id from an email
+func (c *Client) GetSlackChannelID(email string) (string, error) {
 	user, err := c.slack.GetUserByEmail(email)
 	if err != nil {
 		return "", errors.Wrap(err, "could not find slack user for email")
@@ -39,7 +39,7 @@ func (c *Client) getSlackChannelID(email string) (string, error) {
 
 // PostMessage posts a message
 func (c *Client) PostMessage(message Message) error {
-	channelID, err := c.getSlackChannelID(message.Email)
+	channelID, err := c.GetSlackChannelID(message.Email)
 	if err != nil {
 		return err
 	}
