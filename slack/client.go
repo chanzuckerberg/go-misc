@@ -50,3 +50,16 @@ func (c *Client) PostMessage(message Message) error {
 	_, _, err = c.Slack.PostMessage(channelID, message.Text, params)
 	return errors.Wrap(err, "could not post message")
 }
+
+// SendMessageToUser will send the given text to the specified userID.
+func (c *Client) SendMessageToUser(userID, message string) error {
+	_, _, channelID, err := c.Slack.OpenIMChannel(userID)
+	if err != nil {
+		return err
+	}
+	params := slackClient.PostMessageParameters{
+		UnfurlLinks: true,
+	}
+	_, _, err = c.Slack.PostMessage(channelID, message, params)
+	return err
+}
