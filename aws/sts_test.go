@@ -67,19 +67,19 @@ func (ts *ProviderTestSuite) SetupTest() {
 	getUserOutput := &iam.GetUserOutput{}
 	getUserOutput.SetUser(user)
 
-	ts.mockIAM.On("GetUser", mock.Anything).Return(getUserOutput, nil)
+	ts.mockIAM.On("GetUserWithContext", mock.Anything).Return(getUserOutput, nil)
 	mfaDevivies := []*iam.MFADevice{
 		&iam.MFADevice{SerialNumber: aws.String("serial number")},
 	}
 	output := &iam.ListMFADevicesOutput{}
 	output.SetMFADevices(mfaDevivies)
-	ts.mockIAM.On("ListMFADevicesPages", mock.Anything).Return(output, nil)
+	ts.mockIAM.On("ListMFADevicesPagesWithContext", mock.Anything).Return(output, nil)
 
 	creds := &sts.Credentials{}
 	creds.SetAccessKeyId("access key id").SetExpiration(time.Now().Add(time.Hour)).SetSecretAccessKey("secret").SetSessionToken("Token")
 	token := &sts.GetSessionTokenOutput{}
 	token.SetCredentials(creds)
-	ts.mockSTS.On("GetSessionToken", mock.Anything).Return(token, nil)
+	ts.mockSTS.On("GetSessionTokenWithContext", mock.Anything).Return(token, nil)
 	ts.creds = creds
 
 	ts.pathsToRemove = []string{f.Name()}
@@ -121,7 +121,7 @@ func (ts *ProviderTestSuite) TestCached() {
 	c, err := ts.provider.Retrieve()
 	a.Nil(err)
 	a.Equal(*tokenCache.AccessKeyID, c.AccessKeyID)
-	a.True(ts.mockIAM.Mock.AssertNotCalled(t, "GetUser", mock.Anything))
+	a.True(ts.mockIAM.Mock.AssertNotCalled(t, "GetUserWithContext", mock.Anything))
 }
 
 func (ts *ProviderTestSuite) TestCacheExpired() {
