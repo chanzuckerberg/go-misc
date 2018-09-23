@@ -37,7 +37,7 @@ func (c *Client) GetSlackChannelID(email string) (string, error) {
 	return channelID, errors.Wrap(err, "could not open dm channel with user")
 }
 
-// PostMessage posts a message
+// PostMessage is DEPRECATED
 func (c *Client) PostMessage(message Message) error {
 	channelID, err := c.GetSlackChannelID(message.Email)
 	if err != nil {
@@ -48,6 +48,20 @@ func (c *Client) PostMessage(message Message) error {
 		Attachments: message.Attachments,
 	}
 	_, _, err = c.Slack.PostMessage(channelID, message.Text, params)
+	return errors.Wrap(err, "could not post message")
+}
+
+// SendMessageToUserByEmail posts a message
+func (c *Client) SendMessageToUserByEmail(email, message string, attachments []slackClient.Attachment) error {
+	channelID, err := c.GetSlackChannelID(email)
+	if err != nil {
+		return errors.Wrapf(err, "could not find slack user with email %s", email)
+	}
+	params := slackClient.PostMessageParameters{
+		UnfurlLinks: true,
+		Attachments: attachments,
+	}
+	_, _, err = c.Slack.PostMessage(channelID, message, params)
 	return errors.Wrap(err, "could not post message")
 }
 
