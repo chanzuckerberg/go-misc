@@ -9,6 +9,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -18,6 +19,7 @@ const (
 func processRecord(record events.KinesisFirehoseEventRecord) (response events.KinesisFirehoseResponseRecord, err error) {
 	response.Data = record.Data
 	response.RecordID = record.RecordID
+	logrus.Infof("Processing record %s", record.RecordID)
 
 	gr, err := gzip.NewReader(bytes.NewBuffer(record.Data))
 	if err != nil {
@@ -63,6 +65,7 @@ func processRecord(record events.KinesisFirehoseEventRecord) (response events.Ki
 	}
 	response.Data = messages.Bytes()
 	response.Result = events.KinesisFirehoseTransformedStateOk
+	logrus.Infof("Successfully parsed %d messages in recordID %s", len(parsed.LogEvents), record.RecordID)
 	return
 }
 
@@ -71,16 +74,20 @@ func HandleRequest(ctx context.Context, kinesisEvent events.KinesisFirehoseEvent
 	response := events.KinesisFirehoseResponse{
 		Records: []events.KinesisFirehoseResponseRecord{},
 	}
+	logrus.Infof("Received %d kinesis records", len(kinesisEvent.Records))
 	for _, record := range kinesisEvent.Records {
 		record, err := processRecord(record)
 		if err != nil {
+			logrus.WithError(err).Error("Error processing records")
 			return response, err
 		}
 		response.Records = append(response.Records, record)
 	}
+	logrus.Info("Success")
 	return response, nil
 }
 
 func main() {
+	logrus.Info("Processing started")
 	lambda.Start(HandleRequest)
 }
