@@ -16,6 +16,13 @@ const (
 	dataMessage = "DATA_MESSAGE"
 )
 
+type augmentedLogEvent struct {
+	events.CloudwatchLogsLogEvent
+	Owner     string `json:"owner,omitempty"`
+	LogGroup  string `json:"logGroup,omitempty"`
+	LogStream string `json:"logStream,omitempty"`
+}
+
 func processRecord(record events.KinesisFirehoseEventRecord) (response events.KinesisFirehoseResponseRecord, err error) {
 	response.Data = record.Data
 	response.RecordID = record.RecordID
@@ -45,7 +52,16 @@ func processRecord(record events.KinesisFirehoseEventRecord) (response events.Ki
 	}
 	messages := bytes.NewBuffer(nil)
 	b := []byte{}
+
+	// Set some common stuff
+	augmented := augmentedLogEvent{}
+	augmented.Owner = parsed.Owner
+	augmented.LogGroup = parsed.LogGroup
+	augmented.LogStream = parsed.LogStream
+
 	for _, logEvent := range parsed.LogEvents {
+		// update the contents
+		augmented.CloudwatchLogsLogEvent = logEvent
 		b, err = json.Marshal(logEvent)
 		if err != nil {
 			response.Data = messages.Bytes()
