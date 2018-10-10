@@ -62,7 +62,7 @@ func processRecord(record events.KinesisFirehoseEventRecord) (response events.Ki
 	for _, logEvent := range parsed.LogEvents {
 		// update the contents
 		augmented.CloudwatchLogsLogEvent = logEvent
-		b, err = json.Marshal(logEvent)
+		b, err = json.Marshal(augmented)
 		if err != nil {
 			response.Data = messages.Bytes()
 			response.Result = events.KinesisFirehoseTransformedStateProcessingFailed
