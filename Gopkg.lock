@@ -15,7 +15,7 @@
   version = "v1.6.0"
 
 [[projects]]
-  digest = "1:01f394f7ca5675b3a8981a45de58a7bfae3f3fb24c083b21d1f0f8bea3946d59"
+  digest = "1:5f1d434602a2612d0ea216145cea29278c5b6928d20d61df78c79b42065a5feb"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -66,6 +66,8 @@
     "service/secretsmanager/secretsmanageriface",
     "service/sts",
     "service/sts/stsiface",
+    "service/support",
+    "service/support/supportiface",
   ]
   pruneopts = "UT"
   revision = "eee06b117565431c7f0002553e4e40f128858d17"
@@ -209,6 +211,7 @@
     "github.com/aws/aws-sdk-go/service/secretsmanager/secretsmanageriface",
     "github.com/aws/aws-sdk-go/service/sts",
     "github.com/aws/aws-sdk-go/service/sts/stsiface",
+    "github.com/aws/aws-sdk-go/service/support/supportiface",
     "github.com/nlopes/slack",
     "github.com/pkg/errors",
     "github.com/sirupsen/logrus",
