@@ -29,7 +29,7 @@ func (l *Lambda) Execute(ctx context.Context, functionName string, payload []byt
 		SetInvocationType(lambda.InvocationTypeRequestResponse).
 		SetLogType(lambda.LogTypeTail)
 
-	return l.invoke(functionName, ctx, input)
+	return l.invoke(ctx, functionName, input)
 }
 
 // Execute executes the given function with the given payload and qualifier (lambda version) and returns the output
@@ -42,10 +42,10 @@ func (l *Lambda) ExecuteWithQualifier(ctx context.Context, functionName string, 
 		SetInvocationType(lambda.InvocationTypeRequestResponse).
 		SetLogType(lambda.LogTypeTail)
 
-	return l.invoke(functionName, ctx, input)
+	return l.invoke(ctx, functionName, input)
 }
 
-func (l *Lambda) invoke(functionName string, ctx context.Context, input *lambda.InvokeInput) ([]byte, error) {
+func (l *Lambda) invoke(ctx context.Context, functionName string, input *lambda.InvokeInput) ([]byte, error) {
 	output, err := l.Svc.InvokeWithContext(ctx, input)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Error invoking lambda function %s", functionName)
