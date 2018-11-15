@@ -10048,7 +10048,7 @@ func (c *EC2) DescribeFleetsRequest(input *DescribeFleetsInput) (req *request.Re
 
 // DescribeFleets API operation for Amazon Elastic Compute Cloud.
 //
-// Describes one or more of your EC2 Fleet.
+// Describes one or more of your EC2 Fleets.
 //
 // Returns awserr.Error for service API and SDK errors. Use runtime type assertions
 // with awserr.Error's Code and Message methods to get detailed information about
@@ -13305,6 +13305,12 @@ func (c *EC2) DescribeRouteTablesRequest(input *DescribeRouteTablesInput) (req *
 		Name:       opDescribeRouteTables,
 		HTTPMethod: "POST",
 		HTTPPath:   "/",
+		Paginator: &request.Paginator{
+			InputTokens:     []string{"NextToken"},
+			OutputTokens:    []string{"NextToken"},
+			LimitToken:      "MaxResults",
+			TruncationToken: "",
+		},
 	}
 
 	if input == nil {
@@ -13354,6 +13360,56 @@ func (c *EC2) DescribeRouteTablesWithContext(ctx aws.Context, input *DescribeRou
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
+}
+
+// DescribeRouteTablesPages iterates over the pages of a DescribeRouteTables operation,
+// calling the "fn" function with the response data for each page. To stop
+// iterating, return false from the fn function.
+//
+// See DescribeRouteTables method for more information on how to use this operation.
+//
+// Note: This operation can generate multiple requests to a service.
+//
+//    // Example iterating over at most 3 pages of a DescribeRouteTables operation.
+//    pageNum := 0
+//    err := client.DescribeRouteTablesPages(params,
+//        func(page *DescribeRouteTablesOutput, lastPage bool) bool {
+//            pageNum++
+//            fmt.Println(page)
+//            return pageNum <= 3
+//        })
+//
+func (c *EC2) DescribeRouteTablesPages(input *DescribeRouteTablesInput, fn func(*DescribeRouteTablesOutput, bool) bool) error {
+	return c.DescribeRouteTablesPagesWithContext(aws.BackgroundContext(), input, fn)
+}
+
+// DescribeRouteTablesPagesWithContext same as DescribeRouteTablesPages except
+// it takes a Context and allows setting request options on the pages.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *EC2) DescribeRouteTablesPagesWithContext(ctx aws.Context, input *DescribeRouteTablesInput, fn func(*DescribeRouteTablesOutput, bool) bool, opts ...request.Option) error {
+	p := request.Pagination{
+		NewRequest: func() (*request.Request, error) {
+			var inCpy *DescribeRouteTablesInput
+			if input != nil {
+				tmp := *input
+				inCpy = &tmp
+			}
+			req, _ := c.DescribeRouteTablesRequest(inCpy)
+			req.SetContext(ctx)
+			req.ApplyOptions(opts...)
+			return req, nil
+		},
+	}
+
+	cont := true
+	for p.Next() && cont {
+		cont = fn(p.Page().(*DescribeRouteTablesOutput), !p.HasNextPage())
+	}
+	return p.Err()
 }
 
 const opDescribeScheduledInstanceAvailability = "DescribeScheduledInstanceAvailability"
@@ -13618,6 +13674,12 @@ func (c *EC2) DescribeSecurityGroupsRequest(input *DescribeSecurityGroupsInput) 
 		Name:       opDescribeSecurityGroups,
 		HTTPMethod: "POST",
 		HTTPPath:   "/",
+		Paginator: &request.Paginator{
+			InputTokens:     []string{"NextToken"},
+			OutputTokens:    []string{"NextToken"},
+			LimitToken:      "MaxResults",
+			TruncationToken: "",
+		},
 	}
 
 	if input == nil {
@@ -13666,6 +13728,56 @@ func (c *EC2) DescribeSecurityGroupsWithContext(ctx aws.Context, input *Describe
 	req.SetContext(ctx)
 	req.ApplyOptions(opts...)
 	return out, req.Send()
+}
+
+// DescribeSecurityGroupsPages iterates over the pages of a DescribeSecurityGroups operation,
+// calling the "fn" function with the response data for each page. To stop
+// iterating, return false from the fn function.
+//
+// See DescribeSecurityGroups method for more information on how to use this operation.
+//
+// Note: This operation can generate multiple requests to a service.
+//
+//    // Example iterating over at most 3 pages of a DescribeSecurityGroups operation.
+//    pageNum := 0
+//    err := client.DescribeSecurityGroupsPages(params,
+//        func(page *DescribeSecurityGroupsOutput, lastPage bool) bool {
+//            pageNum++
+//            fmt.Println(page)
+//            return pageNum <= 3
+//        })
+//
+func (c *EC2) DescribeSecurityGroupsPages(input *DescribeSecurityGroupsInput, fn func(*DescribeSecurityGroupsOutput, bool) bool) error {
+	return c.DescribeSecurityGroupsPagesWithContext(aws.BackgroundContext(), input, fn)
+}
+
+// DescribeSecurityGroupsPagesWithContext same as DescribeSecurityGroupsPages except
+// it takes a Context and allows setting request options on the pages.
+//
+// The context must be non-nil and will be used for request cancellation. If
+// the context is nil a panic will occur. In the future the SDK may create
+// sub-contexts for http.Requests. See https://golang.org/pkg/context/
+// for more information on using Contexts.
+func (c *EC2) DescribeSecurityGroupsPagesWithContext(ctx aws.Context, input *DescribeSecurityGroupsInput, fn func(*DescribeSecurityGroupsOutput, bool) bool, opts ...request.Option) error {
+	p := request.Pagination{
+		NewRequest: func() (*request.Request, error) {
+			var inCpy *DescribeSecurityGroupsInput
+			if input != nil {
+				tmp := *input
+				inCpy = &tmp
+			}
+			req, _ := c.DescribeSecurityGroupsRequest(inCpy)
+			req.SetContext(ctx)
+			req.ApplyOptions(opts...)
+			return req, nil
+		},
+	}
+
+	cont := true
+	for p.Next() && cont {
+		cont = fn(p.Page().(*DescribeSecurityGroupsOutput), !p.HasNextPage())
+	}
+	return p.Err()
 }
 
 const opDescribeSnapshotAttribute = "DescribeSnapshotAttribute"
@@ -29522,6 +29634,62 @@ func (s *CreateEgressOnlyInternetGatewayOutput) SetEgressOnlyInternetGateway(v *
 	return s
 }
 
+// Describes the instances that could not be launched by the fleet.
+type CreateFleetError struct {
+	_ struct{} `type:"structure"`
+
+	// The error code that indicates why the instance could not be launched. For
+	// more information about error codes, see Error Codes (http://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html.html).
+	ErrorCode *string `locationName:"errorCode" type:"string"`
+
+	// The error message that describes why the instance could not be launched.
+	// For more information about error messages, see ee Error Codes (http://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html.html).
+	ErrorMessage *string `locationName:"errorMessage" type:"string"`
+
+	// The launch templates and overrides that were used for launching the instances.
+	// Any parameters that you specify in the Overrides override the same parameters
+	// in the launch template.
+	LaunchTemplateAndOverrides *LaunchTemplateAndOverridesResponse `locationName:"launchTemplateAndOverrides" type:"structure"`
+
+	// Indicates if the instance that could not be launched was a Spot Instance
+	// or On-Demand Instance.
+	Lifecycle *string `locationName:"lifecycle" type:"string" enum:"InstanceLifecycle"`
+}
+
+// String returns the string representation
+func (s CreateFleetError) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s CreateFleetError) GoString() string {
+	return s.String()
+}
+
+// SetErrorCode sets the ErrorCode field's value.
+func (s *CreateFleetError) SetErrorCode(v string) *CreateFleetError {
+	s.ErrorCode = &v
+	return s
+}
+
+// SetErrorMessage sets the ErrorMessage field's value.
+func (s *CreateFleetError) SetErrorMessage(v string) *CreateFleetError {
+	s.ErrorMessage = &v
+	return s
+}
+
+// SetLaunchTemplateAndOverrides sets the LaunchTemplateAndOverrides field's value.
+func (s *CreateFleetError) SetLaunchTemplateAndOverrides(v *LaunchTemplateAndOverridesResponse) *CreateFleetError {
+	s.LaunchTemplateAndOverrides = v
+	return s
+}
+
+// SetLifecycle sets the Lifecycle field's value.
+func (s *CreateFleetError) SetLifecycle(v string) *CreateFleetError {
+	s.Lifecycle = &v
+	return s
+}
+
 type CreateFleetInput struct {
 	_ struct{} `type:"structure"`
 
@@ -29570,14 +29738,14 @@ type CreateFleetInput struct {
 	// expires.
 	TerminateInstancesWithExpiration *bool `type:"boolean"`
 
-	// The type of request. Indicates whether the EC2 Fleet only requests the target
-	// capacity, or also attempts to maintain it. If you request a certain target
-	// capacity, EC2 Fleet only places the required requests. It does not attempt
-	// to replenish instances if capacity is diminished, and does not submit requests
-	// in alternative capacity pools if capacity is unavailable. To maintain a certain
-	// target capacity, EC2 Fleet places the required requests to meet this target
-	// capacity. It also automatically replenishes any interrupted Spot Instances.
-	// Default: maintain.
+	// The type of request. instant indicates whether the EC2 Fleet submits a one-time
+	// request for your desired capacity. request indicates whether the EC2 Fleet
+	// submits ongoing requests until your desired capacity is fulfilled, but does
+	// not attempt to submit requests in alternative capacity pools if capacity
+	// is unavailable or maintain the capacity. maintain indicates whether the EC2
+	// Fleet submits ongoing requests until your desired capacity is fulfilled,
+	// and continues to maintain your desired capacity by replenishing interrupted
+	// Spot Instances. Default: maintain.
 	Type *string `type:"string" enum:"FleetType"`
 
 	// The start date and time of the request, in UTC format (for example, YYYY-MM-DDTHH:MM:SSZ).
@@ -29709,11 +29877,82 @@ func (s *CreateFleetInput) SetValidUntil(v time.Time) *CreateFleetInput {
 	return s
 }
 
+// Describes the instances that were launched by the fleet.
+type CreateFleetInstance struct {
+	_ struct{} `type:"structure"`
+
+	// The IDs of the instances.
+	InstanceIds []*string `locationName:"instanceIds" locationNameList:"item" type:"list"`
+
+	// The instance type.
+	InstanceType *string `locationName:"instanceType" type:"string" enum:"InstanceType"`
+
+	// The launch templates and overrides that were used for launching the instances.
+	// Any parameters that you specify in the Overrides override the same parameters
+	// in the launch template.
+	LaunchTemplateAndOverrides *LaunchTemplateAndOverridesResponse `locationName:"launchTemplateAndOverrides" type:"structure"`
+
+	// Indicates if the instance that was launched is a Spot Instance or On-Demand
+	// Instance.
+	Lifecycle *string `locationName:"lifecycle" type:"string" enum:"InstanceLifecycle"`
+
+	// The value is Windows for Windows instances; otherwise blank.
+	Platform *string `locationName:"platform" type:"string" enum:"PlatformValues"`
+}
+
+// String returns the string representation
+func (s CreateFleetInstance) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s CreateFleetInstance) GoString() string {
+	return s.String()
+}
+
+// SetInstanceIds sets the InstanceIds field's value.
+func (s *CreateFleetInstance) SetInstanceIds(v []*string) *CreateFleetInstance {
+	s.InstanceIds = v
+	return s
+}
+
+// SetInstanceType sets the InstanceType field's value.
+func (s *CreateFleetInstance) SetInstanceType(v string) *CreateFleetInstance {
+	s.InstanceType = &v
+	return s
+}
+
+// SetLaunchTemplateAndOverrides sets the LaunchTemplateAndOverrides field's value.
+func (s *CreateFleetInstance) SetLaunchTemplateAndOverrides(v *LaunchTemplateAndOverridesResponse) *CreateFleetInstance {
+	s.LaunchTemplateAndOverrides = v
+	return s
+}
+
+// SetLifecycle sets the Lifecycle field's value.
+func (s *CreateFleetInstance) SetLifecycle(v string) *CreateFleetInstance {
+	s.Lifecycle = &v
+	return s
+}
+
+// SetPlatform sets the Platform field's value.
+func (s *CreateFleetInstance) SetPlatform(v string) *CreateFleetInstance {
+	s.Platform = &v
+	return s
+}
+
 type CreateFleetOutput struct {
 	_ struct{} `type:"structure"`
 
+	// Information about the instances that could not be launched by the fleet.
+	// Valid only when Type is set to instant.
+	Errors []*CreateFleetError `locationName:"errorSet" locationNameList:"item" type:"list"`
+
 	// The ID of the EC2 Fleet.
 	FleetId *string `locationName:"fleetId" type:"string"`
+
+	// Information about the instances that were launched by the fleet. Valid only
+	// when Type is set to instant.
+	Instances []*CreateFleetInstance `locationName:"fleetInstanceSet" locationNameList:"item" type:"list"`
 }
 
 // String returns the string representation
@@ -29726,9 +29965,21 @@ func (s CreateFleetOutput) GoString() string {
 	return s.String()
 }
 
+// SetErrors sets the Errors field's value.
+func (s *CreateFleetOutput) SetErrors(v []*CreateFleetError) *CreateFleetOutput {
+	s.Errors = v
+	return s
+}
+
 // SetFleetId sets the FleetId field's value.
 func (s *CreateFleetOutput) SetFleetId(v string) *CreateFleetOutput {
 	s.FleetId = &v
+	return s
+}
+
+// SetInstances sets the Instances field's value.
+func (s *CreateFleetOutput) SetInstances(v []*CreateFleetInstance) *CreateFleetOutput {
+	s.Instances = v
 	return s
 }
 
@@ -37185,6 +37436,62 @@ func (s *DescribeExportTasksOutput) SetExportTasks(v []*ExportTask) *DescribeExp
 	return s
 }
 
+// Describes the instances that could not be launched by the fleet.
+type DescribeFleetError struct {
+	_ struct{} `type:"structure"`
+
+	// The error code that indicates why the instance could not be launched. For
+	// more information about error codes, see Error Codes (http://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html.html).
+	ErrorCode *string `locationName:"errorCode" type:"string"`
+
+	// The error message that describes why the instance could not be launched.
+	// For more information about error messages, see ee Error Codes (http://docs.aws.amazon.com/AWSEC2/latest/APIReference/errors-overview.html.html).
+	ErrorMessage *string `locationName:"errorMessage" type:"string"`
+
+	// The launch templates and overrides that were used for launching the instances.
+	// Any parameters that you specify in the Overrides override the same parameters
+	// in the launch template.
+	LaunchTemplateAndOverrides *LaunchTemplateAndOverridesResponse `locationName:"launchTemplateAndOverrides" type:"structure"`
+
+	// Indicates if the instance that could not be launched was a Spot Instance
+	// or On-Demand Instance.
+	Lifecycle *string `locationName:"lifecycle" type:"string" enum:"InstanceLifecycle"`
+}
+
+// String returns the string representation
+func (s DescribeFleetError) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DescribeFleetError) GoString() string {
+	return s.String()
+}
+
+// SetErrorCode sets the ErrorCode field's value.
+func (s *DescribeFleetError) SetErrorCode(v string) *DescribeFleetError {
+	s.ErrorCode = &v
+	return s
+}
+
+// SetErrorMessage sets the ErrorMessage field's value.
+func (s *DescribeFleetError) SetErrorMessage(v string) *DescribeFleetError {
+	s.ErrorMessage = &v
+	return s
+}
+
+// SetLaunchTemplateAndOverrides sets the LaunchTemplateAndOverrides field's value.
+func (s *DescribeFleetError) SetLaunchTemplateAndOverrides(v *LaunchTemplateAndOverridesResponse) *DescribeFleetError {
+	s.LaunchTemplateAndOverrides = v
+	return s
+}
+
+// SetLifecycle sets the Lifecycle field's value.
+func (s *DescribeFleetError) SetLifecycle(v string) *DescribeFleetError {
+	s.Lifecycle = &v
+	return s
+}
+
 type DescribeFleetHistoryInput struct {
 	_ struct{} `type:"structure"`
 
@@ -37487,7 +37794,7 @@ type DescribeFleetsInput struct {
 	//    * replace-unhealthy-instances - Indicates whether EC2 Fleet should replace
 	//    unhealthy instances (true | false).
 	//
-	//    * type - The type of request (request | maintain).
+	//    * type - The type of request (instant | request | maintain).
 	Filters []*Filter `locationName:"Filter" locationNameList:"Filter" type:"list"`
 
 	// The ID of the EC2 Fleets.
@@ -37539,6 +37846,69 @@ func (s *DescribeFleetsInput) SetMaxResults(v int64) *DescribeFleetsInput {
 // SetNextToken sets the NextToken field's value.
 func (s *DescribeFleetsInput) SetNextToken(v string) *DescribeFleetsInput {
 	s.NextToken = &v
+	return s
+}
+
+// Describes the instances that were launched by the fleet.
+type DescribeFleetsInstances struct {
+	_ struct{} `type:"structure"`
+
+	// The IDs of the instances.
+	InstanceIds []*string `locationName:"instanceIds" locationNameList:"item" type:"list"`
+
+	// The instance type.
+	InstanceType *string `locationName:"instanceType" type:"string" enum:"InstanceType"`
+
+	// The launch templates and overrides that were used for launching the instances.
+	// Any parameters that you specify in the Overrides override the same parameters
+	// in the launch template.
+	LaunchTemplateAndOverrides *LaunchTemplateAndOverridesResponse `locationName:"launchTemplateAndOverrides" type:"structure"`
+
+	// Indicates if the instance that was launched is a Spot Instance or On-Demand
+	// Instance.
+	Lifecycle *string `locationName:"lifecycle" type:"string" enum:"InstanceLifecycle"`
+
+	// The value is Windows for Windows instances; otherwise blank.
+	Platform *string `locationName:"platform" type:"string" enum:"PlatformValues"`
+}
+
+// String returns the string representation
+func (s DescribeFleetsInstances) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s DescribeFleetsInstances) GoString() string {
+	return s.String()
+}
+
+// SetInstanceIds sets the InstanceIds field's value.
+func (s *DescribeFleetsInstances) SetInstanceIds(v []*string) *DescribeFleetsInstances {
+	s.InstanceIds = v
+	return s
+}
+
+// SetInstanceType sets the InstanceType field's value.
+func (s *DescribeFleetsInstances) SetInstanceType(v string) *DescribeFleetsInstances {
+	s.InstanceType = &v
+	return s
+}
+
+// SetLaunchTemplateAndOverrides sets the LaunchTemplateAndOverrides field's value.
+func (s *DescribeFleetsInstances) SetLaunchTemplateAndOverrides(v *LaunchTemplateAndOverridesResponse) *DescribeFleetsInstances {
+	s.LaunchTemplateAndOverrides = v
+	return s
+}
+
+// SetLifecycle sets the Lifecycle field's value.
+func (s *DescribeFleetsInstances) SetLifecycle(v string) *DescribeFleetsInstances {
+	s.Lifecycle = &v
+	return s
+}
+
+// SetPlatform sets the Platform field's value.
+func (s *DescribeFleetsInstances) SetPlatform(v string) *DescribeFleetsInstances {
+	s.Platform = &v
 	return s
 }
 
@@ -40173,7 +40543,7 @@ type DescribeLaunchTemplatesInput struct {
 
 	// The maximum number of results to return in a single call. To retrieve the
 	// remaining results, make another call with the returned NextToken value. This
-	// value can be between 5 and 1000.
+	// value can be between 1 and 200.
 	MaxResults *int64 `type:"integer"`
 
 	// The token to request the next page of results.
@@ -48218,6 +48588,10 @@ type FleetData struct {
 	// The creation date and time of the EC2 Fleet.
 	CreateTime *time.Time `locationName:"createTime" type:"timestamp"`
 
+	// Information about the instances that could not be launched by the fleet.
+	// Valid only when Type is set to instant.
+	Errors []*DescribeFleetError `locationName:"errorSet" locationNameList:"item" type:"list"`
+
 	// Indicates whether running instances should be terminated if the target capacity
 	// of the EC2 Fleet is decreased below the current size of the EC2 Fleet.
 	ExcessCapacityTerminationPolicy *string `locationName:"excessCapacityTerminationPolicy" type:"string" enum:"FleetExcessCapacityTerminationPolicy"`
@@ -48235,6 +48609,10 @@ type FleetData struct {
 	// The number of units fulfilled by this request compared to the set target
 	// On-Demand capacity.
 	FulfilledOnDemandCapacity *float64 `locationName:"fulfilledOnDemandCapacity" type:"double"`
+
+	// Information about the instances that were launched by the fleet. Valid only
+	// when Type is set to instant.
+	Instances []*DescribeFleetsInstances `locationName:"fleetInstanceSet" locationNameList:"item" type:"list"`
 
 	// The launch template and overrides.
 	LaunchTemplateConfigs []*FleetLaunchTemplateConfig `locationName:"launchTemplateConfigs" locationNameList:"item" type:"list"`
@@ -48310,6 +48688,12 @@ func (s *FleetData) SetCreateTime(v time.Time) *FleetData {
 	return s
 }
 
+// SetErrors sets the Errors field's value.
+func (s *FleetData) SetErrors(v []*DescribeFleetError) *FleetData {
+	s.Errors = v
+	return s
+}
+
 // SetExcessCapacityTerminationPolicy sets the ExcessCapacityTerminationPolicy field's value.
 func (s *FleetData) SetExcessCapacityTerminationPolicy(v string) *FleetData {
 	s.ExcessCapacityTerminationPolicy = &v
@@ -48337,6 +48721,12 @@ func (s *FleetData) SetFulfilledCapacity(v float64) *FleetData {
 // SetFulfilledOnDemandCapacity sets the FulfilledOnDemandCapacity field's value.
 func (s *FleetData) SetFulfilledOnDemandCapacity(v float64) *FleetData {
 	s.FulfilledOnDemandCapacity = &v
+	return s
+}
+
+// SetInstances sets the Instances field's value.
+func (s *FleetData) SetInstances(v []*DescribeFleetsInstances) *FleetData {
+	s.Instances = v
 	return s
 }
 
@@ -48497,6 +48887,9 @@ type FleetLaunchTemplateOverrides struct {
 	// The maximum price per unit hour that you are willing to pay for a Spot Instance.
 	MaxPrice *string `locationName:"maxPrice" type:"string"`
 
+	// The location where the instance launched, if applicable.
+	Placement *PlacementResponse `locationName:"placement" type:"structure"`
+
 	// The priority for the launch template override. If AllocationStrategy is set
 	// to prioritized, EC2 Fleet uses priority to determine which launch template
 	// override to use first in fulfilling On-Demand capacity. The highest priority
@@ -48540,6 +48933,12 @@ func (s *FleetLaunchTemplateOverrides) SetMaxPrice(v string) *FleetLaunchTemplat
 	return s
 }
 
+// SetPlacement sets the Placement field's value.
+func (s *FleetLaunchTemplateOverrides) SetPlacement(v *PlacementResponse) *FleetLaunchTemplateOverrides {
+	s.Placement = v
+	return s
+}
+
 // SetPriority sets the Priority field's value.
 func (s *FleetLaunchTemplateOverrides) SetPriority(v float64) *FleetLaunchTemplateOverrides {
 	s.Priority = &v
@@ -48570,6 +48969,9 @@ type FleetLaunchTemplateOverridesRequest struct {
 
 	// The maximum price per unit hour that you are willing to pay for a Spot Instance.
 	MaxPrice *string `type:"string"`
+
+	// The location where the instance launched, if applicable.
+	Placement *Placement `type:"structure"`
 
 	// The priority for the launch template override. If AllocationStrategy is set
 	// to prioritized, EC2 Fleet uses priority to determine which launch template
@@ -48611,6 +49013,12 @@ func (s *FleetLaunchTemplateOverridesRequest) SetInstanceType(v string) *FleetLa
 // SetMaxPrice sets the MaxPrice field's value.
 func (s *FleetLaunchTemplateOverridesRequest) SetMaxPrice(v string) *FleetLaunchTemplateOverridesRequest {
 	s.MaxPrice = &v
+	return s
+}
+
+// SetPlacement sets the Placement field's value.
+func (s *FleetLaunchTemplateOverridesRequest) SetPlacement(v *Placement) *FleetLaunchTemplateOverridesRequest {
+	s.Placement = v
 	return s
 }
 
@@ -50848,10 +51256,45 @@ type ImportImageInput struct {
 	// it is UnauthorizedOperation.
 	DryRun *bool `type:"boolean"`
 
+	// Specifies whether the destination AMI of the imported image should be encrypted.
+	// The default CMK for EBS is used unless you specify a non-default AWS Key
+	// Management Service (AWS KMS) CMK using KmsKeyId. For more information, see
+	// Amazon EBS Encryption (http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html)
+	// in the Amazon Elastic Compute Cloud User Guide.
+	Encrypted *bool `type:"boolean"`
+
 	// The target hypervisor platform.
 	//
 	// Valid values: xen
 	Hypervisor *string `type:"string"`
+
+	// An identifier for the AWS Key Management Service (AWS KMS) customer master
+	// key (CMK) to use when creating the encrypted AMI. This parameter is only
+	// required if you want to use a non-default CMK; if this parameter is not specified,
+	// the default CMK for EBS is used. If a KmsKeyId is specified, the Encrypted
+	// flag must also be set.
+	//
+	// The CMK identifier may be provided in any of the following formats:
+	//
+	//    * Key ID
+	//
+	//    * Key alias, in the form alias/ExampleAlias
+	//
+	//    * ARN using key ID. The ID ARN contains the arn:aws:kms namespace, followed
+	//    by the region of the CMK, the AWS account ID of the CMK owner, the key
+	//    namespace, and then the CMK ID. For example, arn:aws:kms:us-east-1:012345678910:key/abcd1234-a123-456a-a12b-a123b4cd56ef.
+	//
+	//    * ARN using key alias. The alias ARN contains the arn:aws:kms namespace,
+	//    followed by the region of the CMK, the AWS account ID of the CMK owner,
+	//    the alias namespace, and then the CMK alias. For example, arn:aws:kms:us-east-1:012345678910:alias/ExampleAlias.
+	//
+	//
+	// AWS parses KmsKeyId asynchronously, meaning that the action you call may
+	// appear to complete even though you provided an invalid identifier. This action
+	// will eventually report failure.
+	//
+	// The specified CMK must exist in the region that the AMI is being copied to.
+	KmsKeyId *string `type:"string"`
 
 	// The license type to be used for the Amazon Machine Image (AMI) after importing.
 	//
@@ -50918,9 +51361,21 @@ func (s *ImportImageInput) SetDryRun(v bool) *ImportImageInput {
 	return s
 }
 
+// SetEncrypted sets the Encrypted field's value.
+func (s *ImportImageInput) SetEncrypted(v bool) *ImportImageInput {
+	s.Encrypted = &v
+	return s
+}
+
 // SetHypervisor sets the Hypervisor field's value.
 func (s *ImportImageInput) SetHypervisor(v string) *ImportImageInput {
 	s.Hypervisor = &v
+	return s
+}
+
+// SetKmsKeyId sets the KmsKeyId field's value.
+func (s *ImportImageInput) SetKmsKeyId(v string) *ImportImageInput {
+	s.KmsKeyId = &v
 	return s
 }
 
@@ -50952,6 +51407,9 @@ type ImportImageOutput struct {
 	// A description of the import task.
 	Description *string `locationName:"description" type:"string"`
 
+	// Indicates whether the AMI is encypted.
+	Encrypted *bool `locationName:"encrypted" type:"boolean"`
+
 	// The target hypervisor of the import task.
 	Hypervisor *string `locationName:"hypervisor" type:"string"`
 
@@ -50960,6 +51418,10 @@ type ImportImageOutput struct {
 
 	// The task ID of the import image task.
 	ImportTaskId *string `locationName:"importTaskId" type:"string"`
+
+	// The identifier for the AWS Key Management Service (AWS KMS) customer master
+	// key (CMK) that was used to create the encrypted AMI.
+	KmsKeyId *string `locationName:"kmsKeyId" type:"string"`
 
 	// The license type of the virtual machine.
 	LicenseType *string `locationName:"licenseType" type:"string"`
@@ -51002,6 +51464,12 @@ func (s *ImportImageOutput) SetDescription(v string) *ImportImageOutput {
 	return s
 }
 
+// SetEncrypted sets the Encrypted field's value.
+func (s *ImportImageOutput) SetEncrypted(v bool) *ImportImageOutput {
+	s.Encrypted = &v
+	return s
+}
+
 // SetHypervisor sets the Hypervisor field's value.
 func (s *ImportImageOutput) SetHypervisor(v string) *ImportImageOutput {
 	s.Hypervisor = &v
@@ -51017,6 +51485,12 @@ func (s *ImportImageOutput) SetImageId(v string) *ImportImageOutput {
 // SetImportTaskId sets the ImportTaskId field's value.
 func (s *ImportImageOutput) SetImportTaskId(v string) *ImportImageOutput {
 	s.ImportTaskId = &v
+	return s
+}
+
+// SetKmsKeyId sets the KmsKeyId field's value.
+func (s *ImportImageOutput) SetKmsKeyId(v string) *ImportImageOutput {
+	s.KmsKeyId = &v
 	return s
 }
 
@@ -51068,6 +51542,9 @@ type ImportImageTask struct {
 	// A description of the import task.
 	Description *string `locationName:"description" type:"string"`
 
+	// Indicates whether the image is encrypted.
+	Encrypted *bool `locationName:"encrypted" type:"boolean"`
+
 	// The target hypervisor for the import task.
 	//
 	// Valid values: xen
@@ -51078,6 +51555,10 @@ type ImportImageTask struct {
 
 	// The ID of the import image task.
 	ImportTaskId *string `locationName:"importTaskId" type:"string"`
+
+	// The identifier for the AWS Key Management Service (AWS KMS) customer master
+	// key (CMK) that was used to create the encrypted image.
+	KmsKeyId *string `locationName:"kmsKeyId" type:"string"`
 
 	// The license type of the virtual machine.
 	LicenseType *string `locationName:"licenseType" type:"string"`
@@ -51120,6 +51601,12 @@ func (s *ImportImageTask) SetDescription(v string) *ImportImageTask {
 	return s
 }
 
+// SetEncrypted sets the Encrypted field's value.
+func (s *ImportImageTask) SetEncrypted(v bool) *ImportImageTask {
+	s.Encrypted = &v
+	return s
+}
+
 // SetHypervisor sets the Hypervisor field's value.
 func (s *ImportImageTask) SetHypervisor(v string) *ImportImageTask {
 	s.Hypervisor = &v
@@ -51135,6 +51622,12 @@ func (s *ImportImageTask) SetImageId(v string) *ImportImageTask {
 // SetImportTaskId sets the ImportTaskId field's value.
 func (s *ImportImageTask) SetImportTaskId(v string) *ImportImageTask {
 	s.ImportTaskId = &v
+	return s
+}
+
+// SetKmsKeyId sets the KmsKeyId field's value.
+func (s *ImportImageTask) SetKmsKeyId(v string) *ImportImageTask {
+	s.KmsKeyId = &v
 	return s
 }
 
@@ -51459,35 +51952,25 @@ type ImportInstanceVolumeDetailItem struct {
 	_ struct{} `type:"structure"`
 
 	// The Availability Zone where the resulting instance will reside.
-	//
-	// AvailabilityZone is a required field
-	AvailabilityZone *string `locationName:"availabilityZone" type:"string" required:"true"`
+	AvailabilityZone *string `locationName:"availabilityZone" type:"string"`
 
 	// The number of bytes converted so far.
-	//
-	// BytesConverted is a required field
-	BytesConverted *int64 `locationName:"bytesConverted" type:"long" required:"true"`
+	BytesConverted *int64 `locationName:"bytesConverted" type:"long"`
 
 	// A description of the task.
 	Description *string `locationName:"description" type:"string"`
 
 	// The image.
-	//
-	// Image is a required field
-	Image *DiskImageDescription `locationName:"image" type:"structure" required:"true"`
+	Image *DiskImageDescription `locationName:"image" type:"structure"`
 
 	// The status of the import of this particular disk image.
-	//
-	// Status is a required field
-	Status *string `locationName:"status" type:"string" required:"true"`
+	Status *string `locationName:"status" type:"string"`
 
 	// The status information or errors related to the disk image.
 	StatusMessage *string `locationName:"statusMessage" type:"string"`
 
 	// The volume.
-	//
-	// Volume is a required field
-	Volume *DiskImageVolumeDescription `locationName:"volume" type:"structure" required:"true"`
+	Volume *DiskImageVolumeDescription `locationName:"volume" type:"structure"`
 }
 
 // String returns the string representation
@@ -51663,6 +52146,42 @@ type ImportSnapshotInput struct {
 	// it is UnauthorizedOperation.
 	DryRun *bool `type:"boolean"`
 
+	// Specifies whether the destination snapshot of the imported image should be
+	// encrypted. The default CMK for EBS is used unless you specify a non-default
+	// AWS Key Management Service (AWS KMS) CMK using KmsKeyId. For more information,
+	// see Amazon EBS Encryption (http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html)
+	// in the Amazon Elastic Compute Cloud User Guide.
+	Encrypted *bool `type:"boolean"`
+
+	// An identifier for the AWS Key Management Service (AWS KMS) customer master
+	// key (CMK) to use when creating the encrypted snapshot. This parameter is
+	// only required if you want to use a non-default CMK; if this parameter is
+	// not specified, the default CMK for EBS is used. If a KmsKeyId is specified,
+	// the Encrypted flag must also be set.
+	//
+	// The CMK identifier may be provided in any of the following formats:
+	//
+	//    * Key ID
+	//
+	//    * Key alias, in the form alias/ExampleAlias
+	//
+	//    * ARN using key ID. The ID ARN contains the arn:aws:kms namespace, followed
+	//    by the region of the CMK, the AWS account ID of the CMK owner, the key
+	//    namespace, and then the CMK ID. For example, arn:aws:kms:us-east-1:012345678910:key/abcd1234-a123-456a-a12b-a123b4cd56ef.
+	//
+	//    * ARN using key alias. The alias ARN contains the arn:aws:kms namespace,
+	//    followed by the region of the CMK, the AWS account ID of the CMK owner,
+	//    the alias namespace, and then the CMK alias. For example, arn:aws:kms:us-east-1:012345678910:alias/ExampleAlias.
+	//
+	//
+	// AWS parses KmsKeyId asynchronously, meaning that the action you call may
+	// appear to complete even though you provided an invalid identifier. This action
+	// will eventually report failure.
+	//
+	// The specified CMK must exist in the region that the snapshot is being copied
+	// to.
+	KmsKeyId *string `type:"string"`
+
 	// The name of the role to use when not using the default role, 'vmimport'.
 	RoleName *string `type:"string"`
 }
@@ -51704,6 +52223,18 @@ func (s *ImportSnapshotInput) SetDiskContainer(v *SnapshotDiskContainer) *Import
 // SetDryRun sets the DryRun field's value.
 func (s *ImportSnapshotInput) SetDryRun(v bool) *ImportSnapshotInput {
 	s.DryRun = &v
+	return s
+}
+
+// SetEncrypted sets the Encrypted field's value.
+func (s *ImportSnapshotInput) SetEncrypted(v bool) *ImportSnapshotInput {
+	s.Encrypted = &v
+	return s
+}
+
+// SetKmsKeyId sets the KmsKeyId field's value.
+func (s *ImportSnapshotInput) SetKmsKeyId(v string) *ImportSnapshotInput {
+	s.KmsKeyId = &v
 	return s
 }
 
@@ -54121,6 +54652,40 @@ func (s *LaunchTemplate) SetLaunchTemplateName(v string) *LaunchTemplate {
 // SetTags sets the Tags field's value.
 func (s *LaunchTemplate) SetTags(v []*Tag) *LaunchTemplate {
 	s.Tags = v
+	return s
+}
+
+// Describes a launch template and overrides.
+type LaunchTemplateAndOverridesResponse struct {
+	_ struct{} `type:"structure"`
+
+	// The launch template.
+	LaunchTemplateSpecification *FleetLaunchTemplateSpecification `locationName:"launchTemplateSpecification" type:"structure"`
+
+	// Any parameters that you specify override the same parameters in the launch
+	// template.
+	Overrides *FleetLaunchTemplateOverrides `locationName:"overrides" type:"structure"`
+}
+
+// String returns the string representation
+func (s LaunchTemplateAndOverridesResponse) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s LaunchTemplateAndOverridesResponse) GoString() string {
+	return s.String()
+}
+
+// SetLaunchTemplateSpecification sets the LaunchTemplateSpecification field's value.
+func (s *LaunchTemplateAndOverridesResponse) SetLaunchTemplateSpecification(v *FleetLaunchTemplateSpecification) *LaunchTemplateAndOverridesResponse {
+	s.LaunchTemplateSpecification = v
+	return s
+}
+
+// SetOverrides sets the Overrides field's value.
+func (s *LaunchTemplateAndOverridesResponse) SetOverrides(v *FleetLaunchTemplateOverrides) *LaunchTemplateAndOverridesResponse {
+	s.Overrides = v
 	return s
 }
 
@@ -59697,6 +60262,14 @@ type OnDemandOptions struct {
 	// launching the highest priority first. If you do not specify a value, EC2
 	// Fleet defaults to lowest-price.
 	AllocationStrategy *string `locationName:"allocationStrategy" type:"string" enum:"FleetOnDemandAllocationStrategy"`
+
+	// The minimum target capacity for On-Demand Instances in the fleet. If the
+	// minimum target capacity is not reached, the fleet launches no instances.
+	MinTargetCapacity *int64 `locationName:"minTargetCapacity" type:"integer"`
+
+	// Indicates that the fleet uses a single instance type to launch all On-Demand
+	// Instances in the fleet.
+	SingleInstanceType *bool `locationName:"singleInstanceType" type:"boolean"`
 }
 
 // String returns the string representation
@@ -59715,6 +60288,18 @@ func (s *OnDemandOptions) SetAllocationStrategy(v string) *OnDemandOptions {
 	return s
 }
 
+// SetMinTargetCapacity sets the MinTargetCapacity field's value.
+func (s *OnDemandOptions) SetMinTargetCapacity(v int64) *OnDemandOptions {
+	s.MinTargetCapacity = &v
+	return s
+}
+
+// SetSingleInstanceType sets the SingleInstanceType field's value.
+func (s *OnDemandOptions) SetSingleInstanceType(v bool) *OnDemandOptions {
+	s.SingleInstanceType = &v
+	return s
+}
+
 // The allocation strategy of On-Demand Instances in an EC2 Fleet.
 type OnDemandOptionsRequest struct {
 	_ struct{} `type:"structure"`
@@ -59726,6 +60311,14 @@ type OnDemandOptionsRequest struct {
 	// launching the highest priority first. If you do not specify a value, EC2
 	// Fleet defaults to lowest-price.
 	AllocationStrategy *string `type:"string" enum:"FleetOnDemandAllocationStrategy"`
+
+	// The minimum target capacity for On-Demand Instances in the fleet. If the
+	// minimum target capacity is not reached, the fleet launches no instances.
+	MinTargetCapacity *int64 `type:"integer"`
+
+	// Indicates that the fleet uses a single instance type to launch all On-Demand
+	// Instances in the fleet.
+	SingleInstanceType *bool `type:"boolean"`
 }
 
 // String returns the string representation
@@ -59741,6 +60334,18 @@ func (s OnDemandOptionsRequest) GoString() string {
 // SetAllocationStrategy sets the AllocationStrategy field's value.
 func (s *OnDemandOptionsRequest) SetAllocationStrategy(v string) *OnDemandOptionsRequest {
 	s.AllocationStrategy = &v
+	return s
+}
+
+// SetMinTargetCapacity sets the MinTargetCapacity field's value.
+func (s *OnDemandOptionsRequest) SetMinTargetCapacity(v int64) *OnDemandOptionsRequest {
+	s.MinTargetCapacity = &v
+	return s
+}
+
+// SetSingleInstanceType sets the SingleInstanceType field's value.
+func (s *OnDemandOptionsRequest) SetSingleInstanceType(v bool) *OnDemandOptionsRequest {
+	s.SingleInstanceType = &v
 	return s
 }
 
@@ -59998,6 +60603,30 @@ func (s *PlacementGroup) SetState(v string) *PlacementGroup {
 // SetStrategy sets the Strategy field's value.
 func (s *PlacementGroup) SetStrategy(v string) *PlacementGroup {
 	s.Strategy = &v
+	return s
+}
+
+// Describes the placement of an instance.
+type PlacementResponse struct {
+	_ struct{} `type:"structure"`
+
+	// The name of the placement group the instance is in.
+	GroupName *string `locationName:"groupName" type:"string"`
+}
+
+// String returns the string representation
+func (s PlacementResponse) String() string {
+	return awsutil.Prettify(s)
+}
+
+// GoString returns the string representation
+func (s PlacementResponse) GoString() string {
+	return s.String()
+}
+
+// SetGroupName sets the GroupName field's value.
+func (s *PlacementResponse) SetGroupName(v string) *PlacementResponse {
+	s.GroupName = &v
 	return s
 }
 
@@ -67096,14 +67725,10 @@ type SecurityGroupReference struct {
 	_ struct{} `type:"structure"`
 
 	// The ID of your security group.
-	//
-	// GroupId is a required field
-	GroupId *string `locationName:"groupId" type:"string" required:"true"`
+	GroupId *string `locationName:"groupId" type:"string"`
 
 	// The ID of the VPC with the referencing security group.
-	//
-	// ReferencingVpcId is a required field
-	ReferencingVpcId *string `locationName:"referencingVpcId" type:"string" required:"true"`
+	ReferencingVpcId *string `locationName:"referencingVpcId" type:"string"`
 
 	// The ID of the VPC peering connection.
 	VpcPeeringConnectionId *string `locationName:"vpcPeeringConnectionId" type:"string"`
@@ -67761,8 +68386,15 @@ type SnapshotTaskDetail struct {
 	// The size of the disk in the snapshot, in GiB.
 	DiskImageSize *float64 `locationName:"diskImageSize" type:"double"`
 
+	// Indicates whether the snapshot is encrypted.
+	Encrypted *bool `locationName:"encrypted" type:"boolean"`
+
 	// The format of the disk image from which the snapshot is created.
 	Format *string `locationName:"format" type:"string"`
+
+	// The identifier for the AWS Key Management Service (AWS KMS) customer master
+	// key (CMK) that was used to create the encrypted snapshot.
+	KmsKeyId *string `locationName:"kmsKeyId" type:"string"`
 
 	// The percentage of completion for the import snapshot task.
 	Progress *string `locationName:"progress" type:"string"`
@@ -67805,9 +68437,21 @@ func (s *SnapshotTaskDetail) SetDiskImageSize(v float64) *SnapshotTaskDetail {
 	return s
 }
 
+// SetEncrypted sets the Encrypted field's value.
+func (s *SnapshotTaskDetail) SetEncrypted(v bool) *SnapshotTaskDetail {
+	s.Encrypted = &v
+	return s
+}
+
 // SetFormat sets the Format field's value.
 func (s *SnapshotTaskDetail) SetFormat(v string) *SnapshotTaskDetail {
 	s.Format = &v
+	return s
+}
+
+// SetKmsKeyId sets the KmsKeyId field's value.
+func (s *SnapshotTaskDetail) SetKmsKeyId(v string) *SnapshotTaskDetail {
+	s.KmsKeyId = &v
 	return s
 }
 
@@ -68871,6 +69515,14 @@ type SpotOptions struct {
 	// the cheapest Spot pools and evenly allocates your target Spot capacity across
 	// the number of Spot pools that you specify.
 	InstancePoolsToUseCount *int64 `locationName:"instancePoolsToUseCount" type:"integer"`
+
+	// The minimum target capacity for Spot Instances in the fleet. If the minimum
+	// target capacity is not reached, the fleet launches no instances.
+	MinTargetCapacity *int64 `locationName:"minTargetCapacity" type:"integer"`
+
+	// Indicates that the fleet uses a single instance type to launch all Spot Instances
+	// in the fleet.
+	SingleInstanceType *bool `locationName:"singleInstanceType" type:"boolean"`
 }
 
 // String returns the string representation
@@ -68901,6 +69553,18 @@ func (s *SpotOptions) SetInstancePoolsToUseCount(v int64) *SpotOptions {
 	return s
 }
 
+// SetMinTargetCapacity sets the MinTargetCapacity field's value.
+func (s *SpotOptions) SetMinTargetCapacity(v int64) *SpotOptions {
+	s.MinTargetCapacity = &v
+	return s
+}
+
+// SetSingleInstanceType sets the SingleInstanceType field's value.
+func (s *SpotOptions) SetSingleInstanceType(v bool) *SpotOptions {
+	s.SingleInstanceType = &v
+	return s
+}
+
 // Describes the configuration of Spot Instances in an EC2 Fleet request.
 type SpotOptionsRequest struct {
 	_ struct{} `type:"structure"`
@@ -68917,6 +69581,14 @@ type SpotOptionsRequest struct {
 	// selects the cheapest Spot pools and evenly allocates your target Spot capacity
 	// across the number of Spot pools that you specify.
 	InstancePoolsToUseCount *int64 `type:"integer"`
+
+	// The minimum target capacity for Spot Instances in the fleet. If the minimum
+	// target capacity is not reached, the fleet launches no instances.
+	MinTargetCapacity *int64 `type:"integer"`
+
+	// Indicates that the fleet uses a single instance type to launch all Spot Instances
+	// in the fleet.
+	SingleInstanceType *bool `type:"boolean"`
 }
 
 // String returns the string representation
@@ -68944,6 +69616,18 @@ func (s *SpotOptionsRequest) SetInstanceInterruptionBehavior(v string) *SpotOpti
 // SetInstancePoolsToUseCount sets the InstancePoolsToUseCount field's value.
 func (s *SpotOptionsRequest) SetInstancePoolsToUseCount(v int64) *SpotOptionsRequest {
 	s.InstancePoolsToUseCount = &v
+	return s
+}
+
+// SetMinTargetCapacity sets the MinTargetCapacity field's value.
+func (s *SpotOptionsRequest) SetMinTargetCapacity(v int64) *SpotOptionsRequest {
+	s.MinTargetCapacity = &v
+	return s
+}
+
+// SetSingleInstanceType sets the SingleInstanceType field's value.
+func (s *SpotOptionsRequest) SetSingleInstanceType(v bool) *SpotOptionsRequest {
+	s.SingleInstanceType = &v
 	return s
 }
 
@@ -69137,9 +69821,7 @@ type StaleSecurityGroup struct {
 	Description *string `locationName:"description" type:"string"`
 
 	// The ID of the security group.
-	//
-	// GroupId is a required field
-	GroupId *string `locationName:"groupId" type:"string" required:"true"`
+	GroupId *string `locationName:"groupId" type:"string"`
 
 	// The name of the security group.
 	GroupName *string `locationName:"groupName" type:"string"`
@@ -73316,6 +73998,9 @@ const (
 
 	// FleetTypeMaintain is a FleetType enum value
 	FleetTypeMaintain = "maintain"
+
+	// FleetTypeInstant is a FleetType enum value
+	FleetTypeInstant = "instant"
 )
 
 const (
@@ -73513,6 +74198,14 @@ const (
 )
 
 const (
+	// InstanceLifecycleSpot is a InstanceLifecycle enum value
+	InstanceLifecycleSpot = "spot"
+
+	// InstanceLifecycleOnDemand is a InstanceLifecycle enum value
+	InstanceLifecycleOnDemand = "on-demand"
+)
+
+const (
 	// InstanceLifecycleTypeSpot is a InstanceLifecycleType enum value
 	InstanceLifecycleTypeSpot = "spot"
 
@@ -73707,6 +74400,24 @@ const (
 
 	// InstanceTypeR5Metal is a InstanceType enum value
 	InstanceTypeR5Metal = "r5.metal"
+
+	// InstanceTypeR5aLarge is a InstanceType enum value
+	InstanceTypeR5aLarge = "r5a.large"
+
+	// InstanceTypeR5aXlarge is a InstanceType enum value
+	InstanceTypeR5aXlarge = "r5a.xlarge"
+
+	// InstanceTypeR5a2xlarge is a InstanceType enum value
+	InstanceTypeR5a2xlarge = "r5a.2xlarge"
+
+	// InstanceTypeR5a4xlarge is a InstanceType enum value
+	InstanceTypeR5a4xlarge = "r5a.4xlarge"
+
+	// InstanceTypeR5a12xlarge is a InstanceType enum value
+	InstanceTypeR5a12xlarge = "r5a.12xlarge"
+
+	// InstanceTypeR5a24xlarge is a InstanceType enum value
+	InstanceTypeR5a24xlarge = "r5a.24xlarge"
 
 	// InstanceTypeR5dLarge is a InstanceType enum value
 	InstanceTypeR5dLarge = "r5d.large"
@@ -73953,6 +74664,24 @@ const (
 
 	// InstanceTypeM524xlarge is a InstanceType enum value
 	InstanceTypeM524xlarge = "m5.24xlarge"
+
+	// InstanceTypeM5aLarge is a InstanceType enum value
+	InstanceTypeM5aLarge = "m5a.large"
+
+	// InstanceTypeM5aXlarge is a InstanceType enum value
+	InstanceTypeM5aXlarge = "m5a.xlarge"
+
+	// InstanceTypeM5a2xlarge is a InstanceType enum value
+	InstanceTypeM5a2xlarge = "m5a.2xlarge"
+
+	// InstanceTypeM5a4xlarge is a InstanceType enum value
+	InstanceTypeM5a4xlarge = "m5a.4xlarge"
+
+	// InstanceTypeM5a12xlarge is a InstanceType enum value
+	InstanceTypeM5a12xlarge = "m5a.12xlarge"
+
+	// InstanceTypeM5a24xlarge is a InstanceType enum value
+	InstanceTypeM5a24xlarge = "m5a.24xlarge"
 
 	// InstanceTypeM5dLarge is a InstanceType enum value
 	InstanceTypeM5dLarge = "m5d.large"
