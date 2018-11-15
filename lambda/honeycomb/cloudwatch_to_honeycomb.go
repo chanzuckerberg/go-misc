@@ -57,7 +57,10 @@ func processRecord(record events.KinesisEventRecord) error {
 				logrus.WithError(err).Warn("Error json.Unmarshal")
 				hnyEvent.AddField("message", logEvent.Message)
 			} else {
-				hnyEvent.Add(msg)
+				err = hnyEvent.Add(msg)
+				if err != nil {
+					logrus.WithError(err).Warn("Error adding honeycomb event")
+				}
 			}
 			hnyEvent.AddField("aws.cloudwatch.group", parsed.LogGroup)
 			hnyEvent.AddField("aws.cloudwatch.stream", parsed.LogStream)
