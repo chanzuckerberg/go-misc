@@ -32,7 +32,7 @@ func (l *Lambda) Execute(ctx context.Context, functionName string, payload []byt
 	return l.invoke(ctx, functionName, input)
 }
 
-// Execute executes the given function with the given payload and qualifier (lambda version) and returns the output
+// ExecuteWithQualifier executes the given function with the given payload and qualifier (lambda version) and returns the output
 func (l *Lambda) ExecuteWithQualifier(ctx context.Context, functionName string, functionQualifier string, payload []byte) ([]byte, error) {
 	input := &lambda.InvokeInput{}
 	input.
