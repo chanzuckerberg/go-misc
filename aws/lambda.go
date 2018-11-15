@@ -33,15 +33,15 @@ func (l *Lambda) Execute(ctx context.Context, functionName string, payload []byt
 }
 
 // ExecuteWithQualifier executes the given function with the given payload and qualifier (lambda version) and returns the output
-func (l *Lambda) ExecuteWithQualifier(ctx context.Context, functionName string, functionQualifier string, payload []byte) ([]byte, error) {
-	input := &lambda.InvokeInput{}
+func (l *Lambda) ExecuteWithQualifier(ctx context.Context, functionName string, functionQualifier *string, payload []byte) ([]byte, error) {
+	input := &lambda.InvokeInput{
+		Qualifier: functionQualifier,
+	}
 	input.
 		SetPayload(payload).
 		SetFunctionName(functionName).
-		SetQualifier(functionQualifier).
 		SetInvocationType(lambda.InvocationTypeRequestResponse).
 		SetLogType(lambda.LogTypeTail)
-
 	return l.invoke(ctx, functionName, input)
 }
 
