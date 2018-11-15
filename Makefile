@@ -5,7 +5,7 @@ all: test
 setup:
 	go get github.com/rakyll/gotest
 	go install github.com/rakyll/gotest
-	go get golang.org/x/tools/cover
+	go get -u golang.org/x/lint/golint
 
 lint: ## run the fast go linters
 	gometalinter --vendor --fast ./...
