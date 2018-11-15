@@ -16,4 +16,4 @@ jobs:
         - snyk test
     - stage: check
       script:
-        - golint -set_exit_status $(go list ./... | grep -v /vendor/)
+        - make lint
