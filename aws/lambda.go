@@ -27,7 +27,6 @@ func (l *Lambda) Execute(ctx context.Context, functionName string, payload []byt
 		SetPayload(payload).
 		SetFunctionName(functionName).
 		SetInvocationType(lambda.InvocationTypeRequestResponse).
-		SetLogType(lambda.LogTypeTail)
 
 	return l.invoke(ctx, functionName, input)
 }
@@ -41,7 +40,6 @@ func (l *Lambda) ExecuteWithQualifier(ctx context.Context, functionName string, 
 		SetPayload(payload).
 		SetFunctionName(functionName).
 		SetInvocationType(lambda.InvocationTypeRequestResponse).
-		SetLogType(lambda.LogTypeTail)
 	return l.invoke(ctx, functionName, input)
 }
 
