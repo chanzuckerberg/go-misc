@@ -237,31 +237,12 @@
   version = "v1.2.2"
 
 [[projects]]
-  digest = "1:a61ba87c99e93863d5c7ec18330c7cb31453165808e6eff0b74fbdccd194723f"
-  name = "github.com/tcnksm/go-latest"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "86500ab1363a867dafe16905b5b85293a0d838eb"
-  version = "0.1.1"
-
-[[projects]]
   branch = "master"
   digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
   pruneopts = "UT"
   revision = "3d3f9f413869b949e48070b5bc593aa22cc2b8f2"
-
-[[projects]]
-  branch = "master"
-  digest = "1:1a1ecfa7b54ca3f7a0115ab5c578d7d6a5d8b605839c549e80260468c42f8be7"
-  name = "golang.org/x/net"
-  packages = [
-    "html",
-    "html/atom",
-  ]
-  pruneopts = "UT"
-  revision = "adae6a3d119ae4890b46832a2e88a95adc62b8e7"
 
 [[projects]]
   branch = "master"
@@ -319,6 +300,8 @@
     "github.com/aws/aws-sdk-go/service/sts/stsiface",
     "github.com/aws/aws-sdk-go/service/support",
     "github.com/aws/aws-sdk-go/service/support/supportiface",
+    "github.com/google/go-github/github",
+    "github.com/hashicorp/go-version",
     "github.com/honeycombio/libhoney-go",
     "github.com/nlopes/slack",
     "github.com/pkg/errors",
@@ -326,7 +309,6 @@
     "github.com/stretchr/testify/assert",
     "github.com/stretchr/testify/mock",
     "github.com/stretchr/testify/suite",
-    "github.com/tcnksm/go-latest",
     "gopkg.in/go-playground/validator.v9",
   ]
   solver-name = "gps-cdcl"
