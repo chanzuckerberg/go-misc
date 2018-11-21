@@ -35,15 +35,15 @@ func (v *Versions) latest() *version.Version {
 
 // Outdated returns true if there is a newer version
 func (v *Versions) Outdated(ver string) (bool, error) {
-	current := v.latest()
-	if current == nil {
+	latest := v.latest()
+	if latest == nil {
 		return false, nil
 	}
 	testVersion, err := version.NewVersion(ver)
 	if err != nil {
 		return false, errors.Wrapf(err, "Could not parse %s", ver)
 	}
-	return current.GreaterThan(testVersion), nil
+	return latest.GreaterThan(testVersion), nil
 }
 
 // CheckLatestVersion checks to see if we're on the latest version
