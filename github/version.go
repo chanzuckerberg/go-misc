@@ -16,17 +16,17 @@ type Versions struct {
 	versions []*version.Version
 }
 
-// Current resturns the current version if one exists, else zero value
-func (v *Versions) Current() string {
-	current := v.current()
+// Latest resturns the latest version if one exists, else zero value
+func (v *Versions) Latest() string {
+	current := v.latest()
 	if current == nil {
 		return ""
 	}
 	return current.String()
 }
 
-// current gets the current version
-func (v *Versions) current() *version.Version {
+// latest gets the latest version
+func (v *Versions) latest() *version.Version {
 	if len(v.versions) < 1 {
 		return nil
 	}
@@ -35,11 +35,10 @@ func (v *Versions) current() *version.Version {
 
 // Outdated returns true if there is a newer version
 func (v *Versions) Outdated(ver string) (bool, error) {
-	current := v.current()
+	current := v.latest()
 	if current == nil {
 		return false, nil
 	}
-
 	testVersion, err := version.NewVersion(ver)
 	if err != nil {
 		return false, errors.Wrapf(err, "Could not parse %s", ver)
