@@ -153,7 +153,7 @@ func (ts *ProviderTestSuite) TestGetCallerIdentity() {
 	a := assert.New(t)
 	input := &sts.GetCallerIdentityInput{}
 	res, err := ts.client.STS.GetCallerIdentity(input)
-	a.Equal(res.UserId, "my user id")
+	a.Equal(*res.UserId, "my user id")
 	a.Equal(err, nil)
 }
 
