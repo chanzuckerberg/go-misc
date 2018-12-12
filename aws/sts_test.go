@@ -85,7 +85,7 @@ func (ts *ProviderTestSuite) SetupTest() {
 	callerIdentity := &sts.GetCallerIdentityOutput{}
 	callerIdentity.SetAccount("my account id")
 	callerIdentity.SetArn("my user arn")
-	callerIdentity.SetUserID("my user id")
+	callerIdentity.SetUserId("my user id")
 	ts.mockSTS.On("GetCallerIdentity", mock.Anything).Return(callerIdentity, nil)
 
 	ts.pathsToRemove = []string{f.Name()}
