@@ -49,7 +49,7 @@ const (
 // GetCallerIdentity gets the caller's identity
 func (s *STS) GetCallerIdentity(input *sts.GetCallerIdentityInput) (*sts.GetCallerIdentityOutput, error) {
 	output, err := s.Svc.GetCallerIdentity(input)
-	if error != nil {
+	if err != nil {
 		return nil, errors.Wrap(err, "Could not get sts caller identity")
 	}
 	if output == nil {

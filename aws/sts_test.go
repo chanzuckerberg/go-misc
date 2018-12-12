@@ -154,6 +154,7 @@ func (ts *ProviderTestSuite) TestGetCallerIdentity() {
 	input := &sts.GetCallerIdentityInput{}
 	res, err := ts.client.STS.GetCallerIdentity(input)
 	a.Equal(res.UserId, "my user id")
+	a.Equal(err, nil)
 }
 
 func TestSTSProviderSuite(t *testing.T) {
