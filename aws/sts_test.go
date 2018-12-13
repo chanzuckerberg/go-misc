@@ -82,6 +82,12 @@ func (ts *ProviderTestSuite) SetupTest() {
 	ts.mockSTS.On("GetSessionTokenWithContext", mock.Anything).Return(token, nil)
 	ts.creds = creds
 
+	callerIdentity := &sts.GetCallerIdentityOutput{}
+	callerIdentity.SetAccount("my account id")
+	callerIdentity.SetArn("my user arn")
+	callerIdentity.SetUserId("my user id")
+	ts.mockSTS.On("GetCallerIdentity", mock.Anything).Return(callerIdentity, nil)
+
 	ts.pathsToRemove = []string{f.Name()}
 }
 
@@ -140,6 +146,15 @@ func (ts *ProviderTestSuite) TestCacheExpired() {
 	c, err := ts.provider.Retrieve()
 	a.Nil(err)
 	a.Equal(*ts.creds.AccessKeyId, c.AccessKeyID)
+}
+
+func (ts *ProviderTestSuite) TestGetCallerIdentity() {
+	t := ts.T()
+	a := assert.New(t)
+	input := &sts.GetCallerIdentityInput{}
+	res, err := ts.client.STS.GetCallerIdentity(input)
+	a.Equal(*res.UserId, "my user id")
+	a.Equal(err, nil)
 }
 
 func TestSTSProviderSuite(t *testing.T) {
