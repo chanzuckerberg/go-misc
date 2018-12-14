@@ -1,6 +1,7 @@
 package aws_test
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http/httptest"
@@ -83,10 +84,10 @@ func (ts *ProviderTestSuite) SetupTest() {
 	ts.creds = creds
 
 	callerIdentity := &sts.GetCallerIdentityOutput{}
-	callerIdentity.SetAccount("my account id")
-	callerIdentity.SetArn("my user arn")
-	callerIdentity.SetUserId("my user id")
-	ts.mockSTS.On("GetCallerIdentity", mock.Anything).Return(callerIdentity, nil)
+	callerIdentity.SetAccount("my account id").
+		SetArn("my user arn").
+		SetUserId("my user id")
+	ts.mockSTS.On("GetCallerIdentityWithContext", mock.Anything).Return(callerIdentity, nil)
 
 	ts.pathsToRemove = []string{f.Name()}
 }
@@ -151,8 +152,10 @@ func (ts *ProviderTestSuite) TestCacheExpired() {
 func (ts *ProviderTestSuite) TestGetCallerIdentity() {
 	t := ts.T()
 	a := assert.New(t)
+	ctx := context.Background()
+
 	input := &sts.GetCallerIdentityInput{}
-	res, err := ts.client.STS.GetCallerIdentity(input)
+	res, err := ts.client.STS.GetCallerIdentity(ctx, input)
 	a.Equal(*res.UserId, "my user id")
 	a.Equal(err, nil)
 }
