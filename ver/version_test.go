@@ -1,6 +1,10 @@
 package ver_test
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/chanzuckerberg/go-misc/ver"
+)
 
 func TestVersionString(t *testing.T) {
 	type args struct {
@@ -21,7 +25,7 @@ func TestVersionString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := VersionString(tt.args.version, tt.args.gitsha, tt.args.releaseStr, tt.args.dirtyStr)
+			got, err := ver.VersionString(tt.args.version, tt.args.gitsha, tt.args.releaseStr, tt.args.dirtyStr)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("VersionString() error = %v, wantErr %v", err, tt.wantErr)
 				return
