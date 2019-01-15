@@ -21,5 +21,9 @@ A port of [python-kmsauth](https://github.com/lyft/python-kmsauth) to go
 ### slack
 A slack client that aims to standardize the way we interact and write tests for slack
 
+### ver
+Code for handling versions in go programs.
+
 ## Contributing
 Contributions and ideas are welcome! Please don't hesitate to open an issue or send a pull request.
+
