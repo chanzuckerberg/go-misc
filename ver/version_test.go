@@ -1,4 +1,4 @@
-package ver
+package ver_test
 
 import "testing"
 
@@ -33,35 +33,12 @@ func TestVersionString(t *testing.T) {
 	}
 }
 
-func TestVersionCacheKey(t *testing.T) {
-	type args struct {
-		version string
-		gitsha  string
-		release string
-		dirty   string
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := VersionCacheKey(tt.args.version, tt.args.gitsha, tt.args.release, tt.args.dirty); got != tt.want {
-				t.Errorf("VersionCacheKey() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-// func Test_versionString(t *testing.T) {
+// func TestVersionCacheKey(t *testing.T) {
 // 	type args struct {
 // 		version string
-// 		sha     string
-// 		release bool
-// 		dirty   bool
+// 		gitsha  string
+// 		release string
+// 		dirty   string
 // 	}
 // 	tests := []struct {
 // 		name string
@@ -72,8 +49,8 @@ func TestVersionCacheKey(t *testing.T) {
 // 	}
 // 	for _, tt := range tests {
 // 		t.Run(tt.name, func(t *testing.T) {
-// 			if got := versionString(tt.args.version, tt.args.sha, tt.args.release, tt.args.dirty); got != tt.want {
-// 				t.Errorf("versionString() = %v, want %v", got, tt.want)
+// 			if got := VersionCacheKey(tt.args.version, tt.args.gitsha, tt.args.release, tt.args.dirty); got != tt.want {
+// 				t.Errorf("VersionCacheKey() = %v, want %v", got, tt.want)
 // 			}
 // 		})
 // 	}
