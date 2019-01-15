@@ -1,11 +1,11 @@
 package ver_test
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/blang/semver"
 	"github.com/chanzuckerberg/go-misc/ver"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestVersionString(t *testing.T) {
@@ -62,28 +62,39 @@ func TestVersionString(t *testing.T) {
 // 	}
 // }
 
-func TestParse(t *testing.T) {
-	a := assert.New(t)
-
-	testCases := []struct {
-		input   string
+func TestParseVersion(t *testing.T) {
+	type args struct {
 		version string
-		sha     string
-		dirty   bool
-	}{
-		{"0.1.0", "0.1.0", "", false},
-		{"0.1.0-abcdef", "0.1.0", "abcdef", false},
-		{"0.1.0-abcdef.dirty", "0.1.0", "abcdef", true},
 	}
-	for _, tc := range testCases {
-		t.Run("", func(t *testing.T) {
-			v, sha, dirty := ver.ParseVersion(tc.input)
-			semVersion, e := semver.Parse(tc.version)
-			a.NoError(e)
-			a.Equal(semVersion, v)
-			a.Equal(tc.sha, sha)
-			a.Equal(tc.dirty, dirty)
+	tests := []struct {
+		name    string
+		args    args
+		want    semver.Version
+		want1   string
+		want2   bool
+		wantErr bool
+	}{
+		{"_", args{"0.1.0"}, semver.MustParse("0.1.0"), "", false, false},
+		{"_", args{"0.1.0-abcdef"}, semver.MustParse("0.1.0"), "abcdef", false, false},
+		{"_", args{"0.1.0-abcdef.dirty"}, semver.MustParse("0.1.0"), "abcdef", true, false},
+		{"_", args{"a.1.0"}, semver.MustParse("0.0.0"), "", false, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, got1, got2, err := ver.ParseVersion(tt.args.version)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ParseVersion() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("ParseVersion() got = %v, want %v", got, tt.want)
+			}
+			if got1 != tt.want1 {
+				t.Errorf("ParseVersion() got1 = %v, want %v", got1, tt.want1)
+			}
+			if got2 != tt.want2 {
+				t.Errorf("ParseVersion() got2 = %v, want %v", got2, tt.want2)
+			}
 		})
 	}
-
 }

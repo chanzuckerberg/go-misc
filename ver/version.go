@@ -45,20 +45,23 @@ func versionString(version, sha string, release, dirty bool) string {
 	return fmt.Sprintf("%s+%s+dirty", version, sha)
 }
 
-func ParseVersion(version string) (semver.Version, string, bool) {
+func ParseVersion(version string) (semver.Version, string, bool, error) {
 	var dirty bool
 	var sha string
-	v := version
-	if strings.HasSuffix(v, ".dirty") {
+
+	if strings.HasSuffix(version, ".dirty") {
 		dirty = true
-		v = strings.TrimSuffix(v, ".dirty")
+		version = strings.TrimSuffix(version, ".dirty")
 	}
-	if strings.Contains(v, "-") {
-		tmp := strings.Split(v, "-")
-		v = tmp[0]
+	if strings.Contains(version, "-") {
+		tmp := strings.Split(version, "-")
+		version = tmp[0]
 		sha = tmp[1]
 	}
 
-	semVersion, _ := semver.Parse(v)
-	return semVersion, sha, dirty
+	semVersion, err := semver.Parse(version)
+	if err != nil {
+		return semver.Version{}, "", false, err
+	}
+	return semVersion, sha, dirty, nil
 }
