@@ -45,6 +45,7 @@ func versionString(version, sha string, release, dirty bool) string {
 	return fmt.Sprintf("%s+%s+dirty", version, sha)
 }
 
+// ParseVersion will take a version string and parse it
 func ParseVersion(version string) (semver.Version, string, bool, error) {
 	var dirty bool
 	var sha string
