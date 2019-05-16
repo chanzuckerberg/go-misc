@@ -58,10 +58,11 @@ type augmentedLogEvent struct {
 	Action             *string `json:"action,omitempty"`
 }
 
+// populate parses according to the Apache common format
+// https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html
 func (al *augmentedLogEvent) populate(message string) (err error) {
 	split := strings.Split(message, " ")
 
-	// https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html
 	if len(split) != 14 {
 		return errors.New("Malformed message")
 	}
