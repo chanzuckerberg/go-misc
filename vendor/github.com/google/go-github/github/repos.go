@@ -57,6 +57,7 @@ type Repository struct {
 	AllowMergeCommit *bool            `json:"allow_merge_commit,omitempty"`
 	Topics           []string         `json:"topics,omitempty"`
 	Archived         *bool            `json:"archived,omitempty"`
+	Disabled         *bool            `json:"disabled,omitempty"`
 
 	// Only provided when using RepositoriesService.Get while in preview
 	License *License `json:"license,omitempty"`
@@ -179,7 +180,7 @@ func (s *RepositoriesService) List(ctx context.Context, user string, opt *Reposi
 	}
 
 	// TODO: remove custom Accept headers when APIs fully launch.
-	acceptHeaders := []string{mediaTypeCodesOfConductPreview, mediaTypeTopicsPreview}
+	acceptHeaders := []string{mediaTypeTopicsPreview}
 	req.Header.Set("Accept", strings.Join(acceptHeaders, ", "))
 
 	var repos []*Repository
@@ -217,7 +218,7 @@ func (s *RepositoriesService) ListByOrg(ctx context.Context, org string, opt *Re
 	}
 
 	// TODO: remove custom Accept headers when APIs fully launch.
-	acceptHeaders := []string{mediaTypeCodesOfConductPreview, mediaTypeTopicsPreview}
+	acceptHeaders := []string{mediaTypeTopicsPreview}
 	req.Header.Set("Accept", strings.Join(acceptHeaders, ", "))
 
 	var repos []*Repository
@@ -459,6 +460,40 @@ type ListContributorsOptions struct {
 	Anon string `url:"anon,omitempty"`
 
 	ListOptions
+}
+
+// EnableVulnerabilityAlerts enables vulnerability alerts and the dependency graph for a repository.
+//
+// GitHub API docs: https://developer.github.com/v3/repos/#enable-vulnerability-alerts
+func (s *RepositoriesService) EnableVulnerabilityAlerts(ctx context.Context, owner, repository string) (*Response, error) {
+	u := fmt.Sprintf("repos/%v/%v/vulnerability-alerts", owner, repository)
+
+	req, err := s.client.NewRequest("PUT", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: remove custom Accept header when this API fully launches
+	req.Header.Set("Accept", mediaTypeRequiredVulnerabilityAlertsPreview)
+
+	return s.client.Do(ctx, req, nil)
+}
+
+// DisableVulnerabilityAlerts disables vulnerability alerts and the dependency graph for a repository.
+//
+// GitHub API docs: https://developer.github.com/v3/repos/#disable-vulnerability-alerts
+func (s *RepositoriesService) DisableVulnerabilityAlerts(ctx context.Context, owner, repository string) (*Response, error) {
+	u := fmt.Sprintf("repos/%v/%v/vulnerability-alerts", owner, repository)
+
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: remove custom Accept header when this API fully launches
+	req.Header.Set("Accept", mediaTypeRequiredVulnerabilityAlertsPreview)
+
+	return s.client.Do(ctx, req, nil)
 }
 
 // ListContributors lists contributors for a repository.

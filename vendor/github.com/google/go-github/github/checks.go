@@ -8,6 +8,7 @@ package github
 import (
 	"context"
 	"fmt"
+	"net/url"
 )
 
 // ChecksService provides access to the Checks API in the
@@ -80,6 +81,9 @@ type CheckSuite struct {
 	App          *App           `json:"app,omitempty"`
 	Repository   *Repository    `json:"repository,omitempty"`
 	PullRequests []*PullRequest `json:"pull_requests,omitempty"`
+
+	// The following fields are only populated by Webhook events.
+	HeadCommit *Commit `json:"head_commit,omitempty"`
 }
 
 func (c CheckRun) String() string {
@@ -255,7 +259,7 @@ type ListCheckRunsResults struct {
 //
 // GitHub API docs: https://developer.github.com/v3/checks/runs/#list-check-runs-for-a-specific-ref
 func (s *ChecksService) ListCheckRunsForRef(ctx context.Context, owner, repo, ref string, opt *ListCheckRunsOptions) (*ListCheckRunsResults, *Response, error) {
-	u := fmt.Sprintf("repos/%v/%v/commits/%v/check-runs", owner, repo, ref)
+	u := fmt.Sprintf("repos/%v/%v/commits/%v/check-runs", owner, repo, url.QueryEscape(ref))
 	u, err := addOptions(u, opt)
 	if err != nil {
 		return nil, nil, err
@@ -321,7 +325,7 @@ type ListCheckSuiteResults struct {
 //
 // GitHub API docs: https://developer.github.com/v3/checks/suites/#list-check-suites-for-a-specific-ref
 func (s *ChecksService) ListCheckSuitesForRef(ctx context.Context, owner, repo, ref string, opt *ListCheckSuiteOptions) (*ListCheckSuiteResults, *Response, error) {
-	u := fmt.Sprintf("repos/%v/%v/commits/%v/check-suites", owner, repo, ref)
+	u := fmt.Sprintf("repos/%v/%v/commits/%v/check-suites", owner, repo, url.QueryEscape(ref))
 	u, err := addOptions(u, opt)
 	if err != nil {
 		return nil, nil, err
@@ -351,7 +355,7 @@ type AutoTriggerCheck struct {
 
 // CheckSuitePreferenceOptions set options for check suite preferences for a repository.
 type CheckSuitePreferenceOptions struct {
-	PreferenceList *PreferenceList `json:"auto_trigger_checks,omitempty"` // A list of auto trigger checks that can be set for a check suite in a repository.
+	AutoTriggerChecks []*AutoTriggerCheck `json:"auto_trigger_checks,omitempty"` // A slice of auto trigger checks that can be set for a check suite in a repository.
 }
 
 // CheckSuitePreferenceResults represents the results of the preference set operation.
@@ -360,7 +364,7 @@ type CheckSuitePreferenceResults struct {
 	Repository  *Repository     `json:"repository,omitempty"`
 }
 
-// PreferenceList represents a list of auto trigger checks for  repository
+// PreferenceList represents a list of auto trigger checks for repository
 type PreferenceList struct {
 	AutoTriggerChecks []*AutoTriggerCheck `json:"auto_trigger_checks,omitempty"` // A slice of auto trigger checks that can be set for a check suite in a repository.
 }
