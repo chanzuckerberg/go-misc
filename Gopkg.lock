@@ -2,20 +2,21 @@
 
 
 [[projects]]
-  digest = "1:8b4d009bfb2d13472dad368bf7520c482dd7f8a190436da4e6d52111c0a2e697"
+  digest = "1:95fd14230b48a74765db94f7064f0b5617f52739a164f6d41e5b57bec5b3ff9b"
   name = "github.com/aws/aws-lambda-go"
   packages = [
     "events",
     "lambda",
+    "lambda/handlertrace",
     "lambda/messages",
     "lambdacontext",
   ]
   pruneopts = "UT"
-  revision = "9e3676ee8ca83aee500682f382e10b9d03660093"
-  version = "v1.8.0"
+  revision = "08d251dc58f204411d79012fd6f1beefb7107fea"
+  version = "v1.10.0"
 
 [[projects]]
-  digest = "1:8e784cf7ec881d361333ce485b28c7af67232cb7febc77aefa59d5726ef731e4"
+  digest = "1:d57d509b245acd05a3d3eb5ed13a096a3d6bbbc260bd31d8b884900e51df047b"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -72,16 +73,16 @@
     "service/support/supportiface",
   ]
   pruneopts = "UT"
-  revision = "056aa960bc0fb3918d8b2101e2a9c92675327ea3"
-  version = "v1.16.5"
+  revision = "7af38b557a7f85c5654031c504ed84ff3fb411f0"
+  version = "v1.19.31"
 
 [[projects]]
-  digest = "1:705c40022f5c03bf96ffeb6477858d88565064485a513abcd0f11a0911546cb6"
+  digest = "1:b6d886569181ec96ca83d529f4d6ba0cbf92ace7bb6f633f90c5f34d9bba7aab"
   name = "github.com/blang/semver"
   packages = ["."]
   pruneopts = "UT"
-  revision = "2ee87856327ba09384cabd113bc6b5d174e9ec0f"
-  version = "v3.5.1"
+  revision = "ba2c2ddd89069b46a7011d4106f6868f17ee1705"
+  version = "v3.6.1"
 
 [[projects]]
   digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
@@ -135,12 +136,12 @@
   version = "v0.16.0"
 
 [[projects]]
-  digest = "1:721cb5ee72b22a190ed1fb41bcc184d24d8f9ffef21d8755042fcefaebf40144"
+  digest = "1:8d12b0e8334cd6770e9b9b8b48c3340b9739b1469c2f448ced070b589adaa475"
   name = "github.com/google/go-github"
   packages = ["github"]
   pruneopts = "UT"
-  revision = "7c7d51f489bc54d96dfa34c497601b4a05d760c7"
-  version = "v20.0.0"
+  revision = "901030391ab7f418a984389fd3f8f65e39e5c823"
+  version = "v25.0.4"
 
 [[projects]]
   digest = "1:a63cff6b5d8b95638bfe300385d93b2a6d9d687734b863da8e09dc834510a690"
@@ -159,20 +160,23 @@
   version = "v1.4.0"
 
 [[projects]]
-  digest = "1:77395dd3847dac9c45118c668f5dab85aedf0163dc3b38aea6578c5cf0d502f9"
+  digest = "1:88e0b0baeb9072f0a4afbcf12dda615fc8be001d1802357538591155998da21b"
   name = "github.com/hashicorp/go-version"
   packages = ["."]
   pruneopts = "UT"
-  revision = "b5a281d3160aa11950a6182bd9a9dc2cb1e02d50"
-  version = "v1.0.0"
+  revision = "ac23dc3fea5d1a983c43f6a0f6e2c13f0195d8bd"
+  version = "v1.2.0"
 
 [[projects]]
-  digest = "1:b2e8b019ee4b494d974974ea4eb7c4e7c6617b145fef7f6e1117f4a400dc87af"
+  digest = "1:972412183f3f0df1bc41b993a5b1422eef0111ed9c8aaee0459343abd950d7fb"
   name = "github.com/honeycombio/libhoney-go"
-  packages = ["."]
+  packages = [
+    ".",
+    "transmission",
+  ]
   pruneopts = "UT"
-  revision = "86ceb69a9b89f381631caac96f24df15b88bedad"
-  version = "v1.8.1"
+  revision = "05d1382bc21ae054131360ef0fd95b70f473009a"
+  version = "v1.10.0"
 
 [[projects]]
   digest = "1:bb81097a5b62634f3e9fec1014657855610c82d19b9a40c17612e32651e35dca"
@@ -182,12 +186,12 @@
   revision = "c2b33e84"
 
 [[projects]]
-  digest = "1:0a69a1c0db3591fcefb47f115b224592c8dfa4368b7ba9fae509d5e16cdc95c8"
+  digest = "1:31e761d97c76151dde79e9d28964a812c46efc5baee4085b86f68f0c654450de"
   name = "github.com/konsorten/go-windows-terminal-sequences"
   packages = ["."]
   pruneopts = "UT"
-  revision = "5c8c8bd35d3832f5d134ae1e1e375b69a4d25242"
-  version = "v1.0.1"
+  revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
+  version = "v1.0.2"
 
 [[projects]]
   digest = "1:6782ffc812e8e700e6952ede1e60487ff1fd9da489eff762985be662a7cfc431"
@@ -209,12 +213,12 @@
   version = "v0.4.0"
 
 [[projects]]
-  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
+  digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
   name = "github.com/pkg/errors"
   packages = ["."]
   pruneopts = "UT"
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
 
 [[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
@@ -225,12 +229,12 @@
   version = "v1.0.0"
 
 [[projects]]
-  digest = "1:69b1cc331fca23d702bd72f860c6a647afd0aa9fcbc1d0659b1365e26546dd70"
+  digest = "1:fd61cf4ae1953d55df708acb6b91492d538f49c305b364a014049914495db426"
   name = "github.com/sirupsen/logrus"
   packages = ["."]
   pruneopts = "UT"
-  revision = "bcd833dfe83d3cebad139e4a29ed79cb2318bf95"
-  version = "v1.2.0"
+  revision = "8bdbc7bcc01dcbb8ec23dc8a28e332258d25251f"
+  version = "v1.4.1"
 
 [[projects]]
   digest = "1:ac83cf90d08b63ad5f7e020ef480d319ae890c208f8524622a2f3136e2686b02"
@@ -241,7 +245,7 @@
   version = "v0.1.1"
 
 [[projects]]
-  digest = "1:ffae6a0390594c05dc5ba534c385229e883508f17f6da257624913fd9aaa4d21"
+  digest = "1:288e2ba4192b77ec619875ab54d82e2179ca8978e8baa690dcb4343a4a1f4da7"
   name = "github.com/stretchr/testify"
   packages = [
     "assert",
@@ -250,27 +254,16 @@
     "suite",
   ]
   pruneopts = "UT"
-  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
-  version = "v1.2.2"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
 
 [[projects]]
   branch = "master"
-  digest = "1:38f553aff0273ad6f367cb0a0f8b6eecbaef8dc6cb8b50e57b6a81c1d5b1e332"
-  name = "golang.org/x/crypto"
-  packages = ["ssh/terminal"]
-  pruneopts = "UT"
-  revision = "505ab145d0a99da450461ae2c1a9f6cd10d1f447"
-
-[[projects]]
-  branch = "master"
-  digest = "1:ba8cbf57cfd92d5f8592b4aca1a35d92c162363d32aeabd5b12555f8896635e7"
+  digest = "1:3851a6d548ec5a808e396408f03a30b8d05ef4426db7ad8688f639b2d88b47bd"
   name = "golang.org/x/sys"
-  packages = [
-    "unix",
-    "windows",
-  ]
+  packages = ["unix"]
   pruneopts = "UT"
-  revision = "4d1cda033e0619309c606fc686de3adcf599539e"
+  revision = "61b9204099cb1bebc803c9ffb9b2d3acd9d457d9"
 
 [[projects]]
   digest = "1:38b469493eb173db9c03321d64adcad4c7991ea0a19b5edc5bdc094f0e8c7384"
@@ -281,12 +274,12 @@
   version = "v2.0.0"
 
 [[projects]]
-  digest = "1:8abc978192c2fca4d6a74260c3a8f4aa34d25bd3c548c938745b91b8b20cda1d"
+  digest = "1:7bb1ad654b21fb8f44c77c07840007d6796f70d42d1b470600f943a508ff8a72"
   name = "gopkg.in/go-playground/validator.v9"
   packages = ["."]
   pruneopts = "UT"
-  revision = "0277b12d53df79c9dbf7311cb07fa9c81ed621bb"
-  version = "v9.24.0"
+  revision = "46b4b1e301c24cac870ffcb4ba5c8a703d1ef475"
+  version = "v9.28.0"
 
 [solve-meta]
   analyzer-name = "dep"
