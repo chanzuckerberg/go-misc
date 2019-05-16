@@ -158,7 +158,10 @@ func processRecord(record events.KinesisFirehoseEventRecord) (response events.Ki
 		response.Result = events.KinesisFirehoseTransformedStateProcessingFailed
 		return
 	}
-	messages := bytes.NewBuffer(nil)
+
+	compressedMessages := bytes.NewBuffer(nil)
+	messages := gzip.NewWriter(compressedMessages)
+	defer messages.Close()
 	b := []byte{}
 
 	for _, logEvent := range parsed.LogEvents {
@@ -169,13 +172,13 @@ func processRecord(record events.KinesisFirehoseEventRecord) (response events.Ki
 
 		err = augmented.populate(logEvent.Message)
 		if err != nil {
-			response.Data = messages.Bytes()
+			response.Data = compressedMessages.Bytes()
 			response.Result = events.KinesisFirehoseTransformedStateProcessingFailed
 			return
 		}
 		b, err = json.Marshal(augmented)
 		if err != nil {
-			response.Data = messages.Bytes()
+			response.Data = compressedMessages.Bytes()
 			response.Result = events.KinesisFirehoseTransformedStateProcessingFailed
 			return
 		}
@@ -184,13 +187,14 @@ func processRecord(record events.KinesisFirehoseEventRecord) (response events.Ki
 			response.Result = events.KinesisFirehoseTransformedStateProcessingFailed
 			return
 		}
-		_, err = messages.WriteRune('\n')
+
+		_, err = messages.Write([]byte{byte('\n')}) // newline
 		if err != nil {
 			response.Result = events.KinesisFirehoseTransformedStateProcessingFailed
 			return
 		}
 	}
-	response.Data = messages.Bytes()
+	response.Data = compressedMessages.Bytes()
 	response.Result = events.KinesisFirehoseTransformedStateOk
 	logrus.Infof("Successfully parsed %d messages in recordID %s", len(parsed.LogEvents), record.RecordID)
 	return

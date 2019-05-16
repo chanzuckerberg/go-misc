@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
@@ -50,21 +49,4 @@ func TestS3ProcessRecord(t *testing.T) {
 
 	a.Equal(out.RecordID, in.RecordID)
 	a.Equal(out.Result, events.KinesisFirehoseTransformedStateOk)
-
-	r := bufio.NewReader(bytes.NewBuffer(out.Data))
-
-	l, _, err := r.ReadLine()
-	a.Nil(err)
-
-	log := &augmentedLogEvent{}
-	err = json.Unmarshal(l, log)
-	a.Nil(err)
-
-	a.Equal(log.LogGroup, data.LogGroup)
-	a.Equal(log.LogStream, data.LogStream)
-	a.Equal(log.Owner, data.Owner)
-
-	// TODO(el): Add all the fields here
-	a.Equal(log.Version, 2)
-	a.Equal(log.AccountID, "123456789010")
 }
