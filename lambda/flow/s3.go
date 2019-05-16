@@ -58,20 +58,10 @@ type augmentedLogEvent struct {
 	Action             *string `json:"action,omitempty"`
 }
 
-func (al *augmentedLogEvent) clearOptional() {
-	al.SourceAddress = nil
-	al.DestinationAddress = nil
-	al.SourcePort = nil
-	al.DestinationPort = nil
-	al.Protocol = nil
-	al.Packets = nil
-	al.Bytes = nil
-	al.Action = nil
-}
-
 func (al *augmentedLogEvent) populate(message string) (err error) {
 	split := strings.Split(message, " ")
 
+	// https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs.html
 	if len(split) != 14 {
 		return errors.New("Malformed message")
 	}
@@ -98,7 +88,6 @@ func (al *augmentedLogEvent) populate(message string) (err error) {
 	al.LogStatus = logStatus(split[13])
 	// End here if we don't have more data
 	if al.LogStatus != logStatusOK {
-		al.clearOptional() // Make sure we are not sending stale values
 		return nil
 	}
 
@@ -171,13 +160,12 @@ func processRecord(record events.KinesisFirehoseEventRecord) (response events.Ki
 	messages := bytes.NewBuffer(nil)
 	b := []byte{}
 
-	// Set some common stuff
-	augmented := augmentedLogEvent{}
-	augmented.Owner = parsed.Owner
-	augmented.LogGroup = parsed.LogGroup
-	augmented.LogStream = parsed.LogStream
-
 	for _, logEvent := range parsed.LogEvents {
+		augmented := augmentedLogEvent{}
+		augmented.Owner = parsed.Owner
+		augmented.LogGroup = parsed.LogGroup
+		augmented.LogStream = parsed.LogStream
+
 		err = augmented.populate(logEvent.Message)
 		if err != nil {
 			response.Data = messages.Bytes()
