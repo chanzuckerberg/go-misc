@@ -46,3 +46,17 @@ func (s *MockS3Svc) GetBucketAclWithContext(ctx aws.Context, in *s3.GetBucketAcl
 	out := args.Get(0).(*s3.GetBucketAclOutput)
 	return out, args.Error(1)
 }
+
+// GetObjectWithContext gets
+func (s *MockS3Svc) GetObjectWithContext(ctx aws.Context, in *s3.GetObjectInput, ro ...request.Option) (*s3.GetObjectOutput, error) {
+	args := s.Called(in)
+	out := args.Get(0).(*s3.GetObjectOutput)
+	return out, args.Error(1)
+}
+
+// PutObjectWithContext put
+func (s *MockS3Svc) PutObjectWithContext(ctx aws.Context, in *s3.PutObjectInput, ro ...request.Option) (*s3.PutObjectOutput, error) {
+	args := s.Called(in)
+	out := args.Get(0).(*s3.PutObjectOutput)
+	return out, args.Error(1)
+}
