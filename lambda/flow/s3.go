@@ -134,7 +134,6 @@ func optionalInt(i int) *int {
 func processRecord(record events.KinesisFirehoseEventRecord) (response events.KinesisFirehoseResponseRecord, err error) {
 	response.Data = record.Data
 	response.RecordID = record.RecordID
-	logrus.Infof("Processing record %s", record.RecordID)
 
 	gr, err := gzip.NewReader(bytes.NewBuffer(record.Data))
 	if err != nil {
@@ -195,6 +194,8 @@ func processRecord(record events.KinesisFirehoseEventRecord) (response events.Ki
 	err = messages.Close()
 	if err != nil {
 		logrus.Errorf("Error compressing message %s", err)
+		response.Result = events.KinesisFirehoseTransformedStateProcessingFailed
+		return
 	}
 	response.Data = compressedMessages.Bytes()
 	response.Result = events.KinesisFirehoseTransformedStateOk
