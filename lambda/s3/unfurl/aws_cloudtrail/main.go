@@ -19,10 +19,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-type cloudtrail struct {
-	Records []map[string]interface{} `json:"records,omitempty"`
-}
-
 func processRecord(
 	ctx context.Context,
 	awsClient *cziAWS.Client,
@@ -46,7 +42,7 @@ func processRecord(
 	if err != nil {
 		return errors.Wrap(err, "Could not read all data")
 	}
-	parsed := &cloudtrail{}
+	parsed := map[string]interface{}{}
 	err = json.Unmarshal(data, parsed)
 	if err != nil {
 		return errors.Wrap(err, "Error unmarshalling data")
@@ -54,7 +50,21 @@ func processRecord(
 
 	outputData := bytes.NewBuffer(nil)
 	outputGzipWriter := gzip.NewWriter(outputData)
-	for _, record := range parsed.Records {
+	defer outputGzipWriter.Close()
+
+	records, ok := parsed["Records"]
+	if !ok {
+		logrus.Infof("Malformed event, skipping. Records not found")
+		return nil
+	}
+
+	recordList, ok := records.([]interface{})
+	if !ok {
+		logrus.Infof("Malformed event, skipping. Records not a list")
+		return nil
+	}
+
+	for _, record := range recordList {
 		line, err := json.Marshal(record)
 		if err != nil {
 			return errors.Wrap(err, "Error marshalling sub-record")
@@ -69,6 +79,8 @@ func processRecord(
 		}
 	}
 
+	// Explicitly close here since we're done with the data
+	// Ok to call close twice (with defer)
 	err = outputGzipWriter.Close()
 	if err != nil {
 		return errors.Wrap(err, "Could not finalize gzip archive")

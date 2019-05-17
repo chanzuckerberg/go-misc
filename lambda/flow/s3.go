@@ -160,6 +160,7 @@ func processRecord(record events.KinesisFirehoseEventRecord) (response events.Ki
 
 	compressedMessages := bytes.NewBuffer(nil)
 	messages := gzip.NewWriter(compressedMessages)
+	defer messages.Close()
 	b := []byte{}
 
 	for _, logEvent := range parsed.LogEvents {
@@ -191,6 +192,7 @@ func processRecord(record events.KinesisFirehoseEventRecord) (response events.Ki
 		}
 	}
 	// Close the gzip compression
+	// Ok to call twice
 	err = messages.Close()
 	if err != nil {
 		logrus.Errorf("Error compressing message %s", err)
