@@ -24,7 +24,8 @@ func processRecord(
 	awsClient *cziAWS.Client,
 	sourceBucket string,
 	key string,
-	destinationBucket string) error {
+	destinationBucket string,
+	destinationKMSKeyID string) error {
 
 	getObject := &s3.GetObjectInput{}
 	output, err := awsClient.S3.Svc.GetObjectWithContext(ctx, getObject)
@@ -96,6 +97,7 @@ func processRecord(
 		ContentType:          aws.String(http.DetectContentType(outputBytes)),
 		Body:                 bytes.NewReader(outputBytes),
 		ServerSideEncryption: aws.String("AES256"),
+		SSEKMSKeyId:          aws.String(destinationKMSKeyID),
 	}
 
 	_, err = awsClient.S3.Svc.PutObjectWithContext(ctx, putObjectInput)
@@ -104,6 +106,7 @@ func processRecord(
 
 func handler(ctx context.Context, s3Event events.S3Event) (err error) {
 	destinationBucket := os.Getenv("DESTINATION_BUCKET")
+	destinationKMSKeyID := os.Getenv("DESTINATION_KMS_KEY_ID")
 
 	sess, err := session.NewSession(&aws.Config{})
 	if err != nil {
@@ -112,7 +115,13 @@ func handler(ctx context.Context, s3Event events.S3Event) (err error) {
 
 	client := cziAWS.New(sess).WithS3(nil)
 	for _, event := range s3Event.Records {
-		err = processRecord(ctx, client, event.S3.Bucket.Name, event.S3.Object.Key, destinationBucket)
+		err = processRecord(
+			ctx,
+			client,
+			event.S3.Bucket.Name,
+			event.S3.Object.Key,
+			destinationBucket,
+			destinationKMSKeyID)
 		if err != nil {
 			return err
 		}
