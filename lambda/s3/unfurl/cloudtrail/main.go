@@ -52,10 +52,10 @@ func processRecord(
 	outputGzipWriter := gzip.NewWriter(outputData)
 	defer outputGzipWriter.Close()
 
-	// This will ignore the digest files, do we care about that?
+	// TODO(el): This will ignore the digest files, do we care about that?
 	records, ok := parsed["Records"]
 	if !ok {
-		logrus.Infof("Malformed event, skipping. Records not found")
+		logrus.Infof("Malformed event, skipping. 'Records' key not present")
 		return nil
 	}
 
@@ -95,7 +95,6 @@ func processRecord(
 		ContentLength:        aws.Int64(int64(len(outputBytes))),
 		ContentType:          aws.String(http.DetectContentType(outputBytes)),
 		Body:                 bytes.NewReader(outputBytes),
-		ContentDisposition:   aws.String("attachment"),
 		ServerSideEncryption: aws.String("AES256"),
 	}
 
