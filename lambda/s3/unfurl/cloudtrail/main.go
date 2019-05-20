@@ -29,7 +29,10 @@ func processRecord(
 	destinationKMSKeyID string,
 	destinationPrefix string) error {
 
-	getObject := &s3.GetObjectInput{}
+	getObject := &s3.GetObjectInput{
+		Bucket: aws.String(sourceBucket),
+		Key:    aws.String(key),
+	}
 	output, err := awsClient.S3.Svc.GetObjectWithContext(ctx, getObject)
 	if err != nil {
 		return errors.Wrapf(err, "Could not get %s/%s", sourceBucket, key)
