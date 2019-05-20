@@ -36,6 +36,6 @@ func TestUnfurl(t *testing.T) {
 	mockS3.On("GetObjectWithContext", mock.Anything).Return(getObjectOutput, nil)
 	mockS3.On("PutObjectWithContext", mock.Anything).Return(putObjectOutput, nil)
 
-	err = processRecord(context.Background(), client, "foo", "bar", "baz", "kms key")
+	err = processRecord(context.Background(), client, "foo", "bar", "baz", "kms key", "prefix")
 	a.Nil(err)
 }

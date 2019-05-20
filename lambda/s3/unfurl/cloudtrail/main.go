@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -25,7 +26,8 @@ func processRecord(
 	sourceBucket string,
 	key string,
 	destinationBucket string,
-	destinationKMSKeyID string) error {
+	destinationKMSKeyID string,
+	destinationPrefix string) error {
 
 	getObject := &s3.GetObjectInput{}
 	output, err := awsClient.S3.Svc.GetObjectWithContext(ctx, getObject)
@@ -91,12 +93,12 @@ func processRecord(
 	outputBytes := outputData.Bytes()
 	putObjectInput := &s3.PutObjectInput{
 		Bucket:               aws.String(destinationBucket),
-		Key:                  aws.String(key),
+		Key:                  aws.String(path.Join(destinationPrefix, key)),
 		ACL:                  aws.String("private"),
 		ContentLength:        aws.Int64(int64(len(outputBytes))),
 		ContentType:          aws.String(http.DetectContentType(outputBytes)),
 		Body:                 bytes.NewReader(outputBytes),
-		ServerSideEncryption: aws.String("AES256"),
+		ServerSideEncryption: aws.String("aws:kms"),
 		SSEKMSKeyId:          aws.String(destinationKMSKeyID),
 	}
 
@@ -107,6 +109,7 @@ func processRecord(
 func handler(ctx context.Context, s3Event events.S3Event) (err error) {
 	destinationBucket := os.Getenv("DESTINATION_BUCKET")
 	destinationKMSKeyID := os.Getenv("DESTINATION_KMS_KEY_ID")
+	destinationPrefix := os.Getenv("DESTINATION_PREFIX")
 
 	sess, err := session.NewSession(&aws.Config{})
 	if err != nil {
@@ -121,7 +124,9 @@ func handler(ctx context.Context, s3Event events.S3Event) (err error) {
 			event.S3.Bucket.Name,
 			event.S3.Object.Key,
 			destinationBucket,
-			destinationKMSKeyID)
+			destinationKMSKeyID,
+			destinationPrefix,
+		)
 		if err != nil {
 			return err
 		}
