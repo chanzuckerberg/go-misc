@@ -33,12 +33,12 @@ func processRecord(
 		Bucket: aws.String(sourceBucket),
 		Key:    aws.String(key),
 	}
-	output, err := awsClient.S3.Svc.GetObjectWithContext(ctx, getObject)
+	downloadData := aws.NewWriteAtBuffer([]byte{})
+	_, err := awsClient.S3.Downloader.DownloadWithContext(ctx, downloadData, getObject)
 	if err != nil {
 		return errors.Wrapf(err, "Could not get %s/%s", sourceBucket, key)
 	}
-
-	gzipReader, err := gzip.NewReader(output.Body)
+	gzipReader, err := gzip.NewReader(bytes.NewBuffer(downloadData.Bytes()))
 	if err != nil {
 		return errors.Wrap(err, "Could not create gzip reader")
 	}
@@ -118,7 +118,6 @@ func handler(ctx context.Context, s3Event events.S3Event) (err error) {
 	if err != nil {
 		return errors.Wrap(err, "Could not create aws session")
 	}
-
 	client := cziAWS.New(sess).WithS3(nil)
 	for _, event := range s3Event.Records {
 		err = processRecord(

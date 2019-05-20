@@ -57,10 +57,11 @@ func (c *Client) WithS3(conf *aws.Config) *Client {
 }
 
 // WithMockS3 mocks s3 svc
-func (c *Client) WithMockS3() (*Client, *MockS3Svc) {
+func (c *Client) WithMockS3() (*Client, *MockS3Svc, *MockS3Manager) {
 	mock := NewMockS3()
-	c.S3 = &S3{Svc: mock}
-	return c, mock
+	mockDownloader := NewMockS3Manager()
+	c.S3 = &S3{Svc: mock, Downloader: mockDownloader}
+	return c, mock, mockDownloader
 }
 
 // ------- IAM -----------

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
-	"io/ioutil"
+	"io"
 	"testing"
 
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -20,7 +20,7 @@ func TestUnfurl(t *testing.T) {
 
 	sess, serv := cziAws.NewMockSession()
 	defer serv.Close()
-	client, mockS3 := cziAws.New(sess).WithMockS3()
+	client, mockS3, mockS3Manager := cziAws.New(sess).WithMockS3()
 
 	data := bytes.NewBuffer(nil)
 	gzipWriter := gzip.NewWriter(data)
@@ -29,11 +29,13 @@ func TestUnfurl(t *testing.T) {
 	err = gzipWriter.Close()
 	a.Nil(err)
 
-	getObjectOutput := &s3.GetObjectOutput{
-		Body: ioutil.NopCloser(data),
-	}
 	putObjectOutput := &s3.PutObjectOutput{}
-	mockS3.On("GetObjectWithContext", mock.Anything).Return(getObjectOutput, nil)
+
+	mockS3Manager.On("DownloadWithContext", mock.Anything, mock.Anything).Run(func(args mock.Arguments) {
+		writer := args.Get(0).(io.WriterAt)
+		writer.WriteAt(data.Bytes(), int64(0))
+	}).Return(int64(0), nil)
+
 	mockS3.On("PutObjectWithContext", mock.Anything).Return(putObjectOutput, nil)
 
 	err = processRecord(context.Background(), client, "foo", "bar", "baz", "kms key", "prefix")

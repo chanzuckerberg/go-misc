@@ -16,7 +16,7 @@
   version = "v1.10.0"
 
 [[projects]]
-  digest = "1:77e5471c103fd92a661e3a8bd2887490d9e8a12a744b8a458a0f11384346ceab"
+  digest = "1:8eb457fe2815de56b5309e46756bc26832021fc447ebf006fb4933fdf7fa6ce9"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -65,6 +65,8 @@
     "service/lambda/lambdaiface",
     "service/s3",
     "service/s3/s3iface",
+    "service/s3/s3manager",
+    "service/s3/s3manager/s3manageriface",
     "service/secretsmanager",
     "service/secretsmanager/secretsmanageriface",
     "service/sts",
@@ -73,8 +75,8 @@
     "service/support/supportiface",
   ]
   pruneopts = "UT"
-  revision = "0db84dcbcc56669065730700b054eb6d1438a0f7"
-  version = "v1.19.33"
+  revision = "3e3b24dd55ca4bb508c7e78142632646ee6e8714"
+  version = "v1.19.34"
 
 [[projects]]
   digest = "1:b6d886569181ec96ca83d529f4d6ba0cbf92ace7bb6f633f90c5f34d9bba7aab"
@@ -263,7 +265,7 @@
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "ad400b1274690a55531a013560dc08706088f82b"
+  revision = "c432e742b0af385916e013f6a34e9e73d139cf82"
 
 [[projects]]
   digest = "1:38b469493eb173db9c03321d64adcad4c7991ea0a19b5edc5bdc094f0e8c7384"
@@ -304,6 +306,8 @@
     "github.com/aws/aws-sdk-go/service/lambda/lambdaiface",
     "github.com/aws/aws-sdk-go/service/s3",
     "github.com/aws/aws-sdk-go/service/s3/s3iface",
+    "github.com/aws/aws-sdk-go/service/s3/s3manager",
+    "github.com/aws/aws-sdk-go/service/s3/s3manager/s3manageriface",
     "github.com/aws/aws-sdk-go/service/secretsmanager",
     "github.com/aws/aws-sdk-go/service/secretsmanager/secretsmanageriface",
     "github.com/aws/aws-sdk-go/service/sts",
