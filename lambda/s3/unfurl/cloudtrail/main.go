@@ -71,8 +71,9 @@ func processRecord(
 		return nil
 	}
 
+	line := []byte{}
 	for _, record := range recordList {
-		line, err := json.Marshal(record)
+		line, err = json.Marshal(record)
 		if err != nil {
 			return errors.Wrap(err, "Error marshalling sub-record")
 		}
