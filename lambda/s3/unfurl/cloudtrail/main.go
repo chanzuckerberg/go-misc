@@ -93,10 +93,11 @@ func processRecord(
 		return errors.Wrap(err, "Could not finalize gzip archive")
 	}
 
+	destinationKey := path.Join(destinationPrefix, key)
 	outputBytes := outputData.Bytes()
 	putObjectInput := &s3.PutObjectInput{
 		Bucket:               aws.String(destinationBucket),
-		Key:                  aws.String(path.Join(destinationPrefix, key)),
+		Key:                  aws.String(destinationKey),
 		ACL:                  aws.String("private"),
 		ContentLength:        aws.Int64(int64(len(outputBytes))),
 		ContentType:          aws.String(http.DetectContentType(outputBytes)),
@@ -106,7 +107,7 @@ func processRecord(
 	}
 
 	_, err = awsClient.S3.Svc.PutObjectWithContext(ctx, putObjectInput)
-	return errors.Wrapf(err, "Error uploading to %s/%s", destinationBucket, key)
+	return errors.Wrapf(err, "Error uploading to %s", destinationKey)
 }
 
 func handler(ctx context.Context, s3Event events.S3Event) (err error) {
