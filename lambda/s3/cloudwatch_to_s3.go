@@ -51,7 +51,7 @@ func processRecord(record events.KinesisFirehoseEventRecord) (response events.Ki
 		return
 	}
 	messages := bytes.NewBuffer(nil)
-	b := []byte{}
+	b := []byte{} //nolint
 
 	// Set some common stuff
 	augmented := augmentedLogEvent{}
