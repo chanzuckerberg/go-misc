@@ -33,7 +33,8 @@ func TestUnfurl(t *testing.T) {
 
 	mockS3Manager.On("DownloadWithContext", mock.Anything, mock.Anything).Run(func(args mock.Arguments) {
 		writer := args.Get(0).(io.WriterAt)
-		writer.WriteAt(data.Bytes(), int64(0))
+		_, err := writer.WriteAt(data.Bytes(), int64(0))
+		a.Nil(err)
 	}).Return(int64(0), nil)
 
 	mockS3.On("PutObjectWithContext", mock.Anything).Return(putObjectOutput, nil)

@@ -71,7 +71,7 @@ func processRecord(
 		return nil
 	}
 
-	line := []byte{}
+	line := []byte{} //nolint
 	for _, record := range recordList {
 		line, err = json.Marshal(record)
 		if err != nil {
@@ -79,7 +79,7 @@ func processRecord(
 		}
 		_, err = outputGzipWriter.Write(line)
 		if err != nil {
-			errors.Wrap(err, "Error writing line")
+			return errors.Wrap(err, "Error writing line")
 		}
 		_, err = outputGzipWriter.Write([]byte{byte('\n')})
 		if err != nil {
