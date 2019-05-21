@@ -23,9 +23,7 @@ const (
 type logStatus string
 
 const (
-	logStatusOK       logStatus = "OK"
-	logStatusNoData   logStatus = "NODATA"
-	logStatusSkipData logStatus = "SKIPDATA"
+	logStatusOK logStatus = "OK"
 )
 
 type augmentedLogEvent struct {
@@ -161,7 +159,7 @@ func processRecord(record events.KinesisFirehoseEventRecord) (response events.Ki
 	compressedMessages := bytes.NewBuffer(nil)
 	messages := gzip.NewWriter(compressedMessages)
 	defer messages.Close()
-	b := []byte{}
+	b := []byte{} // nolint
 
 	for _, logEvent := range parsed.LogEvents {
 		augmented := augmentedLogEvent{}
