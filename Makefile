@@ -5,7 +5,7 @@ all: test
 setup:
 	go get github.com/rakyll/gotest
 	go install github.com/rakyll/gotest
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.16.0
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.16.0
 
 lint: ## run the fast go linters
 	@golangci-lint run --no-config \
