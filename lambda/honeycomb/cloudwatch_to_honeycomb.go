@@ -44,7 +44,7 @@ func processRecord(record events.KinesisEventRecord) error {
 		func(logEvent events.CloudwatchLogsLogEvent) {
 			hnyEvent := libhoney.NewEvent()
 			hnyEvent.Metadata = logEvent.ID
-			defer hnyEvent.Send()
+			defer hnyEvent.Send() //nolint
 			defer logrus.Infof("Sending event with id %s", hnyEvent.Metadata)
 
 			// TODO: figure this out - honeycomb discards invalid timestamps
@@ -52,7 +52,7 @@ func processRecord(record events.KinesisEventRecord) error {
 			// hnyEvent.Timestamp = time.Unix(0, logEvent.Timestamp)
 			hnyEvent.Timestamp = time.Now()
 			msg := map[string]interface{}{}
-			err = json.Unmarshal([]byte(logEvent.Message), msg)
+			err = json.Unmarshal([]byte(logEvent.Message), msg) //nolint
 			if err != nil {
 				logrus.WithError(err).Warn("Error json.Unmarshal")
 				hnyEvent.AddField("message", logEvent.Message)
