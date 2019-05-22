@@ -1,5 +1,5 @@
 clean-cloudwatch_to_s3:
-	@rm cloudwatch_to_s3.zip cloudwatch_to_s3 handler || true
+	@rm cloudwatch_to_s3.zip handler || true
 
 package-cloudwatch_to_s3: clean-cloudwatch_to_s3
 	GOOS=linux CGO_ENABLED=0 go build -o handler s3/cloudwatch_to_s3.go
@@ -15,9 +15,17 @@ package-cloudwatch_to_honeycomb: clean-cloudwatch_to_honeycomb
 	rm handler
 
 clean-flow_to_s3:
-	@rm flow_to_s3.zip flow_to_s3 handler || true
+	@rm flow_to_s3.zip handler || true
 
 package-flow_to_s3: clean-flow_to_s3
 	GOOS=linux CGO_ENABLED=0 go build -o handler flow/s3.go
 	zip flow_to_s3.zip handler
+	rm handler
+
+clean-unfurl_cloudtrail:
+	@rm unfurl_cloudtrail.zip handler || true
+
+package-unfurl_cloudtrail: clean-unfurl_cloudtrail
+	GOOS=linux CGO_ENABLED=0 go build -o handler s3/unfurl/cloudtrail/main.go
+	zip unfurl_cloudtrail.zip handler
 	rm handler
