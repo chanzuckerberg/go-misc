@@ -43,12 +43,7 @@ func (c *Client) PostMessage(message Message) error {
 	if err != nil {
 		return err
 	}
-	params := slackClient.PostMessageParameters{
-		UnfurlLinks: true,
-		Attachments: message.Attachments,
-	}
-	_, _, err = c.Slack.PostMessage(channelID, message.Text, params)
-	return errors.Wrap(err, "could not post message")
+	return c.postMessage(channelID, message)
 }
 
 // SendMessageToUserByEmail posts a message
@@ -57,13 +52,7 @@ func (c *Client) SendMessageToUserByEmail(email, message string, attachments []s
 	if err != nil {
 		return errors.Wrapf(err, "could not find slack user with email %s", email)
 	}
-	params := slackClient.PostMessageParameters{
-		UnfurlLinks: true,
-		Attachments: attachments,
-		Markdown:    true,
-	}
-	_, _, err = c.Slack.PostMessage(channelID, message, params)
-	return errors.Wrap(err, "could not post message")
+	return c.postMessage(channelID, Message{Text: message, Attachments: attachments})
 }
 
 // SendMessageToUser will send the given text to the specified userID.
@@ -72,10 +61,15 @@ func (c *Client) SendMessageToUser(userID, message string) error {
 	if err != nil {
 		return err
 	}
-	params := slackClient.PostMessageParameters{
-		UnfurlLinks: true,
-		Markdown:    true,
+	return c.postMessage(channelID, Message{Text: message})
+}
+
+func (c *Client) postMessage(channel string, message Message) error {
+	options := []slackClient.MsgOption{
+		slackClient.MsgOptionText(message.Text, true),
+		slackClient.MsgOptionEnableLinkUnfurl(),
+		slackClient.MsgOptionAttachments(message.Attachments...),
 	}
-	_, _, err = c.Slack.PostMessage(channelID, message, params)
-	return err
+	_, _, err := c.Slack.PostMessage(channel, options...)
+	return errors.Wrap(err, "could not post message")
 }
