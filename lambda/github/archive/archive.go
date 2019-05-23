@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"crypto/hmac"
-	"crypto/sha1"
+	"crypto/sha1" //nolint //github hmacs with sha1
 	"encoding/hex"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -72,13 +73,19 @@ func (w *githubWebhook) validate(secret []byte) error {
 	}
 
 	allegedSignature := []byte{}
-	hex.Decode(
+	_, err := hex.Decode(
 		allegedSignature,
-		[]byte(
-			strings.TrimPrefix(w.signature, githubSignaturePrefix)))
+		[]byte(strings.TrimPrefix(w.signature, githubSignaturePrefix)),
+	)
+	if err != nil {
+		return errors.Wrap(err, "could not hex decode signature")
+	}
 
 	hash := hmac.New(sha1.New, secret)
-	hash.Write(w.body)
+	_, err = hash.Write(w.body)
+	if err != nil {
+		return errors.Wrap(err, "could not calculate hmac")
+	}
 	actualSignature := hash.Sum(nil)
 
 	if !hmac.Equal(allegedSignature, actualSignature) {
@@ -106,7 +113,7 @@ func processWebhook(ctx context.Context, awsClient *cziAWS.Client, event *events
 	putInput := &firehose.PutRecordInput{
 		DeliveryStreamName: aws.String(deliveryStream),
 		Record: &firehose.Record{
-			Data: []byte(webhook.body),
+			Data: webhook.body,
 		},
 	}
 	_, err = awsClient.Firehose.Svc.PutRecordWithContext(ctx, putInput)
@@ -124,9 +131,9 @@ func handle(ctx context.Context, event events.APIGatewayProxyRequest) (events.AP
 	err = processWebhook(ctx, client, &event)
 	if err != nil {
 		logrus.WithError(err).WithContext(ctx).Error("Error handling webhook") // we do not return the actual error to not leak info
-		return events.APIGatewayProxyResponse{StatusCode: http.StatusTeapot}, nil
+		return events.APIGatewayProxyResponse{StatusCode: http.StatusTeapot}, fmt.Errorf("Error")
 	}
-	return events.APIGatewayProxyResponse{StatusCode: http.StatusOK}, nil
+	return events.APIGatewayProxyResponse{StatusCode: http.StatusOK}, fmt.Errorf("Error")
 }
 
 func main() {
