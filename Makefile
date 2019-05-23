@@ -5,13 +5,14 @@ all: test
 setup:
 	go get github.com/rakyll/gotest
 	go install github.com/rakyll/gotest
-	curl -L https://git.io/vp6lP | BINDIR=~/.local/bin sh # gometalinter
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.16.0
 
 lint: ## run the fast go linters
-	gometalinter --vendor --disable=ineffassign --disable=gocyclo --deadline=5m --fast ./...
-
-lint-slow: ## run all linters, even the slow ones
-	gometalinter --vendor --deadline 120s ./...
+	@golangci-lint run --no-config \
+		--disable-all --enable=deadcode  --enable=gocyclo --enable=golint --enable=varcheck \
+		--enable=structcheck --enable=errcheck --enable=dupl --enable=unparam --enable=goimports \
+		--enable=interfacer --enable=unconvert --enable=gosec --enable=megacheck
+.PHONY: lint
 
 build: ## build the binary
 	go build ${LDFLAGS} .
