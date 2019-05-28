@@ -44,14 +44,17 @@ type githubWebhook struct {
 func newWebhook(event *events.APIGatewayProxyRequest) *githubWebhook {
 	signature, ok := event.Headers[githubHeaderSignature]
 	if !ok {
+		logrus.Warn("no signature found")
 		return nil
 	}
 	eventType, ok := event.Headers[githubHeaderEvent]
 	if !ok {
+		logrus.Warn("no event type found")
 		return nil
 	}
 	id, ok := event.Headers[githubHeaderDelivery]
 	if !ok {
+		logrus.Warn("no id found")
 		return nil
 	}
 
