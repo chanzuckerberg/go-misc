@@ -15,6 +15,7 @@ type Client struct {
 	KMS            *KMS
 	Lambda         *Lambda
 	S3             *S3
+	Firehose       *Firehose
 	SecretsManager *SecretsManager
 	STS            *STS
 	Support        *Support
@@ -33,6 +34,7 @@ func (c *Client) WithAllServices(conf *aws.Config) *Client {
 		WithKMS(conf).
 		WithLambda(conf).
 		WithS3(conf).
+		WithFirehose(conf).
 		WithSecretsManager(conf).
 		WithSTS(conf).
 		WithSupport(conf)
@@ -47,6 +49,16 @@ func (c *Client) WithSecretsManager(conf *aws.Config) *Client {
 }
 
 // TODO secretsmanager mock
+
+// ------- Firehose -----------
+
+// WithFirehose configures the firehose service
+func (c *Client) WithFirehose(conf *aws.Config) *Client {
+	c.Firehose = NewFirehose(c.session, conf)
+	return c
+}
+
+// TODO(el): Firehose mock
 
 // ------- S3 -----------
 

@@ -16,7 +16,7 @@
   version = "v1.10.0"
 
 [[projects]]
-  digest = "1:8eb457fe2815de56b5309e46756bc26832021fc447ebf006fb4933fdf7fa6ce9"
+  digest = "1:507925c7866f32b37b18330c5ca250dfba22f86947ef68cb11dc33b26f8236b6"
   name = "github.com/aws/aws-sdk-go"
   packages = [
     "aws",
@@ -57,6 +57,8 @@
     "private/protocol/xml/xmlutil",
     "service/ec2",
     "service/ec2/ec2iface",
+    "service/firehose",
+    "service/firehose/firehoseiface",
     "service/iam",
     "service/iam/iamiface",
     "service/kms",
@@ -75,8 +77,8 @@
     "service/support/supportiface",
   ]
   pruneopts = "UT"
-  revision = "3e3b24dd55ca4bb508c7e78142632646ee6e8714"
-  version = "v1.19.34"
+  revision = "43d801a05e0735a9069534588ec469235347e6c6"
+  version = "v1.19.36"
 
 [[projects]]
   digest = "1:b6d886569181ec96ca83d529f4d6ba0cbf92ace7bb6f633f90c5f34d9bba7aab"
@@ -204,15 +206,15 @@
   version = "v1.1.0"
 
 [[projects]]
-  digest = "1:95d38d218bf2290987c6b0e885a9f0f2d3d3239235acaddca01c3fe36e5e5566"
+  digest = "1:7711bc85fa91b919713feda232ffe0bd4ebb0e8426b9c0de6c6f476e0eb9b7c2"
   name = "github.com/nlopes/slack"
   packages = [
     ".",
     "slackutilsx",
   ]
   pruneopts = "UT"
-  revision = "b9033a72a20bf84563485e86a2adbea4bf265804"
-  version = "v0.4.0"
+  revision = "a7deeca7935c178aa865249bab511daf816288ba"
+  version = "v0.5.0"
 
 [[projects]]
   digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
@@ -261,11 +263,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:6ed9319f79a63e30779042ef237f81770df4091866e43f84a643257384b0aefc"
+  digest = "1:dce1d6c001ac752c61f5e255666ed388d78ff2089914f7067c7d6b6ff49e6420"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "c432e742b0af385916e013f6a34e9e73d139cf82"
+  revision = "0e01d883c5c5e3a1741118a9962f68d71b0a6ed4"
 
 [[projects]]
   digest = "1:38b469493eb173db9c03321d64adcad4c7991ea0a19b5edc5bdc094f0e8c7384"
@@ -276,12 +278,12 @@
   version = "v2.0.0"
 
 [[projects]]
-  digest = "1:7bb1ad654b21fb8f44c77c07840007d6796f70d42d1b470600f943a508ff8a72"
+  digest = "1:ee2db1a4b9111947da887ff2f8972dd2cc80906e521a2d856901fa699b4b51ee"
   name = "gopkg.in/go-playground/validator.v9"
   packages = ["."]
   pruneopts = "UT"
-  revision = "46b4b1e301c24cac870ffcb4ba5c8a703d1ef475"
-  version = "v9.28.0"
+  revision = "884d31b8cad6a1ec877f2400d555924cea03bbea"
+  version = "v9.29.0"
 
 [solve-meta]
   analyzer-name = "dep"
@@ -298,6 +300,8 @@
     "github.com/aws/aws-sdk-go/aws/session",
     "github.com/aws/aws-sdk-go/service/ec2",
     "github.com/aws/aws-sdk-go/service/ec2/ec2iface",
+    "github.com/aws/aws-sdk-go/service/firehose",
+    "github.com/aws/aws-sdk-go/service/firehose/firehoseiface",
     "github.com/aws/aws-sdk-go/service/iam",
     "github.com/aws/aws-sdk-go/service/iam/iamiface",
     "github.com/aws/aws-sdk-go/service/kms",

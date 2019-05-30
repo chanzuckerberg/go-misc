@@ -22,6 +22,14 @@ package-flow_to_s3: clean-flow_to_s3
 	zip flow_to_s3.zip handler
 	rm handler
 
+clean-github_to_firehose:
+	@rm github_to_firehose.zip handler || true
+
+package-github_to_firehose: clean-github_to_firehose
+	GOOS=linux CGO_ENABLED=0 go build -o handler github/archive/archive.go
+	zip github_to_firehose.zip handler
+	rm handler
+
 clean-unfurl_cloudtrail:
 	@rm unfurl_cloudtrail.zip handler || true
 
