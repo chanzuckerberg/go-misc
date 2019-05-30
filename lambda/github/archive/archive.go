@@ -2,13 +2,9 @@ package main
 
 import (
 	"context"
-	"crypto/hmac"
-	"crypto/sha1" //nolint //github hmacs with sha1
-	"encoding/hex"
 	"fmt"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -16,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/firehose"
 	cziAWS "github.com/chanzuckerberg/go-misc/aws"
+	"github.com/google/go-github/github"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
@@ -27,11 +24,8 @@ const (
 
 const (
 	githubHeaderSignature = "X-Hub-Signature"
-	githubHeaderEvent     = "X-GitHub-event"
-	githubHeaderDelivery  = "X-GitHub-delivery"
-
-	githubSignaturePrefix = "sha1"
-	githubSignatureLength = 45
+	githubHeaderEvent     = "X-GitHub-Event"
+	githubHeaderDelivery  = "X-GitHub-Delivery"
 )
 
 type githubWebhook struct {
@@ -67,34 +61,8 @@ func newWebhook(event *events.APIGatewayProxyRequest) *githubWebhook {
 }
 
 func (w *githubWebhook) validate(secret []byte) error {
-	if len(w.signature) != githubSignatureLength {
-		return errors.New("received signature length does not match expected length")
-	}
-
-	if !strings.HasPrefix(w.signature, githubSignaturePrefix) {
-		return errors.New("signature prefix mismatch")
-	}
-
-	allegedSignature := []byte{}
-	_, err := hex.Decode(
-		allegedSignature,
-		[]byte(strings.TrimPrefix(w.signature, githubSignaturePrefix)),
-	)
-	if err != nil {
-		return errors.Wrap(err, "could not hex decode signature")
-	}
-
-	hash := hmac.New(sha1.New, secret)
-	_, err = hash.Write(w.body)
-	if err != nil {
-		return errors.Wrap(err, "could not calculate hmac")
-	}
-	actualSignature := hash.Sum(nil)
-
-	if !hmac.Equal(allegedSignature, actualSignature) {
-		return errors.New("alleged and actual signatures do not match")
-	}
-	return nil
+	err := github.ValidateSignature(w.signature, w.body, secret)
+	return errors.Wrap(err, "could not validate webhook signature")
 }
 
 func processWebhook(ctx context.Context, awsClient *cziAWS.Client, event *events.APIGatewayProxyRequest) error {
@@ -133,10 +101,10 @@ func handle(ctx context.Context, event events.APIGatewayProxyRequest) (events.AP
 	client := cziAWS.New(sess).WithFirehose(nil)
 	err = processWebhook(ctx, client, &event)
 	if err != nil {
-		logrus.WithError(err).WithContext(ctx).Error("Error handling webhook") // we do not return the actual error to not leak info
+		logrus.WithError(err).WithContext(ctx).Error("error handling webhook") // we do not return the actual error to not leak info
 		return events.APIGatewayProxyResponse{StatusCode: http.StatusTeapot}, fmt.Errorf("Error")
 	}
-	return events.APIGatewayProxyResponse{StatusCode: http.StatusOK}, fmt.Errorf("Error")
+	return events.APIGatewayProxyResponse{StatusCode: http.StatusOK}, nil
 }
 
 func main() {
