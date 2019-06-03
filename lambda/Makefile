@@ -3,6 +3,8 @@ S3_PREFIX = go-misc/lambdas/${DATE}
 S3_BUCKET ?= shared-infra-prod-assets
 AWS_PROFILE ?= czi-si
 
+publish: publish-cloudwatch_to_s3 publish-cloudwatch_to_honeycomb publish-flow_to_s3 publish-github_to_firehose publish-unfurl_cloudtrail
+
 clean-cloudwatch_to_s3:
 	$(call clean,cloudwatch_to_s3.zip)
 
