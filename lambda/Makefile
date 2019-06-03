@@ -1,39 +1,43 @@
+DATE=$(shell date +"%Y/%m/%d")
+S3_PREFIX = go-misc/lambdas/${DATE}/
+S3_BUCKET ?= shared-infra-prod-assets
+
 clean-cloudwatch_to_s3:
-	@rm cloudwatch_to_s3.zip handler || true
+	$(call clean,  cloudwatch_to_s3.zip)
 
 package-cloudwatch_to_s3: clean-cloudwatch_to_s3
-	GOOS=linux CGO_ENABLED=0 go build -o handler s3/cloudwatch_to_s3.go
-	zip cloudwatch_to_s3.zip handler
-	rm handler
+	$(call package, s3/cloudwatch_to_s3.go, cloudwatch_to_s3.zip)
 
 clean-cloudwatch_to_honeycomb:
-	@rm cloudwatch_to_honeycomb.zip cloudwatch_to_honeycomb handler || true
+	$(call clean,  cloudwatch_to_honeycomb.zip)
 
 package-cloudwatch_to_honeycomb: clean-cloudwatch_to_honeycomb
-	GOOS=linux CGO_ENABLED=0 go build -o handler honeycomb/cloudwatch_to_honeycomb.go
-	zip cloudwatch_to_honeycomb.zip handler
-	rm handler
+	$(call package, honeycomb/cloudwatch_to_honeycomb.go, cloudwatch_to_honeycomb.zip)
 
 clean-flow_to_s3:
-	@rm flow_to_s3.zip handler || true
+	$(call clean,  flow_to_s3.zip)
 
 package-flow_to_s3: clean-flow_to_s3
-	GOOS=linux CGO_ENABLED=0 go build -o handler flow/s3.go
-	zip flow_to_s3.zip handler
-	rm handler
+	$(call package, flow/s3.go, flow_to_s3.zip)
 
 clean-github_to_firehose:
-	@rm github_to_firehose.zip handler || true
+	$(call clean,  github_to_firehose.zip)
 
 package-github_to_firehose: clean-github_to_firehose
-	GOOS=linux CGO_ENABLED=0 go build -o handler github/archive/archive.go
-	zip github_to_firehose.zip handler
-	rm handler
+	$(call package, github/archive/archive.go, github_to_firehose.zip)
 
 clean-unfurl_cloudtrail:
-	@rm unfurl_cloudtrail.zip handler || true
+	$(call clean, unfurl_cloudtrail.zip)
 
 package-unfurl_cloudtrail: clean-unfurl_cloudtrail
-	GOOS=linux CGO_ENABLED=0 go build -o handler s3/unfurl/cloudtrail/main.go
-	zip unfurl_cloudtrail.zip handler
+	$(call package, s3/unfurl/cloudtrail/main.go, unfurl_cloudtrail.zip)
+
+define clean
+	@rm $1 handler 2> /dev/null  || true
+endef
+
+define package
+	GOOS=linux CGO_ENABLED=0 go build -o handler $1
+	zip $2 handler
 	rm handler
+endef
