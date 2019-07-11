@@ -3,6 +3,7 @@ package aws
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ssm"
 )
 
 // Client is an aws client
@@ -17,7 +18,7 @@ type Client struct {
 	S3             *S3
 	Firehose       *Firehose
 	SecretsManager *SecretsManager
-	SSM            *SSM
+	SSM            *ssm.SSM
 	STS            *STS
 	Support        *Support
 }
