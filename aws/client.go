@@ -17,6 +17,7 @@ type Client struct {
 	S3             *S3
 	Firehose       *Firehose
 	SecretsManager *SecretsManager
+	SSM            *SSM
 	STS            *STS
 	Support        *Support
 }
@@ -36,6 +37,7 @@ func (c *Client) WithAllServices(conf *aws.Config) *Client {
 		WithS3(conf).
 		WithFirehose(conf).
 		WithSecretsManager(conf).
+		WithSSM(conf).
 		WithSTS(conf).
 		WithSupport(conf)
 }
@@ -88,6 +90,21 @@ func (c *Client) WithIAM(conf *aws.Config) *Client {
 func (c *Client) WithMockIAM() (*Client, *MockIAMSvc) {
 	mock := NewMockIAM()
 	c.IAM = &IAM{Svc: mock}
+	return c, mock
+}
+
+// ------- SSM -----------
+
+// WithSSM configures the SSM service
+func (c *Client) WithSSM(conf *aws.Config) *Client {
+	c.SSM = NewSSM(c.session, conf)
+	return c
+}
+
+// WithMockSSM mocks the SSM service
+func (c *Client) WithMockSSM() (*Client, *MockSSMSvc) {
+	mock := NewMockSSM()
+	c.SSM = &SSM{Svc: mock}
 	return c, mock
 }
 
