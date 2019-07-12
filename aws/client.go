@@ -3,7 +3,6 @@ package aws
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/ssm"
 )
 
 // Client is an aws client
@@ -18,7 +17,7 @@ type Client struct {
 	S3             *S3
 	Firehose       *Firehose
 	SecretsManager *SecretsManager
-	SSM            *ssm.SSM
+	SSM            *SSM
 	STS            *STS
 	Support        *Support
 }
@@ -98,14 +97,14 @@ func (c *Client) WithMockIAM() (*Client, *MockIAMSvc) {
 
 // WithSSM configures the SSM service
 func (c *Client) WithSSM(conf *aws.Config) *Client {
-	c.SSM = ssm.New(c.session, conf)
+	c.SSM = NewSSM(c.session, conf)
 	return c
 }
 
 // WithMockSSM mocks the SSM service
 func (c *Client) WithMockSSM() (*Client, *MockSSMSvc) {
 	mock := NewMockSSM()
-	c.SSM = &ssm.SSM{Svc: mock}
+	c.SSM = &SSM{Svc: mock}
 	return c, mock
 }
 

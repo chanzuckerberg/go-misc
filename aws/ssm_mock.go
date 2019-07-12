@@ -13,7 +13,7 @@ type MockSSMSvc struct {
 	mock.Mock
 }
 
-// NewMockSTS returns a new mock sts svc
+// NewMockSSM returns a new mock ssm svc
 func NewMockSSM() *MockSSMSvc {
 	return &MockSSMSvc{}
 }
