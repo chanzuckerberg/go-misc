@@ -1,6 +1,9 @@
 package aws
 
 import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/request"
+	"github.com/aws/aws-sdk-go/service/ssm"
 	"github.com/aws/aws-sdk-go/service/ssm/ssmiface"
 	"github.com/stretchr/testify/mock"
 )
@@ -18,16 +21,14 @@ func NewMockSSM() *MockSSMSvc {
 	return &MockSSMSvc{}
 }
 
-// // GetSessionTokenWithContext mocks GetSessionToken
-// func (s *MockSTSSvc) GetSessionTokenWithContext(ctx aws.Context, in *sts.GetSessionTokenInput, ro ...request.Option) (*sts.GetSessionTokenOutput, error) {
-// 	args := s.Called(in)
-// 	out := args.Get(0).(*sts.GetSessionTokenOutput)
-// 	return out, args.Error(1)
-// }
+func (s *MockSSMSvc) GetParameterWithContext(ctx aws.Context, input *ssm.GetParameterInput, opts ...request.Option) (*ssm.GetParameterOutput, error) {
+	args := s.Called(input)
+	out := args.Get(0).(*ssm.GetParameterOutput)
+	return out, args.Error(1)
+}
 
-// // GetCallerIdentityWithContext mocks GetCallerIdentity
-// func (s *MockSTSSvc) GetCallerIdentityWithContext(ctx aws.Context, in *sts.GetCallerIdentityInput, ro ...request.Option) (*sts.GetCallerIdentityOutput, error) {
-// 	args := s.Called(in)
-// 	out := args.Get(0).(*sts.GetCallerIdentityOutput)
-// 	return out, args.Error(1)
-// }
+func (s *MockSSMSvc) PutParameterWithContext(ctx aws.Context, input *ssm.PutParameterInput, opts ...request.Option) (*ssm.PutParameterOutput, error) {
+	args := s.Called(input)
+	out := args.Get(0).(*ssm.PutParameterOutput)
+	return out, args.Error(1)
+}
