@@ -44,13 +44,18 @@ func (c *Client) WithAllServices(conf *aws.Config) *Client {
 
 // ------- SecretsManager -----------
 
-// WithSecretsManager configures a secrets manager
+// WithSecretsManager configures a Secrets Manager svc
 func (c *Client) WithSecretsManager(conf *aws.Config) *Client {
 	c.SecretsManager = NewSecretsManager(c.session, conf)
 	return c
 }
 
-// TODO secretsmanager mock
+// WithMockSecretsManager mocks the Secrets Manager svc
+func (c *Client) WithMockSecretsManager() (*Client, *MockSecretsManagerSvc) {
+	mock := NewMockSecretsManager()
+	c.SecretsManager = &SecretsManager{Svc: mock}
+	return c, mock
+}
 
 // ------- Firehose -----------
 

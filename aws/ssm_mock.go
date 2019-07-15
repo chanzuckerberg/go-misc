@@ -10,13 +10,13 @@ import (
 
 // This is a mock for the SSM service - mock more functions here as needed
 
-// MockSSMSvc is a mock STS service
+// MockSSMSvc is a mock SSM service
 type MockSSMSvc struct {
 	ssmiface.SSMAPI
 	mock.Mock
 }
 
-// NewMockSSM returns a new mock ssm svc
+// NewMockSSM returns a new mock SSM svc
 func NewMockSSM() *MockSSMSvc {
 	return &MockSSMSvc{}
 }
