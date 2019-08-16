@@ -1,3 +1,7 @@
+GO_PACKAGE=$(shell go list)
+export GOFLAGS=-mod=vendor
+export GO111MODULE=on
+
 LDFLAGS=-ldflags ""
 
 all: test
@@ -14,11 +18,16 @@ lint: ## run the fast go linters
 		--enable=interfacer --enable=unconvert --enable=gosec --enable=megacheck
 .PHONY: lint
 
+deps:
+	go mod tidy
+	go mod vendor
+.PHONY: deps
+
 build: ## build the binary
 	go build ${LDFLAGS} .
 
-test: ## run the tests
-	go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+test: deps ## run the tests
+	gotest -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 help: ## display help for this makefile
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
