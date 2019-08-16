@@ -12,7 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/firehose"
 	cziAWS "github.com/chanzuckerberg/go-misc/aws"
-	"github.com/google/go-github/github"
+	"github.com/google/go-github/v27/github"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
