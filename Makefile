@@ -1,10 +1,12 @@
+GO_PACKAGE=$(shell go list)
+export GOFLAGS=-mod=vendor
+export GO111MODULE=on
+
 LDFLAGS=-ldflags ""
 
 all: test
 
 setup:
-	go get github.com/rakyll/gotest
-	go install github.com/rakyll/gotest
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.16.0
 
 lint: ## run the fast go linters
@@ -14,11 +16,20 @@ lint: ## run the fast go linters
 		--enable=interfacer --enable=unconvert --enable=gosec --enable=megacheck
 .PHONY: lint
 
+deps:
+	go mod tidy
+	go mod vendor
+.PHONY: deps
+
 build: ## build the binary
 	go build ${LDFLAGS} .
 
-test: ## run the tests
+test: deps ## run the tests
 	go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+test-ci: ## run tests in ci (don't try to updated dependencies)
+	go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+.PHONY: test-ci
 
 help: ## display help for this makefile
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

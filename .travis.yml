@@ -1,7 +1,7 @@
 language: go
 os: linux
 go:
-  - "1.11"
+  - "1.12"
 install:
   - npm install -g snyk
   - make setup
@@ -9,7 +9,7 @@ jobs:
   include:
     - stage: check
       script:
-        - make test
+        - make test-ci
         - bash <(curl -s https://codecov.io/bash)
     - stage: check
       script:
