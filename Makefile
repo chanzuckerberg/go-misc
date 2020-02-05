@@ -8,6 +8,7 @@ all: test
 
 setup:
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.16.0
+	go get github.com/vektra/mockery/.../
 
 lint: ## run the fast go linters
 	@golangci-lint run --no-config \
