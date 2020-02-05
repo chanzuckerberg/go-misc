@@ -3,6 +3,7 @@ package aws
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/chanzuckerberg/go-misc/aws/mocks"
 )
 
 // Client is an aws client
@@ -10,6 +11,7 @@ type Client struct {
 	session *session.Session
 
 	// services
+	ASG            *ASG
 	EC2            *EC2
 	IAM            *IAM
 	KMS            *KMS
@@ -30,6 +32,7 @@ func New(sess *session.Session) *Client {
 // WithAllServices Convenience method that configures all services with the same aws.Config
 func (c *Client) WithAllServices(conf *aws.Config) *Client {
 	return c.
+		WithASG(conf).
 		WithEC2(conf).
 		WithIAM(conf).
 		WithKMS(conf).
@@ -40,6 +43,21 @@ func (c *Client) WithAllServices(conf *aws.Config) *Client {
 		WithSSM(conf).
 		WithSTS(conf).
 		WithSupport(conf)
+}
+
+// ------- Autoscaling -----------
+
+// WithASG configures an autoscaling Svc
+func (c *Client) WithASG(conf *aws.Config) *Client {
+	c.ASG = NewASG(c.session, conf)
+	return c
+}
+
+// WithMockASG mocks the ASG svc
+func (c *Client) WithMockASG() (*Client, *mocks.AutoScalingAPI) {
+	mock := &mocks.AutoScalingAPI{}
+	c.ASG = &ASG{Svc: mock}
+	return c, mock
 }
 
 // ------- SecretsManager -----------

@@ -34,4 +34,7 @@ test-ci: ## run tests in ci (don't try to updated dependencies)
 help: ## display help for this makefile
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+generate-mocks: ## will generate mocks
+	mockery -name ".*API" -case snake -output aws/mocks -dir vendor/github.com/aws/aws-sdk-go/service/ -recursive
+
 .PHONY: build coverage test install lint lint-slow release help
