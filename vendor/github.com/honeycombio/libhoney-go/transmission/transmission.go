@@ -427,7 +427,7 @@ func (b *batchAgg) fireBatch(events []*Event) {
 	var eIdx int
 	for _, resp := range batchResponses {
 		resp.Duration = dur / time.Duration(numEncoded)
-		for events[eIdx] == nil {
+		for eIdx < len(events) && events[eIdx] == nil {
 			fmt.Printf("incr, eIdx: %d, len(evs): %d\n", eIdx, len(events))
 			eIdx++
 		}
@@ -572,12 +572,19 @@ func (r *pooledReader) Close() error {
 }
 
 // Instantiating a new encoder is expensive, so use a global one.
-// The docs say EncodeAll() is concurrency-safe.
+// EncodeAll() is concurrency-safe.
 var zstdEncoder *zstd.Encoder
 
 func init() {
 	var err error
-	zstdEncoder, err = zstd.NewWriter(nil, zstd.WithEncoderLevel(zstd.EncoderLevelFromZstd(2)))
+	zstdEncoder, err = zstd.NewWriter(
+		nil,
+		// Compression level 2 gives a good balance of speed and compression.
+		zstd.WithEncoderLevel(zstd.EncoderLevelFromZstd(2)),
+		// zstd allocates 2 * GOMAXPROCS * window size, so use a small window.
+		// Most honeycomb messages are smaller than this.
+		zstd.WithWindowSize(1<<16),
+	)
 	if err != nil {
 		panic(err)
 	}
