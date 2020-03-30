@@ -1,6 +1,6 @@
 module github.com/chanzuckerberg/go-misc
 
-go 1.13
+go 1.14
 
 require (
 	github.com/DataDog/zstd v1.4.1 // indirect
