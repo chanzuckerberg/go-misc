@@ -1,5 +1,7 @@
 package aws
 
+// go:generate mockgen --build_flags=--mod=vendor -package=mocks -destination=mocks/mock_asg.go ../vendor/github.com/aws/aws-sdk-go/service/autoscaling/autoscalingiface AutoScalingAPI
+
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/client"

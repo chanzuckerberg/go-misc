@@ -1,14 +1,10 @@
-GO_PACKAGE=$(shell go list)
 export GOFLAGS=-mod=vendor
 export GO111MODULE=on
-
-LDFLAGS=-ldflags ""
 
 all: test
 
 setup:
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.16.0
-	go get github.com/vektra/mockery/.../
 
 lint: ## run the fast go linters
 	@golangci-lint run --no-config \
@@ -18,12 +14,10 @@ lint: ## run the fast go linters
 .PHONY: lint
 
 deps:
+	go get -v all
 	go mod tidy
 	go mod vendor
 .PHONY: deps
-
-build: ## build the binary
-	go build ${LDFLAGS} .
 
 test: deps ## run the tests
 	go test -race -coverprofile=coverage.txt -covermode=atomic ./...
@@ -35,7 +29,8 @@ test-ci: ## run tests in ci (don't try to updated dependencies)
 help: ## display help for this makefile
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-generate-mocks: ## will generate mocks
-	mockery -name ".*API" -case snake -output aws/mocks -dir vendor/github.com/aws/aws-sdk-go/service/ -recursive
+generate-mocks: deps## will generate mocks
+	rm -rf aws/mocks/*
+	_bin/generate_mocks.sh
 
 .PHONY: build coverage test install lint lint-slow release help
