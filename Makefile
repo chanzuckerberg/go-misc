@@ -10,7 +10,8 @@ lint: ## run the fast go linters
 	@golangci-lint run --no-config \
 		--disable-all --enable=deadcode  --enable=gocyclo --enable=golint --enable=varcheck \
 		--enable=structcheck --enable=errcheck --enable=dupl --enable=unparam --enable=goimports \
-		--enable=interfacer --enable=unconvert --enable=gosec --enable=megacheck
+		--enable=interfacer --enable=unconvert --enable=gosec --enable=megacheck \
+		--skip-dirs aws/mocks
 .PHONY: lint
 
 deps:
