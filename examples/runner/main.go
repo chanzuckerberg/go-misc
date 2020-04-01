@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/chanzuckerberg/go-misc/runner"
+	"github.com/chanzuckerberg/go-misc/task"
 )
 
 type ExampleTask struct {
@@ -20,12 +20,12 @@ func (r ExampleTask) ConfirmationMessage() string {
 }
 
 func main() {
-	task := ExampleTask{name: "foo"}
+	t := ExampleTask{name: "foo"}
 
-	r := runner.NewRunner()
+	r := task.NewRunner()
 
 	go func() {
-		r.SubmitTask(task)
+		r.SubmitTask(t)
 		r.Finish()
 	}()
 
