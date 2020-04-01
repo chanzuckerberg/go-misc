@@ -111,6 +111,9 @@ github.com/hashicorp/go-version
 ## explicit
 github.com/honeycombio/libhoney-go
 github.com/honeycombio/libhoney-go/transmission
+# github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c
+## explicit
+github.com/howeyc/gopass
 # github.com/jmespath/go-jmespath v0.3.0
 github.com/jmespath/go-jmespath
 # github.com/klauspost/compress v1.10.3
@@ -141,6 +144,9 @@ github.com/nlopes/slack/slackutilsx
 github.com/pkg/errors
 # github.com/pmezard/go-difflib v1.0.0
 github.com/pmezard/go-difflib/difflib
+# github.com/segmentio/go-prompt v1.2.1-0.20161017233205-f0d19b6901ad
+## explicit
+github.com/segmentio/go-prompt
 # github.com/sirupsen/logrus v1.5.0
 ## explicit
 github.com/sirupsen/logrus
@@ -165,12 +171,14 @@ golang.org/x/crypto/openpgp/elgamal
 golang.org/x/crypto/openpgp/errors
 golang.org/x/crypto/openpgp/packet
 golang.org/x/crypto/openpgp/s2k
+golang.org/x/crypto/ssh/terminal
 # golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
 ## explicit
 golang.org/x/net/context
 # golang.org/x/sys v0.0.0-20200331124033-c3d80250170d
 ## explicit
 golang.org/x/sys/unix
+golang.org/x/sys/windows
 # google.golang.org/appengine v1.6.5
 google.golang.org/appengine
 google.golang.org/appengine/datastore

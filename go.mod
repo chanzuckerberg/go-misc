@@ -13,6 +13,7 @@ require (
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/hashicorp/go-version v1.2.0
 	github.com/honeycombio/libhoney-go v1.12.3
+	github.com/howeyc/gopass v0.0.0-20190910152052-7cb4b85ec19c // indirect
 	github.com/klauspost/compress v1.10.3 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/kr/text v0.2.0 // indirect
@@ -20,6 +21,7 @@ require (
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/nlopes/slack v0.6.0
 	github.com/pkg/errors v0.9.1
+	github.com/segmentio/go-prompt v1.2.1-0.20161017233205-f0d19b6901ad // build fails otherwise
 	github.com/sirupsen/logrus v1.5.0
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.5.1
