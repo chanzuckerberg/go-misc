@@ -7,6 +7,9 @@ import (
 	"io"
 	"testing"
 
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	cziAws "github.com/chanzuckerberg/go-misc/aws"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -21,7 +24,7 @@ func TestUnfurl(t *testing.T) {
 
 	sess, serv := cziAws.NewMockSession()
 	defer serv.Close()
-	client, _, mockS3Manager := cziAws.New(sess).WithMockS3(ctrl)
+	client, mockS3, mockS3Manager := cziAws.New(sess).WithMockS3(ctrl)
 
 	data := bytes.NewBuffer(nil)
 	gzipWriter := gzip.NewWriter(data)
@@ -30,21 +33,15 @@ func TestUnfurl(t *testing.T) {
 	err = gzipWriter.Close()
 	a.Nil(err)
 
-	// putObjectOutput := &s3.PutObjectOutput{}
-
 	mockS3Manager.EXPECT().
 		DownloadWithContext(gomock.Any(), gomock.Any(), gomock.Any()).
-		DoAndReturn(func(writer io.WriterAt) (int64, error) {
+		DoAndReturn(func(arg0 aws.Context, writer io.WriterAt, arg2 *s3.GetObjectInput, arg3 ...func(*s3manager.Downloader)) (int64, error) {
 			_, err := writer.WriteAt(data.Bytes(), int64(0))
 			return int64(0), err
 		})
-	// mockS3Manager.On("DownloadWithContext", mock.Anything, mock.Anything).Run(func(args mock.Arguments) {
-	// writer := args.Get(0).(io.WriterAt)
-	// _, err := writer.WriteAt(data.Bytes(), int64(0))
-	// a.Nil(err)
-	// }).Return(int64(0), nil)
 
-	// mockS3.On("PutObjectWithContext", mock.Anything).Return(putObjectOutput, nil)
+	putObjectOutput := &s3.PutObjectOutput{}
+	mockS3.EXPECT().PutObjectWithContext(gomock.Any(), gomock.Any()).Return(putObjectOutput, nil)
 
 	err = processRecord(context.Background(), client, "foo", "bar", "baz", "kms key", "prefix")
 	a.Nil(err)
