@@ -10,19 +10,21 @@ import (
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/request"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/sts"
 	cziAws "github.com/chanzuckerberg/go-misc/aws"
+	"github.com/chanzuckerberg/go-misc/aws/mocks"
+	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/suite"
 )
 
 type ProviderTestSuite struct {
 	suite.Suite
 
-	mockIAM *cziAws.MockIAMSvc
-	mockSTS *cziAws.MockSTSSvc
+	mockIAM *mocks.MockIAMAPI
+	mockSTS *mocks.MockSTSAPI
 	client  *cziAws.Client
 
 	provider  *cziAws.UserTokenProvider
@@ -42,6 +44,7 @@ func (ts *ProviderTestSuite) TearDownTest() {
 
 func (ts *ProviderTestSuite) SetupTest() {
 	t := ts.T()
+	ctrl := gomock.NewController(t)
 	a := assert.New(t)
 
 	f, err := ioutil.TempFile("", "cache")
@@ -50,8 +53,8 @@ func (ts *ProviderTestSuite) SetupTest() {
 	ts.cachePath = f.Name()
 
 	sess, serv := cziAws.NewMockSession()
-	client, mockIAM := cziAws.New(sess).WithMockIAM()
-	client, mockSTS := client.WithMockSTS()
+	client, mockIAM := cziAws.New(sess).WithMockIAM(ctrl)
+	client, mockSTS := client.WithMockSTS(ctrl)
 
 	tokenProvider := func() (string, error) {
 		return "mytoken", nil
@@ -68,26 +71,32 @@ func (ts *ProviderTestSuite) SetupTest() {
 	getUserOutput := &iam.GetUserOutput{}
 	getUserOutput.SetUser(user)
 
-	ts.mockIAM.On("GetUserWithContext", mock.Anything).Return(getUserOutput, nil)
+	ts.mockIAM.EXPECT().GetUserWithContext(gomock.Any(), gomock.Any()).Return(getUserOutput, nil)
+
 	mfaDevivies := []*iam.MFADevice{
 		&iam.MFADevice{SerialNumber: aws.String("serial number")},
 	}
 	output := &iam.ListMFADevicesOutput{}
 	output.SetMFADevices(mfaDevivies)
-	ts.mockIAM.On("ListMFADevicesPagesWithContext", mock.Anything).Return(output, nil)
+	ts.mockIAM.EXPECT().ListMFADevicesPagesWithContext(gomock.Any(), gomock.Any(), gomock.Any()).DoAndReturn(
+		func(arg0 aws.Context, arg1 *iam.ListMFADevicesInput, arg2 func(*iam.ListMFADevicesOutput, bool) bool, arg3 ...request.Option) error {
+			arg2(output, false)
+			return nil
+		},
+	)
 
 	creds := &sts.Credentials{}
 	creds.SetAccessKeyId("access key id").SetExpiration(time.Now().Add(time.Hour)).SetSecretAccessKey("secret").SetSessionToken("Token")
 	token := &sts.GetSessionTokenOutput{}
 	token.SetCredentials(creds)
-	ts.mockSTS.On("GetSessionTokenWithContext", mock.Anything).Return(token, nil)
+	ts.mockSTS.EXPECT().GetSessionTokenWithContext(gomock.Any(), gomock.Any()).Return(token, nil)
 	ts.creds = creds
 
 	callerIdentity := &sts.GetCallerIdentityOutput{}
 	callerIdentity.SetAccount("my account id").
 		SetArn("my user arn").
 		SetUserId("my user id")
-	ts.mockSTS.On("GetCallerIdentityWithContext", mock.Anything).Return(callerIdentity, nil)
+	ts.mockSTS.EXPECT().GetCallerIdentityWithContext(gomock.Any(), gomock.Any()).Return(callerIdentity, nil)
 
 	ts.pathsToRemove = []string{f.Name()}
 }
@@ -128,7 +137,6 @@ func (ts *ProviderTestSuite) TestCached() {
 	c, err := ts.provider.Retrieve()
 	a.Nil(err)
 	a.Equal(*tokenCache.AccessKeyID, c.AccessKeyID)
-	a.True(ts.mockIAM.Mock.AssertNotCalled(t, "GetUserWithContext", mock.Anything))
 }
 
 func (ts *ProviderTestSuite) TestCacheExpired() {

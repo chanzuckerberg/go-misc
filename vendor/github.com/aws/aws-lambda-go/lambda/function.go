@@ -5,6 +5,7 @@ package lambda
 import (
 	"context"
 	"encoding/json"
+	"os"
 	"reflect"
 	"time"
 
@@ -12,19 +13,23 @@ import (
 	"github.com/aws/aws-lambda-go/lambdacontext"
 )
 
+// Function struct which wrap the Handler
 type Function struct {
 	handler Handler
 }
 
+// NewFunction which creates a Function with a given Handler
 func NewFunction(handler Handler) *Function {
 	return &Function{handler: handler}
 }
 
+// Ping method which given a PingRequest and a PingResponse parses the PingResponse
 func (fn *Function) Ping(req *messages.PingRequest, response *messages.PingResponse) error {
 	*response = messages.PingResponse{}
 	return nil
 }
 
+// Invoke method try to perform a command given an InvokeRequest and an InvokeResponse
 func (fn *Function) Invoke(req *messages.InvokeRequest, response *messages.InvokeResponse) error {
 	defer func() {
 		if err := recover(); err != nil {
@@ -59,6 +64,7 @@ func (fn *Function) Invoke(req *messages.InvokeRequest, response *messages.Invok
 	invokeContext = lambdacontext.NewContext(invokeContext, lc)
 
 	invokeContext = context.WithValue(invokeContext, "x-amzn-trace-id", req.XAmznTraceId)
+	os.Setenv("_X_AMZN_TRACE_ID", req.XAmznTraceId)
 
 	payload, err := fn.handler.Invoke(invokeContext, req.Payload)
 	if err != nil {

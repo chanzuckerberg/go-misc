@@ -28,6 +28,14 @@ type CognitoEventUserPoolsPreSignup struct {
 	Response CognitoEventUserPoolsPreSignupResponse `json:"response"`
 }
 
+// CognitoEventUserPoolsPreAuthentication is sent by AWS Cognito User Pools when a user submits their information
+// to be authenticated, allowing you to perform custom validations to accept or deny the sign in request.
+type CognitoEventUserPoolsPreAuthentication struct {
+	CognitoEventUserPoolsHeader
+	Request  CognitoEventUserPoolsPreAuthenticationRequest  `json:"request"`
+	Response CognitoEventUserPoolsPreAuthenticationResponse `json:"response"`
+}
+
 // CognitoEventUserPoolsPostConfirmation is sent by AWS Cognito User Pools after a user is confirmed,
 // allowing the Lambda to send custom messages or add custom logic.
 type CognitoEventUserPoolsPostConfirmation struct {
@@ -80,6 +88,7 @@ type CognitoEventUserPoolsHeader struct {
 type CognitoEventUserPoolsPreSignupRequest struct {
 	UserAttributes map[string]string `json:"userAttributes"`
 	ValidationData map[string]string `json:"validationData"`
+	ClientMetadata map[string]string `json:"clientMetadata"`
 }
 
 // CognitoEventUserPoolsPreSignupResponse contains the response portion of a PreSignup event
@@ -89,9 +98,20 @@ type CognitoEventUserPoolsPreSignupResponse struct {
 	AutoVerifyPhone bool `json:"autoVerifyPhone"`
 }
 
+// CognitoEventUserPoolsPreAuthenticationRequest contains the request portion of a PreAuthentication event
+type CognitoEventUserPoolsPreAuthenticationRequest struct {
+	UserAttributes map[string]string `json:"userAttributes"`
+	ValidationData map[string]string `json:"validationData"`
+}
+
+// CognitoEventUserPoolsPreAuthenticationResponse contains the response portion of a PreAuthentication event
+type CognitoEventUserPoolsPreAuthenticationResponse struct {
+}
+
 // CognitoEventUserPoolsPostConfirmationRequest contains the request portion of a PostConfirmation event
 type CognitoEventUserPoolsPostConfirmationRequest struct {
 	UserAttributes map[string]string `json:"userAttributes"`
+	ClientMetadata map[string]string `json:"clientMetadata"`
 }
 
 // CognitoEventUserPoolsPostConfirmationResponse contains the response portion of a PostConfirmation event
@@ -102,6 +122,7 @@ type CognitoEventUserPoolsPostConfirmationResponse struct {
 type CognitoEventUserPoolsPreTokenGenRequest struct {
 	UserAttributes     map[string]string  `json:"userAttributes"`
 	GroupConfiguration GroupConfiguration `json:"groupConfiguration"`
+	ClientMetadata     map[string]string  `json:"clientMetadata"`
 }
 
 // CognitoEventUserPoolsPreTokenGenResponse containst the response portion of  a PreTokenGen event
@@ -113,6 +134,7 @@ type CognitoEventUserPoolsPreTokenGenResponse struct {
 type CognitoEventUserPoolsPostAuthenticationRequest struct {
 	NewDeviceUsed  bool              `json:"newDeviceUsed"`
 	UserAttributes map[string]string `json:"userAttributes"`
+	ClientMetadata map[string]string `json:"clientMetadata"`
 }
 
 // CognitoEventUserPoolsPostAuthenticationResponse contains the response portion of a PostAuthentication event
@@ -121,7 +143,8 @@ type CognitoEventUserPoolsPostAuthenticationResponse struct {
 
 // CognitoEventUserPoolsMigrateUserRequest contains the request portion of a MigrateUser event
 type CognitoEventUserPoolsMigrateUserRequest struct {
-	Password string `json:"password"`
+	Password       string            `json:"password"`
+	ClientMetadata map[string]string `json:"clientMetadata"`
 }
 
 // CognitoEventUserPoolsMigrateUserResponse contains the response portion of a MigrateUser event
@@ -159,6 +182,7 @@ type CognitoEventUserPoolsChallengeResult struct {
 type CognitoEventUserPoolsDefineAuthChallengeRequest struct {
 	UserAttributes map[string]string                       `json:"userAttributes"`
 	Session        []*CognitoEventUserPoolsChallengeResult `json:"session"`
+	ClientMetadata map[string]string                       `json:"clientMetadata"`
 }
 
 // CognitoEventUserPoolsDefineAuthChallengeResponse defines auth challenge response parameters
@@ -180,6 +204,7 @@ type CognitoEventUserPoolsCreateAuthChallengeRequest struct {
 	UserAttributes map[string]string                       `json:"userAttributes"`
 	ChallengeName  string                                  `json:"challengeName"`
 	Session        []*CognitoEventUserPoolsChallengeResult `json:"session"`
+	ClientMetadata map[string]string                       `json:"clientMetadata"`
 }
 
 // CognitoEventUserPoolsCreateAuthChallengeResponse defines create auth challenge response rarameters
@@ -201,6 +226,7 @@ type CognitoEventUserPoolsVerifyAuthChallengeRequest struct {
 	UserAttributes             map[string]string `json:"userAttributes"`
 	PrivateChallengeParameters map[string]string `json:"privateChallengeParameters"`
 	ChallengeAnswer            interface{}       `json:"challengeAnswer"`
+	ClientMetadata             map[string]string `json:"clientMetadata"`
 }
 
 // CognitoEventUserPoolsVerifyAuthChallengeResponse defines verify auth challenge response parameters
@@ -226,8 +252,10 @@ type CognitoEventUserPoolsCustomMessage struct {
 
 // CognitoEventUserPoolsCustomMessageRequest contains the request portion of a CustomMessage event
 type CognitoEventUserPoolsCustomMessageRequest struct {
-	UserAttributes map[string]interface{} `json:"userAttributes"`
-	CodeParameter  string                 `json:"codeParameter"`
+	UserAttributes    map[string]interface{} `json:"userAttributes"`
+	CodeParameter     string                 `json:"codeParameter"`
+	UsernameParameter string                 `json:"usernameParameter"`
+	ClientMetadata    map[string]string      `json:"clientMetadata"`
 }
 
 // CognitoEventUserPoolsCustomMessageResponse contains the response portion of a CustomMessage event
