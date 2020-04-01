@@ -4,7 +4,8 @@ export GO111MODULE=on
 all: test
 
 setup:
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.16.0
+	# curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.16.0
+.PHONY: setup
 
 lint: ## run the fast go linters
 	@golangci-lint run --no-config \
@@ -15,13 +16,13 @@ lint: ## run the fast go linters
 .PHONY: lint
 
 deps:
-	go get -u ./...
 	go mod tidy
 	go mod vendor
 .PHONY: deps
 
 test: deps ## run the tests
 	go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+.PHONY: test
 
 test-ci: ## run tests in ci (don't try to updated dependencies)
 	go test -race -coverprofile=coverage.txt -covermode=atomic ./...
@@ -29,9 +30,8 @@ test-ci: ## run tests in ci (don't try to updated dependencies)
 
 help: ## display help for this makefile
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+.PHONY: help
 
-generate-mocks: deps## will generate mocks
+generate-mocks: deps ## will generate mocks
 	rm -rf aws/mocks/*
 	_bin/generate_mocks.sh
-
-.PHONY: build coverage test install lint lint-slow release help
