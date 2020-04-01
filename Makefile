@@ -14,7 +14,7 @@ lint: ## run the fast go linters
 .PHONY: lint
 
 deps:
-	go get -v all
+	go get -u ./...
 	go mod tidy
 	go mod vendor
 .PHONY: deps
