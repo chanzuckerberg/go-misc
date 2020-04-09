@@ -1,4 +1,3 @@
-export GOFLAGS=-mod=vendor
 export GO111MODULE=on
 
 all: test
@@ -17,7 +16,6 @@ lint: ## run the fast go linters
 deps:
 	go get -u ./...
 	go mod tidy
-	go mod vendor
 .PHONY: deps
 
 test: deps ## run the tests
@@ -31,7 +29,9 @@ help: ## display help for this makefile
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 generate-mocks: ## will generate mocks
-	rm -rf aws/mocks/*
-	_bin/generate_mocks.sh
+	@go get -d ./...
+	@rm -rf aws/mocks/*
+	@cd aws; go generate
+
 
 .PHONY: build coverage test install lint lint-slow release help
