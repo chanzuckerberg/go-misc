@@ -23,6 +23,7 @@ type Client struct {
 	SSM            *SSM
 	STS            *STS
 	Support        *Support
+	Organizations  *Organizations
 }
 
 // New returns a new aws client
@@ -43,7 +44,8 @@ func (c *Client) WithAllServices(conf *aws.Config) *Client {
 		WithSecretsManager(conf).
 		WithSSM(conf).
 		WithSTS(conf).
-		WithSupport(conf)
+		WithSupport(conf).
+		WithOrganizations(conf)
 }
 
 // ------- Autoscaling -----------
@@ -207,5 +209,19 @@ func (c *Client) WithSupport(conf *aws.Config) *Client {
 func (c *Client) WithMockSupport(ctrl *gomock.Controller) (*Client, *mocks.MockSupportAPI) {
 	mock := mocks.NewMockSupportAPI(ctrl)
 	c.Support = &Support{Svc: mock}
+	return c, mock
+}
+
+// ------- Organizations -----------
+
+// WithOrganizations configures an Organizations svc
+func (c *Client) WithOrganizations(conf *aws.Config) *Client {
+	c.Organizations = NewOrganizations(c.session, conf)
+	return c
+}
+
+func (c *Client) WithMockOrganizations(ctrl *gomock.Controller) (*Client, *mocks.MockOrganizationsAPI) {
+	mock := mocks.NewMockOrganizationsAPI(ctrl)
+	c.Organizations = &Organizations{Svc: mock}
 	return c, mock
 }
