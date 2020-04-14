@@ -44,8 +44,8 @@ func (c *Client) WithAllServices(conf *aws.Config) *Client {
 		WithSecretsManager(conf).
 		WithSSM(conf).
 		WithSTS(conf).
-		WithSupport(conf).
-		WithOrganizations(conf)
+		WithOrganizations(conf).
+		WithSupport(conf)
 }
 
 // ------- Autoscaling -----------
