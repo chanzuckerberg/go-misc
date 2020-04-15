@@ -14,3 +14,4 @@ package aws
 //go:generate mock mocks/ssm.go github.com/aws/aws-sdk-go/service/ssm/ssmiface SSMAPI
 //go:generate mock mocks/sts.go github.com/aws/aws-sdk-go/service/sts/stsiface STSAPI
 //go:generate mock mocks/support.go github.com/aws/aws-sdk-go/service/support/supportiface SupportAPI
+//go:generate mock mocks/organizations.go github.com/aws/aws-sdk-go/service/organizations/organizationsiface OrganizationsAPI
