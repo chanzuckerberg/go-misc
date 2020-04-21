@@ -150,7 +150,7 @@ func (s *server) Start(ctx context.Context, oidcClient *Client) {
 	go func() {
 		err := s.server.Serve(*s.listener)
 		if err != nil && err != http.ErrServerClosed {
-			logrus.Fatalf("server error")
+			logrus.Fatalf("server error: %s", err.Error())
 		}
 	}()
 }
