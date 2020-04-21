@@ -10,8 +10,12 @@ import (
 )
 
 type oauthMaterial struct {
-	Nonce         string
-	State         string
+	Nonce      string
+	NonceBytes []byte
+
+	State      string
+	StateBytes []byte
+
 	CodeVerifier  string
 	CodeChallenge string
 }
@@ -43,8 +47,12 @@ func newOauthMaterial() (*oauthMaterial, error) {
 	codeChallenge := pkceBase64URLEncode(codeChallengeBytes[:])
 
 	return &oauthMaterial{
-		Nonce:         nonce,
-		State:         state,
+		Nonce:      nonce,
+		NonceBytes: []byte(nonce),
+
+		State:      state,
+		StateBytes: []byte(state),
+
 		CodeVerifier:  codeVerifier,
 		CodeChallenge: codeChallenge,
 	}, nil

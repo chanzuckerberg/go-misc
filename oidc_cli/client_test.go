@@ -9,15 +9,17 @@ import (
 func TestValidateState(t *testing.T) {
 	r := require.New(t)
 
+	material, err := newOauthMaterial()
+	r.NoError(err)
+
 	c := &Client{
-		oauthMaterial: &oauthMaterial{
-			State: "qwerlkajsdflkasjfdoiquwer",
-		},
+		oauthMaterial: material,
 	}
 
-	err := c.ValidateState("definitely doesn't match")
+	err = c.ValidateState("definitely doesn't match")
 	r.Error(err)
 
+	// matches, send the same value
 	err = c.ValidateState(c.oauthMaterial.State)
 	r.NoError(err)
 }

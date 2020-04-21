@@ -94,7 +94,7 @@ func (c *Client) GetAuthCodeURL() string {
 
 // ValidateState validates the state from the authorize request
 func (c *Client) ValidateState(otherState string) error {
-	if !c.stringsAreEqual(c.oauthMaterial.State, otherState) {
+	if !c.bytesAreEqual(c.oauthMaterial.StateBytes, []byte(otherState)) {
 		return errors.New("invalid state")
 	}
 	return nil
@@ -112,11 +112,8 @@ func (c *Client) Exchange(ctx context.Context, code string) (*oauth2.Token, erro
 	return token, errors.Wrap(err, "failed to exchange oauth token")
 }
 
-func (c *Client) stringsAreEqual(this string, that string) bool {
-	equalLen := len(this) == len(that)
-	equalContent := 1 == subtle.ConstantTimeCompare([]byte(this), []byte(that))
-
-	return equalLen && equalContent
+func (c *Client) bytesAreEqual(this []byte, that []byte) bool {
+	return 1 == subtle.ConstantTimeCompare(this, that)
 }
 
 // Verify verifies an oidc id token
@@ -125,7 +122,7 @@ func (c *Client) Verify(ctx context.Context, rawIDToken string) (*oidc.IDToken, 
 	if err != nil {
 		return nil, errors.Wrap(err, "could not verify id token")
 	}
-	if !c.stringsAreEqual(idToken.Nonce, c.oauthMaterial.Nonce) {
+	if !c.bytesAreEqual([]byte(idToken.Nonce), c.oauthMaterial.NonceBytes) {
 		return nil, errors.Errorf("nonce does not match")
 	}
 	return idToken, nil
