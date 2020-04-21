@@ -18,7 +18,7 @@ deps:
 	go mod tidy
 .PHONY: deps
 
-test: deps ## run the tests
+test: ## run the tests
 	go test -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 test-ci: ## run tests in ci (don't try to updated dependencies)
