@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/chanzuckerberg/ago-misc/pkg/oidc_cli/util"
-	client "github.com/chanzuckerberg/go-misc/oidc_cli"
-	"github.com/chanzuckerberg/go-misc/pkg/oidc_cli/cache"
-	"github.com/chanzuckerberg/go-misc/pkg/oidc_cli/storage"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/cache"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/storage"
+	"github.com/chanzuckerberg/go-misc/pid_lock"
 	"github.com/pkg/errors"
 )
 
@@ -18,7 +18,7 @@ const (
 // GetToken gets an oidc token.
 // It handles caching with a default cache and keyring storage.
 func GetToken(ctx context.Context, clientID string, issuerURL string) (*client.Token, error) {
-	fileLock, err := util.NewLock(lockFilePath)
+	fileLock, err := pid_lock.NewLock(lockFilePath)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to create lock")
 	}
@@ -33,7 +33,7 @@ func GetToken(ctx context.Context, clientID string, issuerURL string) (*client.T
 		ClientID:  clientID,
 		IssuerURL: issuerURL,
 		ServerConfig: &client.ServerConfig{
-			// TODO (el): Make these configurable
+			// TODO (el): Make these configurable?
 			FromPort: 49152,
 			ToPort:   49152 + 63,
 			Timeout:  30 * time.Second,

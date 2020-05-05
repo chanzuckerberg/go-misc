@@ -18,13 +18,15 @@ type AwsOIDCCredsProviderConfig struct {
 }
 
 // NewAWSOIDCCredsProvider returns an AWS credential provider
-// using OIDC
+// using OIDC.
 func NewAwsOIDCCredsProvider(
 	svc stsiface.STSAPI,
 	conf *AwsOIDCCredsProviderConfig,
 ) credentials.Provider {
 
-	tokenFetcher := &tokenFetcher{}
+	tokenFetcher := &tokenFetcher{
+		conf: conf,
+	}
 
 	return stscreds.NewWebIdentityRoleProviderWithToken(
 		svc,
@@ -43,6 +45,5 @@ func (tf *tokenFetcher) FetchToken(ctx credentials.Context) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	return nil, nil
+	return []byte(token.IDToken), nil
 }

@@ -1,4 +1,4 @@
-package util
+package pid_lock
 
 import (
 	"os"
