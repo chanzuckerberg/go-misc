@@ -7,7 +7,7 @@ import (
 	"github.com/chanzuckerberg/go-misc/oidc_cli/cache"
 	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
 	"github.com/chanzuckerberg/go-misc/oidc_cli/storage"
-	"github.com/chanzuckerberg/go-misc/pid_lock"
+	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/pkg/errors"
 )
 
@@ -18,7 +18,7 @@ const (
 // GetToken gets an oidc token.
 // It handles caching with a default cache and keyring storage.
 func GetToken(ctx context.Context, clientID string, issuerURL string) (*client.Token, error) {
-	fileLock, err := pid_lock.NewLock(lockFilePath)
+	fileLock, err := pidlock.NewLock(lockFilePath)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to create lock")
 	}

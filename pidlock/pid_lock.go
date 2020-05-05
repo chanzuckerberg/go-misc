@@ -1,4 +1,4 @@
-package pid_lock
+package pidlock
 
 import (
 	"os"
