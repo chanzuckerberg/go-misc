@@ -6,6 +6,7 @@ require (
 	github.com/aws/aws-lambda-go v1.16.0
 	github.com/aws/aws-sdk-go v1.30.20
 	github.com/blang/semver v3.5.1+incompatible
+	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/danieljoos/wincred v1.0.3 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
@@ -19,6 +20,7 @@ require (
 	github.com/honeycombio/libhoney-go v1.12.4
 	github.com/klauspost/compress v1.10.5 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
+	github.com/nightlyone/lockfile v1.0.0
 	github.com/nlopes/slack v0.6.0
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/pkg/errors v0.9.1
@@ -31,6 +33,7 @@ require (
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sys v0.0.0-20200501145240-bc7a7d42d5c3 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 )
