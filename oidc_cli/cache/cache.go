@@ -3,8 +3,8 @@ package cache
 import (
 	"context"
 
-	"github.com/chanzuckerberg/aws-oidc/pkg/storage"
-	client "github.com/chanzuckerberg/go-misc/oidc_cli"
+	client "github.com/chanzuckerberg/go-misc/oidc_cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/storage"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )

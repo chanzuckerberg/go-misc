@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chanzuckerberg/aws-oidc/pkg/storage"
-	client "github.com/chanzuckerberg/go-misc/oidc_cli"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/storage"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
