@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 	"github.com/aws/aws-sdk-go/service/sts/stsiface"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
 )
 
 type AwsOIDCCredsProviderConfig struct {
@@ -22,14 +23,14 @@ type AwsOIDCCredsProviderConfig struct {
 
 // AWSOIDCCredsProvider providers OIDC tokens and aws:STS credentials
 type AWSOIDCCredsProvider struct {
-	credentials.ProviderWithContext
+	*credentials.Credentials
 
 	fetcher *tokenFetcher
 }
 
 // FetchOIDCToken will fetch an oidc token
-func (a *AWSOIDCCredsProvider) FetchOIDCToken(ctx context.Context) ([]byte, error) {
-	return a.fetcher.FetchToken(ctx)
+func (a *AWSOIDCCredsProvider) FetchOIDCToken(ctx context.Context) (*client.Token, error) {
+	return a.fetcher.fetchFullToken(ctx)
 }
 
 // NewAWSOIDCCredsProvider returns an AWS credential provider
@@ -51,8 +52,8 @@ func NewAwsOIDCCredsProvider(
 	)
 
 	return &AWSOIDCCredsProvider{
-		ProviderWithContext: provider,
-		fetcher:             tokenFetcher,
+		Credentials: credentials.NewCredentials(provider),
+		fetcher:     tokenFetcher,
 	}
 }
 
@@ -62,13 +63,19 @@ type tokenFetcher struct {
 }
 
 // safe for concurrent use
-func (tf *tokenFetcher) FetchToken(ctx credentials.Context) ([]byte, error) {
+// fetches a full token
+func (tf *tokenFetcher) fetchFullToken(ctx context.Context) (*client.Token, error) {
 	tf.mu.Lock()
 	defer tf.mu.Unlock()
 
-	token, err := GetToken(ctx, tf.conf.OIDC.clientID, tf.conf.OIDC.issuerURL)
+	return GetToken(ctx, tf.conf.OIDC.clientID, tf.conf.OIDC.issuerURL)
+}
+
+func (tf *tokenFetcher) FetchToken(ctx context.Context) ([]byte, error) {
+	token, err := tf.fetchFullToken(ctx)
 	if err != nil {
 		return nil, err
 	}
+
 	return []byte(token.IDToken), nil
 }
