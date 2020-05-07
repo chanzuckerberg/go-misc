@@ -11,14 +11,9 @@ import (
 )
 
 type AwsOIDCCredsProviderConfig struct {
-	AWS struct {
-		roleARN     string
-		sessionName string
-	}
-	OIDC struct {
-		clientID  string
-		issuerURL string
-	}
+	AWSRoleARN    string
+	OIDCClientID  string
+	OIDCIssuerURL string
 }
 
 // AWSOIDCCredsProvider providers OIDC tokens and aws:STS credentials
@@ -36,25 +31,32 @@ func (a *AWSOIDCCredsProvider) FetchOIDCToken(ctx context.Context) (*client.Toke
 // NewAWSOIDCCredsProvider returns an AWS credential provider
 // using OIDC.
 func NewAwsOIDCCredsProvider(
+	ctx context.Context,
 	svc stsiface.STSAPI,
 	conf *AwsOIDCCredsProviderConfig,
-) *AWSOIDCCredsProvider {
+) (*AWSOIDCCredsProvider, error) {
 
 	tokenFetcher := &tokenFetcher{
 		conf: conf,
 	}
 
+	// fetch a token to get a relevant role session name
+	token, err := tokenFetcher.fetchFullToken(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	provider := stscreds.NewWebIdentityRoleProviderWithToken(
 		svc,
-		conf.AWS.roleARN,
-		conf.AWS.sessionName,
+		conf.AWSRoleARN,
+		token.Claims.Email,
 		tokenFetcher,
 	)
 
 	return &AWSOIDCCredsProvider{
 		Credentials: credentials.NewCredentials(provider),
 		fetcher:     tokenFetcher,
-	}
+	}, nil
 }
 
 type tokenFetcher struct {
@@ -68,7 +70,7 @@ func (tf *tokenFetcher) fetchFullToken(ctx context.Context) (*client.Token, erro
 	tf.mu.Lock()
 	defer tf.mu.Unlock()
 
-	return GetToken(ctx, tf.conf.OIDC.clientID, tf.conf.OIDC.issuerURL)
+	return GetToken(ctx, tf.conf.OIDCClientID, tf.conf.OIDCIssuerURL)
 }
 
 func (tf *tokenFetcher) FetchToken(ctx context.Context) ([]byte, error) {
