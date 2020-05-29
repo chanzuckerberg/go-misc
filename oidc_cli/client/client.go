@@ -107,7 +107,7 @@ func (c *Client) RefreshToken(ctx context.Context, oldToken *Token) (*Token, err
 	if err == nil {
 		return newToken, nil
 	}
-	logrus.Debugf("failed to refresh token %s", err)
+	logrus.Warnf("failed to refresh token %s", err)
 
 	return c.Authenticate(ctx)
 }
