@@ -86,7 +86,7 @@ func (c *Client) idTokenFromOauth2Token(
 
 	idToken, err := c.Verify(ctx, unverifiedIDToken)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("could not verify id token")
+		return nil, nil, "", errors.Wrap(err, "could not verify id token")
 	}
 
 	verifiedIDToken := unverifiedIDToken // now is verified
@@ -94,7 +94,7 @@ func (c *Client) idTokenFromOauth2Token(
 
 	err = idToken.Claims(claims)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("could not verify claims")
+		return nil, nil, "", errors.Wrap(err, "could not verify claims")
 	}
 	return claims, idToken, verifiedIDToken, nil
 }
