@@ -23,7 +23,7 @@ func defaultBackoff() backoff.BackOff {
 	b := backoff.NewExponentialBackOff()
 	b.MaxElapsedTime = 2 * time.Minute
 	b.InitialInterval = 10 * time.Millisecond
-	b.MaxInterval = 10 * time.Second
+	b.MaxInterval = time.Second
 	return b
 }
 
