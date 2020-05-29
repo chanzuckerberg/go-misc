@@ -74,7 +74,7 @@ func (c *Client) idTokenFromOauth2Token(
 ) (*Claims, *oidc.IDToken, string, error) {
 	unverifiedIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
-		return nil, nil, "", fmt.Errorf("no id_token found in oauth2 token")
+		return nil, nil, "", errors.New("no id_token found in oauth2 token")
 	}
 
 	idToken, err := c.Verify(ctx, ourNonce, unverifiedIDToken)
