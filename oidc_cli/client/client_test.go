@@ -12,14 +12,12 @@ func TestValidateState(t *testing.T) {
 	material, err := newOauthMaterial()
 	r.NoError(err)
 
-	c := &Client{
-		oauthMaterial: material,
-	}
+	c := &Client{}
 
-	err = c.ValidateState("definitely doesn't match")
+	err = c.ValidateState(material.StateBytes, []byte("definitely doesn't match"))
 	r.Error(err)
 
 	// matches, send the same value
-	err = c.ValidateState(c.oauthMaterial.State)
+	err = c.ValidateState(material.StateBytes, material.StateBytes)
 	r.NoError(err)
 }

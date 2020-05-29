@@ -88,16 +88,19 @@ func (s *server) GetBoundPort() int {
 }
 
 // Start will start a webserver to capture oidc response
-func (s *server) Start(ctx context.Context, oidcClient *Client) {
+func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *oauthMaterial) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		if err := oidcClient.ValidateState(req.URL.Query().Get("state")); err != nil {
+		err := oidcClient.ValidateState(
+			oauthMaterial.StateBytes,
+			[]byte(req.URL.Query().Get("state")))
+		if err != nil {
 			http.Error(w, "state did not match", http.StatusBadRequest)
 			s.err <- errors.Wrap(err, "state did not match")
 			return
 		}
 
-		oauth2Token, err := oidcClient.Exchange(ctx, req.URL.Query().Get("code"))
+		oauth2Token, err := oidcClient.Exchange(ctx, req.URL.Query().Get("code"), oauthMaterial.CodeVerifier)
 		if err != nil {
 			errMsg := "failed to exchange token"
 			http.Error(w, errMsg, http.StatusInternalServerError)
@@ -105,26 +108,10 @@ func (s *server) Start(ctx context.Context, oidcClient *Client) {
 			return
 		}
 
-		unverifiedIDToken, ok := oauth2Token.Extra("id_token").(string)
-		if !ok {
-			errMsg := "no id_token found in oauth2 token"
-			http.Error(w, errMsg, http.StatusInternalServerError)
-			s.err <- errors.New(errMsg)
-			return
-		}
-
-		idToken, err := oidcClient.Verify(ctx, unverifiedIDToken)
+		claims, idToken, verifiedIDToken, err := oidcClient.idTokenFromOauth2Token(ctx, oauth2Token, oauthMaterial.NonceBytes)
 		if err != nil {
-			http.Error(w, "could not verify id token", http.StatusInternalServerError)
-			s.err <- err
-			return
-		}
-
-		claims := Claims{}
-		err = idToken.Claims(&claims)
-		if err != nil {
-			http.Error(w, "could not verify claims", http.StatusInternalServerError)
-			s.err <- errors.Wrap(err, "could not verify claims")
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			s.err <- errors.Wrap(err, "could not verify ID token")
 			return
 		}
 
@@ -136,10 +123,10 @@ func (s *server) Start(ctx context.Context, oidcClient *Client) {
 
 		s.result <- &Token{
 			Expiry:       idToken.Expiry,
-			IDToken:      unverifiedIDToken, // at this point, the token has been verified
+			IDToken:      verifiedIDToken,
 			AccessToken:  oauth2Token.AccessToken,
 			RefreshToken: oauth2Token.RefreshToken,
-			Claims:       claims,
+			Claims:       *claims,
 		}
 	})
 
