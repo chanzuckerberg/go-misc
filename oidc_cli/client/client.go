@@ -107,7 +107,7 @@ func (c *Client) RefreshToken(ctx context.Context, oldToken *Token) (*Token, err
 
 func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error) {
 	if token == nil {
-		logrus.Info("nil refresh token")
+		logrus.Debug("nil refresh token, skipping refresh flow")
 		return nil, errors.New("cannot refresh nil token")
 	}
 	logrus.Info("attempting refresh token")
