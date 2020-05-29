@@ -110,7 +110,7 @@ func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error)
 		logrus.Debug("nil refresh token, skipping refresh flow")
 		return nil, errors.New("cannot refresh nil token")
 	}
-	logrus.Info("attempting refresh token")
+	logrus.Debug("refresh token found, attempting refresh flow")
 
 	oauthToken := &oauth2.Token{
 		AccessToken:  token.AccessToken,
