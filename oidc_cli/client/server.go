@@ -105,7 +105,7 @@ func (s *server) Start(ctx context.Context, oidcClient *Client) {
 			return
 		}
 
-		claims, idToken, verifiedIDToken, err := oidcClient.idTokenFromOauth2Token(ctx, oauth2Token)
+		claims, _, verifiedIDToken, err := oidcClient.idTokenFromOauth2Token(ctx, oauth2Token)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			s.err <- errors.Wrap(err, "could not verify ID token")
@@ -119,7 +119,8 @@ func (s *server) Start(ctx context.Context, oidcClient *Client) {
 		}
 
 		s.result <- &Token{
-			Expiry:       idToken.Expiry,
+			// Expiry:       idToken.Expiry,
+			Expiry:       time.Now().Add(-1 * time.Minute),
 			IDToken:      verifiedIDToken,
 			AccessToken:  oauth2Token.AccessToken,
 			RefreshToken: oauth2Token.RefreshToken,
