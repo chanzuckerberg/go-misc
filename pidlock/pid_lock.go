@@ -21,9 +21,9 @@ func lockPath(lockPath string) (string, error) {
 
 func defaultBackoff() backoff.BackOff {
 	b := backoff.NewExponentialBackOff()
-	b.MaxElapsedTime = 20 * time.Second
+	b.MaxElapsedTime = 2 * time.Minute
 	b.InitialInterval = 10 * time.Millisecond
-	b.MaxInterval = 100 * time.Millisecond
+	b.MaxInterval = time.Second
 	return b
 }
 
