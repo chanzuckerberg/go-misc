@@ -105,26 +105,10 @@ func (s *server) Start(ctx context.Context, oidcClient *Client) {
 			return
 		}
 
-		unverifiedIDToken, ok := oauth2Token.Extra("id_token").(string)
-		if !ok {
-			errMsg := "no id_token found in oauth2 token"
-			http.Error(w, errMsg, http.StatusInternalServerError)
-			s.err <- errors.New(errMsg)
-			return
-		}
-
-		idToken, err := oidcClient.Verify(ctx, unverifiedIDToken)
+		claims, idToken, verifiedIDToken, err := oidcClient.idTokenFromOauth2Token(ctx, oauth2Token)
 		if err != nil {
-			http.Error(w, "could not verify id token", http.StatusInternalServerError)
-			s.err <- err
-			return
-		}
-
-		claims := Claims{}
-		err = idToken.Claims(&claims)
-		if err != nil {
-			http.Error(w, "could not verify claims", http.StatusInternalServerError)
-			s.err <- errors.Wrap(err, "could not verify claims")
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			s.err <- errors.Wrap(err, "could not verify ID token")
 			return
 		}
 
@@ -136,10 +120,10 @@ func (s *server) Start(ctx context.Context, oidcClient *Client) {
 
 		s.result <- &Token{
 			Expiry:       idToken.Expiry,
-			IDToken:      unverifiedIDToken, // at this point, the token has been verified
+			IDToken:      verifiedIDToken,
 			AccessToken:  oauth2Token.AccessToken,
 			RefreshToken: oauth2Token.RefreshToken,
-			Claims:       claims,
+			Claims:       *claims,
 		}
 	})
 

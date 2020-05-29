@@ -8,6 +8,7 @@ import (
 	"github.com/coreos/go-oidc"
 	"github.com/pkg/browser"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
@@ -74,11 +75,71 @@ func NewClient(ctx context.Context, config *Config) (*Client, error) {
 	}, nil
 }
 
+func (c *Client) idTokenFromOauth2Token(
+	ctx context.Context,
+	oauth2Token *oauth2.Token,
+) (*Claims, *oidc.IDToken, string, error) {
+	unverifiedIDToken, ok := oauth2Token.Extra("id_token").(string)
+	if !ok {
+		return nil, nil, "", fmt.Errorf("no id_token found in oauth2 token")
+	}
+
+	idToken, err := c.Verify(ctx, unverifiedIDToken)
+	if err != nil {
+		return nil, nil, "", fmt.Errorf("could not verify id token")
+	}
+
+	verifiedIDToken := unverifiedIDToken // now is verified
+	claims := &Claims{}
+
+	err = idToken.Claims(claims)
+	if err != nil {
+		return nil, nil, "", fmt.Errorf("could not verify claims")
+	}
+	return claims, idToken, verifiedIDToken, nil
+}
+
 // RefreshToken will fetch a new token
 func (c *Client) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
-	// TODO(el): for now we do nothing with the oldToken
-	// intent is at some point to use the refreshToken
+	newToken, err := c.refreshToken(ctx, oldToken)
+	// if we could refresh successfully, do so.
+	// otherwise try a new token
+	if err == nil {
+		return newToken, nil
+	}
+	logrus.Debugf("failed to refresh token %s", err)
+
 	return c.Authenticate(ctx)
+}
+
+func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error) {
+	if token == nil {
+		return nil, errors.New("cannot refresh nil token")
+	}
+
+	oauthToken := &oauth2.Token{}
+	tokenSource := c.oauthConfig.TokenSource(ctx, oauthToken)
+
+	newOauth2Token, err := tokenSource.Token()
+	if err != nil {
+		return nil, errors.Wrap(err, "could not refresh token")
+	}
+
+	claims, idToken, verifiedIDToken, err := c.idTokenFromOauth2Token(ctx, newOauth2Token)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Token{
+		Version: token.Version,
+		Expiry:  idToken.Expiry,
+
+		IDToken:      verifiedIDToken,
+		AccessToken:  newOauth2Token.AccessToken,
+		RefreshToken: newOauth2Token.RefreshToken,
+		Claims:       *claims,
+	}, nil
+
 }
 
 // GetAuthCodeURL gets the url to the oauth2 consent page
