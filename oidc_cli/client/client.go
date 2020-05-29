@@ -107,7 +107,7 @@ func (c *Client) RefreshToken(ctx context.Context, oldToken *Token) (*Token, err
 	if err == nil {
 		return newToken, nil
 	}
-	logrus.Warnf("failed to refresh token %s", err)
+	logrus.Warnf("failed to refresh token %s, requesting new one", err)
 
 	return c.Authenticate(ctx)
 }
@@ -189,6 +189,7 @@ func (c *Client) Verify(ctx context.Context, rawIDToken string) (*oidc.IDToken, 
 	if err != nil {
 		return nil, errors.Wrap(err, "could not verify id token")
 	}
+	logrus.Infof("their nonce: %s, our nonce: %s", idToken.Nonce, c.oauthMaterial.Nonce)
 	if !c.bytesAreEqual([]byte(idToken.Nonce), c.oauthMaterial.NonceBytes) {
 		return nil, errors.Errorf("nonce does not match")
 	}
