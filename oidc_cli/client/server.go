@@ -120,7 +120,7 @@ func (s *server) Start(ctx context.Context, oidcClient *Client) {
 
 		s.result <- &Token{
 			// Expiry:       idToken.Expiry,
-			Expiry:       time.Now().Add(-1 * time.Minute),
+			Expiry:       time.Now().Add(-24 * time.Hour),
 			IDToken:      verifiedIDToken,
 			AccessToken:  oauth2Token.AccessToken,
 			RefreshToken: oauth2Token.RefreshToken,
