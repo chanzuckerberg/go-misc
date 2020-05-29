@@ -198,7 +198,6 @@ func (c *Client) Authenticate(ctx context.Context) (*Token, error) {
 		return nil, err
 	}
 
-
 	c.server.Start(ctx, c, oauthMaterial)
 
 	err = browser.OpenURL(c.GetAuthCodeURL(oauthMaterial))
