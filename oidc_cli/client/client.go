@@ -18,8 +18,6 @@ type Client struct {
 	oauthConfig *oauth2.Config
 	verifier    *oidc.IDTokenVerifier
 	server      *server
-
-	oauthMaterial *oauthMaterial
 }
 
 // Config is required to config a client
@@ -54,11 +52,6 @@ func NewClient(ctx context.Context, config *Config) (*Client, error) {
 		},
 	}
 
-	oauthMaterial, err := newOauthMaterial()
-	if err != nil {
-		return nil, err
-	}
-
 	oidcConfig := &oidc.Config{
 		ClientID:             config.ClientID,
 		SupportedSigningAlgs: []string{"RS256"},
@@ -66,10 +59,9 @@ func NewClient(ctx context.Context, config *Config) (*Client, error) {
 	verifier := provider.Verifier(oidcConfig)
 
 	return &Client{
-		provider:      provider,
-		verifier:      verifier,
-		oauthConfig:   oauthConfig,
-		oauthMaterial: oauthMaterial,
+		provider:    provider,
+		verifier:    verifier,
+		oauthConfig: oauthConfig,
 
 		server: server,
 	}, nil
@@ -78,13 +70,14 @@ func NewClient(ctx context.Context, config *Config) (*Client, error) {
 func (c *Client) idTokenFromOauth2Token(
 	ctx context.Context,
 	oauth2Token *oauth2.Token,
+	ourNonce []byte,
 ) (*Claims, *oidc.IDToken, string, error) {
 	unverifiedIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
 		return nil, nil, "", fmt.Errorf("no id_token found in oauth2 token")
 	}
 
-	idToken, err := c.Verify(ctx, unverifiedIDToken)
+	idToken, err := c.Verify(ctx, ourNonce, unverifiedIDToken)
 	if err != nil {
 		return nil, nil, "", errors.Wrap(err, "could not verify id token")
 	}
@@ -131,7 +124,8 @@ func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error)
 		return nil, errors.Wrap(err, "could not refresh token")
 	}
 
-	claims, idToken, verifiedIDToken, err := c.idTokenFromOauth2Token(ctx, newOauth2Token)
+	// We don't have a nonce in this flow since we're refreshing our refresh token -- auth already happened
+	claims, idToken, verifiedIDToken, err := c.idTokenFromOauth2Token(ctx, newOauth2Token, []byte{})
 	if err != nil {
 		return nil, err
 	}
@@ -149,31 +143,31 @@ func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error)
 }
 
 // GetAuthCodeURL gets the url to the oauth2 consent page
-func (c *Client) GetAuthCodeURL() string {
+func (c *Client) GetAuthCodeURL(oauthMaterial *oauthMaterial) string {
 	return c.oauthConfig.AuthCodeURL(
-		c.oauthMaterial.State,
+		oauthMaterial.State,
 		oauth2.SetAuthURLParam("grant_type", "refresh_token"),
-		oauth2.SetAuthURLParam("code_challenge", c.oauthMaterial.CodeChallenge),
+		oauth2.SetAuthURLParam("code_challenge", oauthMaterial.CodeChallenge),
 		oauth2.SetAuthURLParam("code_challenge_method", "S256"),
-		oauth2.SetAuthURLParam("nonce", c.oauthMaterial.Nonce),
+		oauth2.SetAuthURLParam("nonce", oauthMaterial.Nonce),
 	)
 }
 
 // ValidateState validates the state from the authorize request
-func (c *Client) ValidateState(otherState string) error {
-	if !c.bytesAreEqual(c.oauthMaterial.StateBytes, []byte(otherState)) {
+func (c *Client) ValidateState(ourState []byte, otherState []byte) error {
+	if !c.bytesAreEqual(ourState, otherState) {
 		return errors.New("invalid state")
 	}
 	return nil
 }
 
 // Exchange will exchange a token
-func (c *Client) Exchange(ctx context.Context, code string) (*oauth2.Token, error) {
+func (c *Client) Exchange(ctx context.Context, code string, codeVerifier string) (*oauth2.Token, error) {
 	token, err := c.oauthConfig.Exchange(
 		ctx,
 		code,
 		oauth2.SetAuthURLParam("grant_type", "authorization_code"),
-		oauth2.SetAuthURLParam("code_verifier", c.oauthMaterial.CodeVerifier),
+		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
 		oauth2.SetAuthURLParam("client_id", c.oauthConfig.ClientID),
 	)
 	return token, errors.Wrap(err, "failed to exchange oauth token")
@@ -184,23 +178,33 @@ func (c *Client) bytesAreEqual(this []byte, that []byte) bool {
 }
 
 // Verify verifies an oidc id token
-func (c *Client) Verify(ctx context.Context, rawIDToken string) (*oidc.IDToken, error) {
+func (c *Client) Verify(ctx context.Context, ourNonce []byte, rawIDToken string) (*oidc.IDToken, error) {
 	idToken, err := c.verifier.Verify(ctx, rawIDToken)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not verify id token")
 	}
-	logrus.Infof("their nonce: %s, our nonce: %s", idToken.Nonce, c.oauthMaterial.Nonce)
-	if !c.bytesAreEqual([]byte(idToken.Nonce), c.oauthMaterial.NonceBytes) {
+
+	if !c.bytesAreEqual([]byte(idToken.Nonce), ourNonce) {
 		return nil, errors.Errorf("nonce does not match")
 	}
+
 	return idToken, nil
 }
 
 // Authenticate will authenticate authenticate with the idp
 func (c *Client) Authenticate(ctx context.Context) (*Token, error) {
-	c.server.Start(ctx, c)
+	oauthMaterial, err := newOauthMaterial()
+	if err != nil {
+		return nil, err
+	}
 
-	err := browser.OpenURL(c.GetAuthCodeURL())
+	if err != nil {
+		return nil, err
+	}
+
+	c.server.Start(ctx, c, oauthMaterial)
+
+	err = browser.OpenURL(c.GetAuthCodeURL(oauthMaterial))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not open browser")
 	}

@@ -88,16 +88,19 @@ func (s *server) GetBoundPort() int {
 }
 
 // Start will start a webserver to capture oidc response
-func (s *server) Start(ctx context.Context, oidcClient *Client) {
+func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *oauthMaterial) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		if err := oidcClient.ValidateState(req.URL.Query().Get("state")); err != nil {
+		err := oidcClient.ValidateState(
+			oauthMaterial.StateBytes,
+			[]byte(req.URL.Query().Get("state")))
+		if err != nil {
 			http.Error(w, "state did not match", http.StatusBadRequest)
 			s.err <- errors.Wrap(err, "state did not match")
 			return
 		}
 
-		oauth2Token, err := oidcClient.Exchange(ctx, req.URL.Query().Get("code"))
+		oauth2Token, err := oidcClient.Exchange(ctx, req.URL.Query().Get("code"), oauthMaterial.CodeVerifier)
 		if err != nil {
 			errMsg := "failed to exchange token"
 			http.Error(w, errMsg, http.StatusInternalServerError)
@@ -105,7 +108,7 @@ func (s *server) Start(ctx context.Context, oidcClient *Client) {
 			return
 		}
 
-		claims, _, verifiedIDToken, err := oidcClient.idTokenFromOauth2Token(ctx, oauth2Token)
+		claims, _, verifiedIDToken, err := oidcClient.idTokenFromOauth2Token(ctx, oauth2Token, oauthMaterial.NonceBytes)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			s.err <- errors.Wrap(err, "could not verify ID token")
