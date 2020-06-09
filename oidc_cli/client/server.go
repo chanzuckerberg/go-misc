@@ -115,7 +115,7 @@ func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *o
 			s.err <- errors.Wrap(err, "could not verify ID token")
 			return
 		}
-		tmpl, err := template.ParseFiles("success.html")
+		tmpl, err := template.ParseFiles("./success.html")
 		if err != nil {
 		    http.Error(w, err.Error(), http.StatusInternalServerError)
 			s.err <- errors.Wrap(err, "could not render html template")
