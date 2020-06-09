@@ -117,7 +117,7 @@ func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *o
 			return
 		}
 		fp := path.Join("templates", "success.html")
-		tmpl, err := template.ParseFiles("./success.html")
+		tmpl, err := template.ParseFiles(fp)
 		if err != nil {
 		    http.Error(w, err.Error(), http.StatusInternalServerError)
 			s.err <- errors.Wrap(err, "could not render html template")
