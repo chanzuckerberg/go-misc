@@ -115,12 +115,13 @@ func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *o
 			s.err <- errors.Wrap(err, "could not verify ID token")
 			return
 		}
-		t, err := template.ParseFiles("success.html")
+		tmpl, err := template.ParseFiles("success.html")
 		if err != nil {
-		  http.Error(w, err.Error(), http.StatusInternalServerError)
-		  return
+		    http.Error(w, err.Error(), http.StatusInternalServerError)
+			s.err <- errors.Wrap(err, "could not render html template")
+		    return
 		}
-		if err := tmpl.Execute(w, profile); err != nil {
+		if err := tmpl.Execute(w, _); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
