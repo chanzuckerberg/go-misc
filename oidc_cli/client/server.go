@@ -114,12 +114,12 @@ func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *o
 			s.err <- errors.Wrap(err, "could not verify ID token")
 			return
 		}
-
-		_, err = w.Write([]byte("Signed in successfully! You can now return to CLI."))
-		if err != nil {
-			s.err <- err
-			return
-		}
+		fmt.Fprintf(w, "<h1>Success!</h1> <a href='javascript:window.close();'>close</a>")
+		//_, err = w.Write([]byte("Signed in successfully! You can now return to CLI."))
+		//if err != nil {
+		//	s.err <- err
+		//	return
+		//}
 
 		s.result <- &Token{
 			Expiry:       idToken.Expiry,
