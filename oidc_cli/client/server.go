@@ -121,7 +121,7 @@ func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *o
 			s.err <- errors.Wrap(err, "could not render html template")
 		    return
 		}
-		if err := tmpl.Execute(w, _); err != nil {
+		if err := tmpl.Execute(w, s.result); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
