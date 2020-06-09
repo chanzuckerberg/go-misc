@@ -4,13 +4,14 @@ import (
 	"context"
 	"crypto/subtle"
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/coreos/go-oidc"
 	"github.com/pkg/browser"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
-	"os"
-	"time"
 )
 
 // Client is an oauth client
