@@ -206,7 +206,8 @@ func (c *Client) Authenticate(ctx context.Context) (*Token, error) {
 	err = browser.OpenURL(c.GetAuthCodeURL(oauthMaterial))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not open browser")
-	}
-    fmt.Fprintf(os.Stderr, "Success!\n")
+	} else {
+        fmt.Fprintf(os.Stderr, "Successfully authenticated!\n")
+    }
 	return c.server.Wait(ctx)
 }
