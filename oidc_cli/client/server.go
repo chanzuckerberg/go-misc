@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 	"html/template"
+	"path"
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
@@ -115,6 +116,7 @@ func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *o
 			s.err <- errors.Wrap(err, "could not verify ID token")
 			return
 		}
+		fp := path.Join("templates", "success.html")
 		tmpl, err := template.ParseFiles("./success.html")
 		if err != nil {
 		    http.Error(w, err.Error(), http.StatusInternalServerError)
