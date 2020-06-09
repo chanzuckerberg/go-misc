@@ -6,6 +6,7 @@ import (
 	"net"
 	"net/http"
 	"time"
+	"html/template"
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
@@ -114,12 +115,14 @@ func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *o
 			s.err <- errors.Wrap(err, "could not verify ID token")
 			return
 		}
-		fmt.Fprintf(w, "<h1>Success!</h1> <a href='javascript:window.close();'>close</a>")
-		//_, err = w.Write([]byte("Signed in successfully! You can now return to CLI."))
-		//if err != nil {
-		//	s.err <- err
-		//	return
-		//}
+		t, err := template.ParseFiles("success.html")
+		if err != nil {
+		  http.Error(w, err.Error(), http.StatusInternalServerError)
+		  return
+		}
+		if err := tmpl.Execute(w, profile); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 
 		s.result <- &Token{
 			Expiry:       idToken.Expiry,
