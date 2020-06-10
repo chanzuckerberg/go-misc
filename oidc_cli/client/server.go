@@ -6,8 +6,6 @@ import (
 	"net"
 	"net/http"
 	"time"
-	"html/template"
-	"path"
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
