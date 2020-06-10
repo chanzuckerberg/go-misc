@@ -116,15 +116,16 @@ func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *o
 			s.err <- errors.Wrap(err, "could not verify ID token")
 			return
 		}
-		fp := path.Join("templates", "success.html")
-		tmpl, err := template.ParseFiles(fp)
+
+		_, err = w.Write([]byte("<h1>Success!</h1><p>You are now authenticated with AWS; this temporary session
+								will allow you to run AWS commmands from the command line.</p><p> When running 
+								aws-cli commands, be sure to specify your profile in one of the following ways:</p>
+								<code>$ aws --profile &lt;profile-name&gt; &lt;command&gt;</code><br/>
+								<code>$ AWS_PROFILE=&lt;profile-name&gt; aws &lt;command&gt;</code><br/>
+								<p> Feel free to <a href='#' onclick='window.close();'>close this window</a> whenever</p>"))
 		if err != nil {
-		    http.Error(w, err.Error(), http.StatusInternalServerError)
-			s.err <- errors.Wrap(err, "could not render html template")
-		    return
-		}
-		if err := tmpl.Execute(w, s.result); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
+			s.err <- err
+			return
 		}
 
 		s.result <- &Token{
