@@ -4,6 +4,8 @@ import (
 	"context"
 	"crypto/subtle"
 	"fmt"
+	"os"
+	"time"
 
 	"github.com/coreos/go-oidc"
 	"github.com/pkg/browser"
@@ -199,11 +201,13 @@ func (c *Client) Authenticate(ctx context.Context) (*Token, error) {
 	}
 
 	c.server.Start(ctx, c, oauthMaterial)
+	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with Okta, hold on a brief second...\n")
+	time.Sleep(2 * time.Second)
 
 	err = browser.OpenURL(c.GetAuthCodeURL(oauthMaterial))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not open browser")
 	}
-
+	fmt.Fprintf(os.Stderr, "Successfully authenticated!\n")
 	return c.server.Wait(ctx)
 }
