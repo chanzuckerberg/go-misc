@@ -285,6 +285,56 @@ func (mr *MockAutoScalingAPIMockRecorder) BatchPutScheduledUpdateGroupActionWith
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchPutScheduledUpdateGroupActionWithContext", reflect.TypeOf((*MockAutoScalingAPI)(nil).BatchPutScheduledUpdateGroupActionWithContext), varargs...)
 }
 
+// CancelInstanceRefresh mocks base method
+func (m *MockAutoScalingAPI) CancelInstanceRefresh(arg0 *autoscaling.CancelInstanceRefreshInput) (*autoscaling.CancelInstanceRefreshOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CancelInstanceRefresh", arg0)
+	ret0, _ := ret[0].(*autoscaling.CancelInstanceRefreshOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CancelInstanceRefresh indicates an expected call of CancelInstanceRefresh
+func (mr *MockAutoScalingAPIMockRecorder) CancelInstanceRefresh(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelInstanceRefresh", reflect.TypeOf((*MockAutoScalingAPI)(nil).CancelInstanceRefresh), arg0)
+}
+
+// CancelInstanceRefreshRequest mocks base method
+func (m *MockAutoScalingAPI) CancelInstanceRefreshRequest(arg0 *autoscaling.CancelInstanceRefreshInput) (*request.Request, *autoscaling.CancelInstanceRefreshOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CancelInstanceRefreshRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*autoscaling.CancelInstanceRefreshOutput)
+	return ret0, ret1
+}
+
+// CancelInstanceRefreshRequest indicates an expected call of CancelInstanceRefreshRequest
+func (mr *MockAutoScalingAPIMockRecorder) CancelInstanceRefreshRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelInstanceRefreshRequest", reflect.TypeOf((*MockAutoScalingAPI)(nil).CancelInstanceRefreshRequest), arg0)
+}
+
+// CancelInstanceRefreshWithContext mocks base method
+func (m *MockAutoScalingAPI) CancelInstanceRefreshWithContext(arg0 context.Context, arg1 *autoscaling.CancelInstanceRefreshInput, arg2 ...request.Option) (*autoscaling.CancelInstanceRefreshOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CancelInstanceRefreshWithContext", varargs...)
+	ret0, _ := ret[0].(*autoscaling.CancelInstanceRefreshOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CancelInstanceRefreshWithContext indicates an expected call of CancelInstanceRefreshWithContext
+func (mr *MockAutoScalingAPIMockRecorder) CancelInstanceRefreshWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelInstanceRefreshWithContext", reflect.TypeOf((*MockAutoScalingAPI)(nil).CancelInstanceRefreshWithContext), varargs...)
+}
+
 // CompleteLifecycleAction mocks base method
 func (m *MockAutoScalingAPI) CompleteLifecycleAction(arg0 *autoscaling.CompleteLifecycleActionInput) (*autoscaling.CompleteLifecycleActionOutput, error) {
 	m.ctrl.T.Helper()
@@ -1149,6 +1199,56 @@ func (mr *MockAutoScalingAPIMockRecorder) DescribeAutoScalingNotificationTypesWi
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeAutoScalingNotificationTypesWithContext", reflect.TypeOf((*MockAutoScalingAPI)(nil).DescribeAutoScalingNotificationTypesWithContext), varargs...)
+}
+
+// DescribeInstanceRefreshes mocks base method
+func (m *MockAutoScalingAPI) DescribeInstanceRefreshes(arg0 *autoscaling.DescribeInstanceRefreshesInput) (*autoscaling.DescribeInstanceRefreshesOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeInstanceRefreshes", arg0)
+	ret0, _ := ret[0].(*autoscaling.DescribeInstanceRefreshesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeInstanceRefreshes indicates an expected call of DescribeInstanceRefreshes
+func (mr *MockAutoScalingAPIMockRecorder) DescribeInstanceRefreshes(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceRefreshes", reflect.TypeOf((*MockAutoScalingAPI)(nil).DescribeInstanceRefreshes), arg0)
+}
+
+// DescribeInstanceRefreshesRequest mocks base method
+func (m *MockAutoScalingAPI) DescribeInstanceRefreshesRequest(arg0 *autoscaling.DescribeInstanceRefreshesInput) (*request.Request, *autoscaling.DescribeInstanceRefreshesOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeInstanceRefreshesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*autoscaling.DescribeInstanceRefreshesOutput)
+	return ret0, ret1
+}
+
+// DescribeInstanceRefreshesRequest indicates an expected call of DescribeInstanceRefreshesRequest
+func (mr *MockAutoScalingAPIMockRecorder) DescribeInstanceRefreshesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceRefreshesRequest", reflect.TypeOf((*MockAutoScalingAPI)(nil).DescribeInstanceRefreshesRequest), arg0)
+}
+
+// DescribeInstanceRefreshesWithContext mocks base method
+func (m *MockAutoScalingAPI) DescribeInstanceRefreshesWithContext(arg0 context.Context, arg1 *autoscaling.DescribeInstanceRefreshesInput, arg2 ...request.Option) (*autoscaling.DescribeInstanceRefreshesOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeInstanceRefreshesWithContext", varargs...)
+	ret0, _ := ret[0].(*autoscaling.DescribeInstanceRefreshesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeInstanceRefreshesWithContext indicates an expected call of DescribeInstanceRefreshesWithContext
+func (mr *MockAutoScalingAPIMockRecorder) DescribeInstanceRefreshesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceRefreshesWithContext", reflect.TypeOf((*MockAutoScalingAPI)(nil).DescribeInstanceRefreshesWithContext), varargs...)
 }
 
 // DescribeLaunchConfigurations mocks base method
@@ -2847,6 +2947,56 @@ func (mr *MockAutoScalingAPIMockRecorder) SetInstanceProtectionWithContext(arg0,
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetInstanceProtectionWithContext", reflect.TypeOf((*MockAutoScalingAPI)(nil).SetInstanceProtectionWithContext), varargs...)
+}
+
+// StartInstanceRefresh mocks base method
+func (m *MockAutoScalingAPI) StartInstanceRefresh(arg0 *autoscaling.StartInstanceRefreshInput) (*autoscaling.StartInstanceRefreshOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "StartInstanceRefresh", arg0)
+	ret0, _ := ret[0].(*autoscaling.StartInstanceRefreshOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StartInstanceRefresh indicates an expected call of StartInstanceRefresh
+func (mr *MockAutoScalingAPIMockRecorder) StartInstanceRefresh(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartInstanceRefresh", reflect.TypeOf((*MockAutoScalingAPI)(nil).StartInstanceRefresh), arg0)
+}
+
+// StartInstanceRefreshRequest mocks base method
+func (m *MockAutoScalingAPI) StartInstanceRefreshRequest(arg0 *autoscaling.StartInstanceRefreshInput) (*request.Request, *autoscaling.StartInstanceRefreshOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "StartInstanceRefreshRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*autoscaling.StartInstanceRefreshOutput)
+	return ret0, ret1
+}
+
+// StartInstanceRefreshRequest indicates an expected call of StartInstanceRefreshRequest
+func (mr *MockAutoScalingAPIMockRecorder) StartInstanceRefreshRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartInstanceRefreshRequest", reflect.TypeOf((*MockAutoScalingAPI)(nil).StartInstanceRefreshRequest), arg0)
+}
+
+// StartInstanceRefreshWithContext mocks base method
+func (m *MockAutoScalingAPI) StartInstanceRefreshWithContext(arg0 context.Context, arg1 *autoscaling.StartInstanceRefreshInput, arg2 ...request.Option) (*autoscaling.StartInstanceRefreshOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "StartInstanceRefreshWithContext", varargs...)
+	ret0, _ := ret[0].(*autoscaling.StartInstanceRefreshOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// StartInstanceRefreshWithContext indicates an expected call of StartInstanceRefreshWithContext
+func (mr *MockAutoScalingAPIMockRecorder) StartInstanceRefreshWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartInstanceRefreshWithContext", reflect.TypeOf((*MockAutoScalingAPI)(nil).StartInstanceRefreshWithContext), varargs...)
 }
 
 // SuspendProcesses mocks base method
