@@ -48,7 +48,7 @@ func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 }
 
 func (c *Cache) refresh(ctx context.Context, cachedToken *client.Token) (*client.Token, error) {
-	err = c.lock.Lock()
+	err := c.lock.Lock()
 	if err != nil {
 		return nil, err
 	}
