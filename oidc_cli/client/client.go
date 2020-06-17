@@ -1,9 +1,11 @@
 package client
 
 import (
+	"bytes"
 	"context"
 	"crypto/subtle"
 	"fmt"
+	"io"
 	"os"
 	"time"
 
@@ -204,8 +206,17 @@ func (c *Client) Authenticate(ctx context.Context) (*Token, error) {
 	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with Okta, hold on a brief second...\n")
 	time.Sleep(2 * time.Second)
 
+	// intercept these outputs, send them back on error
+	browserStdOut := bytes.NewBuffer(nil)
+	browserStdErr := bytes.NewBuffer(nil)
+	browser.Stdout = browserStdOut
+	browser.Stderr = browserStdErr
+
 	err = browser.OpenURL(c.GetAuthCodeURL(oauthMaterial))
 	if err != nil {
+		// if we error out, send back stdout, stderr
+		io.Copy(os.Stdout, browserStdOut) //nolint:errcheck
+		io.Copy(os.Stderr, browserStdErr) //nolint:errcheck
 		return nil, errors.Wrap(err, "could not open browser")
 	}
 	fmt.Fprintf(os.Stderr, "Successfully authenticated!\n")

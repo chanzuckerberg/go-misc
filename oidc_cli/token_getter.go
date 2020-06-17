@@ -23,12 +23,6 @@ func GetToken(ctx context.Context, clientID string, issuerURL string) (*client.T
 		return nil, errors.Wrap(err, "unable to create lock")
 	}
 
-	err = fileLock.Lock()
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to lock")
-	}
-	defer fileLock.Unlock() //nolint: errcheck
-
 	conf := &client.Config{
 		ClientID:  clientID,
 		IssuerURL: issuerURL,
@@ -46,7 +40,7 @@ func GetToken(ctx context.Context, clientID string, issuerURL string) (*client.T
 	}
 
 	storage := storage.NewKeyring(clientID, issuerURL)
-	cache := cache.NewCache(storage, c.RefreshToken)
+	cache := cache.NewCache(storage, c.RefreshToken, fileLock)
 
 	token, err := cache.Read(ctx)
 	if err != nil {
