@@ -2,11 +2,14 @@ package cache
 
 import (
 	"context"
+	"fmt"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
 	"github.com/chanzuckerberg/go-misc/oidc_cli/storage"
+	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
@@ -29,11 +32,17 @@ func TestNewCache(t *testing.T) {
 
 	u := uuid.New()
 
+	fileLockPath := fmt.Sprintf("/tmp/%s", u.String())
+	defer os.Remove(fileLockPath)
+
+	fileLock, err := pidlock.NewLock(fileLockPath)
+	r.NoError(err)
+
 	refresh := func(ctx context.Context, c *client.Token) (*client.Token, error) {
 		return &client.Token{IDToken: u.String()}, nil
 	}
 
-	c := NewCache(s, refresh)
+	c := NewCache(s, refresh, fileLock)
 
 	token, err := c.Read(ctx)
 	r.NoError(err)
@@ -50,11 +59,16 @@ func TestCorruptedCache(t *testing.T) {
 
 	u := uuid.New()
 
+	fileLockPath := fmt.Sprintf("/tmp/%s", u.String())
+	defer os.Remove(fileLockPath)
+	fileLock, err := pidlock.NewLock(fileLockPath)
+	r.NoError(err)
+
 	refresh := func(ctx context.Context, c *client.Token) (*client.Token, error) {
 		return &client.Token{IDToken: u.String()}, nil
 	}
 
-	c := NewCache(s, refresh)
+	c := NewCache(s, refresh, fileLock)
 
 	token, err := c.Read(ctx)
 	r.NoError(err)
@@ -79,6 +93,11 @@ func TestCachedToken(t *testing.T) {
 
 	u := uuid.New()
 
+	fileLockPath := fmt.Sprintf("/tmp/%s", u.String())
+	defer os.Remove(fileLockPath)
+	fileLock, err := pidlock.NewLock(fileLockPath)
+	r.NoError(err)
+
 	freshToken := &client.Token{
 		IDToken: u.String(),
 		Expiry:  time.Now().Add(time.Hour), // should always be fresh in this context... unless the tests are so slow
@@ -94,7 +113,7 @@ func TestCachedToken(t *testing.T) {
 		return nil, errors.New("always error")
 	}
 
-	c := NewCache(s, refresh)
+	c := NewCache(s, refresh, fileLock)
 
 	token, err := c.Read(ctx)
 	r.Nil(err)
