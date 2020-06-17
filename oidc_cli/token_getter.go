@@ -2,6 +2,7 @@ package oidc
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"time"
 
@@ -24,15 +25,11 @@ func GetToken(ctx context.Context, clientID string, issuerURL string) (*client.T
 		return nil, errors.Wrap(err, "unable to create lock")
 	}
 
-	f, err := os.OpenFile("/tmp/oidc-lock", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile("/tmp/oidc-lock-time", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
-
-	if _, err := f.WriteString("text to append\n"); err != nil {
-		return nil, err
-	}
 
 	start := time.Now()
 
@@ -41,8 +38,8 @@ func GetToken(ctx context.Context, clientID string, issuerURL string) (*client.T
 		return nil, errors.Wrap(err, "unable to lock")
 	}
 	defer func() {
-		fileLock.Unlock()                         //nolint: errcheck
-		f.WriteString(time.Since(start).String()) //nolint: errcheck
+		fileLock.Unlock()                                                    //nolint: errcheck
+		f.WriteString(fmt.Sprintf("%d\n", time.Since(start).Milliseconds())) //nolint: errcheck
 	}()
 
 	conf := &client.Config{
