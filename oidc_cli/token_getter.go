@@ -2,6 +2,8 @@ package oidc
 
 import (
 	"context"
+	"fmt"
+	"os"
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc_cli/cache"
@@ -18,6 +20,14 @@ const (
 // GetToken gets an oidc token.
 // It handles caching with a default cache and keyring storage.
 func GetToken(ctx context.Context, clientID string, issuerURL string) (*client.Token, error) {
+	f, err := os.OpenFile("/tmp/oidc-lock-time", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	start := time.Now()
+	defer f.WriteString(fmt.Sprintf("%d\n", time.Since(start).Milliseconds())) //nolint: errcheck
+
 	fileLock, err := pidlock.NewLock(lockFilePath)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to create lock")

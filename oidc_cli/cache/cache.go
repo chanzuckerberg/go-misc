@@ -2,9 +2,6 @@ package cache
 
 import (
 	"context"
-	"fmt"
-	"os"
-	"time"
 
 	client "github.com/chanzuckerberg/go-misc/oidc_cli/client"
 	"github.com/chanzuckerberg/go-misc/oidc_cli/storage"
@@ -51,22 +48,11 @@ func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 }
 
 func (c *Cache) refresh(ctx context.Context, cachedToken *client.Token) (*client.Token, error) {
-	f, err := os.OpenFile("/tmp/oidc-lock-time", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	start := time.Now()
 	err = c.lock.Lock()
 	if err != nil {
 		return nil, err
 	}
-
-	defer func() {
-		c.lock.Unlock()                                                      //nolint: errcheck
-		f.WriteString(fmt.Sprintf("%d\n", time.Since(start).Milliseconds())) //nolint: errcheck
-	}()
+	defer c.lock.Unlock()
 
 	// acquire lock, try reading from cache again just in case
 	// someone else got here first
