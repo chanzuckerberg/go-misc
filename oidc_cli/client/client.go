@@ -219,6 +219,10 @@ func (c *Client) Authenticate(ctx context.Context) (*Token, error) {
 		io.Copy(os.Stderr, browserStdErr) //nolint:errcheck
 		return nil, errors.Wrap(err, "could not open browser")
 	}
+	token, err := c.server.Wait(ctx)
+	if err != nil {
+		return nil, err
+	}
 	fmt.Fprintf(os.Stderr, "Successfully authenticated!\n")
-	return c.server.Wait(ctx)
+	return token, nil
 }
