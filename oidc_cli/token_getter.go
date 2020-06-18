@@ -2,7 +2,6 @@ package oidc
 
 import (
 	"context"
-	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc_cli/cache"
 	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
@@ -17,21 +16,16 @@ const (
 
 // GetToken gets an oidc token.
 // It handles caching with a default cache and keyring storage.
-func GetToken(ctx context.Context, clientID string, issuerURL string) (*client.Token, error) {
+func GetToken(ctx context.Context, clientID string, issuerURL string, serverConfig *client.ServerConfig) (*client.Token, error) {
 	fileLock, err := pidlock.NewLock(lockFilePath)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to create lock")
 	}
 
 	conf := &client.Config{
-		ClientID:  clientID,
-		IssuerURL: issuerURL,
-		ServerConfig: &client.ServerConfig{
-			// TODO (el): Make these configurable?
-			FromPort: 49152,
-			ToPort:   49152 + 63,
-			Timeout:  90 * time.Second,
-		},
+		ClientID:     clientID,
+		IssuerURL:    issuerURL,
+		ServerConfig: serverConfig,
 	}
 
 	c, err := client.NewClient(ctx, conf)
