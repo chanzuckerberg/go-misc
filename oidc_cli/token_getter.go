@@ -30,7 +30,7 @@ func GetToken(ctx context.Context, clientID string, issuerURL string) (*client.T
 			// TODO (el): Make these configurable?
 			FromPort: 49152,
 			ToPort:   49152 + 63,
-			Timeout:  30 * time.Second,
+			Timeout:  90 * time.Second,
 		},
 	}
 
