@@ -35,34 +35,34 @@ func NewCache(
 //      if not present or expired, will refresh
 func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 	// If we have a fresh token, use it
-	cachedToken, err := c.readFromStorage(ctx)
+	_, err := c.readFromStorage(ctx)
 	if err != nil {
 		return nil, err
 	}
-	if cachedToken != nil {
-		return cachedToken, nil
-	}
+	// if cachedToken != nil {
+	// return cachedToken, nil
+	// }
 
 	// otherwise, try refreshing
-	return c.refresh(ctx, cachedToken)
+	return c.refresh(ctx)
 }
 
-func (c *Cache) refresh(ctx context.Context, cachedToken *client.Token) (*client.Token, error) {
+func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	err := c.lock.Lock()
 	if err != nil {
 		return nil, err
 	}
-	defer c.lock.Unlock()
+	defer c.lock.Unlock() //nolint:errcheck
 
 	// acquire lock, try reading from cache again just in case
 	// someone else got here first
-	cachedToken, err = c.readFromStorage(ctx)
+	cachedToken, err := c.readFromStorage(ctx)
 	if err != nil {
 		return nil, err
 	}
-	if cachedToken != nil {
-		return cachedToken, nil
-	}
+	// if cachedToken != nil {
+	// return cachedToken, nil
+	// }
 
 	// ok, at this point we have the lock and there are no good tokens around
 	// fetch a new one and save it
