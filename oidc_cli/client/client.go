@@ -98,14 +98,15 @@ func (c *Client) idTokenFromOauth2Token(
 
 // RefreshToken will fetch a new token
 func (c *Client) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
-	logrus.Warnf("refresh scopes: %#v", c.oauthConfig.Scopes)
+	logrus.Debugf("refresh scopes: %#v", c.oauthConfig.Scopes)
+
 	newToken, err := c.refreshToken(ctx, oldToken)
 	// if we could refresh successfully, do so.
 	// otherwise try a new token
 	if err == nil {
 		return newToken, nil
 	}
-	logrus.WithError(err).Error("failed to refresh token, requesting new one")
+	logrus.WithError(err).Debug("failed to refresh token, requesting new one")
 
 	return c.Authenticate(ctx)
 }
@@ -139,8 +140,7 @@ func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error)
 	if err != nil {
 		return nil, err
 	}
-
-	logrus.Info("refresh worked!")
+	logrus.Debug("refresh successful")
 
 	return &Token{
 		Version: token.Version,
