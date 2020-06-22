@@ -34,33 +34,34 @@ func NewCache(
 // Read will attempt to read a token from the cache
 //      if not present or expired, will refresh
 func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
-	// If we have a fresh token, use it
 	cachedToken, err := c.readFromStorage(ctx)
 	if err != nil {
 		return nil, err
 	}
-	if cachedToken != nil {
+	// if we have a valid token, use it
+	if cachedToken.IsFresh() {
 		return cachedToken, nil
 	}
 
 	// otherwise, try refreshing
-	return c.refresh(ctx, cachedToken)
+	return c.refresh(ctx)
 }
 
-func (c *Cache) refresh(ctx context.Context, cachedToken *client.Token) (*client.Token, error) {
+func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	err := c.lock.Lock()
 	if err != nil {
 		return nil, err
 	}
-	defer c.lock.Unlock()
+	defer c.lock.Unlock() //nolint:errcheck
 
 	// acquire lock, try reading from cache again just in case
 	// someone else got here first
-	cachedToken, err = c.readFromStorage(ctx)
+	cachedToken, err := c.readFromStorage(ctx)
 	if err != nil {
 		return nil, err
 	}
-	if cachedToken != nil {
+	// if we have a valid token, use it
+	if cachedToken.IsFresh() {
 		return cachedToken, nil
 	}
 
@@ -71,15 +72,16 @@ func (c *Cache) refresh(ctx context.Context, cachedToken *client.Token) (*client
 		return nil, err
 	}
 
-	if token == nil {
-		return nil, errors.New("nil token returned")
+	// check the new token is good to use
+	if !token.IsFresh() {
+		return nil, errors.New("invalid token fetched")
 	}
 
+	// save token to storage
 	strToken, err := token.Marshal()
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to marshall token")
 	}
-
 	err = c.storage.Set(ctx, strToken)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to cache the strToken")
@@ -88,6 +90,8 @@ func (c *Cache) refresh(ctx context.Context, cachedToken *client.Token) (*client
 	return token, nil
 }
 
+// reads token from storage, potentially returning a nil/expired token
+// users must call IsFresh to check token validty
 func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	cached, err := c.storage.Read(ctx)
 	if err != nil {
@@ -95,14 +99,11 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	}
 	cachedToken, err := client.TokenFromString(cached)
 	if err != nil {
-		logrus.Debugf("error fetching stored token: %s", err)
+		logrus.WithError(err).Debug("error fetching stored token")
 		err = c.storage.Delete(ctx) // can't read it, so attempt to purge it
 		if err != nil {
-			logrus.Debugf("error clearing token from storage: %s", err)
+			logrus.WithError(err).Debug("error clearing token from storage")
 		}
 	}
-	if cachedToken.IsFresh() {
-		return cachedToken, nil
-	}
-	return nil, nil
+	return cachedToken, nil
 }
