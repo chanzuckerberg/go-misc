@@ -39,7 +39,8 @@ func TestNewCache(t *testing.T) {
 	r.NoError(err)
 
 	refresh := func(ctx context.Context, c *client.Token) (*client.Token, error) {
-		return &client.Token{IDToken: u.String()}, nil
+		// returns a "valid" token
+		return &client.Token{IDToken: u.String(), Expiry: time.Now().Add(time.Hour)}, nil
 	}
 
 	c := NewCache(s, refresh, fileLock)
@@ -65,7 +66,8 @@ func TestCorruptedCache(t *testing.T) {
 	r.NoError(err)
 
 	refresh := func(ctx context.Context, c *client.Token) (*client.Token, error) {
-		return &client.Token{IDToken: u.String()}, nil
+		// returns a "fresh" token
+		return &client.Token{IDToken: u.String(), Expiry: time.Now().Add(time.Hour)}, nil
 	}
 
 	c := NewCache(s, refresh, fileLock)
