@@ -118,10 +118,10 @@ func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error)
 	logrus.Debug("refresh token found, attempting refresh flow")
 
 	oauthToken := &oauth2.Token{
-		AccessToken:  token.AccessToken,
 		RefreshToken: token.RefreshToken,
 		Expiry:       token.Expiry,
 	}
+
 	tokenSource := c.oauthConfig.TokenSource(ctx, oauthToken)
 
 	newOauth2Token, err := tokenSource.Token()
