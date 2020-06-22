@@ -140,6 +140,8 @@ func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error)
 		return nil, err
 	}
 
+	logrus.Info("refresh worked!")
+
 	return &Token{
 		Version: token.Version,
 		Expiry:  idToken.Expiry,
