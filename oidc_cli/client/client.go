@@ -98,6 +98,7 @@ func (c *Client) idTokenFromOauth2Token(
 
 // RefreshToken will fetch a new token
 func (c *Client) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
+	logrus.Warnf("refresh scopes: %#v", c.oauthConfig.Scopes)
 	newToken, err := c.refreshToken(ctx, oldToken)
 	// if we could refresh successfully, do so.
 	// otherwise try a new token
@@ -128,8 +129,13 @@ func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error)
 		return nil, errors.Wrap(err, "could not refresh token")
 	}
 
-	// We don't have a nonce in this flow since we're refreshing our refresh token -- auth already happened
-	claims, idToken, verifiedIDToken, err := c.idTokenFromOauth2Token(ctx, newOauth2Token, []byte{})
+	// We don't have a nonce in this flow since we're refreshing
+	//    our refresh token -- auth already happened
+	zeroNonce := []byte{}
+	claims, idToken, verifiedIDToken, err := c.idTokenFromOauth2Token(
+		ctx,
+		newOauth2Token,
+		zeroNonce)
 	if err != nil {
 		return nil, err
 	}
