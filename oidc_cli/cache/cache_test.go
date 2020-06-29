@@ -3,6 +3,7 @@ package cache
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -121,4 +122,44 @@ func TestCachedToken(t *testing.T) {
 	r.Nil(err)
 	r.NotNil(token)
 	r.Equal(token.IDToken, u.String())
+}
+
+func TestFileCache(t *testing.T) {
+	r := require.New(t)
+	u := uuid.New()
+	ctx := context.Background()
+
+	refresh := func(ctx context.Context, c *client.Token) (*client.Token, error) {
+		// returns a "fresh" token
+		return &client.Token{
+			IDToken:      u.String(),
+			Expiry:       time.Now().Add(time.Hour),
+			RefreshToken: "some refresh token",
+		}, nil
+	}
+
+	dir, err := ioutil.TempDir("", "")
+	r.NoError(err)
+	defer os.Remove(dir)
+
+	fileLockPath := fmt.Sprintf("/tmp/%s", u.String())
+	defer os.Remove(fileLockPath)
+	fileLock, err := pidlock.NewLock(fileLockPath)
+	r.NoError(err)
+
+	s := storage.NewFile(dir, "client-id", "issuer-url")
+
+	c := NewCache(s, refresh, fileLock)
+
+	token, err := c.Read(ctx)
+	r.NoError(err)
+
+	r.NotNil(token)
+	r.Empty(token.RefreshToken)
+
+	token, err = c.Read(ctx)
+	r.NoError(err)
+
+	r.NotNil(token)
+	r.Empty(token.RefreshToken)
 }

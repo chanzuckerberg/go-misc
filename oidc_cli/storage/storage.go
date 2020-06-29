@@ -1,6 +1,10 @@
 package storage
 
-import "context"
+import (
+	"context"
+
+	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
+)
 
 const (
 	service = "aws-oidc"
@@ -13,4 +17,6 @@ type Storage interface {
 	Read(context.Context) (*string, error)
 	Set(ctx context.Context, value string) error
 	Delete(context.Context) error
+
+	MarshalOpts() []client.MarshalOpts
 }

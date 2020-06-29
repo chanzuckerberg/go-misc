@@ -20,6 +20,7 @@ require (
 	github.com/honeycombio/libhoney-go v1.12.4
 	github.com/klauspost/compress v1.10.8 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/nightlyone/lockfile v1.0.0
 	github.com/nlopes/slack v0.6.0
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
