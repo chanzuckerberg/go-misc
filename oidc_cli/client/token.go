@@ -45,7 +45,7 @@ func (vt *Token) IsFresh() bool {
 	return vt.Expiry.After(time.Now().Add(timeSkew))
 }
 
-func TokenFromString(tokenString *string) (*Token, error) {
+func TokenFromString(tokenString *string, opts ...MarshalOpts) (*Token, error) {
 	if tokenString == nil {
 		logrus.Debug("nil token string")
 		return nil, nil
@@ -61,12 +61,21 @@ func TokenFromString(tokenString *string) (*Token, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "could not json unmarshal token")
 	}
+
+	for _, opt := range opts {
+		opt(token)
+	}
 	return token, nil
 }
 
-func (vt *Token) Marshal() (string, error) {
+func (vt *Token) Marshal(opts ...MarshalOpts) (string, error) {
 	if vt == nil {
 		return "", errors.New("error Marshalling nil token")
+	}
+
+	// apply any processing to the token
+	for _, opt := range opts {
+		opt(vt)
 	}
 
 	tokenBytes, err := json.Marshal(vt)
@@ -76,4 +85,15 @@ func (vt *Token) Marshal() (string, error) {
 
 	b64 := base64.StdEncoding.EncodeToString(tokenBytes)
 	return b64, nil
+}
+
+// MarshalOpts changes a token for marshaling
+type MarshalOpts func(*Token)
+
+// Disables the refresh oauth flow
+func MarshalOptNoRefresh(t *Token) {
+	if t == nil {
+		return
+	}
+	t.RefreshToken = ""
 }
