@@ -1,17 +1,30 @@
 package sentry
 
 import (
+	"time"
+
 	"github.com/getsentry/sentry-go"
 	"github.com/pkg/errors"
 )
 
-func Setup(env, dsn string) error {
+// Setup will initialize the sentry client and return a cleanup func to be used in a defer.Setup
+//  Example:
+//
+//  f, e := sentry.Setup("...", "...")
+//  if e != nil { ... }
+//  defer f()
+func Setup(env, dsn string) (func(), error) {
 	err := sentry.Init(sentry.ClientOptions{
 		Dsn:         dsn,
 		Environment: env,
 	})
 	if err != nil {
-		return errors.Wrap(err, "sentry initialization failed")
+		return nil, errors.Wrap(err, "sentry initialization failed")
 	}
-	return nil
+
+	f := func() {
+		sentry.Flush(time.Second * 5)
+		sentry.Recover()
+	}
+	return f, nil
 }
