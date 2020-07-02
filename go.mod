@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/aws/aws-lambda-go v1.17.0
-	github.com/aws/aws-sdk-go v1.32.12
+	github.com/aws/aws-sdk-go v1.33.1
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/coreos/go-oidc v2.2.1+incompatible
@@ -20,12 +20,15 @@ require (
 	github.com/honeycombio/libhoney-go v1.12.4
 	github.com/klauspost/compress v1.10.10 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/nightlyone/lockfile v1.0.0
 	github.com/nlopes/slack v0.6.0
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/pkg/errors v0.9.1
 	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
 	github.com/sirupsen/logrus v1.6.0
+	github.com/spf13/cobra v1.0.0
+	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/testify v1.5.1
 	github.com/vmihailenco/msgpack/v4 v4.3.12 // indirect
 	github.com/zalando/go-keyring v0.0.0-20200121091418-667557018717
