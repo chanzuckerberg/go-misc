@@ -9,6 +9,7 @@ require (
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/danieljoos/wincred v1.1.0 // indirect
+	github.com/getsentry/sentry-go v0.6.1
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/golang/mock v1.4.3
 	github.com/golang/protobuf v1.4.2 // indirect
@@ -20,6 +21,7 @@ require (
 	github.com/honeycombio/libhoney-go v1.12.4
 	github.com/klauspost/compress v1.10.10 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
+	github.com/mitchellh/go-homedir v1.1.0
 	github.com/nightlyone/lockfile v1.0.0
 	github.com/nlopes/slack v0.6.0
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
