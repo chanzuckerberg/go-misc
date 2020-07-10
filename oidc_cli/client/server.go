@@ -90,6 +90,10 @@ func (s *server) GetBoundPort() int {
 // Start will start a webserver to capture oidc response
 func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *oauthMaterial) {
 	mux := http.NewServeMux()
+	successMsg, ok := oidcClient.customMsgs["success"]
+	if !ok {
+		successMsg = "Signed in successfully! You can now return to CLI."
+	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		err := oidcClient.ValidateState(
 			oauthMaterial.StateBytes,
@@ -115,7 +119,7 @@ func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *o
 			return
 		}
 
-		_, err = w.Write([]byte("Signed in successfully! You can now return to CLI."))
+		_, err = w.Write([]byte(successMsg))
 		if err != nil {
 			s.err <- err
 			return
