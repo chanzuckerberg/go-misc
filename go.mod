@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/aws/aws-lambda-go v1.17.0
-	github.com/aws/aws-sdk-go v1.33.1
+	github.com/aws/aws-sdk-go v1.33.5
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/coreos/go-oidc v2.2.1+incompatible
@@ -32,7 +32,8 @@ require (
 	github.com/stretchr/testify v1.5.1
 	github.com/vmihailenco/msgpack/v4 v4.3.12 // indirect
 	github.com/zalando/go-keyring v0.0.0-20200121091418-667557018717
-	golang.org/x/net v0.0.0-20200625001655-4c5254603344 // indirect
+	golang.org/x/crypto v0.0.0-20200707235045-ab33eee955e0 // indirect
+	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
 	google.golang.org/appengine v1.6.6 // indirect
