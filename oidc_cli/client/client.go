@@ -34,7 +34,7 @@ type Config struct {
 }
 
 // NewClient returns a new client
-func NewClient(ctx context.Context, config *Config, configOpts ...func(*Client) *Client) (*Client, error) {
+func NewClient(ctx context.Context, config *Config, configOptions ...clientOption) (*Client, error) {
 	provider, err := oidc.NewProvider(ctx, config.IssuerURL)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create oidc provider")
@@ -69,9 +69,13 @@ func NewClient(ctx context.Context, config *Config, configOpts ...func(*Client) 
 		oauthConfig: oauthConfig,
 
 		server: server,
+		customMessages: map[oidcStatus]string{
+			oidcStatusSuccess: defaultSuccessMessage,
+		},
 	}
-	for _, configOpt := range configOpts {
-		clientConfig = configOpt(clientConfig)
+
+	for _, configOpt := range configOptions {
+		configOpt(clientConfig)
 	}
 
 	return clientConfig, nil
