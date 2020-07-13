@@ -14,7 +14,6 @@ lint: ## run the fast go linters
 .PHONY: lint
 
 deps:
-	go get -u ./...
 	go mod tidy
 .PHONY: deps
 
