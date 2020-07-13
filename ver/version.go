@@ -9,6 +9,17 @@ import (
 	"github.com/pkg/errors"
 )
 
+var (
+	Version = "undefined"
+	GitSha  = "undefined"
+	Release = "false"
+	Dirty   = "true"
+)
+
+func VersionStr() (string, error) {
+	return VersionString(Version, GitSha, Release, Dirty)
+}
+
 // VersionString returns the version string
 func VersionString(version, gitsha, releaseStr, dirtyStr string) (string, error) {
 	release, e := strconv.ParseBool(releaseStr)
@@ -40,9 +51,9 @@ func versionString(version, sha string, release, dirty bool) string {
 		return version
 	}
 	if !dirty {
-		return fmt.Sprintf("%s+%s", version, sha)
+		return fmt.Sprintf("%s-pre+%s", version, sha)
 	}
-	return fmt.Sprintf("%s+%s+dirty", version, sha)
+	return fmt.Sprintf("%s-pre+%s.dirty", version, sha)
 }
 
 // ParseVersion will take a version string and parse it
