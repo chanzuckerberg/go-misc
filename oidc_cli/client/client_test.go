@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -20,4 +21,14 @@ func TestValidateState(t *testing.T) {
 	// matches, send the same value
 	err = c.ValidateState(material.StateBytes, material.StateBytes)
 	r.NoError(err)
+}
+
+func TestClientConfig(t *testing.T) {
+	r := require.New(t)
+
+	addSuccessMsgFunc := func(c *Client) *Client {
+		c.customMsgs["success"] = "foo"
+	}
+
+	NewClient(context.Background())
 }
