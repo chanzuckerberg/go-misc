@@ -8,9 +8,9 @@ type oidcStatus string
 
 var oidcStatusSuccess oidcStatus = "success"
 
-type clientOption func(*Client)
+type ClientOption func(*Client)
 
-var ClientOptionSetSuccessMessage = func(successMessage string) clientOption {
+var ClientOptionSetSuccessMessage = func(successMessage string) ClientOption {
 	return func(c *Client) {
 		c.customMessages[oidcStatusSuccess] = successMessage
 	}
