@@ -22,6 +22,8 @@ func TestVersionString(t *testing.T) {
 		wantErr bool
 	}{
 		{"simple", args{"0.1.0", "abcdef", "true", "false"}, "0.1.0", false},
+		{"prerelease", args{"0.1.0", "abcdef", "false", "false"}, "0.1.0-pre+abcdef", false},
+		{"prerelease dirty", args{"0.1.0", "abcdef", "false", "true"}, "0.1.0-pre+abcdef.dirty", false},
 		{"bad release", args{"0.1.0", "abcdef", "junk", "false"}, "", true},
 		{"bad dirty", args{"0.1.0", "abcdef", "false", "junk"}, "", true},
 	}
