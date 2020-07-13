@@ -1,4 +1,5 @@
 export GO111MODULE=on
+export CGO_ENABLED=1
 
 all: test
 
@@ -19,7 +20,11 @@ deps:
 .PHONY: deps
 
 test: ## run the tests
-	CGO_ENABLED=1 go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+ifeq (, $(shell which gotest))
+	go test -failfast -cover ./...
+else
+	gotest -failfast -cover ./...
+endif
 
 test-ci: ## run tests in ci (don't try to updated dependencies)
 	CGO_ENABLED=1 go test -race -coverprofile=coverage.txt -covermode=atomic ./...
