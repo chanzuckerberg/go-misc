@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 )
@@ -26,9 +27,19 @@ func TestValidateState(t *testing.T) {
 func TestClientConfig(t *testing.T) {
 	r := require.New(t)
 
-	addSuccessMsgFunc := func(c *Client) *Client {
-		c.customMsgs["success"] = "foo"
+	testClientConfig := &Config{
+		ClientID:  "dummyClientID",
+		IssuerURL: "localhost",
+		ServerConfig: &ServerConfig{
+			FromPort: 0,
+			ToPort:   0,
+			Timeout:  time.Second,
+		},
 	}
 
-	NewClient(context.Background())
+	client, err := NewClient(context.Background(), testClientConfig)
+	r.NoError(err)
+	r.Equal(client.customMessages[oidcStatusSuccess], "success")
+
+	// Set the success status
 }

@@ -7,6 +7,7 @@ require (
 	github.com/aws/aws-sdk-go v1.33.5
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
+	github.com/coreos/etcd v3.3.10+incompatible
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/golang/mock v1.4.3
