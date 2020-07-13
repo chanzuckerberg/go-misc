@@ -2,6 +2,7 @@ package client
 
 import (
 	"context"
+	"net/http/httptest"
 	"testing"
 	"time"
 
@@ -37,8 +38,11 @@ func TestClientConfig(t *testing.T) {
 		},
 	}
 
+	// ctrl := gomock.NewController(t)
+
 	client, err := NewClient(context.Background(), testClientConfig)
-	r.NoError(err)
+	// r.NoError(err)
+	client.server = httptest.NewServer(router)
 	r.Equal(client.customMessages[oidcStatusSuccess], "success")
 
 	// Set the success status
