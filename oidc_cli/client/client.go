@@ -31,10 +31,16 @@ type Config struct {
 	IssuerURL string
 
 	ServerConfig *ServerConfig
+
+	customMessages map[oidcStatus]string
 }
 
 // NewClient returns a new client
-func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*Client, error) {
+func NewClient(ctx context.Context, config *Config, configOptions ...Option) (*Client, error) {
+	for _, option := range configOptions {
+		option(config)
+	}
+
 	provider, err := oidc.NewProvider(ctx, config.IssuerURL)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create oidc provider")
@@ -63,7 +69,7 @@ func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*C
 	}
 	verifier := provider.Verifier(oidcConfig)
 
-	clientConfig := &Client{
+	client := &Client{
 		provider:    provider,
 		verifier:    verifier,
 		oauthConfig: oauthConfig,
@@ -74,11 +80,12 @@ func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*C
 		},
 	}
 
-	for _, clientOption := range clientOptions {
-		clientOption(clientConfig)
+	// assign all custom messages
+	for k, v := range config.customMessages {
+		client.customMessages[k] = v
 	}
 
-	return clientConfig, nil
+	return client, nil
 }
 
 func (c *Client) idTokenFromOauth2Token(

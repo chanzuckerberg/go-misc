@@ -20,7 +20,7 @@ const (
 
 // GetToken gets an oidc token.
 // It handles caching with a default cache and keyring storage.
-func GetToken(ctx context.Context, clientID string, issuerURL string, clientOptions ...client.Option) (*client.Token, error) {
+func GetToken(ctx context.Context, clientID string, issuerURL string, configOptions ...client.Option) (*client.Token, error) {
 	fileLock, err := pidlock.NewLock(lockFilePath)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to create lock")
@@ -30,14 +30,13 @@ func GetToken(ctx context.Context, clientID string, issuerURL string, clientOpti
 		ClientID:  clientID,
 		IssuerURL: issuerURL,
 		ServerConfig: &client.ServerConfig{
-			// TODO (el): Make these configurable?
 			FromPort: 49152,
 			ToPort:   49152 + 63,
-			Timeout:  30 * time.Second,
+			Timeout:  5 * time.Minute,
 		},
 	}
 
-	c, err := client.NewClient(ctx, conf, clientOptions...)
+	c, err := client.NewClient(ctx, conf, configOptions...)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to create client")
 	}
