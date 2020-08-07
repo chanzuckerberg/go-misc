@@ -3,12 +3,14 @@ module github.com/chanzuckerberg/go-misc
 go 1.14
 
 require (
+	github.com/AlecAivazis/survey/v2 v2.1.0
 	github.com/aws/aws-lambda-go v1.17.0
 	github.com/aws/aws-sdk-go v1.33.5
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/danieljoos/wincred v1.1.0 // indirect
+	github.com/go-errors/errors v1.1.1
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/golang/mock v1.4.3
 	github.com/golang/protobuf v1.4.2 // indirect
