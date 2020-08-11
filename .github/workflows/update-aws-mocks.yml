@@ -2,7 +2,7 @@ name: "Upgrade AWS Mocks on a schedule"
 
 on:
   schedule:
-    - cron:  '*/15 * * * *'
+    - cron:  '0 2 * * *'
 
 jobs:
   upgrade-mocks:
