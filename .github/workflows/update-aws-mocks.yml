@@ -23,3 +23,9 @@ jobs:
       uses: peter-evans/create-pull-request@v3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: Update AWS Mocks
+        title: '[fix] Update AWS Mocks'
+        labels: |
+            report
+            automated pr
+        draft: false
