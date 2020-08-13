@@ -1,25 +1,27 @@
 package oidc
 
 import (
-	"fmt"
-	"crypto/rsa"
 	"crypto/rand"
+	"crypto/rsa"
 	"crypto/x509"
-	"golang.org/x/crypto/ssh"
 	"encoding/pem"
+	"golang.org/x/crypto/ssh"
 	"gopkg.in/square/go-jose.v2"
 	"os"
 )
 
-func generateRSAKey() error {
+// Generate new RSA keys.
+// One of the intended use-cases is to generate keys for the
+// Okta oauth [api authentication](https://developer.okta.com/docs/guides/implement-oauth-for-okta-serviceapp/create-publicprivate-keypair/).
+func generateRSAKey() (*jose.JSONWebKey, error) {
 	priv, err := rsa.GenerateKey(rand.Reader, 4096)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
 	out, err := os.Create("rsa")
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer out.Close()
 
@@ -31,25 +33,18 @@ func generateRSAKey() error {
 		},
 	)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	sshPub, err := ssh.NewPublicKey(priv.Public())
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	pub := jose.JSONWebKey{
+	return &jose.JSONWebKey{
 		Key:       priv.Public(),
 		KeyID:     ssh.FingerprintSHA256(sshPub),
 		Algorithm: string(jose.RS256),
 		Use:       "sig",
-	}
-
-	b, err := pub.MarshalJSON()
-	if err != nil {
-		return err
-	}
-	fmt.Println(string(b))
-	return nil
+	}, nil
 }
