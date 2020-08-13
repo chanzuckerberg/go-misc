@@ -5,9 +5,10 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
+	"os"
+
 	"golang.org/x/crypto/ssh"
 	"gopkg.in/square/go-jose.v2"
-	"os"
 )
 
 // Generate new RSA keys.
