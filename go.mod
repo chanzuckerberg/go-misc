@@ -34,7 +34,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	github.com/vmihailenco/msgpack/v4 v4.3.12 // indirect
 	github.com/zalando/go-keyring v0.1.0
-	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
+	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
@@ -42,5 +42,5 @@ require (
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
-	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
+	gopkg.in/square/go-jose.v2 v2.5.1
 )
