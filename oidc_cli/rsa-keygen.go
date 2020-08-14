@@ -14,7 +14,7 @@ import (
 // Generate new RSA keys.
 // One of the intended use-cases is to generate keys for the
 // Okta oauth [api authentication](https://developer.okta.com/docs/guides/implement-oauth-for-okta-serviceapp/create-publicprivate-keypair/).
-func generateRSAKey() (*jose.JSONWebKey, error) {
+func GenerateRSAKey() (*jose.JSONWebKey, error) {
 	priv, err := rsa.GenerateKey(rand.Reader, 4096)
 	if err != nil {
 		return nil, err
