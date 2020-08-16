@@ -2,8 +2,8 @@ name: "Upgrade AWS Mocks on a schedule"
 
 on:
   schedule:
-    # Hourly between 10:10 PST and 16:10 PST on every day-of-week from Monday through Friday
-    - cron: "10 17-23 * * 1-7"
+    # Hourly between 10:10 PST and 16:10 PST on every day
+    - cron: "10 17-23 * * *"
 
 jobs:
   upgrade-mocks:
