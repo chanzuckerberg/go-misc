@@ -3,6 +3,13 @@ export CGO_ENABLED=1
 
 all: test
 
+clean: ## clean the repo
+	rm go-misc 2>/dev/null || true
+	go clean
+	go clean -testcache
+	rm -rf dist 2>/dev/null || true
+	rm coverage.out 2>/dev/null || true
+
 setup:
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.16.0
 
@@ -15,6 +22,7 @@ lint: ## run the fast go linters
 .PHONY: lint
 
 deps:
+	go get -u ./...
 	go mod tidy
 .PHONY: deps
 
