@@ -6,37 +6,36 @@ package mocks
 
 import (
 	context "context"
-	reflect "reflect"
-
 	request "github.com/aws/aws-sdk-go/aws/request"
 	firehose "github.com/aws/aws-sdk-go/service/firehose"
 	gomock "github.com/golang/mock/gomock"
+	reflect "reflect"
 )
 
-// MockFirehoseAPI is a mock of FirehoseAPI interface.
+// MockFirehoseAPI is a mock of FirehoseAPI interface
 type MockFirehoseAPI struct {
 	ctrl     *gomock.Controller
 	recorder *MockFirehoseAPIMockRecorder
 }
 
-// MockFirehoseAPIMockRecorder is the mock recorder for MockFirehoseAPI.
+// MockFirehoseAPIMockRecorder is the mock recorder for MockFirehoseAPI
 type MockFirehoseAPIMockRecorder struct {
 	mock *MockFirehoseAPI
 }
 
-// NewMockFirehoseAPI creates a new mock instance.
+// NewMockFirehoseAPI creates a new mock instance
 func NewMockFirehoseAPI(ctrl *gomock.Controller) *MockFirehoseAPI {
 	mock := &MockFirehoseAPI{ctrl: ctrl}
 	mock.recorder = &MockFirehoseAPIMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockFirehoseAPI) EXPECT() *MockFirehoseAPIMockRecorder {
 	return m.recorder
 }
 
-// CreateDeliveryStream mocks base method.
+// CreateDeliveryStream mocks base method
 func (m *MockFirehoseAPI) CreateDeliveryStream(arg0 *firehose.CreateDeliveryStreamInput) (*firehose.CreateDeliveryStreamOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateDeliveryStream", arg0)
@@ -45,13 +44,13 @@ func (m *MockFirehoseAPI) CreateDeliveryStream(arg0 *firehose.CreateDeliveryStre
 	return ret0, ret1
 }
 
-// CreateDeliveryStream indicates an expected call of CreateDeliveryStream.
+// CreateDeliveryStream indicates an expected call of CreateDeliveryStream
 func (mr *MockFirehoseAPIMockRecorder) CreateDeliveryStream(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDeliveryStream", reflect.TypeOf((*MockFirehoseAPI)(nil).CreateDeliveryStream), arg0)
 }
 
-// CreateDeliveryStreamRequest mocks base method.
+// CreateDeliveryStreamRequest mocks base method
 func (m *MockFirehoseAPI) CreateDeliveryStreamRequest(arg0 *firehose.CreateDeliveryStreamInput) (*request.Request, *firehose.CreateDeliveryStreamOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateDeliveryStreamRequest", arg0)
@@ -60,13 +59,13 @@ func (m *MockFirehoseAPI) CreateDeliveryStreamRequest(arg0 *firehose.CreateDeliv
 	return ret0, ret1
 }
 
-// CreateDeliveryStreamRequest indicates an expected call of CreateDeliveryStreamRequest.
+// CreateDeliveryStreamRequest indicates an expected call of CreateDeliveryStreamRequest
 func (mr *MockFirehoseAPIMockRecorder) CreateDeliveryStreamRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDeliveryStreamRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).CreateDeliveryStreamRequest), arg0)
 }
 
-// CreateDeliveryStreamWithContext mocks base method.
+// CreateDeliveryStreamWithContext mocks base method
 func (m *MockFirehoseAPI) CreateDeliveryStreamWithContext(arg0 context.Context, arg1 *firehose.CreateDeliveryStreamInput, arg2 ...request.Option) (*firehose.CreateDeliveryStreamOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -79,14 +78,14 @@ func (m *MockFirehoseAPI) CreateDeliveryStreamWithContext(arg0 context.Context, 
 	return ret0, ret1
 }
 
-// CreateDeliveryStreamWithContext indicates an expected call of CreateDeliveryStreamWithContext.
+// CreateDeliveryStreamWithContext indicates an expected call of CreateDeliveryStreamWithContext
 func (mr *MockFirehoseAPIMockRecorder) CreateDeliveryStreamWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateDeliveryStreamWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).CreateDeliveryStreamWithContext), varargs...)
 }
 
-// DeleteDeliveryStream mocks base method.
+// DeleteDeliveryStream mocks base method
 func (m *MockFirehoseAPI) DeleteDeliveryStream(arg0 *firehose.DeleteDeliveryStreamInput) (*firehose.DeleteDeliveryStreamOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteDeliveryStream", arg0)
@@ -95,13 +94,13 @@ func (m *MockFirehoseAPI) DeleteDeliveryStream(arg0 *firehose.DeleteDeliveryStre
 	return ret0, ret1
 }
 
-// DeleteDeliveryStream indicates an expected call of DeleteDeliveryStream.
+// DeleteDeliveryStream indicates an expected call of DeleteDeliveryStream
 func (mr *MockFirehoseAPIMockRecorder) DeleteDeliveryStream(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDeliveryStream", reflect.TypeOf((*MockFirehoseAPI)(nil).DeleteDeliveryStream), arg0)
 }
 
-// DeleteDeliveryStreamRequest mocks base method.
+// DeleteDeliveryStreamRequest mocks base method
 func (m *MockFirehoseAPI) DeleteDeliveryStreamRequest(arg0 *firehose.DeleteDeliveryStreamInput) (*request.Request, *firehose.DeleteDeliveryStreamOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteDeliveryStreamRequest", arg0)
@@ -110,13 +109,13 @@ func (m *MockFirehoseAPI) DeleteDeliveryStreamRequest(arg0 *firehose.DeleteDeliv
 	return ret0, ret1
 }
 
-// DeleteDeliveryStreamRequest indicates an expected call of DeleteDeliveryStreamRequest.
+// DeleteDeliveryStreamRequest indicates an expected call of DeleteDeliveryStreamRequest
 func (mr *MockFirehoseAPIMockRecorder) DeleteDeliveryStreamRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDeliveryStreamRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).DeleteDeliveryStreamRequest), arg0)
 }
 
-// DeleteDeliveryStreamWithContext mocks base method.
+// DeleteDeliveryStreamWithContext mocks base method
 func (m *MockFirehoseAPI) DeleteDeliveryStreamWithContext(arg0 context.Context, arg1 *firehose.DeleteDeliveryStreamInput, arg2 ...request.Option) (*firehose.DeleteDeliveryStreamOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -129,14 +128,14 @@ func (m *MockFirehoseAPI) DeleteDeliveryStreamWithContext(arg0 context.Context, 
 	return ret0, ret1
 }
 
-// DeleteDeliveryStreamWithContext indicates an expected call of DeleteDeliveryStreamWithContext.
+// DeleteDeliveryStreamWithContext indicates an expected call of DeleteDeliveryStreamWithContext
 func (mr *MockFirehoseAPIMockRecorder) DeleteDeliveryStreamWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteDeliveryStreamWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).DeleteDeliveryStreamWithContext), varargs...)
 }
 
-// DescribeDeliveryStream mocks base method.
+// DescribeDeliveryStream mocks base method
 func (m *MockFirehoseAPI) DescribeDeliveryStream(arg0 *firehose.DescribeDeliveryStreamInput) (*firehose.DescribeDeliveryStreamOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeDeliveryStream", arg0)
@@ -145,13 +144,13 @@ func (m *MockFirehoseAPI) DescribeDeliveryStream(arg0 *firehose.DescribeDelivery
 	return ret0, ret1
 }
 
-// DescribeDeliveryStream indicates an expected call of DescribeDeliveryStream.
+// DescribeDeliveryStream indicates an expected call of DescribeDeliveryStream
 func (mr *MockFirehoseAPIMockRecorder) DescribeDeliveryStream(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDeliveryStream", reflect.TypeOf((*MockFirehoseAPI)(nil).DescribeDeliveryStream), arg0)
 }
 
-// DescribeDeliveryStreamRequest mocks base method.
+// DescribeDeliveryStreamRequest mocks base method
 func (m *MockFirehoseAPI) DescribeDeliveryStreamRequest(arg0 *firehose.DescribeDeliveryStreamInput) (*request.Request, *firehose.DescribeDeliveryStreamOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeDeliveryStreamRequest", arg0)
@@ -160,13 +159,13 @@ func (m *MockFirehoseAPI) DescribeDeliveryStreamRequest(arg0 *firehose.DescribeD
 	return ret0, ret1
 }
 
-// DescribeDeliveryStreamRequest indicates an expected call of DescribeDeliveryStreamRequest.
+// DescribeDeliveryStreamRequest indicates an expected call of DescribeDeliveryStreamRequest
 func (mr *MockFirehoseAPIMockRecorder) DescribeDeliveryStreamRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDeliveryStreamRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).DescribeDeliveryStreamRequest), arg0)
 }
 
-// DescribeDeliveryStreamWithContext mocks base method.
+// DescribeDeliveryStreamWithContext mocks base method
 func (m *MockFirehoseAPI) DescribeDeliveryStreamWithContext(arg0 context.Context, arg1 *firehose.DescribeDeliveryStreamInput, arg2 ...request.Option) (*firehose.DescribeDeliveryStreamOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -179,14 +178,14 @@ func (m *MockFirehoseAPI) DescribeDeliveryStreamWithContext(arg0 context.Context
 	return ret0, ret1
 }
 
-// DescribeDeliveryStreamWithContext indicates an expected call of DescribeDeliveryStreamWithContext.
+// DescribeDeliveryStreamWithContext indicates an expected call of DescribeDeliveryStreamWithContext
 func (mr *MockFirehoseAPIMockRecorder) DescribeDeliveryStreamWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDeliveryStreamWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).DescribeDeliveryStreamWithContext), varargs...)
 }
 
-// ListDeliveryStreams mocks base method.
+// ListDeliveryStreams mocks base method
 func (m *MockFirehoseAPI) ListDeliveryStreams(arg0 *firehose.ListDeliveryStreamsInput) (*firehose.ListDeliveryStreamsOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListDeliveryStreams", arg0)
@@ -195,13 +194,13 @@ func (m *MockFirehoseAPI) ListDeliveryStreams(arg0 *firehose.ListDeliveryStreams
 	return ret0, ret1
 }
 
-// ListDeliveryStreams indicates an expected call of ListDeliveryStreams.
+// ListDeliveryStreams indicates an expected call of ListDeliveryStreams
 func (mr *MockFirehoseAPIMockRecorder) ListDeliveryStreams(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListDeliveryStreams", reflect.TypeOf((*MockFirehoseAPI)(nil).ListDeliveryStreams), arg0)
 }
 
-// ListDeliveryStreamsRequest mocks base method.
+// ListDeliveryStreamsRequest mocks base method
 func (m *MockFirehoseAPI) ListDeliveryStreamsRequest(arg0 *firehose.ListDeliveryStreamsInput) (*request.Request, *firehose.ListDeliveryStreamsOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListDeliveryStreamsRequest", arg0)
@@ -210,13 +209,13 @@ func (m *MockFirehoseAPI) ListDeliveryStreamsRequest(arg0 *firehose.ListDelivery
 	return ret0, ret1
 }
 
-// ListDeliveryStreamsRequest indicates an expected call of ListDeliveryStreamsRequest.
+// ListDeliveryStreamsRequest indicates an expected call of ListDeliveryStreamsRequest
 func (mr *MockFirehoseAPIMockRecorder) ListDeliveryStreamsRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListDeliveryStreamsRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).ListDeliveryStreamsRequest), arg0)
 }
 
-// ListDeliveryStreamsWithContext mocks base method.
+// ListDeliveryStreamsWithContext mocks base method
 func (m *MockFirehoseAPI) ListDeliveryStreamsWithContext(arg0 context.Context, arg1 *firehose.ListDeliveryStreamsInput, arg2 ...request.Option) (*firehose.ListDeliveryStreamsOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -229,14 +228,14 @@ func (m *MockFirehoseAPI) ListDeliveryStreamsWithContext(arg0 context.Context, a
 	return ret0, ret1
 }
 
-// ListDeliveryStreamsWithContext indicates an expected call of ListDeliveryStreamsWithContext.
+// ListDeliveryStreamsWithContext indicates an expected call of ListDeliveryStreamsWithContext
 func (mr *MockFirehoseAPIMockRecorder) ListDeliveryStreamsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListDeliveryStreamsWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).ListDeliveryStreamsWithContext), varargs...)
 }
 
-// ListTagsForDeliveryStream mocks base method.
+// ListTagsForDeliveryStream mocks base method
 func (m *MockFirehoseAPI) ListTagsForDeliveryStream(arg0 *firehose.ListTagsForDeliveryStreamInput) (*firehose.ListTagsForDeliveryStreamOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTagsForDeliveryStream", arg0)
@@ -245,13 +244,13 @@ func (m *MockFirehoseAPI) ListTagsForDeliveryStream(arg0 *firehose.ListTagsForDe
 	return ret0, ret1
 }
 
-// ListTagsForDeliveryStream indicates an expected call of ListTagsForDeliveryStream.
+// ListTagsForDeliveryStream indicates an expected call of ListTagsForDeliveryStream
 func (mr *MockFirehoseAPIMockRecorder) ListTagsForDeliveryStream(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTagsForDeliveryStream", reflect.TypeOf((*MockFirehoseAPI)(nil).ListTagsForDeliveryStream), arg0)
 }
 
-// ListTagsForDeliveryStreamRequest mocks base method.
+// ListTagsForDeliveryStreamRequest mocks base method
 func (m *MockFirehoseAPI) ListTagsForDeliveryStreamRequest(arg0 *firehose.ListTagsForDeliveryStreamInput) (*request.Request, *firehose.ListTagsForDeliveryStreamOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListTagsForDeliveryStreamRequest", arg0)
@@ -260,13 +259,13 @@ func (m *MockFirehoseAPI) ListTagsForDeliveryStreamRequest(arg0 *firehose.ListTa
 	return ret0, ret1
 }
 
-// ListTagsForDeliveryStreamRequest indicates an expected call of ListTagsForDeliveryStreamRequest.
+// ListTagsForDeliveryStreamRequest indicates an expected call of ListTagsForDeliveryStreamRequest
 func (mr *MockFirehoseAPIMockRecorder) ListTagsForDeliveryStreamRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTagsForDeliveryStreamRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).ListTagsForDeliveryStreamRequest), arg0)
 }
 
-// ListTagsForDeliveryStreamWithContext mocks base method.
+// ListTagsForDeliveryStreamWithContext mocks base method
 func (m *MockFirehoseAPI) ListTagsForDeliveryStreamWithContext(arg0 context.Context, arg1 *firehose.ListTagsForDeliveryStreamInput, arg2 ...request.Option) (*firehose.ListTagsForDeliveryStreamOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -279,14 +278,14 @@ func (m *MockFirehoseAPI) ListTagsForDeliveryStreamWithContext(arg0 context.Cont
 	return ret0, ret1
 }
 
-// ListTagsForDeliveryStreamWithContext indicates an expected call of ListTagsForDeliveryStreamWithContext.
+// ListTagsForDeliveryStreamWithContext indicates an expected call of ListTagsForDeliveryStreamWithContext
 func (mr *MockFirehoseAPIMockRecorder) ListTagsForDeliveryStreamWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListTagsForDeliveryStreamWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).ListTagsForDeliveryStreamWithContext), varargs...)
 }
 
-// PutRecord mocks base method.
+// PutRecord mocks base method
 func (m *MockFirehoseAPI) PutRecord(arg0 *firehose.PutRecordInput) (*firehose.PutRecordOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutRecord", arg0)
@@ -295,13 +294,13 @@ func (m *MockFirehoseAPI) PutRecord(arg0 *firehose.PutRecordInput) (*firehose.Pu
 	return ret0, ret1
 }
 
-// PutRecord indicates an expected call of PutRecord.
+// PutRecord indicates an expected call of PutRecord
 func (mr *MockFirehoseAPIMockRecorder) PutRecord(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRecord", reflect.TypeOf((*MockFirehoseAPI)(nil).PutRecord), arg0)
 }
 
-// PutRecordBatch mocks base method.
+// PutRecordBatch mocks base method
 func (m *MockFirehoseAPI) PutRecordBatch(arg0 *firehose.PutRecordBatchInput) (*firehose.PutRecordBatchOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutRecordBatch", arg0)
@@ -310,13 +309,13 @@ func (m *MockFirehoseAPI) PutRecordBatch(arg0 *firehose.PutRecordBatchInput) (*f
 	return ret0, ret1
 }
 
-// PutRecordBatch indicates an expected call of PutRecordBatch.
+// PutRecordBatch indicates an expected call of PutRecordBatch
 func (mr *MockFirehoseAPIMockRecorder) PutRecordBatch(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRecordBatch", reflect.TypeOf((*MockFirehoseAPI)(nil).PutRecordBatch), arg0)
 }
 
-// PutRecordBatchRequest mocks base method.
+// PutRecordBatchRequest mocks base method
 func (m *MockFirehoseAPI) PutRecordBatchRequest(arg0 *firehose.PutRecordBatchInput) (*request.Request, *firehose.PutRecordBatchOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutRecordBatchRequest", arg0)
@@ -325,13 +324,13 @@ func (m *MockFirehoseAPI) PutRecordBatchRequest(arg0 *firehose.PutRecordBatchInp
 	return ret0, ret1
 }
 
-// PutRecordBatchRequest indicates an expected call of PutRecordBatchRequest.
+// PutRecordBatchRequest indicates an expected call of PutRecordBatchRequest
 func (mr *MockFirehoseAPIMockRecorder) PutRecordBatchRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRecordBatchRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).PutRecordBatchRequest), arg0)
 }
 
-// PutRecordBatchWithContext mocks base method.
+// PutRecordBatchWithContext mocks base method
 func (m *MockFirehoseAPI) PutRecordBatchWithContext(arg0 context.Context, arg1 *firehose.PutRecordBatchInput, arg2 ...request.Option) (*firehose.PutRecordBatchOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -344,14 +343,14 @@ func (m *MockFirehoseAPI) PutRecordBatchWithContext(arg0 context.Context, arg1 *
 	return ret0, ret1
 }
 
-// PutRecordBatchWithContext indicates an expected call of PutRecordBatchWithContext.
+// PutRecordBatchWithContext indicates an expected call of PutRecordBatchWithContext
 func (mr *MockFirehoseAPIMockRecorder) PutRecordBatchWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRecordBatchWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).PutRecordBatchWithContext), varargs...)
 }
 
-// PutRecordRequest mocks base method.
+// PutRecordRequest mocks base method
 func (m *MockFirehoseAPI) PutRecordRequest(arg0 *firehose.PutRecordInput) (*request.Request, *firehose.PutRecordOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PutRecordRequest", arg0)
@@ -360,13 +359,13 @@ func (m *MockFirehoseAPI) PutRecordRequest(arg0 *firehose.PutRecordInput) (*requ
 	return ret0, ret1
 }
 
-// PutRecordRequest indicates an expected call of PutRecordRequest.
+// PutRecordRequest indicates an expected call of PutRecordRequest
 func (mr *MockFirehoseAPIMockRecorder) PutRecordRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRecordRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).PutRecordRequest), arg0)
 }
 
-// PutRecordWithContext mocks base method.
+// PutRecordWithContext mocks base method
 func (m *MockFirehoseAPI) PutRecordWithContext(arg0 context.Context, arg1 *firehose.PutRecordInput, arg2 ...request.Option) (*firehose.PutRecordOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -379,14 +378,14 @@ func (m *MockFirehoseAPI) PutRecordWithContext(arg0 context.Context, arg1 *fireh
 	return ret0, ret1
 }
 
-// PutRecordWithContext indicates an expected call of PutRecordWithContext.
+// PutRecordWithContext indicates an expected call of PutRecordWithContext
 func (mr *MockFirehoseAPIMockRecorder) PutRecordWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRecordWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).PutRecordWithContext), varargs...)
 }
 
-// StartDeliveryStreamEncryption mocks base method.
+// StartDeliveryStreamEncryption mocks base method
 func (m *MockFirehoseAPI) StartDeliveryStreamEncryption(arg0 *firehose.StartDeliveryStreamEncryptionInput) (*firehose.StartDeliveryStreamEncryptionOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "StartDeliveryStreamEncryption", arg0)
@@ -395,13 +394,13 @@ func (m *MockFirehoseAPI) StartDeliveryStreamEncryption(arg0 *firehose.StartDeli
 	return ret0, ret1
 }
 
-// StartDeliveryStreamEncryption indicates an expected call of StartDeliveryStreamEncryption.
+// StartDeliveryStreamEncryption indicates an expected call of StartDeliveryStreamEncryption
 func (mr *MockFirehoseAPIMockRecorder) StartDeliveryStreamEncryption(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartDeliveryStreamEncryption", reflect.TypeOf((*MockFirehoseAPI)(nil).StartDeliveryStreamEncryption), arg0)
 }
 
-// StartDeliveryStreamEncryptionRequest mocks base method.
+// StartDeliveryStreamEncryptionRequest mocks base method
 func (m *MockFirehoseAPI) StartDeliveryStreamEncryptionRequest(arg0 *firehose.StartDeliveryStreamEncryptionInput) (*request.Request, *firehose.StartDeliveryStreamEncryptionOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "StartDeliveryStreamEncryptionRequest", arg0)
@@ -410,13 +409,13 @@ func (m *MockFirehoseAPI) StartDeliveryStreamEncryptionRequest(arg0 *firehose.St
 	return ret0, ret1
 }
 
-// StartDeliveryStreamEncryptionRequest indicates an expected call of StartDeliveryStreamEncryptionRequest.
+// StartDeliveryStreamEncryptionRequest indicates an expected call of StartDeliveryStreamEncryptionRequest
 func (mr *MockFirehoseAPIMockRecorder) StartDeliveryStreamEncryptionRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartDeliveryStreamEncryptionRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).StartDeliveryStreamEncryptionRequest), arg0)
 }
 
-// StartDeliveryStreamEncryptionWithContext mocks base method.
+// StartDeliveryStreamEncryptionWithContext mocks base method
 func (m *MockFirehoseAPI) StartDeliveryStreamEncryptionWithContext(arg0 context.Context, arg1 *firehose.StartDeliveryStreamEncryptionInput, arg2 ...request.Option) (*firehose.StartDeliveryStreamEncryptionOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -429,14 +428,14 @@ func (m *MockFirehoseAPI) StartDeliveryStreamEncryptionWithContext(arg0 context.
 	return ret0, ret1
 }
 
-// StartDeliveryStreamEncryptionWithContext indicates an expected call of StartDeliveryStreamEncryptionWithContext.
+// StartDeliveryStreamEncryptionWithContext indicates an expected call of StartDeliveryStreamEncryptionWithContext
 func (mr *MockFirehoseAPIMockRecorder) StartDeliveryStreamEncryptionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StartDeliveryStreamEncryptionWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).StartDeliveryStreamEncryptionWithContext), varargs...)
 }
 
-// StopDeliveryStreamEncryption mocks base method.
+// StopDeliveryStreamEncryption mocks base method
 func (m *MockFirehoseAPI) StopDeliveryStreamEncryption(arg0 *firehose.StopDeliveryStreamEncryptionInput) (*firehose.StopDeliveryStreamEncryptionOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "StopDeliveryStreamEncryption", arg0)
@@ -445,13 +444,13 @@ func (m *MockFirehoseAPI) StopDeliveryStreamEncryption(arg0 *firehose.StopDelive
 	return ret0, ret1
 }
 
-// StopDeliveryStreamEncryption indicates an expected call of StopDeliveryStreamEncryption.
+// StopDeliveryStreamEncryption indicates an expected call of StopDeliveryStreamEncryption
 func (mr *MockFirehoseAPIMockRecorder) StopDeliveryStreamEncryption(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopDeliveryStreamEncryption", reflect.TypeOf((*MockFirehoseAPI)(nil).StopDeliveryStreamEncryption), arg0)
 }
 
-// StopDeliveryStreamEncryptionRequest mocks base method.
+// StopDeliveryStreamEncryptionRequest mocks base method
 func (m *MockFirehoseAPI) StopDeliveryStreamEncryptionRequest(arg0 *firehose.StopDeliveryStreamEncryptionInput) (*request.Request, *firehose.StopDeliveryStreamEncryptionOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "StopDeliveryStreamEncryptionRequest", arg0)
@@ -460,13 +459,13 @@ func (m *MockFirehoseAPI) StopDeliveryStreamEncryptionRequest(arg0 *firehose.Sto
 	return ret0, ret1
 }
 
-// StopDeliveryStreamEncryptionRequest indicates an expected call of StopDeliveryStreamEncryptionRequest.
+// StopDeliveryStreamEncryptionRequest indicates an expected call of StopDeliveryStreamEncryptionRequest
 func (mr *MockFirehoseAPIMockRecorder) StopDeliveryStreamEncryptionRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopDeliveryStreamEncryptionRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).StopDeliveryStreamEncryptionRequest), arg0)
 }
 
-// StopDeliveryStreamEncryptionWithContext mocks base method.
+// StopDeliveryStreamEncryptionWithContext mocks base method
 func (m *MockFirehoseAPI) StopDeliveryStreamEncryptionWithContext(arg0 context.Context, arg1 *firehose.StopDeliveryStreamEncryptionInput, arg2 ...request.Option) (*firehose.StopDeliveryStreamEncryptionOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -479,14 +478,14 @@ func (m *MockFirehoseAPI) StopDeliveryStreamEncryptionWithContext(arg0 context.C
 	return ret0, ret1
 }
 
-// StopDeliveryStreamEncryptionWithContext indicates an expected call of StopDeliveryStreamEncryptionWithContext.
+// StopDeliveryStreamEncryptionWithContext indicates an expected call of StopDeliveryStreamEncryptionWithContext
 func (mr *MockFirehoseAPIMockRecorder) StopDeliveryStreamEncryptionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StopDeliveryStreamEncryptionWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).StopDeliveryStreamEncryptionWithContext), varargs...)
 }
 
-// TagDeliveryStream mocks base method.
+// TagDeliveryStream mocks base method
 func (m *MockFirehoseAPI) TagDeliveryStream(arg0 *firehose.TagDeliveryStreamInput) (*firehose.TagDeliveryStreamOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "TagDeliveryStream", arg0)
@@ -495,13 +494,13 @@ func (m *MockFirehoseAPI) TagDeliveryStream(arg0 *firehose.TagDeliveryStreamInpu
 	return ret0, ret1
 }
 
-// TagDeliveryStream indicates an expected call of TagDeliveryStream.
+// TagDeliveryStream indicates an expected call of TagDeliveryStream
 func (mr *MockFirehoseAPIMockRecorder) TagDeliveryStream(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TagDeliveryStream", reflect.TypeOf((*MockFirehoseAPI)(nil).TagDeliveryStream), arg0)
 }
 
-// TagDeliveryStreamRequest mocks base method.
+// TagDeliveryStreamRequest mocks base method
 func (m *MockFirehoseAPI) TagDeliveryStreamRequest(arg0 *firehose.TagDeliveryStreamInput) (*request.Request, *firehose.TagDeliveryStreamOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "TagDeliveryStreamRequest", arg0)
@@ -510,13 +509,13 @@ func (m *MockFirehoseAPI) TagDeliveryStreamRequest(arg0 *firehose.TagDeliveryStr
 	return ret0, ret1
 }
 
-// TagDeliveryStreamRequest indicates an expected call of TagDeliveryStreamRequest.
+// TagDeliveryStreamRequest indicates an expected call of TagDeliveryStreamRequest
 func (mr *MockFirehoseAPIMockRecorder) TagDeliveryStreamRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TagDeliveryStreamRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).TagDeliveryStreamRequest), arg0)
 }
 
-// TagDeliveryStreamWithContext mocks base method.
+// TagDeliveryStreamWithContext mocks base method
 func (m *MockFirehoseAPI) TagDeliveryStreamWithContext(arg0 context.Context, arg1 *firehose.TagDeliveryStreamInput, arg2 ...request.Option) (*firehose.TagDeliveryStreamOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -529,14 +528,14 @@ func (m *MockFirehoseAPI) TagDeliveryStreamWithContext(arg0 context.Context, arg
 	return ret0, ret1
 }
 
-// TagDeliveryStreamWithContext indicates an expected call of TagDeliveryStreamWithContext.
+// TagDeliveryStreamWithContext indicates an expected call of TagDeliveryStreamWithContext
 func (mr *MockFirehoseAPIMockRecorder) TagDeliveryStreamWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TagDeliveryStreamWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).TagDeliveryStreamWithContext), varargs...)
 }
 
-// UntagDeliveryStream mocks base method.
+// UntagDeliveryStream mocks base method
 func (m *MockFirehoseAPI) UntagDeliveryStream(arg0 *firehose.UntagDeliveryStreamInput) (*firehose.UntagDeliveryStreamOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UntagDeliveryStream", arg0)
@@ -545,13 +544,13 @@ func (m *MockFirehoseAPI) UntagDeliveryStream(arg0 *firehose.UntagDeliveryStream
 	return ret0, ret1
 }
 
-// UntagDeliveryStream indicates an expected call of UntagDeliveryStream.
+// UntagDeliveryStream indicates an expected call of UntagDeliveryStream
 func (mr *MockFirehoseAPIMockRecorder) UntagDeliveryStream(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagDeliveryStream", reflect.TypeOf((*MockFirehoseAPI)(nil).UntagDeliveryStream), arg0)
 }
 
-// UntagDeliveryStreamRequest mocks base method.
+// UntagDeliveryStreamRequest mocks base method
 func (m *MockFirehoseAPI) UntagDeliveryStreamRequest(arg0 *firehose.UntagDeliveryStreamInput) (*request.Request, *firehose.UntagDeliveryStreamOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UntagDeliveryStreamRequest", arg0)
@@ -560,13 +559,13 @@ func (m *MockFirehoseAPI) UntagDeliveryStreamRequest(arg0 *firehose.UntagDeliver
 	return ret0, ret1
 }
 
-// UntagDeliveryStreamRequest indicates an expected call of UntagDeliveryStreamRequest.
+// UntagDeliveryStreamRequest indicates an expected call of UntagDeliveryStreamRequest
 func (mr *MockFirehoseAPIMockRecorder) UntagDeliveryStreamRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagDeliveryStreamRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).UntagDeliveryStreamRequest), arg0)
 }
 
-// UntagDeliveryStreamWithContext mocks base method.
+// UntagDeliveryStreamWithContext mocks base method
 func (m *MockFirehoseAPI) UntagDeliveryStreamWithContext(arg0 context.Context, arg1 *firehose.UntagDeliveryStreamInput, arg2 ...request.Option) (*firehose.UntagDeliveryStreamOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -579,14 +578,14 @@ func (m *MockFirehoseAPI) UntagDeliveryStreamWithContext(arg0 context.Context, a
 	return ret0, ret1
 }
 
-// UntagDeliveryStreamWithContext indicates an expected call of UntagDeliveryStreamWithContext.
+// UntagDeliveryStreamWithContext indicates an expected call of UntagDeliveryStreamWithContext
 func (mr *MockFirehoseAPIMockRecorder) UntagDeliveryStreamWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UntagDeliveryStreamWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).UntagDeliveryStreamWithContext), varargs...)
 }
 
-// UpdateDestination mocks base method.
+// UpdateDestination mocks base method
 func (m *MockFirehoseAPI) UpdateDestination(arg0 *firehose.UpdateDestinationInput) (*firehose.UpdateDestinationOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateDestination", arg0)
@@ -595,13 +594,13 @@ func (m *MockFirehoseAPI) UpdateDestination(arg0 *firehose.UpdateDestinationInpu
 	return ret0, ret1
 }
 
-// UpdateDestination indicates an expected call of UpdateDestination.
+// UpdateDestination indicates an expected call of UpdateDestination
 func (mr *MockFirehoseAPIMockRecorder) UpdateDestination(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateDestination", reflect.TypeOf((*MockFirehoseAPI)(nil).UpdateDestination), arg0)
 }
 
-// UpdateDestinationRequest mocks base method.
+// UpdateDestinationRequest mocks base method
 func (m *MockFirehoseAPI) UpdateDestinationRequest(arg0 *firehose.UpdateDestinationInput) (*request.Request, *firehose.UpdateDestinationOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateDestinationRequest", arg0)
@@ -610,13 +609,13 @@ func (m *MockFirehoseAPI) UpdateDestinationRequest(arg0 *firehose.UpdateDestinat
 	return ret0, ret1
 }
 
-// UpdateDestinationRequest indicates an expected call of UpdateDestinationRequest.
+// UpdateDestinationRequest indicates an expected call of UpdateDestinationRequest
 func (mr *MockFirehoseAPIMockRecorder) UpdateDestinationRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateDestinationRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).UpdateDestinationRequest), arg0)
 }
 
-// UpdateDestinationWithContext mocks base method.
+// UpdateDestinationWithContext mocks base method
 func (m *MockFirehoseAPI) UpdateDestinationWithContext(arg0 context.Context, arg1 *firehose.UpdateDestinationInput, arg2 ...request.Option) (*firehose.UpdateDestinationOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -629,7 +628,7 @@ func (m *MockFirehoseAPI) UpdateDestinationWithContext(arg0 context.Context, arg
 	return ret0, ret1
 }
 
-// UpdateDestinationWithContext indicates an expected call of UpdateDestinationWithContext.
+// UpdateDestinationWithContext indicates an expected call of UpdateDestinationWithContext
 func (mr *MockFirehoseAPIMockRecorder) UpdateDestinationWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)

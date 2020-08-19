@@ -40,10 +40,11 @@ test-ci: ## run tests in ci (don't try to updated dependencies)
 help: ## display help for this makefile
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-generate-mocks: deps ## will generate mocks
-	@go get -d ./...
+generate-mocks: ## will generate mocks
+	@go get -d -u ./...
 	@rm -rf aws/mocks/*
 	@cd aws; go generate
+	@go mod tidy
 
 
 .PHONY: build coverage test install lint lint-slow release help
