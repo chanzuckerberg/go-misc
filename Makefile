@@ -3,8 +3,17 @@ export CGO_ENABLED=1
 
 all: test
 
+clean: ## clean the repo
+	rm go-misc 2>/dev/null || true
+	go clean
+	go clean -testcache
+	rm -rf dist 2>/dev/null || true
+	rm coverage.out 2>/dev/null || true
+.PHONY: clean
+
 setup:
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.16.0
+.PHONY: setup
 
 lint: ## run the fast go linters
 	@golangci-lint run --no-config \
@@ -15,6 +24,7 @@ lint: ## run the fast go linters
 .PHONY: lint
 
 deps:
+	go get ./...
 	go mod tidy
 .PHONY: deps
 
@@ -24,6 +34,7 @@ ifeq (, $(shell which gotest))
 else
 	gotest -failfast -cover ./...
 endif
+.PHONY: test
 
 test-ci: ## run tests in ci (don't try to updated dependencies)
 	CGO_ENABLED=1 go test -race -coverprofile=coverage.txt -covermode=atomic ./...
@@ -31,11 +42,11 @@ test-ci: ## run tests in ci (don't try to updated dependencies)
 
 help: ## display help for this makefile
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+.PHONY: help
 
-generate-mocks: deps ## will generate mocks
-	@go get -d ./...
+generate-mocks: ## will generate mocks
+	@go get -d -u ./...
 	@rm -rf aws/mocks/*
 	@cd aws; go generate
-
-
-.PHONY: build coverage test install lint lint-slow release help
+	@go mod tidy
+.PHONY: generate-mocks

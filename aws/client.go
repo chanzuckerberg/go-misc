@@ -134,9 +134,10 @@ func (c *Client) WithSSM(conf *aws.Config) *Client {
 
 // WithMockSSM mocks the SSM service
 func (c *Client) WithMockSSM(ctrl *gomock.Controller) (*Client, *mocks.MockSSMAPI) {
-	mock := mocks.NewMockSSMAPI(ctrl)
-	c.SSM = &SSM{Svc: mock}
-	return c, mock
+	m := mocks.NewMockSSMAPI(ctrl)
+
+	c.SSM = &SSM{Svc: m}
+	return c, m
 }
 
 // ------- STS -----------

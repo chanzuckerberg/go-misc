@@ -6,37 +6,36 @@ package mocks
 
 import (
 	context "context"
-	reflect "reflect"
-
 	request "github.com/aws/aws-sdk-go/aws/request"
 	support "github.com/aws/aws-sdk-go/service/support"
 	gomock "github.com/golang/mock/gomock"
+	reflect "reflect"
 )
 
-// MockSupportAPI is a mock of SupportAPI interface.
+// MockSupportAPI is a mock of SupportAPI interface
 type MockSupportAPI struct {
 	ctrl     *gomock.Controller
 	recorder *MockSupportAPIMockRecorder
 }
 
-// MockSupportAPIMockRecorder is the mock recorder for MockSupportAPI.
+// MockSupportAPIMockRecorder is the mock recorder for MockSupportAPI
 type MockSupportAPIMockRecorder struct {
 	mock *MockSupportAPI
 }
 
-// NewMockSupportAPI creates a new mock instance.
+// NewMockSupportAPI creates a new mock instance
 func NewMockSupportAPI(ctrl *gomock.Controller) *MockSupportAPI {
 	mock := &MockSupportAPI{ctrl: ctrl}
 	mock.recorder = &MockSupportAPIMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use.
+// EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockSupportAPI) EXPECT() *MockSupportAPIMockRecorder {
 	return m.recorder
 }
 
-// AddAttachmentsToSet mocks base method.
+// AddAttachmentsToSet mocks base method
 func (m *MockSupportAPI) AddAttachmentsToSet(arg0 *support.AddAttachmentsToSetInput) (*support.AddAttachmentsToSetOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddAttachmentsToSet", arg0)
@@ -45,13 +44,13 @@ func (m *MockSupportAPI) AddAttachmentsToSet(arg0 *support.AddAttachmentsToSetIn
 	return ret0, ret1
 }
 
-// AddAttachmentsToSet indicates an expected call of AddAttachmentsToSet.
+// AddAttachmentsToSet indicates an expected call of AddAttachmentsToSet
 func (mr *MockSupportAPIMockRecorder) AddAttachmentsToSet(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAttachmentsToSet", reflect.TypeOf((*MockSupportAPI)(nil).AddAttachmentsToSet), arg0)
 }
 
-// AddAttachmentsToSetRequest mocks base method.
+// AddAttachmentsToSetRequest mocks base method
 func (m *MockSupportAPI) AddAttachmentsToSetRequest(arg0 *support.AddAttachmentsToSetInput) (*request.Request, *support.AddAttachmentsToSetOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddAttachmentsToSetRequest", arg0)
@@ -60,13 +59,13 @@ func (m *MockSupportAPI) AddAttachmentsToSetRequest(arg0 *support.AddAttachments
 	return ret0, ret1
 }
 
-// AddAttachmentsToSetRequest indicates an expected call of AddAttachmentsToSetRequest.
+// AddAttachmentsToSetRequest indicates an expected call of AddAttachmentsToSetRequest
 func (mr *MockSupportAPIMockRecorder) AddAttachmentsToSetRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAttachmentsToSetRequest", reflect.TypeOf((*MockSupportAPI)(nil).AddAttachmentsToSetRequest), arg0)
 }
 
-// AddAttachmentsToSetWithContext mocks base method.
+// AddAttachmentsToSetWithContext mocks base method
 func (m *MockSupportAPI) AddAttachmentsToSetWithContext(arg0 context.Context, arg1 *support.AddAttachmentsToSetInput, arg2 ...request.Option) (*support.AddAttachmentsToSetOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -79,14 +78,14 @@ func (m *MockSupportAPI) AddAttachmentsToSetWithContext(arg0 context.Context, ar
 	return ret0, ret1
 }
 
-// AddAttachmentsToSetWithContext indicates an expected call of AddAttachmentsToSetWithContext.
+// AddAttachmentsToSetWithContext indicates an expected call of AddAttachmentsToSetWithContext
 func (mr *MockSupportAPIMockRecorder) AddAttachmentsToSetWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddAttachmentsToSetWithContext", reflect.TypeOf((*MockSupportAPI)(nil).AddAttachmentsToSetWithContext), varargs...)
 }
 
-// AddCommunicationToCase mocks base method.
+// AddCommunicationToCase mocks base method
 func (m *MockSupportAPI) AddCommunicationToCase(arg0 *support.AddCommunicationToCaseInput) (*support.AddCommunicationToCaseOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddCommunicationToCase", arg0)
@@ -95,13 +94,13 @@ func (m *MockSupportAPI) AddCommunicationToCase(arg0 *support.AddCommunicationTo
 	return ret0, ret1
 }
 
-// AddCommunicationToCase indicates an expected call of AddCommunicationToCase.
+// AddCommunicationToCase indicates an expected call of AddCommunicationToCase
 func (mr *MockSupportAPIMockRecorder) AddCommunicationToCase(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCommunicationToCase", reflect.TypeOf((*MockSupportAPI)(nil).AddCommunicationToCase), arg0)
 }
 
-// AddCommunicationToCaseRequest mocks base method.
+// AddCommunicationToCaseRequest mocks base method
 func (m *MockSupportAPI) AddCommunicationToCaseRequest(arg0 *support.AddCommunicationToCaseInput) (*request.Request, *support.AddCommunicationToCaseOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddCommunicationToCaseRequest", arg0)
@@ -110,13 +109,13 @@ func (m *MockSupportAPI) AddCommunicationToCaseRequest(arg0 *support.AddCommunic
 	return ret0, ret1
 }
 
-// AddCommunicationToCaseRequest indicates an expected call of AddCommunicationToCaseRequest.
+// AddCommunicationToCaseRequest indicates an expected call of AddCommunicationToCaseRequest
 func (mr *MockSupportAPIMockRecorder) AddCommunicationToCaseRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCommunicationToCaseRequest", reflect.TypeOf((*MockSupportAPI)(nil).AddCommunicationToCaseRequest), arg0)
 }
 
-// AddCommunicationToCaseWithContext mocks base method.
+// AddCommunicationToCaseWithContext mocks base method
 func (m *MockSupportAPI) AddCommunicationToCaseWithContext(arg0 context.Context, arg1 *support.AddCommunicationToCaseInput, arg2 ...request.Option) (*support.AddCommunicationToCaseOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -129,14 +128,14 @@ func (m *MockSupportAPI) AddCommunicationToCaseWithContext(arg0 context.Context,
 	return ret0, ret1
 }
 
-// AddCommunicationToCaseWithContext indicates an expected call of AddCommunicationToCaseWithContext.
+// AddCommunicationToCaseWithContext indicates an expected call of AddCommunicationToCaseWithContext
 func (mr *MockSupportAPIMockRecorder) AddCommunicationToCaseWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddCommunicationToCaseWithContext", reflect.TypeOf((*MockSupportAPI)(nil).AddCommunicationToCaseWithContext), varargs...)
 }
 
-// CreateCase mocks base method.
+// CreateCase mocks base method
 func (m *MockSupportAPI) CreateCase(arg0 *support.CreateCaseInput) (*support.CreateCaseOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCase", arg0)
@@ -145,13 +144,13 @@ func (m *MockSupportAPI) CreateCase(arg0 *support.CreateCaseInput) (*support.Cre
 	return ret0, ret1
 }
 
-// CreateCase indicates an expected call of CreateCase.
+// CreateCase indicates an expected call of CreateCase
 func (mr *MockSupportAPIMockRecorder) CreateCase(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCase", reflect.TypeOf((*MockSupportAPI)(nil).CreateCase), arg0)
 }
 
-// CreateCaseRequest mocks base method.
+// CreateCaseRequest mocks base method
 func (m *MockSupportAPI) CreateCaseRequest(arg0 *support.CreateCaseInput) (*request.Request, *support.CreateCaseOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateCaseRequest", arg0)
@@ -160,13 +159,13 @@ func (m *MockSupportAPI) CreateCaseRequest(arg0 *support.CreateCaseInput) (*requ
 	return ret0, ret1
 }
 
-// CreateCaseRequest indicates an expected call of CreateCaseRequest.
+// CreateCaseRequest indicates an expected call of CreateCaseRequest
 func (mr *MockSupportAPIMockRecorder) CreateCaseRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCaseRequest", reflect.TypeOf((*MockSupportAPI)(nil).CreateCaseRequest), arg0)
 }
 
-// CreateCaseWithContext mocks base method.
+// CreateCaseWithContext mocks base method
 func (m *MockSupportAPI) CreateCaseWithContext(arg0 context.Context, arg1 *support.CreateCaseInput, arg2 ...request.Option) (*support.CreateCaseOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -179,14 +178,14 @@ func (m *MockSupportAPI) CreateCaseWithContext(arg0 context.Context, arg1 *suppo
 	return ret0, ret1
 }
 
-// CreateCaseWithContext indicates an expected call of CreateCaseWithContext.
+// CreateCaseWithContext indicates an expected call of CreateCaseWithContext
 func (mr *MockSupportAPIMockRecorder) CreateCaseWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateCaseWithContext", reflect.TypeOf((*MockSupportAPI)(nil).CreateCaseWithContext), varargs...)
 }
 
-// DescribeAttachment mocks base method.
+// DescribeAttachment mocks base method
 func (m *MockSupportAPI) DescribeAttachment(arg0 *support.DescribeAttachmentInput) (*support.DescribeAttachmentOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeAttachment", arg0)
@@ -195,13 +194,13 @@ func (m *MockSupportAPI) DescribeAttachment(arg0 *support.DescribeAttachmentInpu
 	return ret0, ret1
 }
 
-// DescribeAttachment indicates an expected call of DescribeAttachment.
+// DescribeAttachment indicates an expected call of DescribeAttachment
 func (mr *MockSupportAPIMockRecorder) DescribeAttachment(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeAttachment", reflect.TypeOf((*MockSupportAPI)(nil).DescribeAttachment), arg0)
 }
 
-// DescribeAttachmentRequest mocks base method.
+// DescribeAttachmentRequest mocks base method
 func (m *MockSupportAPI) DescribeAttachmentRequest(arg0 *support.DescribeAttachmentInput) (*request.Request, *support.DescribeAttachmentOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeAttachmentRequest", arg0)
@@ -210,13 +209,13 @@ func (m *MockSupportAPI) DescribeAttachmentRequest(arg0 *support.DescribeAttachm
 	return ret0, ret1
 }
 
-// DescribeAttachmentRequest indicates an expected call of DescribeAttachmentRequest.
+// DescribeAttachmentRequest indicates an expected call of DescribeAttachmentRequest
 func (mr *MockSupportAPIMockRecorder) DescribeAttachmentRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeAttachmentRequest", reflect.TypeOf((*MockSupportAPI)(nil).DescribeAttachmentRequest), arg0)
 }
 
-// DescribeAttachmentWithContext mocks base method.
+// DescribeAttachmentWithContext mocks base method
 func (m *MockSupportAPI) DescribeAttachmentWithContext(arg0 context.Context, arg1 *support.DescribeAttachmentInput, arg2 ...request.Option) (*support.DescribeAttachmentOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -229,14 +228,14 @@ func (m *MockSupportAPI) DescribeAttachmentWithContext(arg0 context.Context, arg
 	return ret0, ret1
 }
 
-// DescribeAttachmentWithContext indicates an expected call of DescribeAttachmentWithContext.
+// DescribeAttachmentWithContext indicates an expected call of DescribeAttachmentWithContext
 func (mr *MockSupportAPIMockRecorder) DescribeAttachmentWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeAttachmentWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeAttachmentWithContext), varargs...)
 }
 
-// DescribeCases mocks base method.
+// DescribeCases mocks base method
 func (m *MockSupportAPI) DescribeCases(arg0 *support.DescribeCasesInput) (*support.DescribeCasesOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeCases", arg0)
@@ -245,13 +244,13 @@ func (m *MockSupportAPI) DescribeCases(arg0 *support.DescribeCasesInput) (*suppo
 	return ret0, ret1
 }
 
-// DescribeCases indicates an expected call of DescribeCases.
+// DescribeCases indicates an expected call of DescribeCases
 func (mr *MockSupportAPIMockRecorder) DescribeCases(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCases", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCases), arg0)
 }
 
-// DescribeCasesPages mocks base method.
+// DescribeCasesPages mocks base method
 func (m *MockSupportAPI) DescribeCasesPages(arg0 *support.DescribeCasesInput, arg1 func(*support.DescribeCasesOutput, bool) bool) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeCasesPages", arg0, arg1)
@@ -259,13 +258,13 @@ func (m *MockSupportAPI) DescribeCasesPages(arg0 *support.DescribeCasesInput, ar
 	return ret0
 }
 
-// DescribeCasesPages indicates an expected call of DescribeCasesPages.
+// DescribeCasesPages indicates an expected call of DescribeCasesPages
 func (mr *MockSupportAPIMockRecorder) DescribeCasesPages(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCasesPages", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCasesPages), arg0, arg1)
 }
 
-// DescribeCasesPagesWithContext mocks base method.
+// DescribeCasesPagesWithContext mocks base method
 func (m *MockSupportAPI) DescribeCasesPagesWithContext(arg0 context.Context, arg1 *support.DescribeCasesInput, arg2 func(*support.DescribeCasesOutput, bool) bool, arg3 ...request.Option) error {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
@@ -277,14 +276,14 @@ func (m *MockSupportAPI) DescribeCasesPagesWithContext(arg0 context.Context, arg
 	return ret0
 }
 
-// DescribeCasesPagesWithContext indicates an expected call of DescribeCasesPagesWithContext.
+// DescribeCasesPagesWithContext indicates an expected call of DescribeCasesPagesWithContext
 func (mr *MockSupportAPIMockRecorder) DescribeCasesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCasesPagesWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCasesPagesWithContext), varargs...)
 }
 
-// DescribeCasesRequest mocks base method.
+// DescribeCasesRequest mocks base method
 func (m *MockSupportAPI) DescribeCasesRequest(arg0 *support.DescribeCasesInput) (*request.Request, *support.DescribeCasesOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeCasesRequest", arg0)
@@ -293,13 +292,13 @@ func (m *MockSupportAPI) DescribeCasesRequest(arg0 *support.DescribeCasesInput) 
 	return ret0, ret1
 }
 
-// DescribeCasesRequest indicates an expected call of DescribeCasesRequest.
+// DescribeCasesRequest indicates an expected call of DescribeCasesRequest
 func (mr *MockSupportAPIMockRecorder) DescribeCasesRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCasesRequest", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCasesRequest), arg0)
 }
 
-// DescribeCasesWithContext mocks base method.
+// DescribeCasesWithContext mocks base method
 func (m *MockSupportAPI) DescribeCasesWithContext(arg0 context.Context, arg1 *support.DescribeCasesInput, arg2 ...request.Option) (*support.DescribeCasesOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -312,14 +311,14 @@ func (m *MockSupportAPI) DescribeCasesWithContext(arg0 context.Context, arg1 *su
 	return ret0, ret1
 }
 
-// DescribeCasesWithContext indicates an expected call of DescribeCasesWithContext.
+// DescribeCasesWithContext indicates an expected call of DescribeCasesWithContext
 func (mr *MockSupportAPIMockRecorder) DescribeCasesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCasesWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCasesWithContext), varargs...)
 }
 
-// DescribeCommunications mocks base method.
+// DescribeCommunications mocks base method
 func (m *MockSupportAPI) DescribeCommunications(arg0 *support.DescribeCommunicationsInput) (*support.DescribeCommunicationsOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeCommunications", arg0)
@@ -328,13 +327,13 @@ func (m *MockSupportAPI) DescribeCommunications(arg0 *support.DescribeCommunicat
 	return ret0, ret1
 }
 
-// DescribeCommunications indicates an expected call of DescribeCommunications.
+// DescribeCommunications indicates an expected call of DescribeCommunications
 func (mr *MockSupportAPIMockRecorder) DescribeCommunications(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCommunications", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCommunications), arg0)
 }
 
-// DescribeCommunicationsPages mocks base method.
+// DescribeCommunicationsPages mocks base method
 func (m *MockSupportAPI) DescribeCommunicationsPages(arg0 *support.DescribeCommunicationsInput, arg1 func(*support.DescribeCommunicationsOutput, bool) bool) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeCommunicationsPages", arg0, arg1)
@@ -342,13 +341,13 @@ func (m *MockSupportAPI) DescribeCommunicationsPages(arg0 *support.DescribeCommu
 	return ret0
 }
 
-// DescribeCommunicationsPages indicates an expected call of DescribeCommunicationsPages.
+// DescribeCommunicationsPages indicates an expected call of DescribeCommunicationsPages
 func (mr *MockSupportAPIMockRecorder) DescribeCommunicationsPages(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCommunicationsPages", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCommunicationsPages), arg0, arg1)
 }
 
-// DescribeCommunicationsPagesWithContext mocks base method.
+// DescribeCommunicationsPagesWithContext mocks base method
 func (m *MockSupportAPI) DescribeCommunicationsPagesWithContext(arg0 context.Context, arg1 *support.DescribeCommunicationsInput, arg2 func(*support.DescribeCommunicationsOutput, bool) bool, arg3 ...request.Option) error {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
@@ -360,14 +359,14 @@ func (m *MockSupportAPI) DescribeCommunicationsPagesWithContext(arg0 context.Con
 	return ret0
 }
 
-// DescribeCommunicationsPagesWithContext indicates an expected call of DescribeCommunicationsPagesWithContext.
+// DescribeCommunicationsPagesWithContext indicates an expected call of DescribeCommunicationsPagesWithContext
 func (mr *MockSupportAPIMockRecorder) DescribeCommunicationsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCommunicationsPagesWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCommunicationsPagesWithContext), varargs...)
 }
 
-// DescribeCommunicationsRequest mocks base method.
+// DescribeCommunicationsRequest mocks base method
 func (m *MockSupportAPI) DescribeCommunicationsRequest(arg0 *support.DescribeCommunicationsInput) (*request.Request, *support.DescribeCommunicationsOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeCommunicationsRequest", arg0)
@@ -376,13 +375,13 @@ func (m *MockSupportAPI) DescribeCommunicationsRequest(arg0 *support.DescribeCom
 	return ret0, ret1
 }
 
-// DescribeCommunicationsRequest indicates an expected call of DescribeCommunicationsRequest.
+// DescribeCommunicationsRequest indicates an expected call of DescribeCommunicationsRequest
 func (mr *MockSupportAPIMockRecorder) DescribeCommunicationsRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCommunicationsRequest", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCommunicationsRequest), arg0)
 }
 
-// DescribeCommunicationsWithContext mocks base method.
+// DescribeCommunicationsWithContext mocks base method
 func (m *MockSupportAPI) DescribeCommunicationsWithContext(arg0 context.Context, arg1 *support.DescribeCommunicationsInput, arg2 ...request.Option) (*support.DescribeCommunicationsOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -395,14 +394,14 @@ func (m *MockSupportAPI) DescribeCommunicationsWithContext(arg0 context.Context,
 	return ret0, ret1
 }
 
-// DescribeCommunicationsWithContext indicates an expected call of DescribeCommunicationsWithContext.
+// DescribeCommunicationsWithContext indicates an expected call of DescribeCommunicationsWithContext
 func (mr *MockSupportAPIMockRecorder) DescribeCommunicationsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCommunicationsWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCommunicationsWithContext), varargs...)
 }
 
-// DescribeServices mocks base method.
+// DescribeServices mocks base method
 func (m *MockSupportAPI) DescribeServices(arg0 *support.DescribeServicesInput) (*support.DescribeServicesOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeServices", arg0)
@@ -411,13 +410,13 @@ func (m *MockSupportAPI) DescribeServices(arg0 *support.DescribeServicesInput) (
 	return ret0, ret1
 }
 
-// DescribeServices indicates an expected call of DescribeServices.
+// DescribeServices indicates an expected call of DescribeServices
 func (mr *MockSupportAPIMockRecorder) DescribeServices(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeServices", reflect.TypeOf((*MockSupportAPI)(nil).DescribeServices), arg0)
 }
 
-// DescribeServicesRequest mocks base method.
+// DescribeServicesRequest mocks base method
 func (m *MockSupportAPI) DescribeServicesRequest(arg0 *support.DescribeServicesInput) (*request.Request, *support.DescribeServicesOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeServicesRequest", arg0)
@@ -426,13 +425,13 @@ func (m *MockSupportAPI) DescribeServicesRequest(arg0 *support.DescribeServicesI
 	return ret0, ret1
 }
 
-// DescribeServicesRequest indicates an expected call of DescribeServicesRequest.
+// DescribeServicesRequest indicates an expected call of DescribeServicesRequest
 func (mr *MockSupportAPIMockRecorder) DescribeServicesRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeServicesRequest", reflect.TypeOf((*MockSupportAPI)(nil).DescribeServicesRequest), arg0)
 }
 
-// DescribeServicesWithContext mocks base method.
+// DescribeServicesWithContext mocks base method
 func (m *MockSupportAPI) DescribeServicesWithContext(arg0 context.Context, arg1 *support.DescribeServicesInput, arg2 ...request.Option) (*support.DescribeServicesOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -445,14 +444,14 @@ func (m *MockSupportAPI) DescribeServicesWithContext(arg0 context.Context, arg1 
 	return ret0, ret1
 }
 
-// DescribeServicesWithContext indicates an expected call of DescribeServicesWithContext.
+// DescribeServicesWithContext indicates an expected call of DescribeServicesWithContext
 func (mr *MockSupportAPIMockRecorder) DescribeServicesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeServicesWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeServicesWithContext), varargs...)
 }
 
-// DescribeSeverityLevels mocks base method.
+// DescribeSeverityLevels mocks base method
 func (m *MockSupportAPI) DescribeSeverityLevels(arg0 *support.DescribeSeverityLevelsInput) (*support.DescribeSeverityLevelsOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeSeverityLevels", arg0)
@@ -461,13 +460,13 @@ func (m *MockSupportAPI) DescribeSeverityLevels(arg0 *support.DescribeSeverityLe
 	return ret0, ret1
 }
 
-// DescribeSeverityLevels indicates an expected call of DescribeSeverityLevels.
+// DescribeSeverityLevels indicates an expected call of DescribeSeverityLevels
 func (mr *MockSupportAPIMockRecorder) DescribeSeverityLevels(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSeverityLevels", reflect.TypeOf((*MockSupportAPI)(nil).DescribeSeverityLevels), arg0)
 }
 
-// DescribeSeverityLevelsRequest mocks base method.
+// DescribeSeverityLevelsRequest mocks base method
 func (m *MockSupportAPI) DescribeSeverityLevelsRequest(arg0 *support.DescribeSeverityLevelsInput) (*request.Request, *support.DescribeSeverityLevelsOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeSeverityLevelsRequest", arg0)
@@ -476,13 +475,13 @@ func (m *MockSupportAPI) DescribeSeverityLevelsRequest(arg0 *support.DescribeSev
 	return ret0, ret1
 }
 
-// DescribeSeverityLevelsRequest indicates an expected call of DescribeSeverityLevelsRequest.
+// DescribeSeverityLevelsRequest indicates an expected call of DescribeSeverityLevelsRequest
 func (mr *MockSupportAPIMockRecorder) DescribeSeverityLevelsRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSeverityLevelsRequest", reflect.TypeOf((*MockSupportAPI)(nil).DescribeSeverityLevelsRequest), arg0)
 }
 
-// DescribeSeverityLevelsWithContext mocks base method.
+// DescribeSeverityLevelsWithContext mocks base method
 func (m *MockSupportAPI) DescribeSeverityLevelsWithContext(arg0 context.Context, arg1 *support.DescribeSeverityLevelsInput, arg2 ...request.Option) (*support.DescribeSeverityLevelsOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -495,14 +494,14 @@ func (m *MockSupportAPI) DescribeSeverityLevelsWithContext(arg0 context.Context,
 	return ret0, ret1
 }
 
-// DescribeSeverityLevelsWithContext indicates an expected call of DescribeSeverityLevelsWithContext.
+// DescribeSeverityLevelsWithContext indicates an expected call of DescribeSeverityLevelsWithContext
 func (mr *MockSupportAPIMockRecorder) DescribeSeverityLevelsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSeverityLevelsWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeSeverityLevelsWithContext), varargs...)
 }
 
-// DescribeTrustedAdvisorCheckRefreshStatuses mocks base method.
+// DescribeTrustedAdvisorCheckRefreshStatuses mocks base method
 func (m *MockSupportAPI) DescribeTrustedAdvisorCheckRefreshStatuses(arg0 *support.DescribeTrustedAdvisorCheckRefreshStatusesInput) (*support.DescribeTrustedAdvisorCheckRefreshStatusesOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTrustedAdvisorCheckRefreshStatuses", arg0)
@@ -511,13 +510,13 @@ func (m *MockSupportAPI) DescribeTrustedAdvisorCheckRefreshStatuses(arg0 *suppor
 	return ret0, ret1
 }
 
-// DescribeTrustedAdvisorCheckRefreshStatuses indicates an expected call of DescribeTrustedAdvisorCheckRefreshStatuses.
+// DescribeTrustedAdvisorCheckRefreshStatuses indicates an expected call of DescribeTrustedAdvisorCheckRefreshStatuses
 func (mr *MockSupportAPIMockRecorder) DescribeTrustedAdvisorCheckRefreshStatuses(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrustedAdvisorCheckRefreshStatuses", reflect.TypeOf((*MockSupportAPI)(nil).DescribeTrustedAdvisorCheckRefreshStatuses), arg0)
 }
 
-// DescribeTrustedAdvisorCheckRefreshStatusesRequest mocks base method.
+// DescribeTrustedAdvisorCheckRefreshStatusesRequest mocks base method
 func (m *MockSupportAPI) DescribeTrustedAdvisorCheckRefreshStatusesRequest(arg0 *support.DescribeTrustedAdvisorCheckRefreshStatusesInput) (*request.Request, *support.DescribeTrustedAdvisorCheckRefreshStatusesOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTrustedAdvisorCheckRefreshStatusesRequest", arg0)
@@ -526,13 +525,13 @@ func (m *MockSupportAPI) DescribeTrustedAdvisorCheckRefreshStatusesRequest(arg0 
 	return ret0, ret1
 }
 
-// DescribeTrustedAdvisorCheckRefreshStatusesRequest indicates an expected call of DescribeTrustedAdvisorCheckRefreshStatusesRequest.
+// DescribeTrustedAdvisorCheckRefreshStatusesRequest indicates an expected call of DescribeTrustedAdvisorCheckRefreshStatusesRequest
 func (mr *MockSupportAPIMockRecorder) DescribeTrustedAdvisorCheckRefreshStatusesRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrustedAdvisorCheckRefreshStatusesRequest", reflect.TypeOf((*MockSupportAPI)(nil).DescribeTrustedAdvisorCheckRefreshStatusesRequest), arg0)
 }
 
-// DescribeTrustedAdvisorCheckRefreshStatusesWithContext mocks base method.
+// DescribeTrustedAdvisorCheckRefreshStatusesWithContext mocks base method
 func (m *MockSupportAPI) DescribeTrustedAdvisorCheckRefreshStatusesWithContext(arg0 context.Context, arg1 *support.DescribeTrustedAdvisorCheckRefreshStatusesInput, arg2 ...request.Option) (*support.DescribeTrustedAdvisorCheckRefreshStatusesOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -545,14 +544,14 @@ func (m *MockSupportAPI) DescribeTrustedAdvisorCheckRefreshStatusesWithContext(a
 	return ret0, ret1
 }
 
-// DescribeTrustedAdvisorCheckRefreshStatusesWithContext indicates an expected call of DescribeTrustedAdvisorCheckRefreshStatusesWithContext.
+// DescribeTrustedAdvisorCheckRefreshStatusesWithContext indicates an expected call of DescribeTrustedAdvisorCheckRefreshStatusesWithContext
 func (mr *MockSupportAPIMockRecorder) DescribeTrustedAdvisorCheckRefreshStatusesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrustedAdvisorCheckRefreshStatusesWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeTrustedAdvisorCheckRefreshStatusesWithContext), varargs...)
 }
 
-// DescribeTrustedAdvisorCheckResult mocks base method.
+// DescribeTrustedAdvisorCheckResult mocks base method
 func (m *MockSupportAPI) DescribeTrustedAdvisorCheckResult(arg0 *support.DescribeTrustedAdvisorCheckResultInput) (*support.DescribeTrustedAdvisorCheckResultOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTrustedAdvisorCheckResult", arg0)
@@ -561,13 +560,13 @@ func (m *MockSupportAPI) DescribeTrustedAdvisorCheckResult(arg0 *support.Describ
 	return ret0, ret1
 }
 
-// DescribeTrustedAdvisorCheckResult indicates an expected call of DescribeTrustedAdvisorCheckResult.
+// DescribeTrustedAdvisorCheckResult indicates an expected call of DescribeTrustedAdvisorCheckResult
 func (mr *MockSupportAPIMockRecorder) DescribeTrustedAdvisorCheckResult(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrustedAdvisorCheckResult", reflect.TypeOf((*MockSupportAPI)(nil).DescribeTrustedAdvisorCheckResult), arg0)
 }
 
-// DescribeTrustedAdvisorCheckResultRequest mocks base method.
+// DescribeTrustedAdvisorCheckResultRequest mocks base method
 func (m *MockSupportAPI) DescribeTrustedAdvisorCheckResultRequest(arg0 *support.DescribeTrustedAdvisorCheckResultInput) (*request.Request, *support.DescribeTrustedAdvisorCheckResultOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTrustedAdvisorCheckResultRequest", arg0)
@@ -576,13 +575,13 @@ func (m *MockSupportAPI) DescribeTrustedAdvisorCheckResultRequest(arg0 *support.
 	return ret0, ret1
 }
 
-// DescribeTrustedAdvisorCheckResultRequest indicates an expected call of DescribeTrustedAdvisorCheckResultRequest.
+// DescribeTrustedAdvisorCheckResultRequest indicates an expected call of DescribeTrustedAdvisorCheckResultRequest
 func (mr *MockSupportAPIMockRecorder) DescribeTrustedAdvisorCheckResultRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrustedAdvisorCheckResultRequest", reflect.TypeOf((*MockSupportAPI)(nil).DescribeTrustedAdvisorCheckResultRequest), arg0)
 }
 
-// DescribeTrustedAdvisorCheckResultWithContext mocks base method.
+// DescribeTrustedAdvisorCheckResultWithContext mocks base method
 func (m *MockSupportAPI) DescribeTrustedAdvisorCheckResultWithContext(arg0 context.Context, arg1 *support.DescribeTrustedAdvisorCheckResultInput, arg2 ...request.Option) (*support.DescribeTrustedAdvisorCheckResultOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -595,14 +594,14 @@ func (m *MockSupportAPI) DescribeTrustedAdvisorCheckResultWithContext(arg0 conte
 	return ret0, ret1
 }
 
-// DescribeTrustedAdvisorCheckResultWithContext indicates an expected call of DescribeTrustedAdvisorCheckResultWithContext.
+// DescribeTrustedAdvisorCheckResultWithContext indicates an expected call of DescribeTrustedAdvisorCheckResultWithContext
 func (mr *MockSupportAPIMockRecorder) DescribeTrustedAdvisorCheckResultWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrustedAdvisorCheckResultWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeTrustedAdvisorCheckResultWithContext), varargs...)
 }
 
-// DescribeTrustedAdvisorCheckSummaries mocks base method.
+// DescribeTrustedAdvisorCheckSummaries mocks base method
 func (m *MockSupportAPI) DescribeTrustedAdvisorCheckSummaries(arg0 *support.DescribeTrustedAdvisorCheckSummariesInput) (*support.DescribeTrustedAdvisorCheckSummariesOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTrustedAdvisorCheckSummaries", arg0)
@@ -611,13 +610,13 @@ func (m *MockSupportAPI) DescribeTrustedAdvisorCheckSummaries(arg0 *support.Desc
 	return ret0, ret1
 }
 
-// DescribeTrustedAdvisorCheckSummaries indicates an expected call of DescribeTrustedAdvisorCheckSummaries.
+// DescribeTrustedAdvisorCheckSummaries indicates an expected call of DescribeTrustedAdvisorCheckSummaries
 func (mr *MockSupportAPIMockRecorder) DescribeTrustedAdvisorCheckSummaries(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrustedAdvisorCheckSummaries", reflect.TypeOf((*MockSupportAPI)(nil).DescribeTrustedAdvisorCheckSummaries), arg0)
 }
 
-// DescribeTrustedAdvisorCheckSummariesRequest mocks base method.
+// DescribeTrustedAdvisorCheckSummariesRequest mocks base method
 func (m *MockSupportAPI) DescribeTrustedAdvisorCheckSummariesRequest(arg0 *support.DescribeTrustedAdvisorCheckSummariesInput) (*request.Request, *support.DescribeTrustedAdvisorCheckSummariesOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTrustedAdvisorCheckSummariesRequest", arg0)
@@ -626,13 +625,13 @@ func (m *MockSupportAPI) DescribeTrustedAdvisorCheckSummariesRequest(arg0 *suppo
 	return ret0, ret1
 }
 
-// DescribeTrustedAdvisorCheckSummariesRequest indicates an expected call of DescribeTrustedAdvisorCheckSummariesRequest.
+// DescribeTrustedAdvisorCheckSummariesRequest indicates an expected call of DescribeTrustedAdvisorCheckSummariesRequest
 func (mr *MockSupportAPIMockRecorder) DescribeTrustedAdvisorCheckSummariesRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrustedAdvisorCheckSummariesRequest", reflect.TypeOf((*MockSupportAPI)(nil).DescribeTrustedAdvisorCheckSummariesRequest), arg0)
 }
 
-// DescribeTrustedAdvisorCheckSummariesWithContext mocks base method.
+// DescribeTrustedAdvisorCheckSummariesWithContext mocks base method
 func (m *MockSupportAPI) DescribeTrustedAdvisorCheckSummariesWithContext(arg0 context.Context, arg1 *support.DescribeTrustedAdvisorCheckSummariesInput, arg2 ...request.Option) (*support.DescribeTrustedAdvisorCheckSummariesOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -645,14 +644,14 @@ func (m *MockSupportAPI) DescribeTrustedAdvisorCheckSummariesWithContext(arg0 co
 	return ret0, ret1
 }
 
-// DescribeTrustedAdvisorCheckSummariesWithContext indicates an expected call of DescribeTrustedAdvisorCheckSummariesWithContext.
+// DescribeTrustedAdvisorCheckSummariesWithContext indicates an expected call of DescribeTrustedAdvisorCheckSummariesWithContext
 func (mr *MockSupportAPIMockRecorder) DescribeTrustedAdvisorCheckSummariesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrustedAdvisorCheckSummariesWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeTrustedAdvisorCheckSummariesWithContext), varargs...)
 }
 
-// DescribeTrustedAdvisorChecks mocks base method.
+// DescribeTrustedAdvisorChecks mocks base method
 func (m *MockSupportAPI) DescribeTrustedAdvisorChecks(arg0 *support.DescribeTrustedAdvisorChecksInput) (*support.DescribeTrustedAdvisorChecksOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTrustedAdvisorChecks", arg0)
@@ -661,13 +660,13 @@ func (m *MockSupportAPI) DescribeTrustedAdvisorChecks(arg0 *support.DescribeTrus
 	return ret0, ret1
 }
 
-// DescribeTrustedAdvisorChecks indicates an expected call of DescribeTrustedAdvisorChecks.
+// DescribeTrustedAdvisorChecks indicates an expected call of DescribeTrustedAdvisorChecks
 func (mr *MockSupportAPIMockRecorder) DescribeTrustedAdvisorChecks(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrustedAdvisorChecks", reflect.TypeOf((*MockSupportAPI)(nil).DescribeTrustedAdvisorChecks), arg0)
 }
 
-// DescribeTrustedAdvisorChecksRequest mocks base method.
+// DescribeTrustedAdvisorChecksRequest mocks base method
 func (m *MockSupportAPI) DescribeTrustedAdvisorChecksRequest(arg0 *support.DescribeTrustedAdvisorChecksInput) (*request.Request, *support.DescribeTrustedAdvisorChecksOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DescribeTrustedAdvisorChecksRequest", arg0)
@@ -676,13 +675,13 @@ func (m *MockSupportAPI) DescribeTrustedAdvisorChecksRequest(arg0 *support.Descr
 	return ret0, ret1
 }
 
-// DescribeTrustedAdvisorChecksRequest indicates an expected call of DescribeTrustedAdvisorChecksRequest.
+// DescribeTrustedAdvisorChecksRequest indicates an expected call of DescribeTrustedAdvisorChecksRequest
 func (mr *MockSupportAPIMockRecorder) DescribeTrustedAdvisorChecksRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrustedAdvisorChecksRequest", reflect.TypeOf((*MockSupportAPI)(nil).DescribeTrustedAdvisorChecksRequest), arg0)
 }
 
-// DescribeTrustedAdvisorChecksWithContext mocks base method.
+// DescribeTrustedAdvisorChecksWithContext mocks base method
 func (m *MockSupportAPI) DescribeTrustedAdvisorChecksWithContext(arg0 context.Context, arg1 *support.DescribeTrustedAdvisorChecksInput, arg2 ...request.Option) (*support.DescribeTrustedAdvisorChecksOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -695,14 +694,14 @@ func (m *MockSupportAPI) DescribeTrustedAdvisorChecksWithContext(arg0 context.Co
 	return ret0, ret1
 }
 
-// DescribeTrustedAdvisorChecksWithContext indicates an expected call of DescribeTrustedAdvisorChecksWithContext.
+// DescribeTrustedAdvisorChecksWithContext indicates an expected call of DescribeTrustedAdvisorChecksWithContext
 func (mr *MockSupportAPIMockRecorder) DescribeTrustedAdvisorChecksWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeTrustedAdvisorChecksWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeTrustedAdvisorChecksWithContext), varargs...)
 }
 
-// RefreshTrustedAdvisorCheck mocks base method.
+// RefreshTrustedAdvisorCheck mocks base method
 func (m *MockSupportAPI) RefreshTrustedAdvisorCheck(arg0 *support.RefreshTrustedAdvisorCheckInput) (*support.RefreshTrustedAdvisorCheckOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RefreshTrustedAdvisorCheck", arg0)
@@ -711,13 +710,13 @@ func (m *MockSupportAPI) RefreshTrustedAdvisorCheck(arg0 *support.RefreshTrusted
 	return ret0, ret1
 }
 
-// RefreshTrustedAdvisorCheck indicates an expected call of RefreshTrustedAdvisorCheck.
+// RefreshTrustedAdvisorCheck indicates an expected call of RefreshTrustedAdvisorCheck
 func (mr *MockSupportAPIMockRecorder) RefreshTrustedAdvisorCheck(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshTrustedAdvisorCheck", reflect.TypeOf((*MockSupportAPI)(nil).RefreshTrustedAdvisorCheck), arg0)
 }
 
-// RefreshTrustedAdvisorCheckRequest mocks base method.
+// RefreshTrustedAdvisorCheckRequest mocks base method
 func (m *MockSupportAPI) RefreshTrustedAdvisorCheckRequest(arg0 *support.RefreshTrustedAdvisorCheckInput) (*request.Request, *support.RefreshTrustedAdvisorCheckOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "RefreshTrustedAdvisorCheckRequest", arg0)
@@ -726,13 +725,13 @@ func (m *MockSupportAPI) RefreshTrustedAdvisorCheckRequest(arg0 *support.Refresh
 	return ret0, ret1
 }
 
-// RefreshTrustedAdvisorCheckRequest indicates an expected call of RefreshTrustedAdvisorCheckRequest.
+// RefreshTrustedAdvisorCheckRequest indicates an expected call of RefreshTrustedAdvisorCheckRequest
 func (mr *MockSupportAPIMockRecorder) RefreshTrustedAdvisorCheckRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshTrustedAdvisorCheckRequest", reflect.TypeOf((*MockSupportAPI)(nil).RefreshTrustedAdvisorCheckRequest), arg0)
 }
 
-// RefreshTrustedAdvisorCheckWithContext mocks base method.
+// RefreshTrustedAdvisorCheckWithContext mocks base method
 func (m *MockSupportAPI) RefreshTrustedAdvisorCheckWithContext(arg0 context.Context, arg1 *support.RefreshTrustedAdvisorCheckInput, arg2 ...request.Option) (*support.RefreshTrustedAdvisorCheckOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -745,14 +744,14 @@ func (m *MockSupportAPI) RefreshTrustedAdvisorCheckWithContext(arg0 context.Cont
 	return ret0, ret1
 }
 
-// RefreshTrustedAdvisorCheckWithContext indicates an expected call of RefreshTrustedAdvisorCheckWithContext.
+// RefreshTrustedAdvisorCheckWithContext indicates an expected call of RefreshTrustedAdvisorCheckWithContext
 func (mr *MockSupportAPIMockRecorder) RefreshTrustedAdvisorCheckWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RefreshTrustedAdvisorCheckWithContext", reflect.TypeOf((*MockSupportAPI)(nil).RefreshTrustedAdvisorCheckWithContext), varargs...)
 }
 
-// ResolveCase mocks base method.
+// ResolveCase mocks base method
 func (m *MockSupportAPI) ResolveCase(arg0 *support.ResolveCaseInput) (*support.ResolveCaseOutput, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ResolveCase", arg0)
@@ -761,13 +760,13 @@ func (m *MockSupportAPI) ResolveCase(arg0 *support.ResolveCaseInput) (*support.R
 	return ret0, ret1
 }
 
-// ResolveCase indicates an expected call of ResolveCase.
+// ResolveCase indicates an expected call of ResolveCase
 func (mr *MockSupportAPIMockRecorder) ResolveCase(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResolveCase", reflect.TypeOf((*MockSupportAPI)(nil).ResolveCase), arg0)
 }
 
-// ResolveCaseRequest mocks base method.
+// ResolveCaseRequest mocks base method
 func (m *MockSupportAPI) ResolveCaseRequest(arg0 *support.ResolveCaseInput) (*request.Request, *support.ResolveCaseOutput) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ResolveCaseRequest", arg0)
@@ -776,13 +775,13 @@ func (m *MockSupportAPI) ResolveCaseRequest(arg0 *support.ResolveCaseInput) (*re
 	return ret0, ret1
 }
 
-// ResolveCaseRequest indicates an expected call of ResolveCaseRequest.
+// ResolveCaseRequest indicates an expected call of ResolveCaseRequest
 func (mr *MockSupportAPIMockRecorder) ResolveCaseRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResolveCaseRequest", reflect.TypeOf((*MockSupportAPI)(nil).ResolveCaseRequest), arg0)
 }
 
-// ResolveCaseWithContext mocks base method.
+// ResolveCaseWithContext mocks base method
 func (m *MockSupportAPI) ResolveCaseWithContext(arg0 context.Context, arg1 *support.ResolveCaseInput, arg2 ...request.Option) (*support.ResolveCaseOutput, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -795,7 +794,7 @@ func (m *MockSupportAPI) ResolveCaseWithContext(arg0 context.Context, arg1 *supp
 	return ret0, ret1
 }
 
-// ResolveCaseWithContext indicates an expected call of ResolveCaseWithContext.
+// ResolveCaseWithContext indicates an expected call of ResolveCaseWithContext
 func (mr *MockSupportAPIMockRecorder) ResolveCaseWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
