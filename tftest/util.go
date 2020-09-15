@@ -26,7 +26,7 @@ const (
 	DefaultRegion = "us-west-2"
 )
 
-func AWSCurrentAccountId(t *testing.T) string {
+func AWSCurrentAccountID(t *testing.T) string {
 	session, err := aws.NewAuthenticatedSession(IAMRegion)
 	assert.Nil(t, err)
 	stsClient := sts.New(session)
@@ -41,7 +41,7 @@ func AWSCurrentAccountId(t *testing.T) string {
 // CreateRole will create a new role with a random name and path and return the name.
 func CreateRole(t *testing.T) string {
 	a := assert.New(t)
-	currAcct := AWSCurrentAccountId(t)
+	currAcct := AWSCurrentAccountID(t)
 	roleName := random.UniqueId()
 	assumeRoleDocument := `{
 		"Version": "2012-10-17",
@@ -69,7 +69,7 @@ func CreateRole(t *testing.T) string {
 }
 
 func CreateSecurityGroup(t *testing.T, region, vpc string) string {
-	name := UniqueId()
+	name := UniqueID()
 	ec2Client := aws.NewEc2Client(t, region)
 	desc := "cztack test"
 
@@ -171,7 +171,7 @@ const uniqueIDLength = 6 // Should be good for 62^6 = 56+ billion combinations
 // UniqueId returns a unique (ish) id we can attach to resources and tfstate files so they don't conflict with each other
 // Uses base 62 to generate a 6 character string that's unlikely to collide with the handful of tests we run in
 // parallel. Based on code here: http://stackoverflow.com/a/9543797/483528
-func UniqueId() string {
+func UniqueID() string {
 	return RandomString(base62chars, uniqueIDLength)
 }
 
