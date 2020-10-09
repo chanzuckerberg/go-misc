@@ -63,3 +63,19 @@ func TestSTringSetEquals(t *testing.T) {
 	this.Add("e")
 	r.True(this.Equals(that))
 }
+
+func TestSubtract(t *testing.T) {
+	r := require.New(t)
+
+	ours := &StringSet{}
+	theirs := &StringSet{}
+
+	ours.Add("foo", "bar")
+	theirs.Add("bar", "baz")
+
+	foo := NewStringSet().Add("foo")
+	baz := NewStringSet().Add("baz")
+
+	r.True(foo.Equals(ours.Subtract(theirs)))
+	r.True(baz.Equals(theirs.Subtract(ours)))
+}

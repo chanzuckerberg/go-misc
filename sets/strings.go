@@ -4,20 +4,27 @@ type StringSet struct {
 	strings map[string]struct{}
 }
 
-func (ss *StringSet) Add(vals ...string) {
+func NewStringSet() *StringSet {
+	return &StringSet{}
+}
+
+func (ss *StringSet) Add(vals ...string) *StringSet {
 	ss.ensure()
 
 	for _, val := range vals {
 		ss.strings[val] = struct{}{}
 	}
+
+	return ss
 }
 
-func (ss *StringSet) Remove(vals ...string) {
+func (ss *StringSet) Remove(vals ...string) *StringSet {
 	ss.ensure()
 
 	for _, val := range vals {
 		delete(ss.strings, val)
 	}
+	return ss
 }
 
 func (ss *StringSet) ContainsElement(val string) bool {
@@ -37,6 +44,20 @@ func (ss *StringSet) Contains(other *StringSet) bool {
 		}
 	}
 	return true
+}
+
+func (ss *StringSet) Subtract(other *StringSet) *StringSet {
+	ss.ensure()
+
+	difference := &StringSet{}
+
+	for _, ours := range ss.List() {
+		if !other.ContainsElement(ours) {
+			difference.Add(ours)
+		}
+	}
+
+	return difference
 }
 
 func (ss *StringSet) List() []string {

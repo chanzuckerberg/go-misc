@@ -6,37 +6,38 @@ package mocks
 
 import (
 	context "context"
+	io "io"
+	reflect "reflect"
+
 	s3 "github.com/aws/aws-sdk-go/service/s3"
 	s3manager "github.com/aws/aws-sdk-go/service/s3/s3manager"
 	gomock "github.com/golang/mock/gomock"
-	io "io"
-	reflect "reflect"
 )
 
-// MockDownloaderAPI is a mock of DownloaderAPI interface
+// MockDownloaderAPI is a mock of DownloaderAPI interface.
 type MockDownloaderAPI struct {
 	ctrl     *gomock.Controller
 	recorder *MockDownloaderAPIMockRecorder
 }
 
-// MockDownloaderAPIMockRecorder is the mock recorder for MockDownloaderAPI
+// MockDownloaderAPIMockRecorder is the mock recorder for MockDownloaderAPI.
 type MockDownloaderAPIMockRecorder struct {
 	mock *MockDownloaderAPI
 }
 
-// NewMockDownloaderAPI creates a new mock instance
+// NewMockDownloaderAPI creates a new mock instance.
 func NewMockDownloaderAPI(ctrl *gomock.Controller) *MockDownloaderAPI {
 	mock := &MockDownloaderAPI{ctrl: ctrl}
 	mock.recorder = &MockDownloaderAPIMockRecorder{mock}
 	return mock
 }
 
-// EXPECT returns an object that allows the caller to indicate expected use
+// EXPECT returns an object that allows the caller to indicate expected use.
 func (m *MockDownloaderAPI) EXPECT() *MockDownloaderAPIMockRecorder {
 	return m.recorder
 }
 
-// Download mocks base method
+// Download mocks base method.
 func (m *MockDownloaderAPI) Download(arg0 io.WriterAt, arg1 *s3.GetObjectInput, arg2 ...func(*s3manager.Downloader)) (int64, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
@@ -49,14 +50,14 @@ func (m *MockDownloaderAPI) Download(arg0 io.WriterAt, arg1 *s3.GetObjectInput, 
 	return ret0, ret1
 }
 
-// Download indicates an expected call of Download
+// Download indicates an expected call of Download.
 func (mr *MockDownloaderAPIMockRecorder) Download(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Download", reflect.TypeOf((*MockDownloaderAPI)(nil).Download), varargs...)
 }
 
-// DownloadWithContext mocks base method
+// DownloadWithContext mocks base method.
 func (m *MockDownloaderAPI) DownloadWithContext(arg0 context.Context, arg1 io.WriterAt, arg2 *s3.GetObjectInput, arg3 ...func(*s3manager.Downloader)) (int64, error) {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1, arg2}
@@ -69,7 +70,7 @@ func (m *MockDownloaderAPI) DownloadWithContext(arg0 context.Context, arg1 io.Wr
 	return ret0, ret1
 }
 
-// DownloadWithContext indicates an expected call of DownloadWithContext
+// DownloadWithContext indicates an expected call of DownloadWithContext.
 func (mr *MockDownloaderAPIMockRecorder) DownloadWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
