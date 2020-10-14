@@ -5,6 +5,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -80,7 +81,7 @@ func run0(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, "could not list TFE orgs")
 	}
-	logrus.Debugf("org: %s", org)
+	logrus.Debugf("org: %v", org)
 
 	// https://www.terraform.io/docs/cloud/api/index.html#pagination
 	page := 1
@@ -94,19 +95,25 @@ func run0(ctx context.Context) error {
 
 		for _, workspace := range workspaces.Items {
 			logrus.Infof("workspace %#v", workspace.Name)
-			tfeClient.Runs.Create(ctx, tfe.RunCreateOptions{
-				Message:   tfe.String("scheduled auto-run"),
-				Workspace: workspace,
-			})
+			if time.Since(workspace.CurrentRun.CreatedAt) > (24 * time.Hour) {
+				_, err := tfeClient.Runs.Create(ctx, tfe.RunCreateOptions{
+					Message:   tfe.String("scheduled auto-run"),
+					Workspace: workspace,
+				})
+
+				if err != nil {
+					return errors.Wrapf(err, "Unable to create run for %s", workspace.Name)
+				}
+			} else {
+				logrus.Debugf("skipping %s", workspace.Name)
+			}
 		}
 
 		// when there are no more pages, the api should return null, which gets the int zero value
 		page = workspaces.NextPage
-
 	}
 
 	return nil
-
 }
 
 func main() {
