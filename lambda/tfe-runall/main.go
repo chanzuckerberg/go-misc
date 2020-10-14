@@ -68,6 +68,7 @@ func run0(ctx context.Context) error {
 	// https://www.terraform.io/docs/cloud/api/index.html#pagination
 	page := 1
 
+	// when there are no more pages, the api should return null, which gets the int zero value
 	for page != 0 {
 		workspaces, err := tfeClient.Workspaces.List(ctx, org.Name, tfe.WorkspaceListOptions{
 			Include: ptr.String("current_run"),
@@ -94,7 +95,6 @@ func run0(ctx context.Context) error {
 			}
 		}
 
-		// when there are no more pages, the api should return null, which gets the int zero value
 		page = workspaces.NextPage
 	}
 
@@ -102,11 +102,12 @@ func run0(ctx context.Context) error {
 }
 
 func main() {
-	flag.Parse()
-
 	logrus.SetLevel(logrus.DebugLevel)
 
+	flag.Parse()
 	logrus.Debugf("arg: %s", flag.Arg(0))
+
+	// cheap and simple local-mode for lambda
 	if flag.Arg(0) == "-local" {
 		run(context.Background())
 	} else {
