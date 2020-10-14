@@ -63,3 +63,8 @@ generate-mocks: ## will generate mocks
 	@cd aws; go generate
 	@go mod tidy
 .PHONY: generate-mocks
+
+check-mod:
+	go mod tidy
+	git diff --exit-code -- go.mod go.sum
+.PHONY: check-mod
