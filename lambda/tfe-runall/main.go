@@ -38,11 +38,14 @@ func run(ctx context.Context) {
 }
 
 func run0(ctx context.Context) error {
-
 	tfeOrg := os.Getenv("TFE_ORG")
-
 	if tfeOrg == "" {
 		return errors.New("please set TFE_ORG to the name of the organization")
+	}
+
+	tfeTokenARN := os.Getenv("TFE_TOKEN_SECRET_ARN")
+	if tfeTokenARN == "" {
+		return errors.New("please set TFE_TOKEN_SECRET_ARN")
 	}
 
 	sess, err := session.NewSessionWithOptions(
@@ -53,11 +56,6 @@ func run0(ctx context.Context) error {
 
 	if err != nil {
 		return err
-	}
-
-	tfeTokenARN := os.Getenv("TFE_TOKEN_SECRET_ARN")
-	if tfeTokenARN == "" {
-		return errors.New("please set TFE_TOKEN_SECRET_ARN")
 	}
 
 	awsClient := aws.New(sess).WithSecretsManager(sess.Config)
@@ -79,24 +77,32 @@ func run0(ctx context.Context) error {
 	}
 
 	org, err := tfeClient.Organizations.Read(ctx, tfeOrg)
-
 	if err != nil {
 		return errors.Wrap(err, "could not list TFE orgs")
 	}
-
 	logrus.Debugf("org: %s", org)
-	workspaces, err := tfeClient.Workspaces.List(ctx, org.Name, tfe.WorkspaceListOptions{})
 
-	if err != nil {
-		return errors.Wrapf(err, "unable to list workspaces for %s", org.Name)
-	}
+	// https://www.terraform.io/docs/cloud/api/index.html#pagination
+	page := 1
 
-	for _, workspace := range workspaces.Items {
-		logrus.Infof("workspace %#v", workspace.Name)
-		tfeClient.Runs.Create(ctx, tfe.RunCreateOptions{
-			Message:   tfe.String("scheduled auto-run"),
-			Workspace: workspace,
-		})
+	for page != 0 {
+		workspaces, err := tfeClient.Workspaces.List(ctx, org.Name, tfe.WorkspaceListOptions{})
+
+		if err != nil {
+			return errors.Wrapf(err, "unable to list workspaces for %s", org.Name)
+		}
+
+		for _, workspace := range workspaces.Items {
+			logrus.Infof("workspace %#v", workspace.Name)
+			tfeClient.Runs.Create(ctx, tfe.RunCreateOptions{
+				Message:   tfe.String("scheduled auto-run"),
+				Workspace: workspace,
+			})
+		}
+
+		// when there are no more pages, the api should return null, which gets the int zero value
+		page = workspaces.NextPage
+
 	}
 
 	return nil
