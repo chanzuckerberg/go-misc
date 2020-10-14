@@ -39,6 +39,7 @@ func (v *Versions) Outdated(ver string) (bool, error) {
 	if latest == nil {
 		return false, nil
 	}
+
 	testVersion, err := version.NewVersion(ver)
 	if err != nil {
 		return false, errors.Wrapf(err, "Could not parse %s", ver)

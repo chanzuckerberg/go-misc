@@ -12,16 +12,29 @@ clean: ## clean the repo
 .PHONY: clean
 
 setup:
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(shell go env GOPATH)/bin v1.16.0
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh
+	curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh
 .PHONY: setup
 
-lint: ## run the fast go linters
-	@golangci-lint run --no-config \
-		--disable-all --enable=deadcode  --enable=gocyclo --enable=golint --enable=varcheck \
-		--enable=structcheck --enable=errcheck --enable=dupl --enable=unparam --enable=goimports \
-		--enable=interfacer --enable=unconvert --enable=gosec --enable=megacheck \
-		--skip-dirs aws/mocks
+# lint: ## run the fast go linters
+# 	@golangci-lint run --no-config \
+# 		--disable-all --enable=deadcode  --enable=gocyclo --enable=golint --enable=varcheck \
+# 		--enable=structcheck --enable=errcheck --enable=dupl --enable=unparam --enable=goimports \
+# 		--enable=interfacer --enable=unconvert --enable=gosec --enable=megacheck \
+# 		--skip-dirs aws/mocks
+# .PHONY: lint
+
+lint: ## run lint on changes from main
+	./bin/reviewdog -conf .reviewdog.yml  -diff "git diff main"
 .PHONY: lint
+
+lint-ci: ## run lint in CI, posting to PRs
+	./bin/reviewdog -conf .reviewdog.yml  -reporter=github-pr-review -tee -level=info
+.PHONY: lint-ci
+
+lint-all: ## run linters across all code
+	./bin/reviewdog -conf .reviewdog.yml  -filter-mode nofilter
+.PHONY: lint-all
 
 deps:
 	go get ./...
