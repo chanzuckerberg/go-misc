@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
 	"os"
 	"time"
 
@@ -11,32 +10,14 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/chanzuckerberg/go-misc/aws"
 	"github.com/chanzuckerberg/go-misc/ptr"
-	czi_sentry "github.com/chanzuckerberg/go-misc/sentry"
-	"github.com/getsentry/sentry-go"
+	"github.com/chanzuckerberg/go-misc/sentry"
 	"github.com/hashicorp/go-tfe"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
 
 func run(ctx context.Context) {
-	sentryDSN := os.Getenv("SENTRY_DSN")
-	sentryEnv := os.Getenv("SENTRY_ENV")
-
-	logrus.Info("setting up sentry")
-
-	f, e := czi_sentry.Setup(sentryDSN, sentryEnv)
-	if e != nil {
-		log.Fatal(e)
-	}
-
-	defer f()
-
-	err := run0(ctx)
-
-	if err != nil {
-		logrus.Errorf("%+v\n", err)
-		sentry.CaptureException(err)
-	}
+	sentry.Run(ctx, run0)
 }
 
 func run0(ctx context.Context) error {
