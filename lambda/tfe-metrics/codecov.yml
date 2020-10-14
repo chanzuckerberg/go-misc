@@ -1,0 +1,9 @@
+ignore:
+  - "vendor"
+coverage:
+  status:
+    project:
+      default:
+        target: 70
+        threshold: 2
+    patch: off
