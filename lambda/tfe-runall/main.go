@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/chanzuckerberg/go-misc/aws"
+	"github.com/chanzuckerberg/go-misc/ptr"
 	czi_sentry "github.com/chanzuckerberg/go-misc/sentry"
 	"github.com/getsentry/sentry-go"
 	"github.com/hashicorp/go-tfe"
@@ -87,15 +88,18 @@ func run0(ctx context.Context) error {
 	page := 1
 
 	for page != 0 {
-		workspaces, err := tfeClient.Workspaces.List(ctx, org.Name, tfe.WorkspaceListOptions{})
+		workspaces, err := tfeClient.Workspaces.List(ctx, org.Name, tfe.WorkspaceListOptions{
+			Include: ptr.String("current_run"),
+		})
 
 		if err != nil {
 			return errors.Wrapf(err, "unable to list workspaces for %s", org.Name)
 		}
 
 		for _, workspace := range workspaces.Items {
-			logrus.Infof("workspace %#v", workspace.Name)
 			if time.Since(workspace.CurrentRun.CreatedAt) > (24 * time.Hour) {
+				logrus.Debugf("running workspace %#v", workspace.Name)
+				logrus.Debugf("current run %#v", workspace.CurrentRun.CreatedAt)
 				_, err := tfeClient.Runs.Create(ctx, tfe.RunCreateOptions{
 					Message:   tfe.String("scheduled auto-run"),
 					Workspace: workspace,
@@ -118,6 +122,8 @@ func run0(ctx context.Context) error {
 
 func main() {
 	flag.Parse()
+
+	logrus.SetLevel(logrus.DebugLevel)
 
 	logrus.Debugf("arg: %s", flag.Arg(0))
 	if flag.Arg(0) == "-local" {
