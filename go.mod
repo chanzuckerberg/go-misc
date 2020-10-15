@@ -20,6 +20,7 @@ require (
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/gruntwork-io/terratest v0.29.0
 	github.com/hashicorp/go-multierror v1.1.0
+	github.com/hashicorp/go-tfe v0.10.2
 	github.com/hashicorp/go-version v1.2.1
 	github.com/honeycombio/libhoney-go v1.13.0
 	github.com/klauspost/compress v1.10.11 // indirect
@@ -46,3 +47,6 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/square/go-jose.v2 v2.5.1
 )
+
+// until https://github.com/hashicorp/go-tfe/pull/146 is released
+replace github.com/hashicorp/go-tfe => github.com/chanzuckerberg/go-tfe v0.9.1-0.20201014184401-8cbeed27c1e0

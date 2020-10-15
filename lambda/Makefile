@@ -50,14 +50,6 @@ package-github_to_firehose: clean-github_to_firehose
 publish-github_to_firehose: package-github_to_firehose
 	$(call publish,github_to_firehose.zip)
 
-clean-github_to_firehose:
-	@rm github_to_firehose.zip handler || true
-
-package-github_to_firehose: clean-github_to_firehose
-	GOOS=linux CGO_ENABLED=0 go build -o handler github/archive/archive.go
-	zip github_to_firehose.zip handler
-	rm handler
-
 clean-unfurl_cloudtrail:
 	$(call clean, unfurl_cloudtrail.zip)
 
@@ -66,6 +58,15 @@ package-unfurl_cloudtrail: clean-unfurl_cloudtrail
 
 publish-unfurl_cloudtrail: package-unfurl_cloudtrail
 	$(call publish,unfurl_cloudtrail.zip)
+
+clean-tfe-runall:
+	$(call clean, tfe-runall.zip)
+
+package-tfe-runall: clean-tfe-runall
+	$(call package,tfe-runall/main.go,tfe-runall.zip)
+
+publish-tfe-runall: package-tfe-runall
+	$(call publish,tfe-runall.zip)
 
 define clean
 	@rm $1 handler 2> /dev/null  || true
