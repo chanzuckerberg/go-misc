@@ -38,9 +38,9 @@ func Run(ctx context.Context, f func(context.Context) error) {
 	sentryDSN := os.Getenv("SENTRY_DSN")
 	sentryEnv := os.Getenv("SENTRY_ENV")
 
-	logrus.Info("setting up sentry")
+	logrus.Infof("setting up sentry '%s' %s", sentryDSN, sentryEnv)
 
-	teardown, e := Setup(sentryDSN, sentryEnv)
+	teardown, e := Setup(sentryEnv, sentryDSN)
 	if e != nil {
 		log.Fatal(e)
 	}
