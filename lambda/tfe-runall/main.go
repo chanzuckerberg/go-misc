@@ -80,20 +80,20 @@ func run0(ctx context.Context) error {
 
 		for _, workspace := range workspaces.Items {
 			if time.Since(workspace.CurrentRun.CreatedAt) <= (24 * time.Hour) {
-			   logrus.Debugf("skipping %s", workspace.Name)
-			   continue
-			 }
-				logrus.Debugf("running workspace %#v", workspace.Name)
-				logrus.Debugf("current run %#v", workspace.CurrentRun.CreatedAt)
-				_, err := tfeClient.Runs.Create(ctx, tfe.RunCreateOptions{
-					Message:   tfe.String("scheduled auto-run"),
-					Workspace: workspace,
-				})
+				logrus.Debugf("skipping %s", workspace.Name)
+				continue
+			}
+			logrus.Debugf("running workspace %#v", workspace.Name)
+			logrus.Debugf("current run %#v", workspace.CurrentRun.CreatedAt)
+			_, err := tfeClient.Runs.Create(ctx, tfe.RunCreateOptions{
+				Message:   tfe.String("scheduled auto-run"),
+				Workspace: workspace,
+			})
 
-				if err != nil {
-					return errors.Wrapf(err, "Unable to create run for %s", workspace.Name)
-				}
-			} 
+			if err != nil {
+				return errors.Wrapf(err, "Unable to create run for %s", workspace.Name)
+			}
+
 		}
 
 		page = workspaces.NextPage
