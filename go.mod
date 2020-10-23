@@ -48,5 +48,5 @@ require (
 	gopkg.in/square/go-jose.v2 v2.5.1
 )
 
-// until https://github.com/hashicorp/go-tfe/pull/146 is released
-replace github.com/hashicorp/go-tfe => github.com/chanzuckerberg/go-tfe v0.9.1-0.20201014184401-8cbeed27c1e0
+// use this PR until it is merged https://github.com/hashicorp/go-tfe/pull/126
+replace github.com/hashicorp/go-tfe => github.com/chanzuckerberg/go-tfe v0.6.1-0.20200701222238-d88b093cbe7e

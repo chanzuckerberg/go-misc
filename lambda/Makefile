@@ -68,6 +68,15 @@ package-tfe-runall: clean-tfe-runall
 publish-tfe-runall: package-tfe-runall
 	$(call publish,tfe-runall.zip)
 
+clean-tfe-metrics:
+	$(call clean, tfe-metrics.zip)
+
+package-tfe-metrics: clean-tfe-metrics
+	$(call package,tfe-metrics/main.go,tfe-metrics.zip)
+
+publish-tfe-metrics: package-tfe-metrics
+	$(call publish,tfe-metrics.zip)
+
 define clean
 	@rm $1 handler 2> /dev/null  || true
 endef
