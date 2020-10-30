@@ -107,6 +107,7 @@ func Destroy(t *testing.T, options *terraform.Options, retries ...int) {
 	}
 	var err error
 	var output string
+
 	for i := 0; i < retryTimes; i++ {
 		output, err = terraform.DestroyE(t, options)
 		if err == nil {
@@ -149,6 +150,14 @@ func EnvVar(name string) string {
 }
 
 func Options(region string, vars map[string]interface{}) *terraform.Options {
+	standardOptions := []string{"project", "env", "service", "owner"}
+
+	for _, o := range standardOptions {
+		if _, present := vars[o]; !present {
+			vars[o] = UniqueID()
+		}
+	}
+
 	return &terraform.Options{
 		TerraformDir: ".",
 
@@ -177,13 +186,14 @@ func UniqueID() string {
 
 // newRand creates a new random number generator, seeding it with the current system time.
 func newRand() *rand.Rand {
-	return rand.New(rand.NewSource(time.Now().UnixNano()))
+	return rand.New(rand.NewSource(time.Now().UnixNano())) //nolint
 }
 
 func RandomString(chars string, length int) string {
 	var out bytes.Buffer
 
 	generator := newRand()
+
 	for i := 0; i < length; i++ {
 		out.WriteByte(chars[generator.Intn(len(chars))])
 	}
