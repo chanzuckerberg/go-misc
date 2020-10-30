@@ -23,7 +23,8 @@ type Test struct {
 	Validate func(*testing.T, *terraform.Options)
 	Cleanup  func(*testing.T, *terraform.Options)
 
-	Mode TestMode
+	Mode        TestMode
+	SkipDestroy bool
 
 	skip []string
 	only []string
@@ -92,7 +93,10 @@ func (tt *Test) Run(t *testing.T) {
 
 	defer tt.Stage(t, "cleanup", func() {
 		options := test_structure.LoadTerraformOptions(t, terraformDirectory)
-		terraform.DestroyE(t, options) //nolint
+		// for some tests we want to skip the destroy and let our GC processes clean up
+		if !tt.SkipDestroy {
+			terraform.DestroyE(t, options) //nolint
+		}
 		Clean(terraformDirectory)
 		test_structure.CleanupTestDataFolder(t, terraformDirectory)
 		if tt.Cleanup != nil {
