@@ -99,17 +99,17 @@ func (r *Runner) RunOnce() error {
 			break
 		}
 
-		for _, run := range list.Items {
-			isProcessed, err := r.stater.IsProcessed(run.ID)
-			logrus.Infof("run id: %s isprocessed: %t", run.ID, isProcessed)
+		for _, adminRun := range list.Items {
+			isProcessed, err := r.stater.IsProcessed(adminRun.ID)
+			logrus.Infof("run id: %s isprocessed: %t", adminRun.ID, isProcessed)
 			if err != nil {
 				return errors.Wrap(err, "err with state")
 			}
 			if !isProcessed {
 				ev := builder.NewEvent()
-				run, err = client.Runs.Read(ctx, run.ID)
+				run, err := client.Runs.Read(ctx, adminRun.ID)
 				if err != nil {
-					return errors.Wrapf(err, "unable to read run from tf api %s", run.ID)
+					return errors.Wrapf(err, "unable to read run from tf api %s", adminRun.ID)
 				}
 
 				event := map[string]interface{}{}
