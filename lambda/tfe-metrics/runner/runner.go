@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/lambda/tfe-metrics/state"
-	"github.com/getsentry/sentry-go"
 	"github.com/hashicorp/go-tfe"
 	"github.com/honeycombio/libhoney-go"
 	"github.com/pkg/errors"
@@ -32,27 +31,6 @@ func NewRunner(tfeToken, honeycombDataset, honeycombWriteKey string, stater stat
 
 		stater: stater,
 	}
-}
-
-// TODO move to go-misc version when merged
-func SetupSentry(sentryDSN, env string) (func(), error) {
-	if sentryDSN != "" {
-		err := sentry.Init(sentry.ClientOptions{
-			Dsn:         sentryDSN,
-			Environment: env,
-		})
-		if err != nil {
-			f := func() {}
-			return f, errors.Wrap(err, "Sentry initialization failed")
-		}
-
-		f := func() {
-			sentry.Flush(time.Second * 5)
-			sentry.Recover()
-		}
-		return f, nil
-	}
-	return func() {}, nil
 }
 
 func (r *Runner) RunOnce() error {

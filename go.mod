@@ -23,8 +23,10 @@ require (
 	github.com/hashicorp/go-tfe v0.10.2
 	github.com/hashicorp/go-version v1.2.1
 	github.com/honeycombio/libhoney-go v1.13.0
+	github.com/jackc/pgx/v4 v4.9.2
 	github.com/klauspost/compress v1.10.11 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
+	github.com/lib/pq v1.8.0
 	github.com/mattn/go-colorable v0.1.7 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/mitchellh/go-homedir v1.1.0

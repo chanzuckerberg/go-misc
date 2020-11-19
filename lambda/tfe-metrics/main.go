@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"flag"
-	"log"
 	"os"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -12,28 +11,12 @@ import (
 	"github.com/chanzuckerberg/go-misc/aws"
 	"github.com/chanzuckerberg/go-misc/lambda/tfe-metrics/runner"
 	"github.com/chanzuckerberg/go-misc/lambda/tfe-metrics/state"
-	"github.com/getsentry/sentry-go"
+	"github.com/chanzuckerberg/go-misc/sentry"
 	"github.com/sirupsen/logrus"
 )
 
 func run(ctx context.Context) {
-	sentryDSN := os.Getenv("SENTRY_DSN")
-	sentryEnv := os.Getenv("SENTRY_ENV")
-
-	logrus.Info("setting up sentry")
-	f, e := runner.SetupSentry(sentryDSN, sentryEnv)
-	if e != nil {
-		log.Fatal(e)
-	}
-
-	defer f()
-
-	err := run0(ctx)
-
-	if err != nil {
-		logrus.Errorf("%+v\n", err)
-		sentry.CaptureException(err)
-	}
+	sentry.Run(ctx, run0)
 }
 
 func run0(ctx context.Context) error {
