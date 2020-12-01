@@ -32,8 +32,7 @@ func policyDocumentToString(policyDoc *S3BucketPolicy) *string {
 	return aws.String(url.PathEscape(string(jsonPolicyData)))
 }
 
-// TODO(aku): Finish this test!
-func TestParseMultipleActionsPrincipals(t *testing.T) {
+func TestMultipleValues(t *testing.T) {
 	r := require.New(t)
 
 	policyData, err := json.Marshal(multipleActionsResourcesPolicy)
@@ -79,7 +78,7 @@ var singleActionResourcePolicy = &AlternatePolicyDocument{
 	},
 }
 
-func TestSingleStringAction(t *testing.T) {
+func TestSingleStringValues(t *testing.T) {
 	r := require.New(t)
 
 	policyData, err := json.Marshal(singleActionResourcePolicy)
