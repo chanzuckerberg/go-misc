@@ -7,21 +7,48 @@ import (
 
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/gruntwork-io/terratest/modules/aws"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 )
 
+type AWSStrings []string
+
+type Statement struct {
+	Sid       string
+	Effect    string
+	Principal string
+	Action    AWSStrings
+	Resource  AWSStrings
+	Condition map[string]map[string]string
+}
+
 type S3BucketPolicy struct {
-	Statement []struct {
-		Sid       string
-		Effect    string
-		Principal string
-		Action    string
-		Resource  []string
-		Condition map[string]map[string]string
-	}
+	Statements []Statement
 }
 
 var UserArn = "arn:aws:iam::119435350371:user/ci/cztack-ci"
+
+// General Unmarshal function for values that could be a string or []string, unmarshal as []string
+func (a *AWSStrings) UnmarshalJSON(data []byte) error {
+	var str string
+	err := json.Unmarshal(data, &str)
+	if err == nil {
+		*a = []string{str}
+		return nil
+	}
+	// If the error is not an unmarshal type error, then we return the error
+	if _, ok := err.(*json.UnmarshalTypeError); err != nil && !ok {
+		return errors.Wrap(err, "Unexpected error type from unmarshaling")
+	}
+
+	var strSlice []string
+	err = json.Unmarshal(data, &strSlice)
+	if err == nil {
+		*a = strSlice
+		return nil
+	}
+	return errors.Wrap(err, "Unable to unmarshal Action")
+}
 
 // UnmarshalS3BucketPolicy will parse an s3 bucket policy and return as a go struct. Only parts that
 // have been used are supported so far
