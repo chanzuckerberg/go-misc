@@ -74,7 +74,7 @@ func (ts *ProviderTestSuite) SetupTest() {
 	ts.mockIAM.EXPECT().GetUserWithContext(gomock.Any(), gomock.Any()).Return(getUserOutput, nil)
 
 	mfaDevivies := []*iam.MFADevice{
-		&iam.MFADevice{SerialNumber: aws.String("serial number")},
+		{SerialNumber: aws.String("serial number")},
 	}
 	output := &iam.ListMFADevicesOutput{}
 	output.SetMFADevices(mfaDevivies)
