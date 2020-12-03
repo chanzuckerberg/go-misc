@@ -14,16 +14,17 @@ import (
 type AWSStrings []string
 
 type Statement struct {
-	Sid       string
-	Effect    string
-	Principal string
-	Action    AWSStrings
-	Resource  AWSStrings
-	Condition map[string]map[string]string
+	Sid       string                       `json:"Sid"`
+	Effect    string                       `json:"Effect"`
+	Principal string                       `json:"Principal"`
+	Action    AWSStrings                   `json:"Action"`
+	Resource  AWSStrings                   `json:"Resource"`
+	Condition map[string]map[string]string `json:"Condition"`
 }
 
 type S3BucketPolicy struct {
-	Statements []Statement
+	Version    string      `json:"Version"`
+	Statements []Statement `json:"Statement"`
 }
 
 var UserArn = "arn:aws:iam::119435350371:user/ci/cztack-ci"

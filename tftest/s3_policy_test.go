@@ -95,3 +95,14 @@ func TestSingleStringValues(t *testing.T) {
 	r.Len(policyDoc.Statements[0].Resource, 1)
 	r.Equal(policyDoc.Statements[0].Resource, AWSStrings{"Resource1"})
 }
+
+// TestSampleBucketPolicy tests a policy that was failing for some time, so we're using it as a test case
+func TestSampleBucketPolicy(t *testing.T) {
+	r := require.New(t)
+
+	bucketPolicyStr := "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Sid\":\"EnforceTLS\",\"Effect\":\"Deny\",\"Principal\":\"*\",\"Action\":\"*\",\"Resource\":[\"arn:aws:s3:::hpvodj/*\",\"arn:aws:s3:::hpvodj\"],\"Condition\":{\"Bool\":{\"aws:SecureTransport\":\"false\"}}}]}"
+
+	policyDoc, err := UnmarshalS3BucketPolicy(bucketPolicyStr)
+	r.NoError(err)
+	r.Len(policyDoc.Statements, 1)
+}
