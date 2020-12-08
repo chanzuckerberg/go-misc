@@ -1,5 +1,7 @@
 package client
 
+import "golang.org/x/oauth2"
+
 const (
 	defaultSuccessMessage = "Signed in successfully! You can now return to CLI."
 )
@@ -13,5 +15,11 @@ type Option func(*Client)
 var SetSuccessMessage = func(successMessage string) Option {
 	return func(c *Client) {
 		c.customMessages[oidcStatusSuccess] = successMessage
+	}
+}
+
+var SetOauth2AuthStyle = func(authStyle oauth2.AuthStyle) Option {
+	return func(c *Client) {
+		c.oauthConfig.Endpoint.AuthStyle = authStyle
 	}
 }
