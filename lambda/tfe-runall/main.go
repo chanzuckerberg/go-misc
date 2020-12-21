@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -26,30 +27,36 @@ func run0(ctx context.Context) error {
 		return errors.New("please set TFE_ORG to the name of the organization")
 	}
 
-	tfeTokenARN := os.Getenv("TFE_TOKEN_SECRET_ARN")
-	if tfeTokenARN == "" {
-		return errors.New("please set TFE_TOKEN_SECRET_ARN")
+	var tfeToken string
+
+	if t := os.Getenv("TFE_TOKEN"); t != "" {
+		tfeToken = t
+	} else {
+
+		tfeTokenARN := os.Getenv("TFE_TOKEN_SECRET_ARN")
+		if tfeTokenARN == "" {
+			return errors.New("please set TFE_TOKEN_SECRET_ARN")
+		}
+
+		sess, err := session.NewSessionWithOptions(
+			session.Options{
+				SharedConfigState: session.SharedConfigEnable,
+			},
+		)
+
+		if err != nil {
+			return err
+		}
+
+		awsClient := aws.New(sess).WithSecretsManager(sess.Config)
+
+		token, err := awsClient.SecretsManager.ReadStringLatestVersion(ctx, tfeTokenARN)
+		if err != nil {
+			return err
+		}
+
+		tfeToken = *token
 	}
-
-	sess, err := session.NewSessionWithOptions(
-		session.Options{
-			SharedConfigState: session.SharedConfigEnable,
-		},
-	)
-
-	if err != nil {
-		return err
-	}
-
-	awsClient := aws.New(sess).WithSecretsManager(sess.Config)
-
-	token, err := awsClient.SecretsManager.ReadStringLatestVersion(ctx, tfeTokenARN)
-	if err != nil {
-		return err
-	}
-
-	tfeToken := *token
-
 	config := tfe.DefaultConfig()
 	config.Token = tfeToken
 
@@ -65,6 +72,12 @@ func run0(ctx context.Context) error {
 	}
 	logrus.Debugf("org: %v", org)
 
+	var force bool
+
+	if f := os.Getenv("FORCE"); f == "true" || f == "false" {
+		force, _ = strconv.ParseBool(f)
+	}
+
 	// https://www.terraform.io/docs/cloud/api/index.html#pagination
 	page := 1
 
@@ -72,6 +85,9 @@ func run0(ctx context.Context) error {
 	for page != 0 {
 		workspaces, err := tfeClient.Workspaces.List(ctx, org.Name, tfe.WorkspaceListOptions{
 			Include: ptr.String("current_run"),
+			ListOptions: tfe.ListOptions{
+				PageNumber: page,
+			},
 		})
 
 		if err != nil {
@@ -79,7 +95,7 @@ func run0(ctx context.Context) error {
 		}
 
 		for _, workspace := range workspaces.Items {
-			if time.Since(workspace.CurrentRun.CreatedAt) <= (24 * time.Hour) {
+			if !force && time.Since(workspace.CurrentRun.CreatedAt) <= (24*time.Hour) {
 				logrus.Debugf("skipping %s", workspace.Name)
 				continue
 			}
@@ -97,6 +113,7 @@ func run0(ctx context.Context) error {
 		}
 
 		page = workspaces.NextPage
+		logrus.Debugf("page %d", page)
 	}
 
 	return nil
