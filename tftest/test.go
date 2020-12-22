@@ -18,6 +18,51 @@ const (
 	Init  TestMode = 2
 )
 
+// Test encapsulates and provides structure to a terratest-driven terraform test.
+//
+// Tests are run in 4 stages– Setup, Apply, Validate and Cleanup. Each stage will persist relevant
+// data so that subsequent test runs can be isolated to a subset of stages.
+//
+// Setup Stage
+//
+// The setup Stage is used to create all the preconditions for running the terraform code under
+// test. The user supplied Setup function must return a set of Options for running the code. In
+// addition, it can create any additional resources that need to exist before running.
+//
+// Apply Stage
+//
+// The above options are used to initialize and apply the Terraform code under test. Note that Mode
+// can be set to something other than Apply. The terraform state file is saved locally for use in
+// Validate and Cleanup.
+//
+// Validate Stage
+//
+// If code was successfully applied, the user-supplied Validate function is run to make assertions
+// about the resulting infrastructure. Note that if Mode is set to something other than Apply, the
+// Validate function is not currently very useful.
+//
+// Cleanup Stage
+//
+// In addition to running a `terraform destroy`, and deleting any cached data (saved options,
+// terraform state) the user-supplied Cleanup function is run to do arbitrary clean up work.
+//
+//
+// Env Variables
+//
+// Each stage persists relevant data and can be skipped on subsequent runs. There are two
+// environment variables which control which stages are run – SKIP and ONLY, each of which take a
+// comma-separated list of stage names. Setting both is not allowed and will generate a test
+// failure.
+//
+// Example–
+//   SKIP=cleanup go test . -run TestFoo
+// This will run the first three stages. If after that–
+//  ONLY=validate go test . -run TestFoo
+// ...the saved options from Setup and saved terraform state from Apply will be reused (and the
+// infrastructure is presumably still up). This enables one to iterate quickly on testing terraform
+// modules.
+//
+// Hopefully many useful workflows can be derived from these building blocks.
 type Test struct {
 	Setup    func(*testing.T) *terraform.Options
 	Validate func(*testing.T, *terraform.Options)
@@ -104,7 +149,7 @@ func (tt *Test) Run(t *testing.T) {
 		}
 	})
 
-	tt.Stage(t, "options", func() {
+	tt.Stage(t, "setup", func() {
 		fileExists := func(filename string) bool {
 			info, err := os.Stat(filename)
 			if os.IsNotExist(err) {
