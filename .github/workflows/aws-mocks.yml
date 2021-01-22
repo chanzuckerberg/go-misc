@@ -1,0 +1,28 @@
+name: Upgrade AWS Mocks nightly
+
+on:
+  schedule:
+  # Hourly between 10:10 PST and 16:10 PST on every day-of-week from Monday through Friday
+  - cron: "10 17-23 * * 1-5"
+  # So I can test manually
+  workflow_dispatch: {}
+
+jobs:
+  upgrade-tf:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15.5
+      id: go
+    - run: make generate-mocks
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: actionsbot/upgrade-aws-mocks
+        commit-message: "Auto upgrade AWS Mocks"
+        title: "[bot] Upgrade Terraform"
+        labels: "bot/merge"
