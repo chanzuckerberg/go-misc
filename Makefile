@@ -50,7 +50,7 @@ help: ## display help for this makefile
 .PHONY: help
 
 generate-mocks: ## will generate mocks
-	@go get -d -u ./...
+	@go get -u github.com/aws/aws-sdk-go/...
 	@rm -rf aws/mocks/*
 	@cd aws; go generate
 	@go mod tidy
