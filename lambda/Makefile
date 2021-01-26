@@ -3,7 +3,7 @@ S3_PREFIX = go-misc/lambdas/${DATE}
 S3_BUCKET ?= shared-infra-prod-assets
 AWS_PROFILE ?= czi-si
 
-publish: publish-cloudwatch_to_s3 publish-cloudwatch_to_honeycomb publish-flow_to_s3 publish-github_to_firehose publish-unfurl_cloudtrail publish-cloudwatch_eks_to_s3
+publish: publish-cloudwatch_to_s3 publish-cloudwatch_to_honeycomb publish-flow_to_s3 publish-github_to_firehose publish-unfurl_cloudtrail publish-cloudwatch_eks_to_s3 publish-rotator
 
 clean-cloudwatch_to_s3:
 	$(call clean,cloudwatch_to_s3.zip)
@@ -76,6 +76,15 @@ package-tfe-metrics: clean-tfe-metrics
 
 publish-tfe-metrics: package-tfe-metrics
 	$(call publish,tfe-metrics.zip)
+
+clean-rotator:
+	$(call clean, rotator.zip)
+
+package-rotator: clean-rotator
+	$(call package,rotator/main.go,rotator.zip)
+
+publish-rotator: package-rotator
+	$(call publish,rotator.zip)
 
 define clean
 	@rm $1 handler 2> /dev/null  || true

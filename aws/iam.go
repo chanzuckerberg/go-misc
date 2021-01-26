@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/client"
 	"github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/iam/iamiface"
+	"github.com/chanzuckerberg/go-misc/ptr"
 	"github.com/pkg/errors"
 )
 
@@ -102,4 +103,13 @@ func (i *IAM) GetLoginProfile(ctx context.Context, username string) (*iam.LoginP
 	}
 
 	return output.LoginProfile, nil
+}
+
+func (i *IAM) GetAccessKeysForUser(ctx context.Context, username string) ([]*iam.AccessKeyMetadata, error) {
+	k, err := i.Svc.ListAccessKeys(&iam.ListAccessKeysInput{UserName: ptr.String(username)})
+	if err != nil {
+		return nil, errors.Wrapf(err, "unable to list access keys for %s", username)
+	}
+
+	return k.AccessKeyMetadata, nil
 }
