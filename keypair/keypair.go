@@ -1,6 +1,7 @@
 package keypair
 
 import (
+	"crypto/rand"
 	"crypto/rsa"
 	"io/ioutil"
 
@@ -38,5 +39,13 @@ func ParsePrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
 }
 
 func GenerateKeypair() (*rsa.PrivateKey, *rsa.PublicKey, error) {
+	// generate key
+	privatekey, err := rsa.GenerateKey(rand.Reader, 2048)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "Cannot generate RSA key")
+	}
 
+	publickey := &privatekey.PublicKey
+
+	return privatekey, publickey, nil
 }

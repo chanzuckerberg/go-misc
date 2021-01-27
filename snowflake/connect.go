@@ -3,20 +3,30 @@ package snowflake
 // Originally from terraform-provider-snowflake/pkg/provider/provider.go
 import (
 	"github.com/chanzuckerberg/go-misc/keypair"
-	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/pkg/errors"
 	"github.com/snowflakedb/gosnowflake"
 )
 
-func ConfigureProvider(s *schema.ResourceData) (interface{}, error) {
-	account := s.Get("account").(string)
-	user := s.Get("username").(string)
-	password := s.Get("password").(string)
-	browserAuth := s.Get("browser_auth").(bool)
-	privateKeyPath := s.Get("private_key_path").(string)
-	oauthAccessToken := s.Get("oauth_access_token").(string)
-	region := s.Get("region").(string)
-	role := s.Get("role").(string)
+type SnowflakeConfig struct {
+	account          string `yaml:"account"`
+	user             string `yaml:"username"`
+	password         string `yaml:"password"`
+	browserAuth      bool   `yaml:"browser_auth"`
+	privateKeyPath   string `yaml:"private_key_path"`
+	oauthAccessToken string `yaml:"oauth_access_token"`
+	region           string `yaml:"region"`
+	role             string `yaml:"role"`
+}
+
+func ConfigureProvider(s *SnowflakeConfig) (interface{}, error) {
+	account := s.account
+	user := s.user
+	password := s.password
+	browserAuth := s.browserAuth
+	privateKeyPath := s.privateKeyPath
+	oauthAccessToken := s.oauthAccessToken
+	region := s.region
+	role := s.role
 
 	dsn, err := DSN(account, user, password, browserAuth, privateKeyPath, oauthAccessToken, region, role)
 
