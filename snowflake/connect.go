@@ -2,6 +2,8 @@ package snowflake
 
 // Originally from terraform-provider-snowflake/pkg/provider/provider.go
 import (
+	"database/sql"
+
 	"github.com/chanzuckerberg/go-misc/keypair"
 	"github.com/pkg/errors"
 	"github.com/snowflakedb/gosnowflake"
@@ -19,16 +21,16 @@ type SnowflakeConfig struct {
 }
 
 func ConfigureProvider(s *SnowflakeConfig) (interface{}, error) {
-	account := s.account
-	user := s.user
-	password := s.password
-	browserAuth := s.browserAuth
-	privateKeyPath := s.privateKeyPath
-	oauthAccessToken := s.oauthAccessToken
-	region := s.region
-	role := s.role
-
-	dsn, err := DSN(account, user, password, browserAuth, privateKeyPath, oauthAccessToken, region, role)
+	dsn, err := DSN(
+		s.account,
+		s.user,
+		s.password,
+		s.browserAuth,
+		s.privateKeyPath,
+		s.oauthAccessToken,
+		s.region,
+		s.role,
+	)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "could not build dsn for snowflake connection")
@@ -84,4 +86,8 @@ func DSN(
 	}
 
 	return gosnowflake.DSN(&config)
+}
+
+func Open(dsn string) (*sql.DB, error) {
+	return sql.Open("snowflake-instrumented", dsn)
 }
