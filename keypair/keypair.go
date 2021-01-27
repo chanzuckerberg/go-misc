@@ -36,3 +36,7 @@ func ParsePrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
 
 	return rsaPrivateKey, nil
 }
+
+func GenerateKeypair() (*rsa.PrivateKey, *rsa.PublicKey, error) {
+
+}
