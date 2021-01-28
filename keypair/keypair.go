@@ -84,7 +84,6 @@ func SaveKeys(config Config) error {
 		return errors.Wrap(err, "Unable to pem-encode private key")
 	}
 
-	// dump public key to file
 	publicKeyBytes, err := x509.MarshalPKIXPublicKey(&config.PublicKey)
 	if err != nil {
 		return errors.Wrap(err, "Unable to marshal public key into bytes")
