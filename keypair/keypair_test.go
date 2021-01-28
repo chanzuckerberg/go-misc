@@ -68,6 +68,6 @@ func TestFileHandling(t *testing.T) {
 	r.NoError(err)
 	r.NotNil(priv)
 	r.NotNil(pub)
-	r.Equal(originalPriv, priv)
-	r.Equal(originalPub, pub)
+	r.Equal(*originalPriv, *priv)
+	r.Equal(*originalPub, *pub)
 }
