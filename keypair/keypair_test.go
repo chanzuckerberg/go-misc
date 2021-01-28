@@ -11,13 +11,9 @@ import (
 
 func TestParsePrivateKey(t *testing.T) {
 	r := require.New(t)
-	// Generate tmp file
-	// tmpFile, err := ioutil.TempFile("", "tmpKey")
-	// r.Nil(err)
 
-	// defer tmpFile.Close()
 	defer os.Remove("private.pem")
-	// This line assumes there is nothing wrong with GenerateKeypair()
+
 	privKey, _, err := GenerateKeypair()
 	r.NoError(err)
 
@@ -30,8 +26,6 @@ func TestParsePrivateKey(t *testing.T) {
 	r.NoError(err)
 	err = pem.Encode(privatePem, privateKeyBlock)
 	r.NoError(err)
-	// _, err = tmpFile.Write(privatePem)
-	// r.NoError(err)
 	// Plug in path
 	filePrivKey, err := ParsePrivateKey("private.pem")
 	r.NoError(err)
