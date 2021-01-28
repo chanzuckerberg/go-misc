@@ -40,3 +40,34 @@ func TestGeneratePrivateKey(t *testing.T) {
 	r.NotNil(priv)
 	r.NotNil(pub)
 }
+
+var TestKeypairConfig = Config{
+	KeyPrefix: "test",
+	KeyPath:   ".",
+}
+
+func TestFileHandling(t *testing.T) {
+	r := require.New(t)
+
+	originalPriv, originalPub, err := GenerateKeypair()
+	r.NoError(err)
+
+	TestKeypairConfig.PrivateKey = originalPriv
+	TestKeypairConfig.PublicKey = originalPub
+
+	err = SaveKeys(TestKeypairConfig)
+	r.NoError(err)
+
+	defer os.Remove(TestKeypairConfig.GetPrivateKeyPath())
+	defer os.Remove(TestKeypairConfig.GetPublicKeyPath())
+
+	err = SaveKeys(TestKeypairConfig)
+	r.NoError(err)
+
+	priv, pub, err := FromFiles(TestKeypairConfig)
+	r.NoError(err)
+	r.NotNil(priv)
+	r.NotNil(pub)
+	r.Equal(originalPriv, priv)
+	r.Equal(originalPub, pub)
+}

@@ -27,8 +27,8 @@ func TestDSN(t *testing.T) {
 	testPriv, testPub, err := keypair.GenerateKeypair()
 	r.NoError(err)
 
-	TestKeypairConfig.PrivateKey = *testPriv
-	TestKeypairConfig.PublicKey = *testPub
+	TestKeypairConfig.PrivateKey = testPriv
+	TestKeypairConfig.PublicKey = testPub
 	err = keypair.SaveKeys(TestKeypairConfig)
 	r.NoError(err)
 
@@ -47,8 +47,8 @@ func TestConfigureProvider(t *testing.T) {
 	testPriv, testPub, err := keypair.GenerateKeypair()
 	r.NoError(err)
 
-	TestKeypairConfig.PrivateKey = *testPriv
-	TestKeypairConfig.PublicKey = *testPub
+	TestKeypairConfig.PrivateKey = testPriv
+	TestKeypairConfig.PublicKey = testPub
 	err = keypair.SaveKeys(TestKeypairConfig)
 	r.NoError(err)
 

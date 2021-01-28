@@ -15,8 +15,8 @@ import (
 )
 
 type Config struct {
-	PrivateKey rsa.PrivateKey
-	PublicKey  rsa.PublicKey
+	PrivateKey *rsa.PrivateKey
+	PublicKey  *rsa.PublicKey
 	KeyPrefix  string
 	KeyPath    string
 }
@@ -68,7 +68,15 @@ func GenerateKeypair() (*rsa.PrivateKey, *rsa.PublicKey, error) {
 }
 
 func SaveKeys(config Config) error {
-	privateKeyBytes := x509.MarshalPKCS1PrivateKey(&config.PrivateKey)
+	if config.PrivateKey == nil {
+		return errors.New("No private key set")
+	}
+
+	if config.PublicKey == nil {
+		return errors.New("No public key set")
+	}
+
+	privateKeyBytes := x509.MarshalPKCS1PrivateKey(config.PrivateKey)
 	privateKeyBlock := &pem.Block{
 		Type:  "RSA PRIVATE KEY",
 		Bytes: privateKeyBytes,
@@ -84,10 +92,7 @@ func SaveKeys(config Config) error {
 		return errors.Wrap(err, "Unable to pem-encode private key")
 	}
 
-	publicKeyBytes, err := x509.MarshalPKIXPublicKey(&config.PublicKey)
-	if err != nil {
-		return errors.Wrap(err, "Unable to marshal public key into bytes")
-	}
+	publicKeyBytes := x509.MarshalPKCS1PublicKey(config.PublicKey)
 
 	publicKeyBlock := &pem.Block{
 		Type:  "PUBLIC KEY",
@@ -105,4 +110,42 @@ func SaveKeys(config Config) error {
 	}
 
 	return nil
+}
+
+func FromFiles(config Config) (*rsa.PrivateKey, *rsa.PublicKey, error) {
+	// Load private key
+	privKeyBytes, err := ioutil.ReadFile(config.GetPrivateKeyPath())
+	if err != nil {
+		return nil, nil, errors.Errorf("Unable to read private key file")
+	}
+
+	privPemBlock, _ := pem.Decode(privKeyBytes)
+
+	priv, err := x509.ParsePKCS1PrivateKey(privPemBlock.Bytes)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "Unable to parse private key file bytes")
+	}
+
+	if priv == nil {
+		return nil, nil, errors.Errorf("nil private key")
+	}
+
+	// Load public key
+	pubKeyBytes, err := ioutil.ReadFile(config.GetPublicKeyPath())
+	if err != nil {
+		return nil, nil, errors.Errorf("Unable to read public key file")
+	}
+
+	pubPemBlock, _ := pem.Decode(pubKeyBytes)
+
+	pub, err := x509.ParsePKCS1PublicKey(pubPemBlock.Bytes)
+	if err != nil {
+		return nil, nil, errors.Wrap(err, "Unable to parse public key file bytes")
+	}
+
+	if pub == nil {
+		return nil, nil, errors.Errorf("nil public key")
+	}
+
+	return priv, pub, nil
 }
