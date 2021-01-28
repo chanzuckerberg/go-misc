@@ -67,7 +67,7 @@ func GenerateKeypair() (*rsa.PrivateKey, *rsa.PublicKey, error) {
 	return privatekey, publickey, nil
 }
 
-func SaveKeys(config Config, keyname string) (string, string, error) {
+func SaveKeys(config Config) error {
 	privateKeyBytes := x509.MarshalPKCS1PrivateKey(&config.PrivateKey)
 	privateKeyBlock := &pem.Block{
 		Type:  "RSA PRIVATE KEY",
@@ -76,18 +76,18 @@ func SaveKeys(config Config, keyname string) (string, string, error) {
 
 	privatePem, err := os.Create(config.GetPrivateKeyPath())
 	if err != nil {
-		return "", "", errors.Wrap(err, "Unable to create private key file")
+		return errors.Wrap(err, "Unable to create private key file")
 	}
 
 	err = pem.Encode(privatePem, privateKeyBlock)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Unable to pem-encode private key")
+		return errors.Wrap(err, "Unable to pem-encode private key")
 	}
 
 	// dump public key to file
-	publicKeyBytes, err := x509.MarshalPKIXPublicKey(config.PublicKey)
+	publicKeyBytes, err := x509.MarshalPKIXPublicKey(&config.PublicKey)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Unable to marshal public key into bytes")
+		return errors.Wrap(err, "Unable to marshal public key into bytes")
 	}
 
 	publicKeyBlock := &pem.Block{
@@ -97,13 +97,13 @@ func SaveKeys(config Config, keyname string) (string, string, error) {
 
 	publicPem, err := os.Create(config.GetPublicKeyPath())
 	if err != nil {
-		return "", "", errors.Wrap(err, "Unable to create public key file")
+		return errors.Wrap(err, "Unable to create public key file")
 	}
 
 	err = pem.Encode(publicPem, publicKeyBlock)
 	if err != nil {
-		return "", "", errors.Wrap(err, "Unable to pem-encode public key")
+		return errors.Wrap(err, "Unable to pem-encode public key")
 	}
 
-	return config.GetPrivateKeyPath(), config.GetPublicKeyPath(), nil
+	return nil
 }

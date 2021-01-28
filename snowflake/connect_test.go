@@ -13,7 +13,6 @@ var testSnowflakeConfig = SnowflakeConfig{
 	User:             "test-user",
 	Password:         "test-password",
 	BrowserAuth:      false,
-	PrivateKeyPath:   "test_private.pem",
 	OauthAccessToken: "test-oauthaccesstoken",
 	Region:           "test-region",
 	Role:             "test-role",
@@ -30,9 +29,13 @@ func TestDSN(t *testing.T) {
 
 	TestKeypairConfig.PrivateKey = *testPriv
 	TestKeypairConfig.PublicKey = *testPub
+	err = keypair.SaveKeys(TestKeypairConfig)
+	r.NoError(err)
 
 	defer os.Remove(TestKeypairConfig.GetPrivateKeyPath())
-	defer os.Remove(TestKeypairConfig.GetPrivateKeyPath())
+	defer os.Remove(TestKeypairConfig.GetPublicKeyPath())
+
+	testSnowflakeConfig.PrivateKeyPath = TestKeypairConfig.GetPrivateKeyPath()
 
 	testDSN, err := DSN(&testSnowflakeConfig)
 	r.NoError(err)
@@ -46,9 +49,13 @@ func TestConfigureProvider(t *testing.T) {
 
 	TestKeypairConfig.PrivateKey = *testPriv
 	TestKeypairConfig.PublicKey = *testPub
+	err = keypair.SaveKeys(TestKeypairConfig)
+	r.NoError(err)
 
 	defer os.Remove(TestKeypairConfig.GetPrivateKeyPath())
-	defer os.Remove(TestKeypairConfig.GetPrivateKeyPath())
+	defer os.Remove(TestKeypairConfig.GetPublicKeyPath())
+
+	testSnowflakeConfig.PrivateKeyPath = TestKeypairConfig.GetPrivateKeyPath()
 
 	testDB, err := ConfigureProvider(&testSnowflakeConfig)
 	r.NoError(err)
