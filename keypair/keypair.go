@@ -11,7 +11,6 @@ import (
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
-	"golang.org/x/crypto/ssh"
 )
 
 type Config struct {
@@ -24,6 +23,7 @@ type Config struct {
 func (c *Config) GetPrivateKeyPath() string {
 	return fmt.Sprintf("%s/%s_private.pem", c.KeyPath, c.KeyPrefix)
 }
+
 func (c *Config) GetPublicKeyPath() string {
 	return fmt.Sprintf("%s/%s_public.pem", c.KeyPath, c.KeyPrefix)
 }
@@ -33,27 +33,38 @@ func ParsePrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "Invalid Path to private key")
 	}
-	// TODO(aku): figure out a decryption process if privateKey is encrypted with a passphrase
-	privateKeyBytes, err := ioutil.ReadFile(expandedPrivateKeyPath)
+
+	privKeyBytes, err := ioutil.ReadFile(expandedPrivateKeyPath)
 	if err != nil {
-		return nil, errors.Wrap(err, "Could not read private key")
+		return nil, errors.Errorf("Unable to read private key file")
 	}
 
-	if len(privateKeyBytes) == 0 {
-		return nil, errors.New("Private key is empty")
-	}
+	privPemBlock, _ := pem.Decode(privKeyBytes)
 
-	privateKey, err := ssh.ParseRawPrivateKey(privateKeyBytes)
+	priv, err := x509.ParsePKCS1PrivateKey(privPemBlock.Bytes)
 	if err != nil {
-		return nil, errors.Wrap(err, "Could not parse private key")
+		return nil, errors.Wrap(err, "Unable to parse private key file bytes")
 	}
 
-	rsaPrivateKey, ok := privateKey.(*rsa.PrivateKey)
-	if !ok {
-		return nil, errors.New("privateKey not of type RSA")
+	if priv == nil {
+		return nil, errors.Errorf("nil private key")
 	}
 
-	return rsaPrivateKey, nil
+	return priv, nil
+}
+
+// TODO(aku): Consider implementing this by reading public key file instead of reading the private key
+func GetPublicKey(privateKeyPath string) (*rsa.PublicKey, error) {
+	privateKey, err := ParsePrivateKey(privateKeyPath)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to read private key path")
+	}
+
+	if privateKey.PublicKey.Size() == 0 {
+		return nil, errors.Errorf("Private key does not contain corresponding public key. Private key path: %s", privateKeyPath)
+	}
+
+	return &privateKey.PublicKey, nil
 }
 
 func GenerateKeypair() (*rsa.PrivateKey, *rsa.PublicKey, error) {
@@ -110,42 +121,4 @@ func SaveKeys(config Config) error {
 	}
 
 	return nil
-}
-
-func FromFiles(config Config) (*rsa.PrivateKey, *rsa.PublicKey, error) {
-	// Load private key
-	privKeyBytes, err := ioutil.ReadFile(config.GetPrivateKeyPath())
-	if err != nil {
-		return nil, nil, errors.Errorf("Unable to read private key file")
-	}
-
-	privPemBlock, _ := pem.Decode(privKeyBytes)
-
-	priv, err := x509.ParsePKCS1PrivateKey(privPemBlock.Bytes)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "Unable to parse private key file bytes")
-	}
-
-	if priv == nil {
-		return nil, nil, errors.Errorf("nil private key")
-	}
-
-	// Load public key
-	pubKeyBytes, err := ioutil.ReadFile(config.GetPublicKeyPath())
-	if err != nil {
-		return nil, nil, errors.Errorf("Unable to read public key file")
-	}
-
-	pubPemBlock, _ := pem.Decode(pubKeyBytes)
-
-	pub, err := x509.ParsePKCS1PublicKey(pubPemBlock.Bytes)
-	if err != nil {
-		return nil, nil, errors.Wrap(err, "Unable to parse public key file bytes")
-	}
-
-	if pub == nil {
-		return nil, nil, errors.Errorf("nil public key")
-	}
-
-	return priv, pub, nil
 }

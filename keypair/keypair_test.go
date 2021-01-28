@@ -64,10 +64,14 @@ func TestFileHandling(t *testing.T) {
 	err = SaveKeys(TestKeypairConfig)
 	r.NoError(err)
 
-	priv, pub, err := FromFiles(TestKeypairConfig)
+	privKey, err := ParsePrivateKey(TestKeypairConfig.GetPrivateKeyPath())
 	r.NoError(err)
-	r.NotNil(priv)
-	r.NotNil(pub)
-	r.Equal(*originalPriv, *priv)
-	r.Equal(*originalPub, *pub)
+	r.NotNil(privKey)
+
+	pubKey, err := GetPublicKey(TestKeypairConfig.GetPrivateKeyPath())
+	r.NoError(err)
+	r.NotNil(pubKey)
+
+	r.Equal(originalPriv, privKey)
+	r.Equal(originalPub, pubKey)
 }
