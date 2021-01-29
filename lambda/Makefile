@@ -77,6 +77,9 @@ package-tfe-metrics: clean-tfe-metrics
 publish-tfe-metrics: package-tfe-metrics
 	$(call publish,tfe-metrics.zip)
 
+run-rotator-snowflake: 
+	cd rotator-snowflake/ && go run .
+
 define clean
 	@rm $1 handler 2> /dev/null  || true
 endef
