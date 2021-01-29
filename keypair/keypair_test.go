@@ -14,7 +14,7 @@ func TestParsePrivateKey(t *testing.T) {
 
 	defer os.Remove("private.pem")
 
-	privKey, _, err := GenerateKeypair()
+	privKey, err := GenerateKeypair()
 	r.NoError(err)
 
 	privateKeyBytes := x509.MarshalPKCS1PrivateKey(privKey)
@@ -35,10 +35,9 @@ func TestParsePrivateKey(t *testing.T) {
 
 func TestGeneratePrivateKey(t *testing.T) {
 	r := require.New(t)
-	priv, pub, err := GenerateKeypair()
+	priv, err := GenerateKeypair()
 	r.NoError(err)
 	r.NotNil(priv)
-	r.NotNil(pub)
 }
 
 var TestKeypairConfig = Config{
@@ -49,11 +48,10 @@ var TestKeypairConfig = Config{
 func TestFileHandling(t *testing.T) {
 	r := require.New(t)
 
-	originalPriv, originalPub, err := GenerateKeypair()
+	originalPriv, err := GenerateKeypair()
 	r.NoError(err)
 
 	TestKeypairConfig.PrivateKey = originalPriv
-	TestKeypairConfig.PublicKey = originalPub
 
 	err = SaveKeys(TestKeypairConfig)
 	r.NoError(err)
