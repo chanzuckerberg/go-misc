@@ -1,7 +1,8 @@
 package snowflake
 
-// Originally from terraform-provider-snowflake/pkg/provider/provider.go
 import (
+	"database/sql"
+
 	"github.com/chanzuckerberg/go-misc/keypair"
 	"github.com/pkg/errors"
 	"github.com/snowflakedb/gosnowflake"
@@ -18,19 +19,14 @@ type SnowflakeConfig struct {
 	Role             string `yaml:"role"`
 }
 
-func ConfigureProvider(s *SnowflakeConfig) (interface{}, error) {
+func ConfigureSnowflakeDB(s *SnowflakeConfig) (*sql.DB, error) {
 	dsn, err := DSN(s)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "could not build dsn for snowflake connection")
 	}
 
-	db, err := Open(dsn)
-	if err != nil {
-		return nil, errors.Wrap(err, "Could not open snowflake database.")
-	}
-
-	return db, nil
+	return Open(dsn)
 }
 
 func DSN(conf *SnowflakeConfig) (string, error) {
@@ -48,7 +44,7 @@ func DSN(conf *SnowflakeConfig) (string, error) {
 	}
 
 	if conf.PrivateKeyPath != "" {
-		rsaPrivateKey, err := keypair.ParsePrivateKey(conf.PrivateKeyPath)
+		rsaPrivateKey, err := keypair.ParseRSAPrivateKey(conf.PrivateKeyPath)
 		if err != nil {
 			return "", errors.Wrap(err, "Private Key could not be parsed")
 		}

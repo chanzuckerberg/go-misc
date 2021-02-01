@@ -59,7 +59,7 @@ func TestDSN(t *testing.T) {
 	r.Contains(testDSN, decodedPrivKey)
 }
 
-func TestConfigureProvider(t *testing.T) {
+func TestConfigureSnowflakeDB(t *testing.T) {
 	r := require.New(t)
 	testPriv, err := keypair.GenerateKeypair()
 	r.NoError(err)
@@ -76,7 +76,7 @@ func TestConfigureProvider(t *testing.T) {
 	_, err = privKeyFile.Write(privKeyBuffer.Bytes())
 	r.NoError(err)
 
-	testDB, err := ConfigureProvider(&testSnowflakeConfig)
+	testDB, err := ConfigureSnowflakeDB(&testSnowflakeConfig)
 	r.NoError(err)
 	r.NotNil(testDB)
 }
