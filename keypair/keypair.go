@@ -51,7 +51,6 @@ func ParsePrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
 	return priv, nil
 }
 
-// TODO(aku): Consider implementing this by reading public key file instead of reading the private key
 func GetPublicKey(privateKeyPath string) (*rsa.PublicKey, error) {
 	privateKey, err := ParsePrivateKey(privateKeyPath)
 	if err != nil {
