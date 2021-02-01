@@ -22,6 +22,7 @@ type Config struct {
 func (c *Config) GetPrivateKeyPath() string {
 	return fmt.Sprintf("%s/%s_private.pem", c.KeyPath, c.KeyPrefix)
 }
+
 func (c *Config) GetPublicKeyPath() string {
 	return fmt.Sprintf("%s/%s_public.pem", c.KeyPath, c.KeyPrefix)
 }
