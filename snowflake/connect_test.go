@@ -3,6 +3,7 @@ package snowflake
 import (
 	"crypto/x509"
 	"encoding/base64"
+	"io/ioutil"
 	"net/url"
 	"os"
 	"testing"
@@ -23,20 +24,24 @@ var testSnowflakeConfig = SnowflakeConfig{
 
 func TestDSN(t *testing.T) {
 	r := require.New(t)
-	testPriv, err := keypair.GenerateKeypair()
+	testPriv, err := keypair.GenerateRSAKeypair()
 	r.NoError(err)
 
-	privKeyBuffer, _, err := keypair.SaveKeys(testPriv)
+	privKeyBuffer, _, err := keypair.SaveRSAKeys(testPriv)
 	r.NoError(err)
 
-	// Write the testPriv value to file so we can test the Snowflake Config private key path value
-	testSnowflakeConfig.PrivateKeyPath = "./test_priv.pem"
-	// Saving the file by creating it, writing the buffer bytes to it
-	defer os.Remove("./test_priv.pem")
-	privKeyFile, err := os.Create("./test_priv.pem")
-	r.NoError(err)
+	// Create a temp file:
+	privKeyFile, err := ioutil.TempFile("", "tmpPrivKey.pem")
+	r.Nil(err)
+
+	defer privKeyFile.Close()
+	defer os.Remove(privKeyFile.Name())
+
+	// Write the testPriv value to tempfile so we can test the Snowflake Config private key path value
 	_, err = privKeyFile.Write(privKeyBuffer.Bytes())
 	r.NoError(err)
+
+	testSnowflakeConfig.PrivateKeyPath = privKeyFile.Name()
 
 	// Test DSN process
 	testDSN, err := DSN(&testSnowflakeConfig)
@@ -61,20 +66,24 @@ func TestDSN(t *testing.T) {
 
 func TestConfigureSnowflakeDB(t *testing.T) {
 	r := require.New(t)
-	testPriv, err := keypair.GenerateKeypair()
+	testPriv, err := keypair.GenerateRSAKeypair()
 	r.NoError(err)
 
-	privKeyBuffer, _, err := keypair.SaveKeys(testPriv)
+	privKeyBuffer, _, err := keypair.SaveRSAKeys(testPriv)
 	r.NoError(err)
 
-	// Write the testPriv value to file so we can test the Snowflake Config private key path value
-	testSnowflakeConfig.PrivateKeyPath = "./test_priv.pem"
-	// Saving the file by creating it, writing the buffer bytes to it
-	defer os.Remove("./test_priv.pem")
-	privKeyFile, err := os.Create("./test_priv.pem")
-	r.NoError(err)
+	// Create a temp file:
+	privKeyFile, err := ioutil.TempFile("", "tmpPrivKey.pem")
+	r.Nil(err)
+
+	defer privKeyFile.Close()
+	defer os.Remove(privKeyFile.Name())
+
+	// Write the testPriv value to tempfile so we can test the Snowflake Config private key path value
 	_, err = privKeyFile.Write(privKeyBuffer.Bytes())
 	r.NoError(err)
+
+	testSnowflakeConfig.PrivateKeyPath = privKeyFile.Name()
 
 	testDB, err := ConfigureSnowflakeDB(&testSnowflakeConfig)
 	r.NoError(err)

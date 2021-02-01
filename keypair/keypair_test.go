@@ -3,6 +3,7 @@ package keypair
 import (
 	"crypto/x509"
 	"encoding/pem"
+	"io/ioutil"
 	"os"
 	"testing"
 
@@ -12,20 +13,23 @@ import (
 func TestParsePrivateKey(t *testing.T) {
 	r := require.New(t)
 
-	defer os.Remove("private.pem")
+	privKeyFile, err := ioutil.TempFile("", "tmpPrivKey.pem")
+	r.Nil(err)
 
-	privKey, err := GenerateKeypair()
+	defer privKeyFile.Close()
+	defer os.Remove(privKeyFile.Name())
+
+	privKey, err := GenerateRSAKeypair()
 	r.NoError(err)
 
-	privKeyBuffer, _, err := SaveKeys(privKey)
+	privKeyBuffer, _, err := SaveRSAKeys(privKey)
 	r.NoError(err)
-	privKeyFile, err := os.Create("./private.pem")
-	r.NoError(err)
+
 	_, err = privKeyFile.Write(privKeyBuffer.Bytes())
 	r.NoError(err)
 
 	// Plug in path
-	filePrivKey, err := ParseRSAPrivateKey("private.pem")
+	filePrivKey, err := ParseRSAPrivateKey(privKeyFile.Name())
 	r.NoError(err)
 	r.NotNil(privKey)
 	r.Equal(filePrivKey, privKey)
@@ -33,7 +37,7 @@ func TestParsePrivateKey(t *testing.T) {
 
 func TestGeneratePrivateKey(t *testing.T) {
 	r := require.New(t)
-	priv, err := GenerateKeypair()
+	priv, err := GenerateRSAKeypair()
 	r.NoError(err)
 	r.NotNil(priv)
 }
@@ -41,12 +45,12 @@ func TestGeneratePrivateKey(t *testing.T) {
 func TestBufferHandling(t *testing.T) {
 	r := require.New(t)
 
-	originalPriv, err := GenerateKeypair()
+	originalPriv, err := GenerateRSAKeypair()
 	r.NoError(err)
 
 	originalPub := &originalPriv.PublicKey
 
-	privKeyBuffer, pubKeyBuffer, err := SaveKeys(originalPriv)
+	privKeyBuffer, pubKeyBuffer, err := SaveRSAKeys(originalPriv)
 	r.NoError(err)
 
 	// Decode Private block buffer and ensure its the same as original private key

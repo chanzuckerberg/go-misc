@@ -50,7 +50,7 @@ func GetPublicKey(privateKeyPath string) (*rsa.PublicKey, error) {
 	return &privateKey.PublicKey, nil
 }
 
-func GenerateKeypair() (*rsa.PrivateKey, error) {
+func GenerateRSAKeypair() (*rsa.PrivateKey, error) {
 	privatekey, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
 		return nil, errors.Wrap(err, "Cannot generate RSA key")
@@ -59,7 +59,7 @@ func GenerateKeypair() (*rsa.PrivateKey, error) {
 	return privatekey, nil
 }
 
-func SaveKeys(privateKey *rsa.PrivateKey) (privateKeyBuffer *bytes.Buffer, publicKeyBuffer *bytes.Buffer, err error) {
+func SaveRSAKeys(privateKey *rsa.PrivateKey) (privateKeyBuffer *bytes.Buffer, publicKeyBuffer *bytes.Buffer, err error) {
 	if privateKey == nil {
 		return &bytes.Buffer{}, &bytes.Buffer{}, errors.New("No private key set")
 	}
