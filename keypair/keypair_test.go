@@ -40,11 +40,6 @@ func TestGeneratePrivateKey(t *testing.T) {
 	r.NotNil(priv)
 }
 
-var TestKeypairConfig = Config{
-	KeyPrefix: "test",
-	KeyPath:   ".",
-}
-
 func TestFileHandling(t *testing.T) {
 	r := require.New(t)
 
@@ -53,25 +48,17 @@ func TestFileHandling(t *testing.T) {
 
 	originalPub := &originalPriv.PublicKey
 
-	TestKeypairConfig.PrivateKey = originalPriv
-
-	err = SaveKeys(TestKeypairConfig)
+	privKeyBuffer, pubKeyBuffer, err := SaveKeys(originalPriv)
 	r.NoError(err)
 
-	defer os.Remove(TestKeypairConfig.GetPrivateKeyPath())
-	defer os.Remove(TestKeypairConfig.GetPublicKeyPath())
-
-	err = SaveKeys(TestKeypairConfig)
+	bufferPEMBlock, _ := pem.Decode(privKeyBuffer.Bytes())
+	bufferPrivateKey, err := x509.ParsePKCS1PrivateKey(bufferPEMBlock.Bytes)
 	r.NoError(err)
 
-	privKey, err := ParsePrivateKey(TestKeypairConfig.GetPrivateKeyPath())
-	r.NoError(err)
-	r.NotNil(privKey)
+	r.Equal(bufferPrivateKey, originalPriv)
 
-	pubKey, err := GetPublicKey(TestKeypairConfig.GetPrivateKeyPath())
+	bufferPEMBlock, _ = pem.Decode(pubKeyBuffer.Bytes())
+	bufferPubKey, err := x509.ParsePKCS1PublicKey(bufferPEMBlock.Bytes)
 	r.NoError(err)
-	r.NotNil(pubKey)
-
-	r.Equal(originalPriv, privKey)
-	r.Equal(originalPub, pubKey)
+	r.Equal(bufferPubKey, originalPub)
 }

@@ -20,29 +20,29 @@ var testSnowflakeConfig = SnowflakeConfig{
 	Region:           "test-region",
 	Role:             "test-role",
 }
-var TestKeypairConfig = keypair.Config{
-	KeyPrefix: "test",
-	KeyPath:   ".",
-}
 
 func TestDSN(t *testing.T) {
 	r := require.New(t)
 	testPriv, err := keypair.GenerateKeypair()
 	r.NoError(err)
 
-	TestKeypairConfig.PrivateKey = testPriv
-	err = keypair.SaveKeys(TestKeypairConfig)
+	privKeyBuffer, _, err := keypair.SaveKeys(testPriv)
 	r.NoError(err)
 
-	defer os.Remove(TestKeypairConfig.GetPrivateKeyPath())
-	defer os.Remove(TestKeypairConfig.GetPublicKeyPath())
+	// Write the testPriv value to file so we can test the Snowflake Config private key path value
+	testSnowflakeConfig.PrivateKeyPath = "./test_priv.pem"
+	// Saving the file by creating it, writing the buffer bytes to it
+	defer os.Remove("./test_priv.pem")
+	privKeyFile, err := os.Create("./test_priv.pem")
+	r.NoError(err)
+	_, err = privKeyFile.Write(privKeyBuffer.Bytes())
+	r.NoError(err)
 
-	testSnowflakeConfig.PrivateKeyPath = TestKeypairConfig.GetPrivateKeyPath()
-
+	// Test DSN process
 	testDSN, err := DSN(&testSnowflakeConfig)
 	r.NoError(err)
 	r.NotNil(testDSN)
-
+	// Standard values that should be in DSN() output
 	r.Contains(testDSN, testSnowflakeConfig.User)
 	r.Contains(testDSN, testSnowflakeConfig.Region)
 	r.Contains(testDSN, testSnowflakeConfig.Account)
@@ -64,14 +64,17 @@ func TestConfigureProvider(t *testing.T) {
 	testPriv, err := keypair.GenerateKeypair()
 	r.NoError(err)
 
-	TestKeypairConfig.PrivateKey = testPriv
-	err = keypair.SaveKeys(TestKeypairConfig)
+	privKeyBuffer, _, err := keypair.SaveKeys(testPriv)
 	r.NoError(err)
 
-	defer os.Remove(TestKeypairConfig.GetPrivateKeyPath())
-	defer os.Remove(TestKeypairConfig.GetPublicKeyPath())
-
-	testSnowflakeConfig.PrivateKeyPath = TestKeypairConfig.GetPrivateKeyPath()
+	// Write the testPriv value to file so we can test the Snowflake Config private key path value
+	testSnowflakeConfig.PrivateKeyPath = "./test_priv.pem"
+	// Saving the file by creating it, writing the buffer bytes to it
+	defer os.Remove("./test_priv.pem")
+	privKeyFile, err := os.Create("./test_priv.pem")
+	r.NoError(err)
+	_, err = privKeyFile.Write(privKeyBuffer.Bytes())
+	r.NoError(err)
 
 	testDB, err := ConfigureProvider(&testSnowflakeConfig)
 	r.NoError(err)

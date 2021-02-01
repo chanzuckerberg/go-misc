@@ -1,30 +1,16 @@
 package keypair
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"fmt"
 	"io/ioutil"
-	"os"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 )
-
-type Config struct {
-	PrivateKey *rsa.PrivateKey
-	KeyPrefix  string
-	KeyPath    string
-}
-
-func (c *Config) GetPrivateKeyPath() string {
-	return fmt.Sprintf("%s/%s_private.pem", c.KeyPath, c.KeyPrefix)
-}
-func (c *Config) GetPublicKeyPath() string {
-	return fmt.Sprintf("%s/%s_public.pem", c.KeyPath, c.KeyPrefix)
-}
 
 func ParsePrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
 	expandedPrivateKeyPath, err := homedir.Expand(privateKeyPath)
@@ -73,43 +59,26 @@ func GenerateKeypair() (*rsa.PrivateKey, error) {
 	return privatekey, nil
 }
 
-func SaveKeys(config Config) error {
-	if config.PrivateKey == nil {
-		return errors.New("No private key set")
+func SaveKeys(privateKey *rsa.PrivateKey) (privateKeyBuffer *bytes.Buffer, publicKeyBuffer *bytes.Buffer, err error) {
+	if privateKey == nil {
+		return &bytes.Buffer{}, &bytes.Buffer{}, errors.New("No private key set")
 	}
 
-	privateKeyBytes := x509.MarshalPKCS1PrivateKey(config.PrivateKey)
+	privateKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
 	privateKeyBlock := &pem.Block{
 		Type:  "RSA PRIVATE KEY",
 		Bytes: privateKeyBytes,
 	}
+	privKeyBuffer := bytes.NewBuffer(pem.EncodeToMemory(privateKeyBlock))
 
-	privatePem, err := os.Create(config.GetPrivateKeyPath())
-	if err != nil {
-		return errors.Wrap(err, "Unable to create private key file")
-	}
-
-	err = pem.Encode(privatePem, privateKeyBlock)
-	if err != nil {
-		return errors.Wrap(err, "Unable to pem-encode private key")
-	}
-
-	publicKeyBytes := x509.MarshalPKCS1PublicKey(&config.PrivateKey.PublicKey)
+	publicKeyBytes := x509.MarshalPKCS1PublicKey(&privateKey.PublicKey)
 
 	publicKeyBlock := &pem.Block{
 		Type:  "PUBLIC KEY",
 		Bytes: publicKeyBytes,
 	}
 
-	publicPem, err := os.Create(config.GetPublicKeyPath())
-	if err != nil {
-		return errors.Wrap(err, "Unable to create public key file")
-	}
+	pubKeyBuffer := bytes.NewBuffer(pem.EncodeToMemory(publicKeyBlock))
 
-	err = pem.Encode(publicPem, publicKeyBlock)
-	if err != nil {
-		return errors.Wrap(err, "Unable to pem-encode public key")
-	}
-
-	return nil
+	return privKeyBuffer, pubKeyBuffer, nil
 }
