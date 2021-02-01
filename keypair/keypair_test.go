@@ -17,15 +17,13 @@ func TestParsePrivateKey(t *testing.T) {
 	privKey, err := GenerateKeypair()
 	r.NoError(err)
 
-	privateKeyBytes := x509.MarshalPKCS1PrivateKey(privKey)
-	privateKeyBlock := &pem.Block{
-		Type:  "RSA PRIVATE KEY",
-		Bytes: privateKeyBytes,
-	}
-	privatePem, err := os.Create("private.pem")
+	privKeyBuffer, _, err := SaveKeys(privKey)
 	r.NoError(err)
-	err = pem.Encode(privatePem, privateKeyBlock)
+	privKeyFile, err := os.Create("./private.pem")
 	r.NoError(err)
+	_, err = privKeyFile.Write(privKeyBuffer.Bytes())
+	r.NoError(err)
+
 	// Plug in path
 	filePrivKey, err := ParsePrivateKey("private.pem")
 	r.NoError(err)
@@ -40,7 +38,7 @@ func TestGeneratePrivateKey(t *testing.T) {
 	r.NotNil(priv)
 }
 
-func TestFileHandling(t *testing.T) {
+func TestBufferHandling(t *testing.T) {
 	r := require.New(t)
 
 	originalPriv, err := GenerateKeypair()
@@ -51,12 +49,13 @@ func TestFileHandling(t *testing.T) {
 	privKeyBuffer, pubKeyBuffer, err := SaveKeys(originalPriv)
 	r.NoError(err)
 
+	// Decode Private block buffer and ensure its the same as original private key
 	bufferPEMBlock, _ := pem.Decode(privKeyBuffer.Bytes())
 	bufferPrivateKey, err := x509.ParsePKCS1PrivateKey(bufferPEMBlock.Bytes)
 	r.NoError(err)
-
 	r.Equal(bufferPrivateKey, originalPriv)
 
+	// Decode Public block buffer and ensure its the same as original private key
 	bufferPEMBlock, _ = pem.Decode(pubKeyBuffer.Bytes())
 	bufferPubKey, err := x509.ParsePKCS1PublicKey(bufferPEMBlock.Bytes)
 	r.NoError(err)
