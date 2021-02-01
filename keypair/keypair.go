@@ -22,7 +22,6 @@ type Config struct {
 func (c *Config) GetPrivateKeyPath() string {
 	return fmt.Sprintf("%s/%s_private.pem", c.KeyPath, c.KeyPrefix)
 }
-
 func (c *Config) GetPublicKeyPath() string {
 	return fmt.Sprintf("%s/%s_public.pem", c.KeyPath, c.KeyPrefix)
 }
@@ -80,10 +79,6 @@ func SaveKeys(config Config) error {
 		return errors.New("No private key set")
 	}
 
-	if config.PublicKey == nil {
-		return errors.New("No public key set")
-	}
-
 	privateKeyBytes := x509.MarshalPKCS1PrivateKey(config.PrivateKey)
 	privateKeyBlock := &pem.Block{
 		Type:  "RSA PRIVATE KEY",
@@ -100,7 +95,7 @@ func SaveKeys(config Config) error {
 		return errors.Wrap(err, "Unable to pem-encode private key")
 	}
 
-	publicKeyBytes := x509.MarshalPKCS1PublicKey(config.PublicKey)
+	publicKeyBytes := x509.MarshalPKCS1PublicKey(&config.PrivateKey.PublicKey)
 
 	publicKeyBlock := &pem.Block{
 		Type:  "PUBLIC KEY",

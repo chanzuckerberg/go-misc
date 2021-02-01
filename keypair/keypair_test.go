@@ -51,6 +51,8 @@ func TestFileHandling(t *testing.T) {
 	originalPriv, err := GenerateKeypair()
 	r.NoError(err)
 
+	originalPub := &originalPriv.PublicKey
+
 	TestKeypairConfig.PrivateKey = originalPriv
 
 	err = SaveKeys(TestKeypairConfig)

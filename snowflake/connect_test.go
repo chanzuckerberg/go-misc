@@ -1,6 +1,9 @@
 package snowflake
 
 import (
+	"crypto/x509"
+	"encoding/base64"
+	"net/url"
 	"os"
 	"testing"
 
@@ -24,11 +27,10 @@ var TestKeypairConfig = keypair.Config{
 
 func TestDSN(t *testing.T) {
 	r := require.New(t)
-	testPriv, testPub, err := keypair.GenerateKeypair()
+	testPriv, err := keypair.GenerateKeypair()
 	r.NoError(err)
 
 	TestKeypairConfig.PrivateKey = testPriv
-	TestKeypairConfig.PublicKey = testPub
 	err = keypair.SaveKeys(TestKeypairConfig)
 	r.NoError(err)
 
@@ -40,15 +42,29 @@ func TestDSN(t *testing.T) {
 	testDSN, err := DSN(&testSnowflakeConfig)
 	r.NoError(err)
 	r.NotNil(testDSN)
+
+	r.Contains(testDSN, testSnowflakeConfig.User)
+	r.Contains(testDSN, testSnowflakeConfig.Region)
+	r.Contains(testDSN, testSnowflakeConfig.Account)
+	r.Contains(testDSN, "privateKey=")
+
+	// Looked into the gosnowflake code to identify how the private key marshaling worked.
+	// Replicated here for testing
+	goSnowflakePrivKeyBytes, err := x509.MarshalPKCS8PrivateKey(testPriv)
+	r.NoError(err, "This custom key unmarshal process from gosnowflake doesn't work. Source: https://github.com/snowflakedb/gosnowflake/blob/52137ce8c32eaf93b0bd22fc5c7297beff339812/dsn.go#L131")
+
+	// Added this block because the DSN() function would URL-encode equal signs as %3D
+	keyBase64 := base64.URLEncoding.EncodeToString(goSnowflakePrivKeyBytes)
+	decodedPrivKey := url.QueryEscape(keyBase64)
+	r.Contains(testDSN, decodedPrivKey)
 }
 
 func TestConfigureProvider(t *testing.T) {
 	r := require.New(t)
-	testPriv, testPub, err := keypair.GenerateKeypair()
+	testPriv, err := keypair.GenerateKeypair()
 	r.NoError(err)
 
 	TestKeypairConfig.PrivateKey = testPriv
-	TestKeypairConfig.PublicKey = testPub
 	err = keypair.SaveKeys(TestKeypairConfig)
 	r.NoError(err)
 
