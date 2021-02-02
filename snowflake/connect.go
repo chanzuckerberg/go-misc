@@ -21,7 +21,6 @@ type SnowflakeConfig struct {
 
 func ConfigureSnowflakeDB(s *SnowflakeConfig) (*sql.DB, error) {
 	dsn, err := DSN(s)
-
 	if err != nil {
 		return nil, errors.Wrap(err, "could not build dsn for snowflake connection")
 	}

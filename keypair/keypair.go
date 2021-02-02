@@ -37,7 +37,7 @@ func ParseRSAPrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
 	return priv, nil
 }
 
-func GetPublicKey(privateKeyPath string) (*rsa.PublicKey, error) {
+func GetRSAPublicKey(privateKeyPath string) (*rsa.PublicKey, error) {
 	privateKey, err := ParseRSAPrivateKey(privateKeyPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to read private key path")
