@@ -3,6 +3,7 @@ package keypair
 import (
 	"crypto/x509"
 	"encoding/pem"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -13,7 +14,9 @@ import (
 func TestParsePrivateKey(t *testing.T) {
 	r := require.New(t)
 
-	privKeyFile, err := ioutil.TempFile("", "tmpPrivKey.pem")
+	// TempFile replaces * with a random number
+	privKeyFile, err := ioutil.TempFile("", "*PrivKey.pem")
+	fmt.Println("priv key location:", privKeyFile.Name())
 	r.Nil(err)
 
 	defer privKeyFile.Close()

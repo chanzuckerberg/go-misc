@@ -3,6 +3,7 @@ package snowflake
 import (
 	"crypto/x509"
 	"encoding/base64"
+	"fmt"
 	"io/ioutil"
 	"net/url"
 	"os"
@@ -30,8 +31,9 @@ func TestDSN(t *testing.T) {
 	privKeyBuffer, _, err := keypair.SaveRSAKeys(testPriv)
 	r.NoError(err)
 
-	// Create a temp file:
-	privKeyFile, err := ioutil.TempFile("", "tmpPrivKey.pem")
+	// TempFile replaces * with a random number
+	privKeyFile, err := ioutil.TempFile("", "*PrivKey.pem")
+	fmt.Println("priv key location:", privKeyFile.Name())
 	r.Nil(err)
 
 	defer privKeyFile.Close()
@@ -72,8 +74,9 @@ func TestConfigureSnowflakeDB(t *testing.T) {
 	privKeyBuffer, _, err := keypair.SaveRSAKeys(testPriv)
 	r.NoError(err)
 
-	// Create a temp file:
-	privKeyFile, err := ioutil.TempFile("", "tmpPrivKey.pem")
+	// TempFile replaces * with a random number
+	privKeyFile, err := ioutil.TempFile("", "*PrivKey.pem")
+	fmt.Println("priv key location:", privKeyFile.Name())
 	r.Nil(err)
 
 	defer privKeyFile.Close()
