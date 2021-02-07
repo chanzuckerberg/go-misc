@@ -9,11 +9,12 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (o *DBClientOption) CreateSecretScope(ctx context.Context, scope, initial_manage_principal string) error {
+func (o *DBClientOption) CreateSecretScope(ctx context.Context, scope, initialManagePrincipal string) error {
 	data := map[string]string{
 		"scope":                    scope,
-		"initial_manage_principal": initial_manage_principal,
+		"initial_manage_principal": initialManagePrincipal,
 	}
+
 	httpRequest, err := o.craftRequest(ctx, "/secrets/scopes/create", "POST", data)
 	if err != nil {
 		return errors.Wrap(err, "Unable to create http request")
@@ -71,7 +72,6 @@ func (o *DBClientOption) DeleteSecretScope(ctx context.Context, scope string) er
 }
 
 func (o *DBClientOption) ListSecretScopes(ctx context.Context) ([]SecretScope, error) {
-	// GET
 	data := map[string]string{}
 
 	var scopes []SecretScope
@@ -100,7 +100,8 @@ func (o *DBClientOption) ListSecretScopes(ctx context.Context) ([]SecretScope, e
 
 	// Unmarshal to interface
 	var respMap map[string]interface{}
-	err = json.Unmarshal(body, respMap)
+
+	err = json.Unmarshal(body, &respMap)
 	if err != nil {
 		return scopes, errors.Wrapf(err, "Unable to unmarshal http response's body to map[string]interface. Got %T", resp.Body)
 	}
@@ -186,11 +187,12 @@ func (o *DBClientOption) DeleteSecret(ctx context.Context, scope, key string) er
 }
 
 func (o *DBClientOption) ListSecrets(ctx context.Context, scope string) ([]SecretMetadata, error) {
-	// GET
 	data := map[string]string{
 		"scope": scope,
 	}
+
 	var secrets []SecretMetadata
+
 	httpRequest, err := o.craftRequest(ctx, "/secrets/list", "GET", data)
 	if err != nil {
 		return secrets, errors.Wrap(err, "Unable to create http request")
@@ -215,7 +217,7 @@ func (o *DBClientOption) ListSecrets(ctx context.Context, scope string) ([]Secre
 
 	// TODO: Get the "secrets" item in JSON body first, then unmarshal & decode
 	var respMap map[string]interface{}
-	err = json.Unmarshal(body, respMap)
+	err = json.Unmarshal(body, &respMap)
 	if err != nil {
 		return secrets, errors.Wrapf(err, "Unable to unmarshal http response's body to map[string]interface. Got %T", resp.Body)
 	}
@@ -233,7 +235,7 @@ func (o *DBClientOption) ListSecrets(ctx context.Context, scope string) ([]Secre
 	return secrets, errors.Wrap(err, "Unable to unmarshal http request body to Secrets array")
 }
 
-func (o *DBClientOption) PutSecretACL(ctx context.Context, scope, principal string, permission AclPermission) error {
+func (o *DBClientOption) PutSecretACL(ctx context.Context, scope, principal string, permission ACLPermission) error {
 	// Must have kindManage permission to invoke this API
 	data := map[string]string{
 		"scope":      scope,
@@ -297,12 +299,12 @@ func (o *DBClientOption) DeleteSecretACL(ctx context.Context, scope, principal s
 	return nil
 }
 
-func (o *DBClientOption) GetSecretACL(ctx context.Context, scope, principal string) (AclItem, error) {
+func (o *DBClientOption) GetSecretACL(ctx context.Context, scope, principal string) (ACLItem, error) {
 	data := map[string]string{
 		"scope":     scope,
 		"principal": principal,
 	}
-	var acl AclItem
+	var acl ACLItem
 	httpRequest, err := o.craftRequest(ctx, "/secrets/acls/get", "GET", data)
 	if err != nil {
 		return acl, errors.Wrap(err, "Unable to create http request")
@@ -333,13 +335,12 @@ func (o *DBClientOption) GetSecretACL(ctx context.Context, scope, principal stri
 	return acl, errors.Wrap(err, "Unable to unmarshal http request body to AclItem type")
 }
 
-func (o *DBClientOption) ListSecretACLs(ctx context.Context, scope string) ([]AclItem, error) {
-	// GET
+func (o *DBClientOption) ListSecretACLs(ctx context.Context, scope string) ([]ACLItem, error) {
 	data := map[string]string{
 		"scope": scope,
 	}
 
-	var acls []AclItem
+	var acls []ACLItem
 
 	httpRequest, err := o.craftRequest(ctx, "/secrets/acls/list", "GET", data)
 	if err != nil {
@@ -364,7 +365,7 @@ func (o *DBClientOption) ListSecretACLs(ctx context.Context, scope string) ([]Ac
 	}
 
 	var respMap map[string]interface{}
-	err = json.Unmarshal(body, respMap)
+	err = json.Unmarshal(body, &respMap)
 	if err != nil {
 		return acls, errors.Wrapf(err, "Unable to unmarshal http response's body to map[string]interface. Got %T", resp.Body)
 	}
@@ -374,7 +375,7 @@ func (o *DBClientOption) ListSecretACLs(ctx context.Context, scope string) ([]Ac
 		return acls, errors.Wrap(err, "ListSecretACLs() response body doesn't contain 'acls' key")
 	}
 
-	acls, ok = aclsInterface.([]AclItem)
+	acls, ok = aclsInterface.([]ACLItem)
 	if !ok {
 		return acls, errors.Wrap(err, "Unable to convert aclsInterface value to type []AclItem")
 	}

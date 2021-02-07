@@ -1,16 +1,16 @@
 package databricks
 
-type AclItem struct {
+type ACLItem struct {
 	Principal  string        `json:"principal"`
-	Permission AclPermission `json:"permission"`
+	Permission ACLPermission `json:"permission"`
 }
 
-type AclPermission string
+type ACLPermission string
 
 const (
-	KindRead   AclPermission = "READ"
-	KindWrite  AclPermission = "WRITE"
-	KindManage AclPermission = "MANAGE"
+	KindRead   ACLPermission = "READ"
+	KindWrite  ACLPermission = "WRITE"
+	KindManage ACLPermission = "MANAGE"
 )
 
 type ScopeBackendType string
@@ -18,11 +18,11 @@ type ScopeBackendType string
 const DatabricksBackend ScopeBackendType = "DATABRICKS"
 
 type SecretScope struct {
-	Name         string           `json:"name"`
-	Backend_type ScopeBackendType `json:"backend_type"`
+	Name        string           `json:"name"`
+	BackendType ScopeBackendType `json:"backend_type"`
 }
 
 type SecretMetadata struct {
-	Key                    string `json:"key"`
-	Last_updated_timestamp int64  `json:"last_updated_timestamp"`
+	Key                  string `json:"key"`
+	LastUpdatedTimestamp int64  `json:"last_updated_timestamp"`
 }
