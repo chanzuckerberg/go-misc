@@ -148,10 +148,6 @@ func (o *DBClientOption) PutSecret(ctx context.Context, scope, key string) error
 		return fmt.Errorf("Response from server (%d) %s", resp.StatusCode, string(body))
 	}
 
-	// secret key must consist of alphanumeric characters, dashes, underscores, and periods
-	// 	it cannot exceed 128 characters
-	// 	Maximum allowed secret value size is 128 kb
-	// 	Maximum number of secrets in a given scope is 1000
 	return nil
 }
 
@@ -215,7 +211,6 @@ func (o *DBClientOption) ListSecrets(ctx context.Context, scope string) ([]Secre
 		return secrets, fmt.Errorf("Response from server (%d) %s", resp.StatusCode, string(body))
 	}
 
-	// TODO: Get the "secrets" item in JSON body first, then unmarshal & decode
 	var respMap map[string]interface{}
 	err = json.Unmarshal(body, &respMap)
 	if err != nil {
