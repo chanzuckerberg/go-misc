@@ -1,4 +1,4 @@
-package main
+package setup
 
 import (
 	"database/sql"
@@ -22,20 +22,20 @@ func getSnowflakePassword() (string, error) {
 	return os.Getenv("SNOWFLAKE_PASSWORD"), nil
 }
 
-func setupSnowflakeDatabricks() (*sql.DB, *aws.DBClient, error) {
+func SetupSnowflake() (*sql.DB, error) {
 	account, err := getSnowflakeAccount()
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Unable to get snowflake account name")
+		return nil, errors.Wrap(err, "Unable to get snowflake account name")
 	}
 
 	region, err := getSnowflakeRegion()
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Unable to get snowflake region")
+		return nil, errors.Wrap(err, "Unable to get snowflake region")
 	}
 
 	password, err := getSnowflakePassword()
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Unable to get snowflake password")
+		return nil, errors.Wrap(err, "Unable to get snowflake password")
 	}
 
 	// Figure out what to fill in here:
@@ -44,13 +44,27 @@ func setupSnowflakeDatabricks() (*sql.DB, *aws.DBClient, error) {
 		Region:   region,
 		Password: password,
 	}
+
 	sqlDB, err := snowflake.ConfigureSnowflakeDB(&cfg)
 	if err != nil {
-		return nil, nil, errors.Wrap(err, "Unable to configure Snowflake DB")
+		return nil, errors.Wrap(err, "Unable to configure Snowflake DB")
 	}
 
-	// setup databricks
-	dbClient := databricks.NewAWSClient(os.Getenv("Databrickshost"), os.Getenv("Databrickstoken"))
+	return sqlDB, nil
+}
 
-	return sqlDB, dbClient, nil
+func SetupDatabricks() (*aws.DBClient, error) {
+
+	host, present := os.LookupEnv("DATABRICKS_HOST")
+	if !present {
+		return nil, errors.New("We can't find the DATABRICKS_HOST")
+	}
+	token, present := os.LookupEnv("DATABRICKS_TOKEN")
+	if !present {
+		return nil, errors.New("We can't find the DATABRICKS_HOST")
+	}
+
+	dbClient := databricks.NewAWSClient(host, token)
+
+	return dbClient, nil
 }
