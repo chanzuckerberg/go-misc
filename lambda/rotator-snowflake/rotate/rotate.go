@@ -21,7 +21,6 @@ func getUsers() ([]string, error) {
 }
 
 func updateSnowflake(user string, db *sql.DB, pubKey *rsa.PublicKey) error {
-	// TODO(aku): figure out how to
 	query := fmt.Sprintf("ALTER USER %s SET RSA_PUBLIC_KEY_2 = '%s'", user, pubKey)
 	snowflake.ExecNoRows(db, query)
 	return nil
