@@ -7,22 +7,51 @@ import (
 	"github.com/chanzuckerberg/go-misc/databricks"
 	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"github.com/xinsnake/databricks-sdk-golang/aws"
 )
 
 func getSnowflakeAccount() (string, error) {
-	return os.Getenv("SNOWFLAKE_ACCOUNT"), nil
+	acct, present := os.LookupEnv("SNOWFLAKE_ACCOUNT")
+	if !present {
+		return "", errors.New("Could not find SNOWFLAKE_ACCOUNT")
+	}
+	return acct, nil
 }
 
 func getSnowflakeRegion() (string, error) {
-	return os.Getenv("SNOWFLAKE_REGION"), nil
+	region, present := os.LookupEnv("SNOWFLAKE_REGION")
+	if !present {
+		return "", errors.New("Could not find SNOWFLAKE_REGION")
+	}
+	return region, nil
 }
 
 func getSnowflakePassword() (string, error) {
-	return os.Getenv("SNOWFLAKE_PASSWORD"), nil
+	password, present := os.LookupEnv("SNOWFLAKE_PASSWORD")
+	if !present {
+		return "", errors.New("Could not find SNOWFLAKE_PASSWORD")
+	}
+	return password, nil
 }
 
-func SetupSnowflake() (*sql.DB, error) {
+func getSnowflakeRole() (string, error) {
+	role, present := os.LookupEnv("SNOWFLAKE_ROLE")
+	if !present {
+		return "", errors.New("Could not find SNOWFLAKE_ROLE")
+	}
+	return role, nil
+}
+
+func getSnowflakeUser() (string, error) {
+	user, present := os.LookupEnv("SNOWFLAKE_USER")
+	if !present {
+		return "", errors.New("Could not find SNOWFLAKE_USER")
+	}
+	return user, nil
+}
+
+func Snowflake() (*sql.DB, error) {
 	account, err := getSnowflakeAccount()
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to get snowflake account name")
@@ -30,7 +59,8 @@ func SetupSnowflake() (*sql.DB, error) {
 
 	region, err := getSnowflakeRegion()
 	if err != nil {
-		return nil, errors.Wrap(err, "Unable to get snowflake region")
+		// Region should default to
+		logrus.Debug("Snowflake Region not set")
 	}
 
 	password, err := getSnowflakePassword()
@@ -38,11 +68,23 @@ func SetupSnowflake() (*sql.DB, error) {
 		return nil, errors.Wrap(err, "Unable to get snowflake password")
 	}
 
+	user, err := getSnowflakeUser()
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to get snowflake password")
+	}
+
+	role, err := getSnowflakeRole()
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to get snowflake password")
+	}
 	// Figure out what to fill in here:
 	cfg := snowflake.SnowflakeConfig{
-		Account:  account,
-		Region:   region,
-		Password: password,
+		Account:     account,
+		User:        user,
+		Role:        role,
+		BrowserAuth: false,
+		Region:      region,
+		Password:    password,
 	}
 
 	sqlDB, err := snowflake.ConfigureSnowflakeDB(&cfg)
@@ -53,7 +95,7 @@ func SetupSnowflake() (*sql.DB, error) {
 	return sqlDB, nil
 }
 
-func SetupDatabricks() (*aws.DBClient, error) {
+func Databricks() (*aws.DBClient, error) {
 
 	host, present := os.LookupEnv("DATABRICKS_HOST")
 	if !present {

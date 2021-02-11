@@ -10,9 +10,8 @@ import (
 	"github.com/chanzuckerberg/go-misc/keypair"
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
 	"github.com/chanzuckerberg/go-misc/snowflake"
+	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
-	"github.com/xinsnake/databricks-sdk-golang/aws"
 )
 
 func getUsers() ([]string, error) {
@@ -21,23 +20,25 @@ func getUsers() ([]string, error) {
 }
 
 func updateSnowflake(user string, db *sql.DB, pubKey *rsa.PublicKey) error {
-	query := fmt.Sprintf("ALTER USER %s SET RSA_PUBLIC_KEY_2 = '%s'", user, pubKey)
-	snowflake.ExecNoRows(db, query)
-	return nil
-}
+	// Convert publicKey to []bytes
 
-func updateDatabricks(user string, databricks *aws.DBClient) error {
+	// See if the bytes.Buffer approach solves everything after we convert everything to PKCS#8 format
+	// publicKeyBytes := x509.MarshalPKCS1PublicKey(pubKey)
+	// // add a pem encoding step
+	// publicKeyBlock := &pem.Block{
+	// 	Type:  "PUBLIC KEY",
+	// 	Bytes: publicKeyBytes,
+	// }
+	// pemBytes := pem.EncodeToMemory(publicKeyBlock)
+	// publicKeyStr := base64.StdEncoding.EncodeToString(pemBytes)
+	query := fmt.Sprintf(`ALTER USER "%s" SET RSA_PUBLIC_KEY_2 = "%s"`, user, publicKeyStr)
+	_, err := snowflake.ExecNoRows(db, query)
 
-	return nil
+	return err
 }
 
 func Rotate(ctx context.Context) error {
-	snowflakeDB, err := setup.SetupSnowflake()
-	if err != nil {
-		return errors.Wrap(err, "Unable to configure snowflake and databricks")
-	}
-
-	databricksConnection, err := setup.SetupDatabricks()
+	snowflakeDB, err := setup.Snowflake()
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure snowflake and databricks")
 	}
@@ -47,17 +48,20 @@ func Rotate(ctx context.Context) error {
 		return errors.Wrap(err, "Unable to get list of users to rotate")
 	}
 
+	// Collect errors for each user:
+	userErrors := &multierror.Error{}
+
 	for _, user := range users {
-		// Generate new keypair
 		privKey, err := keypair.GenerateRSAKeypair()
 		if err != nil {
 			return errors.Wrap(err, "Unable to generate RSA keypair")
 		}
+
 		err = updateSnowflake(user, snowflakeDB, &privKey.PublicKey)
-		logrus.Warn(err)
-		err = updateDatabricks(user, databricksConnection)
-		logrus.Warn(err)
+		if err != nil {
+			userErrors = multierror.Append(userErrors, err)
+		}
 	}
 
-	return nil
+	return userErrors
 }

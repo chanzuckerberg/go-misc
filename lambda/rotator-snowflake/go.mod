@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/chanzuckerberg/go-misc v0.0.0-20210210202805-63e938093766
+	github.com/hashicorp/go-multierror v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.7.0
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
