@@ -27,28 +27,60 @@ func getUsers() ([]string, error) {
 func buildSnowflakeSecrets(connection *sql.DB, snowflake_user string, privateKey *bytes.Buffer) (map[string]string, error) {
 	userQuery := fmt.Sprintf(`DESCRIBE USER "%s"`, snowflake_user)
 	// TODO: write a snowflake.ExecWithRows()
-	connectionProperties, err := snowflake.QueryRow(connection, userQuery)
+	connectionProperties := snowflake.QueryRow(connection, userQuery)
+	// if err != nil {
+	// 	return nil, errors.Wrap(err, "Unable to execute ")
+	// }
+	userDetails := make(map[string]interface{})
+
+	err := connectionProperties.MapScan(userDetails)
 	if err != nil {
-		return nil, errors.Wrap(err, "Unable to execute ")
+		return nil, errors.Wrap(err, "Unable to save user Query details into a map[string]interface")
 	}
 
-	default_role, ok := connectionProperties["DEFAULT_ROLE"]
+	roleIface, ok := userDetails["DEFAULT_ROLE"]
 	if !ok {
 		return nil, errors.Errorf("Could not get user's DEFAULT_ROLE from Snowflake query: %s", userQuery)
 	}
 
+	defaultRole, ok := roleIface.(string)
+	if !ok {
+		return nil, errors.Errorf("Wrong type for DEFAULT_ROW val, got %T", roleIface)
+	}
+
 	userSecrets := map[string]string{
 		"snowflake.user":            snowflake_user,
-		"snowflake.role":            default_role,
+		"snowflake.role":            defaultRole,
 		"snowflake.pem_private_key": base64.StdEncoding.EncodeToString(privateKey.Bytes()),
 	}
+
 	return userSecrets, nil
 }
 
-func updateDatabricks(user, scope string, databricks *aws.DBClient, privKeyBuffer *bytes.Buffer) error {
+func updateDatabricks(scope string, databricks *aws.DBClient, privKeyBuffer *bytes.Buffer) error {
 	secretsAPI := databricks.Secrets()
-	secretsAPI.PutSecret(privKeyBuffer.Bytes(), scope, "RSA_PUBLIC_KEY_2")
-	return nil
+
+	scopes, err := secretsAPI.ListSecretScopes()
+	if err != nil {
+		return errors.Wrap(err, "Cannot list scopes")
+	}
+
+	for _, scopeItem := range scopes {
+		if scopeItem.Name == scope {
+			err = secretsAPI.PutSecret(privKeyBuffer.Bytes(), scope, "RSA_PRIVATE_KEY")
+
+			return errors.Wrapf(err, "Cannot put secret in scope despite scope existing. Scope: %s", scope)
+		}
+	}
+
+	err = secretsAPI.CreateSecretScope(scope, "users")
+	if err != nil {
+		return errors.Wrap(err, "Unable to create scope for user")
+	}
+
+	err = secretsAPI.PutSecret(privKeyBuffer.Bytes(), scope, "RSA_PRIVATE_KEY")
+
+	return errors.Wrap(err, "Unable to put secret into databricks")
 }
 
 func updateSnowflake(user string, db *sql.DB, privKeyBuffer *bytes.Buffer) error {
@@ -107,8 +139,8 @@ func Rotate(ctx context.Context) error {
 		// if err != nil {
 		// 	userErrors = multierror.Append(userErrors, err)
 		// }
-
-		err = updateDatabricks(user, user, databricksConnection, privKeyBuffer)
+		scope := user
+		err = updateDatabricks(scope, databricksConnection, privKeyBuffer)
 	}
 
 	return userErrors
