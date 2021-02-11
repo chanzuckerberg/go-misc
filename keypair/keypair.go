@@ -25,7 +25,7 @@ func ParseRSAPrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
 
 	privPemBlock, _ := pem.Decode(privKeyBytes)
 
-	priv, err := x509.ParsePKCS1PrivateKey(privPemBlock.Bytes)
+	priv, err := x509.ParsePKCS8PrivateKey(privPemBlock.Bytes)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to parse private key file bytes")
 	}
@@ -34,7 +34,12 @@ func ParseRSAPrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
 		return nil, errors.Errorf("nil private key")
 	}
 
-	return priv, nil
+	pkcs8Key, ok := priv.(*rsa.PrivateKey)
+	if !ok {
+		return nil, errors.Errorf("Unable to convert private key interface as rsa.PrivateKey. Got %T", priv)
+	}
+
+	return pkcs8Key, nil
 }
 
 func GetRSAPublicKey(privateKeyPath string) (*rsa.PublicKey, error) {
@@ -59,26 +64,20 @@ func GenerateRSAKeypair() (*rsa.PrivateKey, error) {
 	return privatekey, nil
 }
 
-func SaveRSAKeys(privateKey *rsa.PrivateKey) (privateKeyBuffer *bytes.Buffer, publicKeyBuffer *bytes.Buffer, err error) {
+func SaveRSAKey(privateKey *rsa.PrivateKey) (privateKeyBuffer *bytes.Buffer, err error) {
 	if privateKey == nil {
-		return &bytes.Buffer{}, &bytes.Buffer{}, errors.New("No private key set")
+		return &bytes.Buffer{}, errors.New("No private key set")
 	}
 
-	privateKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
+	privateKeyBytes, err := x509.MarshalPKCS8PrivateKey(privateKey)
+	if err != nil {
+		return &bytes.Buffer{}, errors.New("Unable to marshal private key to pkcs8 format")
+	}
 	privateKeyBlock := &pem.Block{
 		Type:  "RSA PRIVATE KEY",
 		Bytes: privateKeyBytes,
 	}
 	privKeyBuffer := bytes.NewBuffer(pem.EncodeToMemory(privateKeyBlock))
 
-	publicKeyBytes := x509.MarshalPKCS1PublicKey(&privateKey.PublicKey)
-
-	publicKeyBlock := &pem.Block{
-		Type:  "PUBLIC KEY",
-		Bytes: publicKeyBytes,
-	}
-
-	pubKeyBuffer := bytes.NewBuffer(pem.EncodeToMemory(publicKeyBlock))
-
-	return privKeyBuffer, pubKeyBuffer, nil
+	return privKeyBuffer, nil
 }
