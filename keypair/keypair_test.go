@@ -1,6 +1,7 @@
 package keypair
 
 import (
+	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
@@ -25,7 +26,7 @@ func TestParsePrivateKey(t *testing.T) {
 	privKey, err := GenerateRSAKeypair()
 	r.NoError(err)
 
-	privKeyBuffer, _, err := SaveRSAKeys(privKey)
+	privKeyBuffer, err := SaveRSAKey(privKey)
 	r.NoError(err)
 
 	_, err = privKeyFile.Write(privKeyBuffer.Bytes())
@@ -53,18 +54,16 @@ func TestBufferHandling(t *testing.T) {
 
 	originalPub := &originalPriv.PublicKey
 
-	privKeyBuffer, pubKeyBuffer, err := SaveRSAKeys(originalPriv)
+	privKeyBuffer, err := SaveRSAKey(originalPriv)
 	r.NoError(err)
 
 	// Decode Private block buffer and ensure its the same as original private key
 	bufferPEMBlock, _ := pem.Decode(privKeyBuffer.Bytes())
-	bufferPrivateKey, err := x509.ParsePKCS1PrivateKey(bufferPEMBlock.Bytes)
+	bufferPrivateKey, err := x509.ParsePKCS8PrivateKey(bufferPEMBlock.Bytes)
+	pkcs8Key, ok := bufferPrivateKey.(*rsa.PrivateKey)
+	r.True(ok)
 	r.NoError(err)
-	r.Equal(bufferPrivateKey, originalPriv)
+	r.Equal(pkcs8Key, originalPriv)
 
-	// Decode Public block buffer and ensure its the same as original private key
-	bufferPEMBlock, _ = pem.Decode(pubKeyBuffer.Bytes())
-	bufferPubKey, err := x509.ParsePKCS1PublicKey(bufferPEMBlock.Bytes)
-	r.NoError(err)
-	r.Equal(bufferPubKey, originalPub)
+	r.Equal(pkcs8Key.PublicKey, *originalPub)
 }

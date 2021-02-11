@@ -28,7 +28,7 @@ func TestDSN(t *testing.T) {
 	testPriv, err := keypair.GenerateRSAKeypair()
 	r.NoError(err)
 
-	privKeyBuffer, _, err := keypair.SaveRSAKeys(testPriv)
+	privKeyBuffer, err := keypair.SaveRSAKey(testPriv)
 	r.NoError(err)
 
 	// TempFile replaces * with a random number
@@ -71,7 +71,7 @@ func TestConfigureSnowflakeDB(t *testing.T) {
 	testPriv, err := keypair.GenerateRSAKeypair()
 	r.NoError(err)
 
-	privKeyBuffer, _, err := keypair.SaveRSAKeys(testPriv)
+	privKeyBuffer, err := keypair.SaveRSAKey(testPriv)
 	r.NoError(err)
 
 	// TempFile replaces * with a random number
