@@ -1,9 +1,13 @@
 package rotate
 
 import (
+	"bytes"
 	"context"
 	"crypto/rsa"
+	"crypto/x509"
 	"database/sql"
+	"encoding/base64"
+	"encoding/pem"
 	"fmt"
 	"os"
 
@@ -19,20 +23,24 @@ func getUsers() ([]string, error) {
 	return []string{os.Getenv("CURRENT_USER")}, nil
 }
 
-func updateSnowflake(user string, db *sql.DB, pubKey *rsa.PublicKey) error {
-	// Convert publicKey to []bytes
+func updateSnowflake(user string, db *sql.DB, privKey *bytes.Buffer) error {
+	privPemBlock, _ := pem.Decode(privKey.Bytes())
 
-	// See if the bytes.Buffer approach solves everything after we convert everything to PKCS#8 format
-	// publicKeyBytes := x509.MarshalPKCS1PublicKey(pubKey)
-	// // add a pem encoding step
-	// publicKeyBlock := &pem.Block{
-	// 	Type:  "PUBLIC KEY",
-	// 	Bytes: publicKeyBytes,
-	// }
-	// pemBytes := pem.EncodeToMemory(publicKeyBlock)
-	// publicKeyStr := base64.StdEncoding.EncodeToString(pemBytes)
+	privKeyIface, err := x509.ParsePKCS8PrivateKey(privPemBlock.Bytes)
+	if err != nil {
+		return errors.Wrap(err, "Unable to get pkcs8 private key")
+	}
+
+	// privKeyIface, err := x509.ParsePKCS8PrivateKey(der []byte)
+	officialPrivateKey, ok := privKeyIface.(*rsa.PrivateKey)
+	if !ok {
+		return errors.New("Unable to get pkcs8 private key")
+	}
+	publicKeyBytes := x509.MarshalPKCS1PublicKey(&officialPrivateKey.PublicKey)
+	publicKeyStr := base64.StdEncoding.EncodeToString(publicKeyBytes)
+	// so... how do we get the right public key format???
 	query := fmt.Sprintf(`ALTER USER "%s" SET RSA_PUBLIC_KEY_2 = "%s"`, user, publicKeyStr)
-	_, err := snowflake.ExecNoRows(db, query)
+	_, err = snowflake.ExecNoRows(db, query)
 
 	return err
 }
@@ -56,8 +64,11 @@ func Rotate(ctx context.Context) error {
 		if err != nil {
 			return errors.Wrap(err, "Unable to generate RSA keypair")
 		}
-
-		err = updateSnowflake(user, snowflakeDB, &privKey.PublicKey)
+		privKeyBuffer, err := keypair.SaveRSAKey(privKey)
+		if err != nil {
+			return errors.Wrap(err, "Unable to save RSA Keypair")
+		}
+		err = updateSnowflake(user, snowflakeDB, privKeyBuffer)
 		if err != nil {
 			userErrors = multierror.Append(userErrors, err)
 		}
