@@ -24,10 +24,30 @@ func getUsers() ([]string, error) {
 	return []string{os.Getenv("CURRENT_USER")}, nil
 }
 
+func buildSnowflakeSecrets(connection *sql.DB, snowflake_user string, privateKey *bytes.Buffer) (map[string]string, error) {
+	userQuery := fmt.Sprintf(`DESCRIBE USER "%s"`, snowflake_user)
+	// TODO: write a snowflake.ExecWithRows()
+	connectionProperties, err := snowflake.QueryRow(connection, userQuery)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to execute ")
+	}
+
+	default_role, ok := connectionProperties["DEFAULT_ROLE"]
+	if !ok {
+		return nil, errors.Errorf("Could not get user's DEFAULT_ROLE from Snowflake query: %s", userQuery)
+	}
+
+	userSecrets := map[string]string{
+		"snowflake.user":            snowflake_user,
+		"snowflake.role":            default_role,
+		"snowflake.pem_private_key": base64.StdEncoding.EncodeToString(privateKey.Bytes()),
+	}
+	return userSecrets, nil
+}
+
 func updateDatabricks(user, scope string, databricks *aws.DBClient, privKeyBuffer *bytes.Buffer) error {
-	// If there's no scope (username), then
 	secretsAPI := databricks.Secrets()
-	secretsAPI.PutSecret(privKeyBuffer, scope, "RSA_PUBLIC_KEY_2")
+	secretsAPI.PutSecret(privKeyBuffer.Bytes(), scope, "RSA_PUBLIC_KEY_2")
 	return nil
 }
 
