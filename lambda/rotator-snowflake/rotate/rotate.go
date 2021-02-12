@@ -14,10 +14,8 @@ import (
 	"github.com/chanzuckerberg/go-misc/keypair"
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
 	"github.com/chanzuckerberg/go-misc/snowflake"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"github.com/xinsnake/databricks-sdk-golang/aws"
 )
 
@@ -26,35 +24,19 @@ func getUsers() ([]string, error) {
 	return []string{os.Getenv("CURRENT_USER")}, nil
 }
 
-func buildSnowflakeSecrets(connection *sql.DB, snowflakeUser string, privateKey *bytes.Buffer) (map[string]string, error) {
-	userQuery := fmt.Sprintf(`DESCRIBE USER "%s"`, snowflakeUser)
-	connectionProperties := snowflake.QueryRow(connection, userQuery)
-	userDetails := make(map[string]interface{})
+func buildSnowflakeSecrets(connection *sql.DB, username string, privateKey *bytes.Buffer) (map[string]string, error) {
+	userQuery := fmt.Sprintf(`SHOW USERS LIKE '%s'`, username)
 
-	err := connectionProperties.MapScan(userDetails)
+	connectionRow := snowflake.QueryRow(connection, userQuery)
+
+	snowflakeUser, err := snowflake.ScanUser(connectionRow)
 	if err != nil {
-		return nil, errors.Wrap(err, "Unable to save user Query details into a map[string]interface")
+		return nil, errors.Wrapf(err, "Unable to create snowflake user from userQuery %s", userQuery)
 	}
-
-	// TODO: figure out why DEFAULT_ROLE doesn't show up in describe user case
-	logrus.Debug("userDetails")
-	spew.Dump(userDetails)
-
-	roleIface, ok := userDetails["DEFAULT_ROLE"]
-	if !ok {
-		return nil, errors.Errorf("Could not get user's DEFAULT_ROLE from Snowflake query: %s", userQuery)
-	}
-
-	defaultRole, ok := roleIface.(string)
-	if !ok {
-		return nil, errors.Errorf("Wrong type for DEFAULT_ROW val, got %T", roleIface)
-	}
-
-	logrus.Debug("defaultRole: ", defaultRole)
-
+	fmt.Println("default role: ", snowflakeUser.DefaultRole.String)
 	userSecrets := map[string]string{
-		"snowflake.user":            snowflakeUser,
-		"snowflake.role":            defaultRole,
+		"snowflake.user":            username,
+		"snowflake.role":            snowflakeUser.DefaultRole.String,
 		"snowflake.pem_private_key": base64.StdEncoding.EncodeToString(privateKey.Bytes()),
 	}
 
