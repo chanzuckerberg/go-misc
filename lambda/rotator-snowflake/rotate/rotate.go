@@ -113,6 +113,7 @@ func Rotate(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure snowflake and databricks")
 	}
+
 	databricksConnection, err := setup.Databricks()
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure snowflake and databricks")
@@ -131,17 +132,24 @@ func Rotate(ctx context.Context) error {
 		if err != nil {
 			return errors.Wrap(err, "Unable to generate RSA keypair")
 		}
+
 		privKeyBuffer, err := keypair.SaveRSAKey(privKey)
 		if err != nil {
 			return errors.Wrap(err, "Unable to save RSA Keypair")
 		}
+
 		err = updateSnowflake(user, snowflakeDB, privKeyBuffer)
 		if err != nil {
 			userErrors = multierror.Append(userErrors, err)
 		}
-		scope := user
-		err = updateDatabricks(scope, databricksConnection, privKeyBuffer)
-	}
 
+		scope := user
+
+		err = updateDatabricks(scope, databricksConnection, privKeyBuffer)
+		if err != nil {
+			userErrors = multierror.Append(userErrors, err)
+		}
+	}
+	fmt.Println(userErrors)
 	return userErrors
 }
