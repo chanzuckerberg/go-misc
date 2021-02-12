@@ -67,7 +67,7 @@ func updateDatabricks(scope string, databricks *aws.DBClient, privKeyBuffer *byt
 
 	for _, scopeItem := range scopes {
 		if scopeItem.Name == scope {
-			err = secretsAPI.PutSecret(privKeyBuffer.Bytes(), scope, "RSA_PRIVATE_KEY")
+			err = secretsAPI.PutSecret(privKeyBuffer.Bytes(), scope, "lalala")
 
 			return errors.Wrapf(err, "Cannot put secret in scope despite scope existing. Scope: %s", scope)
 		}
@@ -109,10 +109,10 @@ func updateSnowflake(user string, db *sql.DB, privKeyBuffer *bytes.Buffer) error
 }
 
 func Rotate(ctx context.Context) error {
-	// snowflakeDB, err := setup.Snowflake()
-	// if err != nil {
-	// 	return errors.Wrap(err, "Unable to configure snowflake and databricks")
-	// }
+	snowflakeDB, err := setup.Snowflake()
+	if err != nil {
+		return errors.Wrap(err, "Unable to configure snowflake and databricks")
+	}
 	databricksConnection, err := setup.Databricks()
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure snowflake and databricks")
@@ -135,10 +135,10 @@ func Rotate(ctx context.Context) error {
 		if err != nil {
 			return errors.Wrap(err, "Unable to save RSA Keypair")
 		}
-		// err = updateSnowflake(user, snowflakeDB, privKeyBuffer)
-		// if err != nil {
-		// 	userErrors = multierror.Append(userErrors, err)
-		// }
+		err = updateSnowflake(user, snowflakeDB, privKeyBuffer)
+		if err != nil {
+			userErrors = multierror.Append(userErrors, err)
+		}
 		scope := user
 		err = updateDatabricks(scope, databricksConnection, privKeyBuffer)
 	}
