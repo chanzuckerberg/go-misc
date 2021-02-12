@@ -33,7 +33,7 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, privateKey *byte
 	if err != nil {
 		return nil, errors.Wrapf(err, "Unable to create snowflake user from userQuery %s", userQuery)
 	}
-	fmt.Println("default role: ", snowflakeUser.DefaultRole.String)
+
 	userSecrets := map[string]string{
 		"snowflake.user":            username,
 		"snowflake.role":            snowflakeUser.DefaultRole.String,
@@ -58,7 +58,6 @@ func updateDatabricks(scope string, snowflake *sql.DB, databricks *aws.DBClient,
 			// TODO: create a scope if we get RESOURCE_DOES_NOT_EXIST error
 			return errors.Wrapf(err, "Unable to put secret %s in scope %s", secret, scope)
 		}
-		fmt.Println("successfully added the ", key, " secret?")
 	}
 
 	return nil

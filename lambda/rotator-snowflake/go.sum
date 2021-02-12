@@ -97,6 +97,8 @@ github.com/chanzuckerberg/go-misc v0.0.0-20210211182444-332321e3eba0 h1:Ee8cd1lu
 github.com/chanzuckerberg/go-misc v0.0.0-20210211182444-332321e3eba0/go.mod h1:lCBDNQaeOA3Rs39CuyTtgV8WZPv+3HK3TM+9DqOZC5U=
 github.com/chanzuckerberg/go-misc v0.0.0-20210211214544-55e120579fcd h1:UgVMabmGjLsT/z5uAYfBgN+dHCN2WyOxcm+zBKwu/5Q=
 github.com/chanzuckerberg/go-misc v0.0.0-20210211214544-55e120579fcd/go.mod h1:tLBBiBne+nSMcGZK21RBnZiv8XRQARjbw+tDAjg8/5s=
+github.com/chanzuckerberg/go-misc v0.0.0-20210212202630-d2f338e0cfd8 h1:a3lTqrEHfj5+O2EDLA88FiB34fDaeNxYMXDjV595fZk=
+github.com/chanzuckerberg/go-misc v0.0.0-20210212202630-d2f338e0cfd8/go.mod h1:tLBBiBne+nSMcGZK21RBnZiv8XRQARjbw+tDAjg8/5s=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=
