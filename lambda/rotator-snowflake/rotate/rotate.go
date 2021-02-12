@@ -14,8 +14,10 @@ import (
 	"github.com/chanzuckerberg/go-misc/keypair"
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
 	"github.com/chanzuckerberg/go-misc/snowflake"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 	"github.com/xinsnake/databricks-sdk-golang/aws"
 )
 
@@ -24,19 +26,19 @@ func getUsers() ([]string, error) {
 	return []string{os.Getenv("CURRENT_USER")}, nil
 }
 
-func buildSnowflakeSecrets(connection *sql.DB, snowflake_user string, privateKey *bytes.Buffer) (map[string]string, error) {
-	userQuery := fmt.Sprintf(`DESCRIBE USER "%s"`, snowflake_user)
-	// TODO: write a snowflake.ExecWithRows()
+func buildSnowflakeSecrets(connection *sql.DB, snowflakeUser string, privateKey *bytes.Buffer) (map[string]string, error) {
+	userQuery := fmt.Sprintf(`DESCRIBE USER "%s"`, snowflakeUser)
 	connectionProperties := snowflake.QueryRow(connection, userQuery)
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "Unable to execute ")
-	// }
 	userDetails := make(map[string]interface{})
 
 	err := connectionProperties.MapScan(userDetails)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to save user Query details into a map[string]interface")
 	}
+
+	// TODO: figure out why DEFAULT_ROLE doesn't show up in describe user case
+	logrus.Debug("userDetails")
+	spew.Dump(userDetails)
 
 	roleIface, ok := userDetails["DEFAULT_ROLE"]
 	if !ok {
@@ -48,8 +50,10 @@ func buildSnowflakeSecrets(connection *sql.DB, snowflake_user string, privateKey
 		return nil, errors.Errorf("Wrong type for DEFAULT_ROW val, got %T", roleIface)
 	}
 
+	logrus.Debug("defaultRole: ", defaultRole)
+
 	userSecrets := map[string]string{
-		"snowflake.user":            snowflake_user,
+		"snowflake.user":            snowflakeUser,
 		"snowflake.role":            defaultRole,
 		"snowflake.pem_private_key": base64.StdEncoding.EncodeToString(privateKey.Bytes()),
 	}
@@ -57,30 +61,25 @@ func buildSnowflakeSecrets(connection *sql.DB, snowflake_user string, privateKey
 	return userSecrets, nil
 }
 
-func updateDatabricks(scope string, databricks *aws.DBClient, privKeyBuffer *bytes.Buffer) error {
+func updateDatabricks(scope string, snowflake *sql.DB, databricks *aws.DBClient, privKeyBuffer *bytes.Buffer) error {
 	secretsAPI := databricks.Secrets()
 
-	scopes, err := secretsAPI.ListSecretScopes()
+	secrets, err := buildSnowflakeSecrets(snowflake, scope, privKeyBuffer)
 	if err != nil {
-		return errors.Wrap(err, "Cannot list scopes")
+		return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
 	}
 
-	for _, scopeItem := range scopes {
-		if scopeItem.Name == scope {
-			err = secretsAPI.PutSecret(privKeyBuffer.Bytes(), scope, "lalala")
-
-			return errors.Wrapf(err, "Cannot put secret in scope despite scope existing. Scope: %s", scope)
+	// TODO: write logic for when we don't have the scope yet
+	for key, secret := range secrets {
+		err = secretsAPI.PutSecret([]byte(secret), scope, key)
+		if err != nil {
+			// TODO: create a scope if we get RESOURCE_DOES_NOT_EXIST error
+			return errors.Wrapf(err, "Unable to put secret %s in scope %s", secret, scope)
 		}
+		fmt.Println("successfully added the ", key, " secret?")
 	}
 
-	err = secretsAPI.CreateSecretScope(scope, "users")
-	if err != nil {
-		return errors.Wrap(err, "Unable to create scope for user")
-	}
-
-	err = secretsAPI.PutSecret(privKeyBuffer.Bytes(), scope, "RSA_PRIVATE_KEY")
-
-	return errors.Wrap(err, "Unable to put secret into databricks")
+	return nil
 }
 
 func updateSnowflake(user string, db *sql.DB, privKeyBuffer *bytes.Buffer) error {
@@ -145,7 +144,7 @@ func Rotate(ctx context.Context) error {
 
 		scope := user
 
-		err = updateDatabricks(scope, databricksConnection, privKeyBuffer)
+		err = updateDatabricks(scope, snowflakeDB, databricksConnection, privKeyBuffer)
 		if err != nil {
 			userErrors = multierror.Append(userErrors, err)
 		}
