@@ -14,7 +14,6 @@ require (
 	github.com/getsentry/sentry-go v0.7.0
 	github.com/go-errors/errors v1.1.1
 	github.com/go-playground/universal-translator v0.17.0 // indirect
-	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/golang/mock v1.4.4
 	github.com/google/go-cmp v0.5.2 // indirect
 	github.com/google/go-github/v27 v27.0.6
