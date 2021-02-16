@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
 	"github.com/xinsnake/databricks-sdk-golang/aws"
+	"github.com/xinsnake/databricks-sdk-golang/aws/models"
 )
 
 func getUsers() ([]string, error) {
@@ -43,24 +44,45 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, privateKey *byte
 	return userSecrets, nil
 }
 
-func updateDatabricks(scope string, snowflake *sql.DB, databricks *aws.DBClient, privKeyBuffer *bytes.Buffer) error {
+func updateDatabricks(user, currentScope string, snowflake *sql.DB, databricks *aws.DBClient, privKeyBuffer *bytes.Buffer) error {
 	secretsAPI := databricks.Secrets()
 
-	secrets, err := buildSnowflakeSecrets(snowflake, scope, privKeyBuffer)
+	scopes, err := databricks.Secrets().ListSecretScopes()
 	if err != nil {
-		return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
+		return errors.Wrap(err, "Unable to list secret scopes")
 	}
 
-	// TODO: write logic for when we don't have the scope yet
-	for key, secret := range secrets {
-		err = secretsAPI.PutSecret([]byte(secret), scope, key)
-		if err != nil {
-			// TODO: create a scope if we get RESOURCE_DOES_NOT_EXIST error
-			return errors.Wrapf(err, "Unable to put secret %s in scope %s", secret, scope)
+	// Check if scope exists under current name before
+	for _, scope := range scopes {
+		fmt.Println("scope.Name: ", scope.Name, "currentScope: ", currentScope)
+		if scope.Name == currentScope {
+			secrets, err := buildSnowflakeSecrets(snowflake, currentScope, privKeyBuffer)
+			if err != nil {
+				return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
+			}
+			for key, secret := range secrets {
+				err = secretsAPI.PutSecret([]byte(secret), currentScope, key)
+				if err != nil {
+					return errors.Wrapf(err, "Unable to put secret %s in scope %s", secret, scope)
+				}
+			}
+
+			return nil
 		}
 	}
 
-	return nil
+	// create scope called currentScope
+	err = databricks.Secrets().CreateSecretScope(currentScope, models.AclPermissionRead)
+	if err != nil {
+		return errors.Wrapf(err, "Unable to create a scope with this name: %s", currentScope)
+	}
+	// Allow admins to manage this secret
+	err = databricks.Secrets().PutSecretACL(currentScope, "admins", models.AclPermissionManage)
+	if err != nil {
+		return errors.Wrapf(err, "Unable to make admins control this scope: %s", currentScope)
+	}
+
+	return updateDatabricks(user, currentScope, snowflake, databricks, privKeyBuffer)
 }
 
 func updateSnowflake(user string, db *sql.DB, privKeyBuffer *bytes.Buffer) error {
@@ -125,11 +147,11 @@ func Rotate(ctx context.Context) error {
 
 		scope := user
 
-		err = updateDatabricks(scope, snowflakeDB, databricksConnection, privKeyBuffer)
+		err = updateDatabricks(user, scope, snowflakeDB, databricksConnection, privKeyBuffer)
 		if err != nil {
 			userErrors = multierror.Append(userErrors, err)
 		}
 	}
-	fmt.Println(userErrors)
+
 	return userErrors
 }
