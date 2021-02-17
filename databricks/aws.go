@@ -2,15 +2,15 @@ package databricks
 
 import (
 	"github.com/xinsnake/databricks-sdk-golang"
-	dbAws "github.com/xinsnake/databricks-sdk-golang/aws"
+	DBAws "github.com/xinsnake/databricks-sdk-golang/aws"
 )
 
-func NewAWSClient(host, token string) *dbAws.DBClient {
+func NewAWSClient(host, token string) *DBAws.DBClient {
 	o := databricks.DBClientOption{
 		Host:  host,
 		Token: token,
 	}
-	c := &dbAws.DBClient{
+	c := &DBAws.DBClient{
 		Option: o,
 	}
 	c.Init(o)
