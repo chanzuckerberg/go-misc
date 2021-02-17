@@ -40,7 +40,7 @@ require (
 	github.com/pkg/browser v0.0.0-20180916011732-0a3d74bf9ce4
 	github.com/pkg/errors v0.9.1
 	github.com/pquerna/cachecontrol v0.0.0-20200819021114-67c6ae64274f // indirect
-	github.com/sirupsen/logrus v1.7.0
+	github.com/sirupsen/logrus v1.7.1
 	github.com/snowflakedb/gosnowflake v1.3.13
 	github.com/spf13/cobra v1.0.0
 	github.com/stretchr/testify v1.6.1
