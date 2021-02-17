@@ -79,6 +79,7 @@ github.com/apache/arrow/go/arrow v0.0.0-20200601151325-b2287a20f230 h1:5ultmol0y
 github.com/apache/arrow/go/arrow v0.0.0-20200601151325-b2287a20f230/go.mod h1:QNYViu/X0HXDHw7m3KXzWSVXIbfUvJqBFe6Gj8/pYA0=
 github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6/go.mod h1:grANhF5doyWs3UAsr3K4I6qtAmlQcZDesFNEHPZAzj8=
 github.com/aws/aws-lambda-go v1.13.3/go.mod h1:4UKl9IzQMoD+QF79YdCuzCwp8VbmG4VAQwij/eHl5CU=
+github.com/aws/aws-lambda-go v1.19.1 h1:5iUHbIZ2sG6Yq/J1IN3sWm3+vAB1CWwhI21NffLNuNI=
 github.com/aws/aws-lambda-go v1.19.1/go.mod h1:jJmlefzPfGnckuHdXX7/80O3BvUUi12XOkbv4w9SGLU=
 github.com/aws/aws-sdk-go v1.16.26/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
 github.com/aws/aws-sdk-go v1.27.1/go.mod h1:KmX6BPdI08NWTb3/sm4ZGu5ShLoqVDhKgpiN924inxo=
@@ -99,6 +100,8 @@ github.com/chanzuckerberg/go-misc v0.0.0-20210211214544-55e120579fcd h1:UgVMabmG
 github.com/chanzuckerberg/go-misc v0.0.0-20210211214544-55e120579fcd/go.mod h1:tLBBiBne+nSMcGZK21RBnZiv8XRQARjbw+tDAjg8/5s=
 github.com/chanzuckerberg/go-misc v0.0.0-20210212202630-d2f338e0cfd8 h1:a3lTqrEHfj5+O2EDLA88FiB34fDaeNxYMXDjV595fZk=
 github.com/chanzuckerberg/go-misc v0.0.0-20210212202630-d2f338e0cfd8/go.mod h1:tLBBiBne+nSMcGZK21RBnZiv8XRQARjbw+tDAjg8/5s=
+github.com/chanzuckerberg/go-misc v0.0.0-20210216201956-3b727ddc8f48 h1:edVDr+7zzcB+iVPwkPIirqe3/YN8T1gSbewu99QGHjU=
+github.com/chanzuckerberg/go-misc v0.0.0-20210216201956-3b727ddc8f48/go.mod h1:SofriP3csGcPlpexNlyb0K2QLXJedI2zFOsi7nanC/Q=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=
