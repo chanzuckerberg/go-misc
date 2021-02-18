@@ -64,9 +64,9 @@ check-mod:
 fix-mod-ci:
 	go mod tidy
 	git add go.*
-	git commit -m "tidy modules"
 	git config --global user.name "github-actions[bot]"
 	git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+	git commit -m "tidy modules"
 	git push
 .PHONY: fix-mod
 
