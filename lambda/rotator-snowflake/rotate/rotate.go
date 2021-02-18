@@ -58,14 +58,15 @@ func updateDatabricks(currentScope string, secrets map[string]string, databricks
 
 	// Check if scope exists under current name before
 	for _, scope := range scopes {
-		if scope.Name == currentScope {
+		scopeName := scope.Name
+		if scopeName == currentScope {
 			for key, secret := range secrets {
 				if secret == "" {
 					return errors.Wrapf(err, "key %s has an empty secret", key)
 				}
 				err = secretsAPI.PutSecret([]byte(secret), currentScope, key)
 				if err != nil {
-					return errors.Wrapf(err, "Unable to put secret %s in scope %s", secret, scope.Name)
+					return errors.Wrapf(err, "Unable to put secret %s in scope %s", secret, scopeName)
 				}
 			}
 
