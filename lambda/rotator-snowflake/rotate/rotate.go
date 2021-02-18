@@ -10,6 +10,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/chanzuckerberg/go-misc/keypair"
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
@@ -34,17 +35,20 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, privateKey *byte
 	if err != nil {
 		return nil, errors.Wrapf(err, "Unable to create snowflake user from userQuery %s", userQuery)
 	}
-
+	privateKeyStr := privateKey.String()
+	stripHeaders := strings.ReplaceAll(privateKeyStr, "-----BEGIN RSA PRIVATE KEY-----\n", "")
+	stripFooters := strings.ReplaceAll(stripHeaders, "\n-----END RSA PRIVATE KEY-----", "")
+	keyNoWhitespace := strings.TrimSpace(stripFooters)
 	userSecrets := map[string]string{
 		"snowflake.user":            username,
 		"snowflake.role":            snowflakeUser.DefaultRole.String,
-		"snowflake.pem_private_key": base64.StdEncoding.EncodeToString(privateKey.Bytes()),
+		"snowflake.pem_private_key": keyNoWhitespace,
 	}
 
 	return userSecrets, nil
 }
 
-func updateDatabricks(user, currentScope string, snowflake *sql.DB, databricks *aws.DBClient, privKeyBuffer *bytes.Buffer) error {
+func updateDatabricks(currentScope string, secrets map[string]string, databricks *aws.DBClient) error {
 	secretsAPI := databricks.Secrets()
 
 	scopes, err := databricks.Secrets().ListSecretScopes()
@@ -54,16 +58,11 @@ func updateDatabricks(user, currentScope string, snowflake *sql.DB, databricks *
 
 	// Check if scope exists under current name before
 	for _, scope := range scopes {
-		fmt.Println("scope.Name: ", scope.Name, "currentScope: ", currentScope)
 		if scope.Name == currentScope {
-			secrets, err := buildSnowflakeSecrets(snowflake, currentScope, privKeyBuffer)
-			if err != nil {
-				return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
-			}
 			for key, secret := range secrets {
 				err = secretsAPI.PutSecret([]byte(secret), currentScope, key)
 				if err != nil {
-					return errors.Wrapf(err, "Unable to put secret %s in scope %s", secret, scope)
+					return errors.Wrapf(err, "Unable to put secret %s in scope %s", secret, scope.Name)
 				}
 			}
 
@@ -72,9 +71,9 @@ func updateDatabricks(user, currentScope string, snowflake *sql.DB, databricks *
 	}
 
 	// create scope called currentScope
-	err = databricks.Secrets().CreateSecretScope(currentScope, models.AclPermissionRead)
+	err = databricks.Secrets().CreateSecretScope(currentScope, "")
 	if err != nil {
-		return errors.Wrapf(err, "Unable to create a scope with this name: %s", currentScope)
+		return errors.Wrapf(err, "Unable to create %s scope with %s perms", currentScope, "")
 	}
 	// Allow admins to manage this secret
 	err = databricks.Secrets().PutSecretACL(currentScope, "admins", models.AclPermissionManage)
@@ -82,7 +81,7 @@ func updateDatabricks(user, currentScope string, snowflake *sql.DB, databricks *
 		return errors.Wrapf(err, "Unable to make admins control this scope: %s", currentScope)
 	}
 
-	return updateDatabricks(user, currentScope, snowflake, databricks, privKeyBuffer)
+	return updateDatabricks(currentScope, secrets, databricks)
 }
 
 func updateSnowflake(user string, db *sql.DB, privKeyBuffer *bytes.Buffer) error {
@@ -113,12 +112,12 @@ func updateSnowflake(user string, db *sql.DB, privKeyBuffer *bytes.Buffer) error
 func Rotate(ctx context.Context) error {
 	snowflakeDB, err := setup.Snowflake()
 	if err != nil {
-		return errors.Wrap(err, "Unable to configure snowflake and databricks")
+		return errors.Wrap(err, "Unable to configure snowflake")
 	}
 
 	databricksConnection, err := setup.Databricks()
 	if err != nil {
-		return errors.Wrap(err, "Unable to configure snowflake and databricks")
+		return errors.Wrap(err, "Unable to configure databricks")
 	}
 
 	users, err := getUsers()
@@ -145,9 +144,13 @@ func Rotate(ctx context.Context) error {
 			userErrors = multierror.Append(userErrors, err)
 		}
 
-		scope := user
+		snowflakeSecrets, err := buildSnowflakeSecrets(snowflakeDB, user, privKeyBuffer)
+		if err != nil {
+			return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
+		}
 
-		err = updateDatabricks(user, scope, snowflakeDB, databricksConnection, privKeyBuffer)
+		// Intentionally equating databricks scope and user here
+		err = updateDatabricks(user, snowflakeSecrets, databricksConnection)
 		if err != nil {
 			userErrors = multierror.Append(userErrors, err)
 		}

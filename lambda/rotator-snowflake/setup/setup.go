@@ -7,76 +7,35 @@ import (
 	"github.com/chanzuckerberg/go-misc/databricks"
 	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"github.com/xinsnake/databricks-sdk-golang/aws"
 )
 
-func getSnowflakeAccount() (string, error) {
-	acct, present := os.LookupEnv("SNOWFLAKE_ACCOUNT")
+func Snowflake() (*sql.DB, error) {
+	account, present := os.LookupEnv("SNOWFLAKE_ACCOUNT")
 	if !present {
-		return "", errors.New("Could not find SNOWFLAKE_ACCOUNT")
+		return nil, errors.New("Could not find SNOWFLAKE_ACCOUNT")
 	}
-	return acct, nil
-}
 
-func getSnowflakeRegion() (string, error) {
 	region, present := os.LookupEnv("SNOWFLAKE_REGION")
 	if !present {
-		return "", errors.New("Could not find SNOWFLAKE_REGION")
+		return nil, errors.New("Could not find SNOWFLAKE_REGION")
 	}
-	return region, nil
-}
 
-func getSnowflakePassword() (string, error) {
 	password, present := os.LookupEnv("SNOWFLAKE_PASSWORD")
 	if !present {
-		return "", errors.New("Could not find SNOWFLAKE_PASSWORD")
+		return nil, errors.New("Could not find SNOWFLAKE_PASSWORD")
 	}
-	return password, nil
-}
 
-func getSnowflakeRole() (string, error) {
-	role, present := os.LookupEnv("SNOWFLAKE_ROLE")
-	if !present {
-		return "", errors.New("Could not find SNOWFLAKE_ROLE")
-	}
-	return role, nil
-}
-
-func getSnowflakeUser() (string, error) {
 	user, present := os.LookupEnv("SNOWFLAKE_USER")
 	if !present {
-		return "", errors.New("Could not find SNOWFLAKE_USER")
-	}
-	return user, nil
-}
-
-func Snowflake() (*sql.DB, error) {
-	account, err := getSnowflakeAccount()
-	if err != nil {
-		return nil, errors.Wrap(err, "Unable to get snowflake account name")
+		return nil, errors.New("Could not find SNOWFLAKE_USER")
 	}
 
-	region, err := getSnowflakeRegion()
-	if err != nil {
-		// Region should default to
-		logrus.Debug("Snowflake Region not set")
+	role, present := os.LookupEnv("SNOWFLAKE_ROLE")
+	if !present {
+		return nil, errors.New("Could not find SNOWFLAKE_ROLE")
 	}
 
-	password, err := getSnowflakePassword()
-	if err != nil {
-		return nil, errors.Wrap(err, "Unable to get snowflake password")
-	}
-
-	user, err := getSnowflakeUser()
-	if err != nil {
-		return nil, errors.Wrap(err, "Unable to get snowflake password")
-	}
-
-	role, err := getSnowflakeRole()
-	if err != nil {
-		return nil, errors.Wrap(err, "Unable to get snowflake password")
-	}
 	// Figure out what to fill in here:
 	cfg := snowflake.SnowflakeConfig{
 		Account:     account,

@@ -33,7 +33,7 @@ func TestParsePrivateKey(t *testing.T) {
 	r.NoError(err)
 
 	// Plug in path
-	filePrivKey, err := ParseRSAPrivateKey(privKeyFile.Name())
+	filePrivKey, err := ParseRSAPrivateKeyFile(privKeyFile.Name())
 	r.NoError(err)
 	r.NotNil(privKey)
 	r.Equal(filePrivKey, privKey)
