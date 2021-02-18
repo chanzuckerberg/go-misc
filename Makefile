@@ -29,7 +29,6 @@ lint-all: ## run linters across all code
 .PHONY: lint-all
 
 deps:
-	go get ./...
 	go mod tidy
 .PHONY: deps
 
