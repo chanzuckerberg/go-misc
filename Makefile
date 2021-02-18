@@ -63,7 +63,7 @@ check-mod:
 
 fix-mod: deps
 	git add go.*
-	git commit "tidy modules"
+	git commit -m "tidy modules"
 	git push
 .PHONY: fix-mod
 
