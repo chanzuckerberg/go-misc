@@ -61,6 +61,12 @@ check-mod:
 	git diff --exit-code -- go.mod go.sum
 .PHONY: check-mod
 
+fix-mod: deps
+	git add go.*
+	git commit "tidy modules"
+	git push
+.PHONY: fix-mod
+
 fmt:
 	gofmt -w -s .
 .PHONY: fmt
