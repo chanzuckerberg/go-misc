@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"regexp"
 
 	"github.com/luna-duclos/instrumentedsql"
-	"github.com/sirupsen/logrus"
 	"github.com/snowflakedb/gosnowflake"
 )
 
@@ -16,7 +16,7 @@ func init() {
 
 	logger := instrumentedsql.LoggerFunc(func(ctx context.Context, msg string, keyvals ...interface{}) {
 		s := fmt.Sprintf("[DEBUG] %s %v\n", msg, keyvals)
-		logrus.Debug(re.ReplaceAllString(s, " "))
+		log.Println(re.ReplaceAllString(s, " "))
 	})
 
 	sql.Register("snowflake-instrumented", instrumentedsql.WrapDriver(&gosnowflake.SnowflakeDriver{}, instrumentedsql.WithLogger(logger)))

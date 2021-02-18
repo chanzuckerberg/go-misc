@@ -43,7 +43,7 @@ func DSN(conf *SnowflakeConfig) (string, error) {
 	}
 
 	if conf.PrivateKeyPath != "" {
-		rsaPrivateKey, err := keypair.ParseRSAPrivateKeyFile(conf.PrivateKeyPath)
+		rsaPrivateKey, err := keypair.ParseRSAPrivateKey(conf.PrivateKeyPath)
 		if err != nil {
 			return "", errors.Wrap(err, "Private Key could not be parsed")
 		}

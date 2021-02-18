@@ -12,7 +12,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func ParseRSAPrivateKeyFile(privateKeyPath string) (*rsa.PrivateKey, error) {
+func ParseRSAPrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
 	expandedPrivateKeyPath, err := homedir.Expand(privateKeyPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "Invalid Path to private key")
@@ -43,7 +43,7 @@ func ParseRSAPrivateKeyFile(privateKeyPath string) (*rsa.PrivateKey, error) {
 }
 
 func GetRSAPublicKey(privateKeyPath string) (*rsa.PublicKey, error) {
-	privateKey, err := ParseRSAPrivateKeyFile(privateKeyPath)
+	privateKey, err := ParseRSAPrivateKey(privateKeyPath)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to read private key path")
 	}

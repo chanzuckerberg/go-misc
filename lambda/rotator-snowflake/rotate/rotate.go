@@ -35,6 +35,10 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, privateKey *byte
 	if err != nil {
 		return nil, errors.Wrapf(err, "Unable to create snowflake user from userQuery %s", userQuery)
 	}
+	defaultRole := snowflakeUser.DefaultRole.String
+	if defaultRole == "" {
+		defaultRole = "PUBLIC"
+	}
 	privateKeyStr := privateKey.String()
 	stripHeaders := strings.ReplaceAll(privateKeyStr, "-----BEGIN RSA PRIVATE KEY-----\n", "")
 	stripFooters := strings.ReplaceAll(stripHeaders, "\n-----END RSA PRIVATE KEY-----", "")
