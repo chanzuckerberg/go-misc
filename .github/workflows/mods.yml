@@ -6,7 +6,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.CZIBUILDBOT_GITHUB_TOKEN }}
+          # token: ${{ secrets.CZIBUILDBOT_GITHUB_TOKEN }}
       - uses: actions/setup-go@v2
         with:
           go-version: '1.15.2'
@@ -20,5 +20,5 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.CZIBUILDBOT_GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
