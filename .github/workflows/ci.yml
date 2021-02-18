@@ -6,6 +6,7 @@ jobs:
     strategy:
       matrix:
         target:
+          - check-mod
           - lint-ci
           - test-ci
     steps:
