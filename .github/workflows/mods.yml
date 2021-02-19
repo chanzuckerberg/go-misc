@@ -5,8 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        # with:
-          # token: ${{ secrets.CZIBUILDBOT_GITHUB_TOKEN }}
+        with:
+          token: ${{ secrets.CZIBUILDBOT_GITHUB_TOKEN }}
       - uses: actions/setup-go@v2
         with:
           go-version: '1.15.2'
@@ -19,6 +19,6 @@ jobs:
           git commit -m "tidy modules" || true
       - name: Push changes
         uses: ad-m/github-push-action@master
-        # with:
-        #   github_token: ${{ secrets.GITHUB_TOKEN }}
-        #   branch: ${{ github.ref }}
+        with:
+          github_token: ${{ secrets.CZIBUILDBOT_GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
