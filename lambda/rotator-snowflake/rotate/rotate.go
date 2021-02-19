@@ -22,8 +22,9 @@ import (
 )
 
 func getUsers() ([]string, error) {
-	// TODO(aku): get list from okta
-	return []string{os.Getenv("CURRENT_USER")}, nil
+	usersList := os.Getenv("CURRENT_USERS") //Comma-delimited users list
+	userSlice := strings.Split(usersList, ",")
+	return userSlice, nil
 }
 
 func buildSnowflakeSecrets(connection *sql.DB, username string, privateKey *bytes.Buffer) (map[string]string, error) {
