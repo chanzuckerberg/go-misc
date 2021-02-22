@@ -1,22 +1,10 @@
 package aws
 
 import (
-	"context"
-	"encoding/json"
-	"io/ioutil"
-	"os"
-	"path"
-	"sync"
-	"time"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/client"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 	"github.com/aws/aws-sdk-go/service/sts"
 	"github.com/aws/aws-sdk-go/service/sts/stsiface"
-	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
 )
 
 // STS is an STS client
