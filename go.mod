@@ -10,7 +10,7 @@ require (
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/coreos/go-oidc v2.2.1+incompatible
-	github.com/getsentry/sentry-go v0.7.0
+	github.com/getsentry/sentry-go v0.10.0
 	github.com/go-errors/errors v1.1.1
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/golang/mock v1.5.0
