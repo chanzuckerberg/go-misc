@@ -5,7 +5,7 @@ go 1.14
 require (
 	cloud.google.com/go v0.61.0 // indirect
 	github.com/AlecAivazis/survey/v2 v2.1.1
-	github.com/aws/aws-lambda-go v1.19.1
+	github.com/aws/aws-lambda-go v1.22.0
 	github.com/aws/aws-sdk-go v1.36.30
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
