@@ -17,7 +17,7 @@ require (
 	github.com/google/go-cmp v0.5.2 // indirect
 	github.com/google/go-github/v27 v27.0.6
 	github.com/google/uuid v1.2.0
-	github.com/gruntwork-io/terratest v0.29.0
+	github.com/gruntwork-io/terratest v0.32.7
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/hashicorp/go-tfe v0.12.1
 	github.com/hashicorp/go-version v1.2.1
