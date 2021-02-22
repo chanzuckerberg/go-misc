@@ -51,6 +51,7 @@ help: ## display help for this makefile
 
 generate-mocks: ## will generate mocks
 	@go get github.com/golang/mock/mockgen@v1.5.0
+	@go get -u github.com/aws/aws-sdk-go/...
 	@rm -rf aws/mocks/*
 	@cd aws; go generate
 	@go mod tidy
