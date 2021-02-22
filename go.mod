@@ -17,9 +17,7 @@ require (
 	github.com/google/go-cmp v0.5.2 // indirect
 	github.com/google/go-github/v27 v27.0.6
 	github.com/google/uuid v1.2.0
-	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/gruntwork-io/terratest v0.29.0
-	github.com/hashicorp/go-cleanhttp v0.5.1 // indirect
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/hashicorp/go-tfe v0.12.1
 	github.com/hashicorp/go-version v1.2.1
@@ -40,7 +38,7 @@ require (
 	github.com/pquerna/cachecontrol v0.0.0-20200819021114-67c6ae64274f // indirect
 	github.com/sirupsen/logrus v1.8.0
 	github.com/snowflakedb/gosnowflake v1.4.0
-	github.com/spf13/cobra v1.0.0
+	github.com/spf13/cobra v1.1.3
 	github.com/stretchr/testify v1.6.1
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
 	github.com/zalando/go-keyring v0.1.1
