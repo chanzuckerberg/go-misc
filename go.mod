@@ -13,7 +13,7 @@ require (
 	github.com/getsentry/sentry-go v0.7.0
 	github.com/go-errors/errors v1.1.1
 	github.com/go-playground/universal-translator v0.17.0 // indirect
-	github.com/golang/mock v1.4.4
+	github.com/golang/mock v1.5.0
 	github.com/google/go-cmp v0.5.2 // indirect
 	github.com/google/go-github/v27 v27.0.6
 	github.com/google/uuid v1.2.0
@@ -43,7 +43,7 @@ require (
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
 	github.com/zalando/go-keyring v0.1.1
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
-	golang.org/x/net v0.0.0-20210119194325-5f4716e94777 // indirect
+	golang.org/x/net v0.0.0-20210222171744-9060382bd457 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/text v0.3.5 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
