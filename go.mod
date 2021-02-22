@@ -21,10 +21,9 @@ require (
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/hashicorp/go-tfe v0.12.1
 	github.com/hashicorp/go-version v1.2.1
-	github.com/honeycombio/libhoney-go v1.13.0
+	github.com/honeycombio/libhoney-go v1.15.2
 	github.com/imdario/mergo v0.3.9 // indirect
 	github.com/jmoiron/sqlx v1.3.1
-	github.com/klauspost/compress v1.10.11 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/luna-duclos/instrumentedsql v1.1.3
