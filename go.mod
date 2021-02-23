@@ -35,7 +35,9 @@ require (
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
 	github.com/zalando/go-keyring v0.1.1
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
+	golang.org/x/net v0.0.0-20210222171744-9060382bd457 // indirect
 	golang.org/x/oauth2 v0.0.0-20210220000619-9bb904979d93
+	golang.org/x/text v0.3.5 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/square/go-jose.v2 v2.5.1
 )
