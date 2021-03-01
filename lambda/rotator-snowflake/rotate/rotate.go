@@ -129,7 +129,7 @@ func Rotate(ctx context.Context) error {
 			return errors.Wrap(err, "Unable to generate RSA keypair")
 		}
 
-		privKeyStr, pubKeyStr, err := snowflake.KeypairToString(privKey)
+		privKeyStr, pubKeyStr, err := snowflake.RSAKeypairToString(privKey)
 
 		err = updateSnowflake(user, snowflakeDB, pubKeyStr)
 		if err != nil {
