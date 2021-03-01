@@ -4,8 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"os"
-	"strings"
 
 	"github.com/chanzuckerberg/go-misc/keypair"
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
@@ -41,15 +39,7 @@ func (creds *snowflakeUserCredentials) writeSecrets(secretsClient *aws.SecretsAP
 	return errors.Wrapf(err, "Unable to put private key %s in scope %s", creds.pem_private_key, currentScope)
 }
 
-// TODO: Grab from Okta
-func getUsers() ([]string, error) {
-	usersList := os.Getenv("CURRENT_USERS") //Comma-delimited users list
-	userSlice := strings.Split(usersList, ",")
-	return userSlice, nil
-}
-
 func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) (*snowflakeUserCredentials, error) {
-
 	if username == "" {
 		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
 	}
@@ -126,7 +116,7 @@ func Rotate(ctx context.Context) error {
 		return errors.Wrap(err, "Unable to configure databricks")
 	}
 
-	users, err := getUsers()
+	users, err := setup.GetUsers()
 	if err != nil {
 		return errors.Wrap(err, "Unable to get list of users to rotate")
 	}
