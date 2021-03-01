@@ -123,7 +123,7 @@ func Rotate(ctx context.Context) error {
 
 	// Collect errors for each user:
 	userErrors := &multierror.Error{}
-	for _, user := range users {
+	processUser := func(user string) error {
 		privKey, err := keypair.GenerateRSAKeypair()
 		if err != nil {
 			return errors.Wrap(err, "Unable to generate RSA keypair")
@@ -133,7 +133,7 @@ func Rotate(ctx context.Context) error {
 
 		err = updateSnowflake(user, snowflakeDB, pubKeyStr)
 		if err != nil {
-			userErrors = multierror.Append(userErrors, err)
+			return err
 		}
 
 		snowflakeSecrets, err := buildSnowflakeSecrets(snowflakeDB, user, privKeyStr)
@@ -142,7 +142,11 @@ func Rotate(ctx context.Context) error {
 		}
 
 		// Intentionally equating databricks scope and user here
-		err = updateDatabricks(user, snowflakeSecrets, databricksConnection)
+		return updateDatabricks(user, snowflakeSecrets, databricksConnection)
+	}
+
+	for _, user := range users {
+		err := processUser(user)
 		if err != nil {
 			userErrors = multierror.Append(userErrors, err)
 		}
