@@ -3,9 +3,9 @@ module github.com/chanzuckerberg/go-misc
 go 1.15
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.2.7
+	github.com/AlecAivazis/survey/v2 v2.2.8
 	github.com/aws/aws-lambda-go v1.22.0
-	github.com/aws/aws-sdk-go v1.37.19
+	github.com/aws/aws-sdk-go v1.37.20
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/coreos/go-oidc v2.2.1+incompatible
@@ -14,8 +14,8 @@ require (
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/golang/mock v1.5.0
 	github.com/google/go-github/v27 v27.0.6
-	github.com/google/uuid v1.1.1
-	github.com/gruntwork-io/terratest v0.32.7
+	github.com/google/uuid v1.2.0
+	github.com/gruntwork-io/terratest v0.32.8
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/hashicorp/go-tfe v0.12.1
 	github.com/hashicorp/go-version v1.2.1

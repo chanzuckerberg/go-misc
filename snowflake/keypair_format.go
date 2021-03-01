@@ -17,9 +17,9 @@ import (
 //  - pem encoding
 //  - no whitespace and headers in private key string
 //  - base64 encoding
-func KeypairToString(rsaPrivKey *rsa.PrivateKey) (snowflakePrivateKey string, snowflakePublicKey string, err error) {
+func RSAKeypairToString(rsaPrivKey *rsa.PrivateKey) (snowflakePrivateKey string, snowflakePublicKey string, err error) {
 	// get public key string
-	publicKeyBytes, err := x509.MarshalPKIXPublicKey(rsaPrivKey.PublicKey)
+	publicKeyBytes, err := x509.MarshalPKIXPublicKey(&rsaPrivKey.PublicKey)
 	if err != nil {
 		return "", "", errors.Wrap(err, "Unable to marshal public key to bytes")
 	}
