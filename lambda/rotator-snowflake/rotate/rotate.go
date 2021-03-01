@@ -83,8 +83,7 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, newPrivateKey *b
 	return &userSecrets, nil
 }
 
-// TODO(aku):
-func updateDatabricks(currentScope string, creds snowflakeUserCredentials, databricks *aws.DBClient) error {
+func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, databricks *aws.DBClient) error {
 	secretsAPI := databricks.Secrets()
 
 	scopes, err := secretsAPI.ListSecretScopes()
@@ -92,7 +91,7 @@ func updateDatabricks(currentScope string, creds snowflakeUserCredentials, datab
 		return errors.Wrap(err, "Unable to list secret scopes")
 	}
 
-	// // Check if scope exists under current name before
+	// Check if scope exists under current name before
 	for _, scope := range scopes {
 		scopeName := scope.Name
 		if scopeName == currentScope {
