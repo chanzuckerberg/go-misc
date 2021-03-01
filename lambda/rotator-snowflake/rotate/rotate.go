@@ -10,42 +10,7 @@ import (
 	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
-	"github.com/xinsnake/databricks-sdk-golang/aws/models"
 )
-
-func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, databricks setup.DatabricksConnection) error {
-	secretsAPI := databricks.Secrets()
-
-	scopes, err := secretsAPI.ListSecretScopes()
-	if err != nil {
-		return errors.Wrap(err, "Unable to list secret scopes")
-	}
-
-	// Check if scope exists under current name before
-	for _, scope := range scopes {
-		scopeName := scope.Name
-		if scopeName == currentScope {
-			return creds.writeSecrets(&secretsAPI, scopeName)
-		}
-	}
-
-	// create scope called currentScope
-	err = secretsAPI.CreateSecretScope(currentScope, "")
-	if err != nil {
-		return errors.Wrapf(err, "Unable to create %s scope with %s perms", currentScope, "")
-	}
-	// Allow admins to manage this secret
-	err = secretsAPI.PutSecretACL(currentScope, "admins", models.AclPermissionManage)
-	if err != nil {
-		return errors.Wrapf(err, "Unable to make admins control this scope: %s", currentScope)
-	}
-	// Allow user to read this secret
-	err = secretsAPI.PutSecretACL(currentScope, creds.user, models.AclPermissionRead)
-	if err != nil {
-		return errors.Wrapf(err, "Unable to make %s control this scope: %s", creds.user, currentScope)
-	}
-	return creds.writeSecrets(&secretsAPI, currentScope)
-}
 
 func updateSnowflake(user string, db *sql.DB, pubKey string) error {
 	query := fmt.Sprintf(`ALTER USER "%s" SET RSA_PUBLIC_KEY_2 = "%s"`, user, pubKey)
@@ -91,7 +56,7 @@ func Rotate(ctx context.Context) error {
 		}
 
 		// Intentionally equating databricks scope and user here
-		return updateDatabricks(user, snowflakeSecrets, databricksConnection)
+		return updateDatabricks(user, snowflakeSecrets, databricksConnection.Secrets())
 	}
 
 	for _, user := range users {

@@ -4,9 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
 	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/pkg/errors"
-	"github.com/xinsnake/databricks-sdk-golang/aws"
+	"github.com/xinsnake/databricks-sdk-golang/aws/models"
 )
 
 type snowflakeUserCredentials struct {
@@ -15,7 +16,7 @@ type snowflakeUserCredentials struct {
 	pem_private_key string
 }
 
-func (creds *snowflakeUserCredentials) writeSecrets(secretsClient *aws.SecretsAPI, currentScope string) error {
+func (creds *snowflakeUserCredentials) writeSecrets(secretsClient setup.SecretsIface, currentScope string) error {
 	if currentScope == "" {
 		return errors.New("empty scope")
 	}
@@ -57,4 +58,37 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) 
 	}
 
 	return &userSecrets, nil
+}
+
+func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, secretsClient setup.SecretsIface) error {
+
+	scopes, err := secretsClient.ListSecretScopes()
+	if err != nil {
+		return errors.Wrap(err, "Unable to list secret scopes")
+	}
+
+	// Check if scope exists under current name before
+	for _, scope := range scopes {
+		scopeName := scope.Name
+		if scopeName == currentScope {
+			return creds.writeSecrets(secretsClient, scopeName)
+		}
+	}
+
+	// create scope called currentScope
+	err = secretsClient.CreateSecretScope(currentScope, "")
+	if err != nil {
+		return errors.Wrapf(err, "Unable to create %s scope with %s perms", currentScope, "")
+	}
+	// Allow admins to manage this secret
+	err = secretsClient.PutSecretACL(currentScope, "admins", models.AclPermissionManage)
+	if err != nil {
+		return errors.Wrapf(err, "Unable to make admins control this scope: %s", currentScope)
+	}
+	// Allow user to read this secret
+	err = secretsClient.PutSecretACL(currentScope, creds.user, models.AclPermissionRead)
+	if err != nil {
+		return errors.Wrapf(err, "Unable to make %s control this scope: %s", creds.user, currentScope)
+	}
+	return creds.writeSecrets(secretsClient, currentScope)
 }
