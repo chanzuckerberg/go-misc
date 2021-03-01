@@ -21,6 +21,31 @@ import (
 	"github.com/xinsnake/databricks-sdk-golang/aws/models"
 )
 
+type snowflakeUserCredentials struct {
+	user            string
+	role            string
+	pem_private_key string
+}
+
+func (creds *snowflakeUserCredentials) writeSecrets(secretsClient *aws.SecretsAPI, currentScope string) error {
+	if currentScope == "" {
+		return errors.New("empty scope")
+	}
+
+	err := secretsClient.PutSecret([]byte("snowflake.user"), currentScope, creds.user)
+	if err != nil {
+		return errors.Wrapf(err, "Unable to put secret %s in scope %s", creds.user, currentScope)
+	}
+
+	err = secretsClient.PutSecret([]byte("snowflake.role"), currentScope, creds.role)
+	if err != nil {
+		return errors.Wrapf(err, "Unable to put secret %s in scope %s", creds.role, currentScope)
+	}
+
+	err = secretsClient.PutSecret([]byte("snowflake.pem_private_key"), currentScope, creds.pem_private_key)
+	return errors.Wrapf(err, "Unable to put secret %s in scope %s", creds.pem_private_key, currentScope)
+}
+
 // TODO: Grab from Okta
 func getUsers() ([]string, error) {
 	usersList := os.Getenv("CURRENT_USERS") //Comma-delimited users list
@@ -28,7 +53,7 @@ func getUsers() ([]string, error) {
 	return userSlice, nil
 }
 
-func buildSnowflakeSecrets(connection *sql.DB, username string, newPrivateKey *bytes.Buffer) (map[string]string, error) {
+func buildSnowflakeSecrets(connection *sql.DB, username string, newPrivateKey *bytes.Buffer) (*snowflakeUserCredentials, error) {
 
 	if username == "" {
 		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
@@ -44,57 +69,54 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, newPrivateKey *b
 	if defaultRole == "" {
 		defaultRole = "PUBLIC"
 	}
-	privateKeyStr := privateKey.String()
+	privateKeyStr := newPrivateKey.String()
 	stripHeaders := strings.ReplaceAll(privateKeyStr, "-----BEGIN RSA PRIVATE KEY-----\n", "")
 	stripFooters := strings.ReplaceAll(stripHeaders, "\n-----END RSA PRIVATE KEY-----", "")
 	keyNoWhitespace := strings.TrimSpace(stripFooters)
-	userSecrets := map[string]string{
-		"snowflake.user":            username,
-		"snowflake.role":            snowflakeUser.DefaultRole.String,
-		"snowflake.pem_private_key": keyNoWhitespace,
+
+	userSecrets := snowflakeUserCredentials{
+		user:            username,
+		role:            defaultRole,
+		pem_private_key: keyNoWhitespace,
 	}
 
-	return userSecrets, nil
+	return &userSecrets, nil
 }
 
-func updateDatabricks(currentScope string, secrets map[string]string, databricks *aws.DBClient) error {
+// TODO(aku):
+func updateDatabricks(currentScope string, creds snowflakeUserCredentials, databricks *aws.DBClient) error {
 	secretsAPI := databricks.Secrets()
 
-	scopes, err := databricks.Secrets().ListSecretScopes()
+	scopes, err := secretsAPI.ListSecretScopes()
 	if err != nil {
 		return errors.Wrap(err, "Unable to list secret scopes")
 	}
 
-	// Check if scope exists under current name before
+	// // Check if scope exists under current name before
 	for _, scope := range scopes {
 		scopeName := scope.Name
 		if scopeName == currentScope {
-			for key, secret := range secrets {
-				if secret == "" {
-					return errors.Wrapf(err, "key %s has an empty secret", key)
-				}
-				err = secretsAPI.PutSecret([]byte(secret), currentScope, key)
-				if err != nil {
-					return errors.Wrapf(err, "Unable to put secret %s in scope %s", secret, scopeName)
-				}
-			}
-
-			return nil
+			return creds.writeSecrets(&secretsAPI, scopeName)
 		}
 	}
 
 	// create scope called currentScope
-	err = databricks.Secrets().CreateSecretScope(currentScope, "")
+	err = secretsAPI.CreateSecretScope(currentScope, "")
 	if err != nil {
 		return errors.Wrapf(err, "Unable to create %s scope with %s perms", currentScope, "")
 	}
 	// Allow admins to manage this secret
-	err = databricks.Secrets().PutSecretACL(currentScope, "admins", models.AclPermissionManage)
+	err = secretsAPI.PutSecretACL(currentScope, "admins", models.AclPermissionManage)
 	if err != nil {
 		return errors.Wrapf(err, "Unable to make admins control this scope: %s", currentScope)
 	}
+	// Allow user to manage this secret
+	err = secretsAPI.PutSecretACL(currentScope, creds.user, models.AclPermissionRead)
+	if err != nil {
+		return errors.Wrapf(err, "Unable to make %s control this scope: %s", creds.user, currentScope)
+	}
 
-	return updateDatabricks(currentScope, secrets, databricks)
+	return creds.writeSecrets(&secretsAPI, currentScope)
 }
 
 func updateSnowflake(user string, db *sql.DB, privKeyBuffer *bytes.Buffer) error {
