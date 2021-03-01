@@ -4,7 +4,7 @@ import (
 	"github.com/chanzuckerberg/go-misc/databricks"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
-	"github.com/xinsnake/databricks-sdk-golang/aws"
+	DBAWS "github.com/xinsnake/databricks-sdk-golang/aws"
 )
 
 type DatabricksClientEnvironment struct {
@@ -19,7 +19,11 @@ func loadDatabricksClientEnv() (*DatabricksClientEnvironment, error) {
 	return env, errors.Wrap(err, "Unable to load all the environment variables")
 }
 
-func Databricks() (*aws.DBClient, error) {
+type DatabricksConnection interface {
+	Secrets() DBAWS.SecretsAPI
+}
+
+func Databricks() (DatabricksConnection, error) {
 	databricksEnv, err := loadDatabricksClientEnv()
 	if err != nil {
 		return nil, err
@@ -27,5 +31,5 @@ func Databricks() (*aws.DBClient, error) {
 
 	dbClient := databricks.NewAWSClient(databricksEnv.HOST, databricksEnv.TOKEN)
 
-	return dbClient, nil
+	return DatabricksConnection(dbClient), nil
 }

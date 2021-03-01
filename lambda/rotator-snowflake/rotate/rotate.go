@@ -64,7 +64,7 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) 
 	return &userSecrets, nil
 }
 
-func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, databricks *aws.DBClient) error {
+func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, databricks setup.DatabricksConnection) error {
 	secretsAPI := databricks.Secrets()
 
 	scopes, err := secretsAPI.ListSecretScopes()
