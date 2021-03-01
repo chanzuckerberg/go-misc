@@ -109,7 +109,7 @@ func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, data
 	if err != nil {
 		return errors.Wrapf(err, "Unable to make admins control this scope: %s", currentScope)
 	}
-	// Allow user to manage this secret
+	// Allow user to read this secret
 	err = secretsAPI.PutSecretACL(currentScope, creds.user, models.AclPermissionRead)
 	if err != nil {
 		return errors.Wrapf(err, "Unable to make %s control this scope: %s", creds.user, currentScope)
