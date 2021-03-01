@@ -28,6 +28,11 @@ func getUsers() ([]string, error) {
 }
 
 func buildSnowflakeSecrets(connection *sql.DB, username string, privateKey *bytes.Buffer) (map[string]string, error) {
+
+	if username == "" {
+		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
+	}
+
 	userQuery := fmt.Sprintf(`SHOW USERS LIKE '%s'`, username)
 
 	connectionRow := snowflake.QueryRow(connection, userQuery)
