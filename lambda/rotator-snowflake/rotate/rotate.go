@@ -32,18 +32,18 @@ func (creds *snowflakeUserCredentials) writeSecrets(secretsClient *aws.SecretsAP
 		return errors.New("empty scope")
 	}
 
-	err := secretsClient.PutSecret([]byte("snowflake.user"), currentScope, creds.user)
+	err := secretsClient.PutSecret([]byte(creds.user), currentScope, "snowflake.user")
 	if err != nil {
-		return errors.Wrapf(err, "Unable to put secret %s in scope %s", creds.user, currentScope)
+		return errors.Wrapf(err, "Unable to put secret username %s in scope %s", creds.user, currentScope)
 	}
 
-	err = secretsClient.PutSecret([]byte("snowflake.role"), currentScope, creds.role)
+	err = secretsClient.PutSecret([]byte(creds.role), currentScope, "snowflake.role")
 	if err != nil {
-		return errors.Wrapf(err, "Unable to put secret %s in scope %s", creds.role, currentScope)
+		return errors.Wrapf(err, "Unable to put role %s in scope %s", creds.role, currentScope)
 	}
 
-	err = secretsClient.PutSecret([]byte("snowflake.pem_private_key"), currentScope, creds.pem_private_key)
-	return errors.Wrapf(err, "Unable to put secret %s in scope %s", creds.pem_private_key, currentScope)
+	err = secretsClient.PutSecret([]byte(creds.pem_private_key), currentScope, "snowflake.pem_private_key")
+	return errors.Wrapf(err, "Unable to put private key %s in scope %s", creds.pem_private_key, currentScope)
 }
 
 // TODO: Grab from Okta
@@ -63,15 +63,15 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, newPrivateKey *b
 	connectionRow := snowflake.QueryRow(connection, userQuery)
 	snowflakeUser, err := snowflake.ScanUser(connectionRow)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Unable to read snowflake user from  (%s)", userQuery)
+		return nil, errors.Wrapf(err, "Unable to read snowflake user from (%s)", userQuery)
 	}
 	defaultRole := snowflakeUser.DefaultRole.String
 	if defaultRole == "" {
 		defaultRole = "PUBLIC"
 	}
 	privateKeyStr := newPrivateKey.String()
-	stripHeaders := strings.ReplaceAll(privateKeyStr, "-----BEGIN RSA PRIVATE KEY-----\n", "")
-	stripFooters := strings.ReplaceAll(stripHeaders, "\n-----END RSA PRIVATE KEY-----", "")
+	stripHeaders := strings.ReplaceAll(privateKeyStr, "-----BEGIN RSA PRIVATE KEY-----", "")
+	stripFooters := strings.ReplaceAll(stripHeaders, "-----END RSA PRIVATE KEY-----", "")
 	keyNoWhitespace := strings.TrimSpace(stripFooters)
 
 	userSecrets := snowflakeUserCredentials{
@@ -114,7 +114,6 @@ func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, data
 	if err != nil {
 		return errors.Wrapf(err, "Unable to make %s control this scope: %s", creds.user, currentScope)
 	}
-
 	return creds.writeSecrets(&secretsAPI, currentScope)
 }
 
