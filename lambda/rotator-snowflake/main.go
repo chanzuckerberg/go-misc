@@ -23,7 +23,9 @@ func main() {
 	// local-mode for lambda
 	if *localFlag {
 		err := Run(context.Background())
-		logrus.Fatal(err)
+		if err != nil {
+			logrus.Fatal(err)
+		}
 	} else {
 		lambda.Start(Run)
 	}
