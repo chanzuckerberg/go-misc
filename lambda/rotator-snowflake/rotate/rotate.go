@@ -1,13 +1,8 @@
 package rotate
 
 import (
-	"bytes"
 	"context"
-	"crypto/rsa"
-	"crypto/x509"
 	"database/sql"
-	"encoding/base64"
-	"encoding/pem"
 	"fmt"
 	"os"
 	"strings"
@@ -53,7 +48,7 @@ func getUsers() ([]string, error) {
 	return userSlice, nil
 }
 
-func buildSnowflakeSecrets(connection *sql.DB, username string, newPrivateKey *bytes.Buffer) (*snowflakeUserCredentials, error) {
+func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) (*snowflakeUserCredentials, error) {
 
 	if username == "" {
 		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
@@ -69,15 +64,11 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, newPrivateKey *b
 	if defaultRole == "" {
 		defaultRole = "PUBLIC"
 	}
-	privateKeyStr := newPrivateKey.String()
-	stripHeaders := strings.ReplaceAll(privateKeyStr, "-----BEGIN RSA PRIVATE KEY-----", "")
-	stripFooters := strings.ReplaceAll(stripHeaders, "-----END RSA PRIVATE KEY-----", "")
-	keyNoWhitespace := strings.TrimSpace(stripFooters)
 
 	userSecrets := snowflakeUserCredentials{
 		user:            username,
 		role:            defaultRole,
-		pem_private_key: keyNoWhitespace,
+		pem_private_key: privKey,
 	}
 
 	return &userSecrets, nil
@@ -117,27 +108,9 @@ func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, data
 	return creds.writeSecrets(&secretsAPI, currentScope)
 }
 
-func updateSnowflake(user string, db *sql.DB, privKeyBuffer *bytes.Buffer) error {
-	privPemBlock, _ := pem.Decode(privKeyBuffer.Bytes())
-
-	privKeyIface, err := x509.ParsePKCS8PrivateKey(privPemBlock.Bytes)
-	if err != nil {
-		return errors.Wrap(err, "Unable to pkcs8 unmarshal private key")
-	}
-
-	privKey, ok := privKeyIface.(*rsa.PrivateKey)
-	if !ok {
-		return errors.New("Unable to get rsa private key")
-	}
-
-	publicKeyBytes, err := x509.MarshalPKIXPublicKey(&privKey.PublicKey)
-	if err != nil {
-		return errors.Wrap(err, "Unable to marshal public key to bytes")
-	}
-
-	publicKeyStr := base64.StdEncoding.EncodeToString(publicKeyBytes)
-	query := fmt.Sprintf(`ALTER USER "%s" SET RSA_PUBLIC_KEY_2 = "%s"`, user, publicKeyStr)
-	_, err = snowflake.ExecNoRows(db, query)
+func updateSnowflake(user string, db *sql.DB, pubKey string) error {
+	query := fmt.Sprintf(`ALTER USER "%s" SET RSA_PUBLIC_KEY_2 = "%s"`, user, pubKey)
+	_, err := snowflake.ExecNoRows(db, query)
 
 	return err
 }
@@ -166,17 +139,14 @@ func Rotate(ctx context.Context) error {
 			return errors.Wrap(err, "Unable to generate RSA keypair")
 		}
 
-		privKeyBuffer, err := keypair.SaveRSAKey(privKey)
-		if err != nil {
-			return errors.Wrap(err, "Unable to save RSA Keypair")
-		}
+		privKeyStr, pubKeyStr, err := snowflake.KeypairToString(privKey)
 
-		err = updateSnowflake(user, snowflakeDB, privKeyBuffer)
+		err = updateSnowflake(user, snowflakeDB, pubKeyStr)
 		if err != nil {
 			userErrors = multierror.Append(userErrors, err)
 		}
 
-		snowflakeSecrets, err := buildSnowflakeSecrets(snowflakeDB, user, privKeyBuffer)
+		snowflakeSecrets, err := buildSnowflakeSecrets(snowflakeDB, user, privKeyStr)
 		if err != nil {
 			return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
 		}
