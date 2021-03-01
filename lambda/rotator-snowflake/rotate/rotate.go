@@ -141,7 +141,6 @@ func Rotate(ctx context.Context) error {
 
 	// Collect errors for each user:
 	userErrors := &multierror.Error{}
-
 	for _, user := range users {
 		privKey, err := keypair.GenerateRSAKeypair()
 		if err != nil {
@@ -170,5 +169,5 @@ func Rotate(ctx context.Context) error {
 		}
 	}
 
-	return userErrors
+	return userErrors.ErrorOrNil()
 }
