@@ -21,25 +21,24 @@ import (
 	"github.com/xinsnake/databricks-sdk-golang/aws/models"
 )
 
+// TODO: Grab from Okta
 func getUsers() ([]string, error) {
 	usersList := os.Getenv("CURRENT_USERS") //Comma-delimited users list
 	userSlice := strings.Split(usersList, ",")
 	return userSlice, nil
 }
 
-func buildSnowflakeSecrets(connection *sql.DB, username string, privateKey *bytes.Buffer) (map[string]string, error) {
+func buildSnowflakeSecrets(connection *sql.DB, username string, newPrivateKey *bytes.Buffer) (map[string]string, error) {
 
 	if username == "" {
 		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
 	}
 
 	userQuery := fmt.Sprintf(`SHOW USERS LIKE '%s'`, username)
-
 	connectionRow := snowflake.QueryRow(connection, userQuery)
-
 	snowflakeUser, err := snowflake.ScanUser(connectionRow)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Unable to create snowflake user from userQuery %s", userQuery)
+		return nil, errors.Wrapf(err, "Unable to read snowflake user from  (%s)", userQuery)
 	}
 	defaultRole := snowflakeUser.DefaultRole.String
 	if defaultRole == "" {
@@ -103,12 +102,12 @@ func updateSnowflake(user string, db *sql.DB, privKeyBuffer *bytes.Buffer) error
 
 	privKeyIface, err := x509.ParsePKCS8PrivateKey(privPemBlock.Bytes)
 	if err != nil {
-		return errors.Wrap(err, "Unable to get pkcs8 private key")
+		return errors.Wrap(err, "Unable to pkcs8 unmarshal private key")
 	}
 
 	privKey, ok := privKeyIface.(*rsa.PrivateKey)
 	if !ok {
-		return errors.New("Unable to get pkcs8 private key")
+		return errors.New("Unable to get rsa private key")
 	}
 
 	publicKeyBytes, err := x509.MarshalPKIXPublicKey(&privKey.PublicKey)

@@ -41,21 +41,15 @@ func Snowflake() (*sql.DB, error) {
 		Account:     account,
 		User:        user,
 		Role:        role,
-		BrowserAuth: false,
 		Region:      region,
 		Password:    password,
 	}
 
 	sqlDB, err := snowflake.ConfigureSnowflakeDB(&cfg)
-	if err != nil {
-		return nil, errors.Wrap(err, "Unable to configure Snowflake DB")
-	}
-
-	return sqlDB, nil
+	return sqlDB, errors.Wrap(err, "Unable to configure Snowflake DB")
 }
 
 func Databricks() (*aws.DBClient, error) {
-
 	host, present := os.LookupEnv("DATABRICKS_HOST")
 	if !present {
 		return nil, errors.New("We can't find the DATABRICKS_HOST")
