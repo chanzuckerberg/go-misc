@@ -42,9 +42,15 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) 
 
 	userQuery := fmt.Sprintf(`SHOW USERS LIKE '%s'`, username)
 	connectionRow := snowflake.QueryRow(connection, userQuery)
+	if connectionRow == nil {
+		return nil, errors.New("Couldn't get a row output from snowflake")
+	}
 	snowflakeUser, err := snowflake.ScanUser(connectionRow)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Unable to read snowflake user from (%s)", userQuery)
+	}
+	if snowflakeUser == nil {
+		return nil, errors.New("Could not create snowflake User profile")
 	}
 	defaultRole := snowflakeUser.DefaultRole.String
 	if defaultRole == "" {
