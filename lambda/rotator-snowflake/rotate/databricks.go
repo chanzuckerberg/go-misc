@@ -32,7 +32,7 @@ func (creds *snowflakeUserCredentials) writeSecrets(secretsClient setup.SecretsI
 	}
 
 	err = secretsClient.PutSecret([]byte(creds.pem_private_key), currentScope, "snowflake.pem_private_key")
-	return errors.Wrapf(err, "Unable to put private key %s in scope %s", creds.pem_private_key, currentScope)
+	return errors.Wrapf(err, "Unable to put private key in scope %s", currentScope)
 }
 
 func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) (*snowflakeUserCredentials, error) {
