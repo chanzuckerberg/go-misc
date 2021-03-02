@@ -12,7 +12,7 @@ import (
 
 type testSecretAPI struct {
 	secretScopes []models.SecretScope
-	secrets      map[models.SecretScope]testSecret // consider whether a typed struct is better... probably not
+	secrets      map[models.SecretScope]testSecret
 	acls         []*models.AclItem
 }
 
