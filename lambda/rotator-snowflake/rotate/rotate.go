@@ -44,6 +44,9 @@ func Rotate(ctx context.Context) error {
 		}
 
 		privKeyStr, pubKeyStr, err := snowflake.RSAKeypairToString(privKey)
+		if err != nil {
+			return errors.Wrap(err, "Unable to format new keypair for snowflake and databricks")
+		}
 
 		err = updateSnowflake(user, snowflakeDB, pubKeyStr)
 		if err != nil {
