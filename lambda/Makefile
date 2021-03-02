@@ -89,6 +89,9 @@ publish-rotator-snowflake: package-rotator-snowflake
 run-rotator-snowflake: 
 	cd rotator-snowflake/ && go run .
 
+test:
+	go test ./...
+
 define clean
 	@rm $1 handler 2> /dev/null  || true
 endef

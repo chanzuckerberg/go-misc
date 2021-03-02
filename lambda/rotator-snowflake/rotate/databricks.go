@@ -74,27 +74,32 @@ func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, secr
 	}
 
 	// Check if scope exists under current name before
+	scopeExists := false
 	for _, scope := range scopes {
 		scopeName := scope.Name
 		if scopeName == currentScope {
-			return creds.writeSecrets(secretsClient, scopeName)
+			scopeExists = true
+			break
 		}
 	}
 
-	// create scope called currentScope
-	err = secretsClient.CreateSecretScope(currentScope, "")
-	if err != nil {
-		return errors.Wrapf(err, "Unable to create %s scope with %s perms", currentScope, "")
+	if !scopeExists {
+		// create scope called currentScope
+		err = secretsClient.CreateSecretScope(currentScope, "")
+		if err != nil {
+			return errors.Wrapf(err, "Unable to create %s scope with %s perms", currentScope, "")
+		}
+		// Allow admins to manage this secret
+		err = secretsClient.PutSecretACL(currentScope, "admins", models.AclPermissionManage)
+		if err != nil {
+			return errors.Wrapf(err, "Unable to make admins control this scope: %s", currentScope)
+		}
+		// Allow user to read this secret
+		err = secretsClient.PutSecretACL(currentScope, creds.user, models.AclPermissionRead)
+		if err != nil {
+			return errors.Wrapf(err, "Unable to make %s control this scope: %s", creds.user, currentScope)
+		}
 	}
-	// Allow admins to manage this secret
-	err = secretsClient.PutSecretACL(currentScope, "admins", models.AclPermissionManage)
-	if err != nil {
-		return errors.Wrapf(err, "Unable to make admins control this scope: %s", currentScope)
-	}
-	// Allow user to read this secret
-	err = secretsClient.PutSecretACL(currentScope, creds.user, models.AclPermissionRead)
-	if err != nil {
-		return errors.Wrapf(err, "Unable to make %s control this scope: %s", creds.user, currentScope)
-	}
+
 	return creds.writeSecrets(secretsClient, currentScope)
 }
