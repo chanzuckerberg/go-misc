@@ -9,11 +9,11 @@ import (
 )
 
 type SnowflakeClientEnvironment struct {
-	ACCOUNT  string
+	ACCOUNT  string `required:"true"`
 	REGION   string
-	PASSWORD string
-	USER     string
-	ROLE     string
+	PASSWORD string `required:"true"`
+	USER     string `required:"true"`
+	ROLE     string `required:"true"`
 }
 
 func loadSnowflakeClientEnv() (*SnowflakeClientEnvironment, error) {

@@ -9,8 +9,8 @@ import (
 )
 
 type DatabricksClientEnvironment struct {
-	HOST  string
-	TOKEN string
+	HOST  string `required:"true"`
+	TOKEN string `required:"true"`
 }
 
 func loadDatabricksClientEnv() (*DatabricksClientEnvironment, error) {

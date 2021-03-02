@@ -10,6 +10,17 @@ import (
 	"github.com/xinsnake/databricks-sdk-golang/aws"
 )
 
+func TestGetUsers(t *testing.T) {
+	r := require.New(t)
+	defer util.ResetEnv(os.Environ())
+	err := os.Setenv("CURRENT_USERS", "testUser")
+	r.NoError(err)
+	strList, err := GetUsers()
+	r.NoError(err)
+	r.Len(strList, 1)
+	r.Equal("testUser", strList[0])
+}
+
 func TestSnowflakeSetup(t *testing.T) {
 	r := require.New(t)
 	// keep the original values....
