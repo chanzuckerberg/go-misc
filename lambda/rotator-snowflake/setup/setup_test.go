@@ -41,6 +41,7 @@ func TestSnowflakeSetup(t *testing.T) {
 	r.IsType(&sql.DB{}, dbPtr)
 
 	os.Unsetenv("SNOWFLAKE_ACCOUNT")
+
 	dbPtr, err = Snowflake()
 	r.Error(err)
 	r.Nil(dbPtr)
