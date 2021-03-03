@@ -2,7 +2,10 @@ package setup
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/okta/okta-sdk-golang/okta"
 	"github.com/pkg/errors"
@@ -23,19 +26,22 @@ func loadOktaClientEnv() (*OktaClientEnvironment, error) {
 
 // TODO: Grab from Okta
 func GetUsers() ([]string, error) {
-	// usersList := os.Getenv("CURRENT_USERS") //Comma-delimited users list
-	// userSlice := strings.Split(usersList, ",")
+
 	oktaEnv, err := loadOktaClientEnv()
 	if err != nil {
 		return []string{}, err
 	}
-	// TODO: see if this can be part of a package
+	spew.Dump(oktaEnv)
+
+	privateKeyNoQuotes := strings.ReplaceAll(oktaEnv.PRIVATE_KEY, `"`, ``)
+
+	// TODO: see if this can be part of a go-misc package
 	client, err := okta.NewClient(
 		context.TODO(),
 		okta.WithAuthorizationMode("PrivateKey"),
 		okta.WithClientId(oktaEnv.SERVICE_CLIENT_ID),
-		okta.WithScopes(([]string{"okta.users.read"})),
-		okta.WithPrivateKey(oktaEnv.PRIVATE_KEY),
+		okta.WithScopes(([]string{"okta.apps.read"})),
+		okta.WithPrivateKey(privateKeyNoQuotes),
 		okta.WithOrgUrl(oktaEnv.ISSUER_URL),
 		okta.WithCache(true),
 	)
@@ -43,8 +49,9 @@ func GetUsers() ([]string, error) {
 		return []string{}, errors.Wrap(err, "Unable to create Okta Client Connection")
 	}
 
-	_, _, err = client.User.ListUsers(nil)
+	_, resp, err := client.User.ListUsers(nil)
 	if err != nil {
+		fmt.Println(resp.Status)
 		return []string{}, errors.Wrap(err, "Unable to list users in okta app")
 	}
 
