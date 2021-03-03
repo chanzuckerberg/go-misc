@@ -2,19 +2,17 @@ package setup
 
 import (
 	"context"
-	"fmt"
-	"strings"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/okta/okta-sdk-golang/okta"
+	"github.com/okta/okta-sdk-golang/okta/query"
 	"github.com/pkg/errors"
 )
 
 type OktaClientEnvironment struct {
-	PRIVATE_KEY       string `required:"true"`
-	ISSUER_URL        string // required?
-	SERVICE_CLIENT_ID string `required:"true"`
+	PRIVATE_KEY string `required:"true"`
+	ORG_URL     string `required:"true"`
+	CLIENT_ID   string `required:"true"`
 }
 
 func loadOktaClientEnv() (*OktaClientEnvironment, error) {
@@ -24,36 +22,42 @@ func loadOktaClientEnv() (*OktaClientEnvironment, error) {
 	return env, errors.Wrap(err, "Unable to load all the environment variables")
 }
 
-// TODO: Grab from Okta
-func GetUsers() ([]string, error) {
+type OktaClient struct {
+	client *okta.Client
+}
 
-	oktaEnv, err := loadOktaClientEnv()
-	if err != nil {
-		return []string{}, err
-	}
-	spew.Dump(oktaEnv)
-
-	privateKeyNoQuotes := strings.ReplaceAll(oktaEnv.PRIVATE_KEY, `"`, ``)
-
-	// TODO: see if this can be part of a go-misc package
+func GetOktaClient(ctx context.Context, env *OktaClientEnvironment) (*OktaClient, error) {
 	client, err := okta.NewClient(
 		context.TODO(),
 		okta.WithAuthorizationMode("PrivateKey"),
-		okta.WithClientId(oktaEnv.SERVICE_CLIENT_ID),
+		okta.WithClientId(env.CLIENT_ID),
 		okta.WithScopes(([]string{"okta.apps.read"})),
-		okta.WithPrivateKey(privateKeyNoQuotes),
-		okta.WithOrgUrl(oktaEnv.ISSUER_URL),
+		okta.WithPrivateKey(env.PRIVATE_KEY),
+		okta.WithOrgUrl(env.ORG_URL),
 		okta.WithCache(true),
 	)
+
+	return &OktaClient{client}, err
+
+	// if err != nil {
+	// return []string{}, errors.Wrap(err, "Unable to create Okta Client Connection")
+	// }
+}
+
+// TODO: Grab from Okta
+func GetUsersForAPP(
+	appID string,
+	getter func(string, *query.Params) ([]*okta.AppUser, *okta.Response, error), // HACK: probably better to use an iface
+) ([]string, error) {
+	users, _, err := getter("TODO app id", nil)
 	if err != nil {
-		return []string{}, errors.Wrap(err, "Unable to create Okta Client Connection")
+		return nil, errors.Wrap(err, "Unable to list users in okta app %s", "TODO app id")
 	}
 
-	_, resp, err := client.User.ListUsers(nil)
-	if err != nil {
-		fmt.Println(resp.Status)
-		return []string{}, errors.Wrap(err, "Unable to list users in okta app")
+	assignedUserEmails := []string{} // This might be better as a sets.Strings instead (so you can do intersections)
+	for _, user := range users {
+		assignedUserEmails = append(assignedUserEmails, user.Credentials.UserName) // TODO: not sure if that is the right property, verify
 	}
 
-	return []string{}, nil
+	return assignedUserEmails, nil
 }
