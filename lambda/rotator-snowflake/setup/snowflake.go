@@ -23,14 +23,14 @@ func loadSnowflakeClientEnv() (*SnowflakeClientEnvironment, error) {
 	return env, errors.Wrap(err, "Unable to load all the environment variables")
 }
 
-func Snowflake() (*sql.DB, error) {
+func Snowflake(snowflakeAcct string) (*sql.DB, error) {
 	snowflakeEnv, err := loadSnowflakeClientEnv()
 	if err != nil {
 		return nil, err
 	}
 
 	cfg := snowflake.SnowflakeConfig{
-		Account:  snowflakeEnv.ACCOUNT,
+		Account:  snowflakeAcct,
 		User:     snowflakeEnv.USER,
 		Role:     snowflakeEnv.ROLE,
 		Region:   snowflakeEnv.REGION,

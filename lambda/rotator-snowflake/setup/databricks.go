@@ -9,8 +9,9 @@ import (
 )
 
 type DatabricksClientEnvironment struct {
-	HOST  string `required:"true"`
-	TOKEN string `required:"true"`
+	HOST        string `required:"true"`
+	TOKEN       string `required:"true"`
+	OKTA_APP_ID string `required:"true"`
 }
 
 func loadDatabricksClientEnv() (*DatabricksClientEnvironment, error) {

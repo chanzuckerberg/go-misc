@@ -4,10 +4,14 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"os"
 
+	"github.com/chanzuckerberg/go-misc/keypair"
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
 	"github.com/chanzuckerberg/go-misc/snowflake"
+	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 func updateSnowflake(user string, db *sql.DB, pubKey string) error {
@@ -18,56 +22,83 @@ func updateSnowflake(user string, db *sql.DB, pubKey string) error {
 }
 
 func Rotate(ctx context.Context) error {
-	// snowflakeDB, err := setup.Snowflake()
-	// if err != nil {
-	// 	return errors.Wrap(err, "Unable to configure snowflake")
-	// }
+	databricksConnection, err := setup.Databricks()
+	if err != nil {
+		return errors.Wrap(err, "Unable to configure databricks")
+	}
 
-	// databricksConnection, err := setup.Databricks()
-	// if err != nil {
-	// 	return errors.Wrap(err, "Unable to configure databricks")
-	// }
+	databricksAppID := os.Getenv("DATABRICKS_OKTA_APP_ID")
 
-	_, err := setup.GetUsers()
+	oktaClient, err := setup.GetOktaClient(context.TODO())
+	if err != nil {
+		return err
+	}
+	// Get users from databricks okta app ID
+	users, err := setup.GetOktaAppUsers(databricksAppID, oktaClient.Client.Application.ListApplicationUsers)
 	if err != nil {
 		return errors.Wrap(err, "Unable to get list of users to rotate")
 	}
-	return nil
+
+	// Get users from eachsnowflake okta app ID
+	snowflake_app_ids := map[string]string{
+		"acct1": "appID1",
+		"acct2": "appID2",
+	}
+
+	processUser := func(user, snowflakeAcctName string) error {
+		snowflakeDB, err := setup.Snowflake(snowflakeAcctName)
+		if err != nil {
+			return errors.Wrap(err, "Unable to configure snowflake")
+		}
+
+		privKey, err := keypair.GenerateRSAKeypair()
+		if err != nil {
+			return errors.Wrap(err, "Unable to generate RSA keypair")
+		}
+
+		privKeyStr, pubKeyStr, err := snowflake.RSAKeypairToString(privKey)
+		if err != nil {
+			return errors.Wrap(err, "Unable to format new keypair for snowflake and databricks")
+		}
+		// TODO: include snowflakeAcctName here rather than using snowflake_account environment variable
+		err = updateSnowflake(user, snowflakeDB, pubKeyStr)
+		if err != nil {
+			return err
+		}
+		// TODO: include snowflakeAcctName here rather than using snowflake_account environment variable
+		snowflakeSecrets, err := buildSnowflakeSecrets(snowflakeDB, user, privKeyStr)
+		if err != nil {
+			return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
+		}
+
+		// Intentionally equating databricks scope and user here
+		return updateDatabricks(user, snowflakeSecrets, databricksConnection.Secrets())
+	}
 
 	// // Collect errors for each user:
-	// userErrors := &multierror.Error{}
-	// processUser := func(user string) error {
-	// 	privKey, err := keypair.GenerateRSAKeypair()
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "Unable to generate RSA keypair")
-	// 	}
+	userErrors := &multierror.Error{}
+	processSnowflake := func(acctName, snowflakeAppID string) error {
+		snowflakeUsers, err := setup.GetOktaAppUsers(snowflakeAppID, oktaClient.Client.Application.ListApplicationUsers)
+		if err != nil {
+			return errors.Wrap(err, "Unable to get list of users to rotate")
+		}
+		for _, user := range snowflakeUsers.List() {
+			if users.ContainsElement(user) {
+				userErrors = multierror.Append(userErrors, processUser(user, acctName))
+				continue
+			}
+			logrus.Debugf("%s not in databricks app", user)
+		}
+		return nil
+	}
 
-	// 	privKeyStr, pubKeyStr, err := snowflake.RSAKeypairToString(privKey)
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "Unable to format new keypair for snowflake and databricks")
-	// 	}
+	for acctName, snowflakeAppID := range snowflake_app_ids {
+		err = processSnowflake(acctName, snowflakeAppID)
+		if err != nil {
+			userErrors = multierror.Append(userErrors, processSnowflake(acctName, snowflakeAppID))
+		}
+	}
 
-	// 	err = updateSnowflake(user, snowflakeDB, pubKeyStr)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-
-	// 	snowflakeSecrets, err := buildSnowflakeSecrets(snowflakeDB, user, privKeyStr)
-	// 	if err != nil {
-	// 		return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
-	// 	}
-
-	// 	// Intentionally equating databricks scope and user here
-	// 	return updateDatabricks(user, snowflakeSecrets, databricksConnection.Secrets())
-	// }
-
-	// for _, user := range users {
-	// 	err := processUser(user)
-	// 	if err != nil {
-	// 		userErrors = multierror.Append(userErrors, err)
-	// 	}
-	// }
-
-	// return userErrors.ErrorOrNil()
+	return userErrors.ErrorOrNil()
 
 }
