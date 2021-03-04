@@ -20,6 +20,26 @@ func updateSnowflake(user string, db *sql.DB, pubKey string) error {
 	return err
 }
 
+type snowflakeAccount struct {
+	appID string
+	name  string
+}
+
+func getSnowflakeApps(oktaClient *setup.OktaClient, snowflakeAppIDs []string) ([]*snowflakeAccount, error) {
+	accounts := []*snowflakeAccount{}
+	for _, appID := range snowflakeAppIDs {
+		accountName, err := setup.GetOktaAppAccount(oktaClient.AppID, oktaClient.Client.Application.GetApplicationKey) // TODO: Figure out what app name to "get"
+		if err != nil {
+			return nil, errors.Wrapf(err, "Unable to get appID for appID %s", appID)
+		}
+		accounts = append(accounts, &snowflakeAccount{
+			appID: appID,
+			name:  accountName,
+		})
+	}
+	return accounts, nil
+}
+
 func Rotate(ctx context.Context) error {
 	databricksConnection, err := setup.Databricks()
 	if err != nil {
@@ -38,9 +58,9 @@ func Rotate(ctx context.Context) error {
 	}
 
 	// Get users from eachsnowflake okta app ID
-	snowflake_app_ids := map[string]string{
-		"acct1": "appID1",
-		"acct2": "appID2",
+	snowflake_apps, err := getSnowflakeApps(oktaClient, []string{})
+	if err != nil {
+		return errors.Wrap(err, "Unable to map snowflake appIDs with account names")
 	}
 
 	processUser := func(user, snowflakeAcctName string) error {
@@ -82,7 +102,8 @@ func Rotate(ctx context.Context) error {
 		}
 		for _, user := range snowflakeUsers.List() {
 			if users.ContainsElement(user) {
-				userErrors = multierror.Append(userErrors, processUser(user, acctName))
+				err = processUser(user, acctName)
+				userErrors = multierror.Append(userErrors, err)
 				continue
 			}
 			logrus.Debugf("%s not in databricks app", user)
@@ -90,10 +111,10 @@ func Rotate(ctx context.Context) error {
 		return nil
 	}
 
-	for acctName, snowflakeAppID := range snowflake_app_ids {
-		err = processSnowflake(acctName, snowflakeAppID)
+	for _, snowflakeApp := range snowflake_apps {
+		err = processSnowflake(snowflakeApp.name, snowflakeApp.appID)
 		if err != nil {
-			userErrors = multierror.Append(userErrors, processSnowflake(acctName, snowflakeAppID))
+			userErrors = multierror.Append(userErrors, err)
 		}
 	}
 

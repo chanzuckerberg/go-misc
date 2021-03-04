@@ -35,7 +35,7 @@ func (creds *snowflakeUserCredentials) writeSecrets(secretsClient setup.SecretsI
 	return errors.Wrapf(err, "Unable to put private key in scope %s", currentScope)
 }
 
-func buildSnowflakeSecrets(connection *sql.DB, username, account, privKey string) (*snowflakeUserCredentials, error) {
+func buildSnowflakeSecrets(connection *sql.DB, username, privKey string) (*snowflakeUserCredentials, error) {
 	if username == "" {
 		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
 	}
