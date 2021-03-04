@@ -28,10 +28,7 @@ type snowflakeAccount struct {
 func getSnowflakeApps(oktaClient *setup.OktaClient, snowflakeAppIDs []string) ([]*snowflakeAccount, error) {
 	accounts := []*snowflakeAccount{}
 	for _, appID := range snowflakeAppIDs {
-		accountName, err := setup.GetOktaAppAccount(oktaClient.AppID, oktaClient.Client.Application.GetApplicationKey) // TODO: Figure out what app name to "get"
-		if err != nil {
-			return nil, errors.Wrapf(err, "Unable to get appID for appID %s", appID)
-		}
+		accountName := fmt.Sprintf("%s_account", appID) //TODO: temporary fix until we have something solid
 		accounts = append(accounts, &snowflakeAccount{
 			appID: appID,
 			name:  accountName,

@@ -65,11 +65,3 @@ func GetOktaAppUsers(
 
 	return assignedUserEmails, nil
 }
-
-// TODO: figure out how to get snowflake account names here
-func GetOktaAppAccount(
-	appID string,
-	getter func(appID string, key string) (*okta.JsonWebKey, *okta.Response, error), // HACK: probably better to use an iface
-) (string, error) {
-	return "", nil
-}
