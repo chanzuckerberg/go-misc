@@ -58,7 +58,7 @@ func Rotate(ctx context.Context) error {
 		if err != nil {
 			return errors.Wrap(err, "Unable to format new keypair for snowflake and databricks")
 		}
-		// TODO: include snowflakeAcctName here rather than using snowflake_account environment variable
+
 		err = updateSnowflake(user, snowflakeDB, pubKeyStr)
 		if err != nil {
 			return err
@@ -70,7 +70,7 @@ func Rotate(ctx context.Context) error {
 		}
 
 		// Intentionally equating databricks scope and user here
-		return updateDatabricks(user, snowflakeSecrets, databricksConnection.Secrets())
+		return updateDatabricks(user, snowflakeAcctName, snowflakeSecrets, databricksConnection.Secrets())
 	}
 
 	// // Collect errors for each user:

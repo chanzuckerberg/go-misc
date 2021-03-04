@@ -16,26 +16,26 @@ type snowflakeUserCredentials struct {
 	pem_private_key string
 }
 
-func (creds *snowflakeUserCredentials) writeSecrets(secretsClient setup.SecretsIface, currentScope string) error {
+func (creds *snowflakeUserCredentials) writeSecrets(secretsClient setup.SecretsIface, currentScope, snowflakeAcctName string) error {
 	if currentScope == "" {
 		return errors.New("empty scope")
 	}
 
-	err := secretsClient.PutSecret([]byte(creds.user), currentScope, "snowflake.user")
+	err := secretsClient.PutSecret([]byte(creds.user), currentScope, fmt.Sprintf("snowflake.%s.user", snowflakeAcctName))
 	if err != nil {
 		return errors.Wrapf(err, "Unable to put secret username %s in scope %s", creds.user, currentScope)
 	}
 
-	err = secretsClient.PutSecret([]byte(creds.role), currentScope, "snowflake.role")
+	err = secretsClient.PutSecret([]byte(creds.role), currentScope, fmt.Sprintf("snowflake.%s.role", snowflakeAcctName))
 	if err != nil {
 		return errors.Wrapf(err, "Unable to put role %s in scope %s", creds.role, currentScope)
 	}
 
-	err = secretsClient.PutSecret([]byte(creds.pem_private_key), currentScope, "snowflake.pem_private_key")
+	err = secretsClient.PutSecret([]byte(creds.pem_private_key), currentScope, fmt.Sprintf("snowflake.%s.pem_private_key", snowflakeAcctName))
 	return errors.Wrapf(err, "Unable to put private key in scope %s", currentScope)
 }
 
-func buildSnowflakeSecrets(connection *sql.DB, username, privKey string) (*snowflakeUserCredentials, error) {
+func buildSnowflakeSecrets(connection *sql.DB, username, account, privKey string) (*snowflakeUserCredentials, error) {
 	if username == "" {
 		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
 	}
@@ -66,7 +66,7 @@ func buildSnowflakeSecrets(connection *sql.DB, username, privKey string) (*snowf
 	return &userSecrets, nil
 }
 
-func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, secretsClient setup.SecretsIface) error {
+func updateDatabricks(currentScope, snowflakeAcctName string, creds *snowflakeUserCredentials, secretsClient setup.SecretsIface) error {
 
 	scopes, err := secretsClient.ListSecretScopes()
 	if err != nil {
@@ -101,5 +101,5 @@ func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, secr
 		}
 	}
 
-	return creds.writeSecrets(secretsClient, currentScope)
+	return creds.writeSecrets(secretsClient, currentScope, snowflakeAcctName)
 }
