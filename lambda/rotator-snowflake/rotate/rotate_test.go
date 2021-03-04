@@ -63,7 +63,7 @@ func (t *testSecretAPI) PutSecret(bytesValue []byte, scopeName string, key strin
 func TestUpdateDatabricksNewScopes(t *testing.T) {
 	r := require.New(t)
 	defer util.ResetEnv(os.Environ())
-
+	acctName := "testAccount"
 	testSnowflakeCredentials := []*snowflakeUserCredentials{
 		{
 			user:            "user1",
@@ -83,7 +83,7 @@ func TestUpdateDatabricksNewScopes(t *testing.T) {
 	r.NoError(err)
 	r.Len(dummyScopeList, 0)
 	for i, testCredential := range testSnowflakeCredentials {
-		err := updateDatabricks(uniqueScopes[i], testCredential, dummySecretClient)
+		err := updateDatabricks(uniqueScopes[i], acctName, testCredential, dummySecretClient)
 		r.NoError(err)
 	}
 
@@ -99,9 +99,8 @@ func TestUpdateDatabricksNewScopes(t *testing.T) {
 	testSnowflakeCredentials[1].user = "user4"
 	testSnowflakeCredentials[1].pem_private_key = "privkey4"
 	for i, testCredential := range testSnowflakeCredentials {
-		err := updateDatabricks(uniqueScopes[i], testCredential, dummySecretClient)
+		err := updateDatabricks(uniqueScopes[i], acctName, testCredential, dummySecretClient)
 		r.NoError(err)
-
 	}
 	dummyScopeList, err = dummySecretClient.ListSecretScopes()
 	r.NoError(err)
