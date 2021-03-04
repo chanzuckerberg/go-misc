@@ -25,6 +25,7 @@ type snowflakeAccount struct {
 	name  string
 }
 
+// TODO: figure out okta process. It'll have to work with oktaClient
 func getSnowflakeApps(oktaClient *setup.OktaClient, snowflakeAppIDs []string) ([]*snowflakeAccount, error) {
 	accounts := []*snowflakeAccount{}
 	for _, appID := range snowflakeAppIDs {
@@ -55,7 +56,7 @@ func Rotate(ctx context.Context) error {
 	}
 
 	// Get users from eachsnowflake okta app ID
-	snowflake_apps, err := getSnowflakeApps(oktaClient, []string{})
+	snowflake_apps, err := getSnowflakeApps(oktaClient, oktaClient.SnowflakeAppIDs)
 	if err != nil {
 		return errors.Wrap(err, "Unable to map snowflake appIDs with account names")
 	}
@@ -80,7 +81,6 @@ func Rotate(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
-		// TODO: include snowflakeAcctName here rather than using snowflake_account environment variable
 		snowflakeSecrets, err := buildSnowflakeSecrets(snowflakeDB, user, privKeyStr)
 		if err != nil {
 			return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
