@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"os"
 
 	"github.com/chanzuckerberg/go-misc/keypair"
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
@@ -27,14 +26,13 @@ func Rotate(ctx context.Context) error {
 		return errors.Wrap(err, "Unable to configure databricks")
 	}
 
-	databricksAppID := os.Getenv("DATABRICKS_OKTA_APP_ID")
-
 	oktaClient, err := setup.GetOktaClient(context.TODO())
 	if err != nil {
 		return err
 	}
+
 	// Get users from databricks okta app ID
-	users, err := setup.GetOktaAppUsers(databricksAppID, oktaClient.Client.Application.ListApplicationUsers)
+	users, err := setup.GetOktaAppUsers(oktaClient.AppID, oktaClient.Client.Application.ListApplicationUsers)
 	if err != nil {
 		return errors.Wrap(err, "Unable to get list of users to rotate")
 	}

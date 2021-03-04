@@ -12,9 +12,10 @@ import (
 )
 
 type OktaClientEnvironment struct {
-	PRIVATE_KEY string `required:"true"`
-	ORG_URL     string `required:"true"`
-	CLIENT_ID   string `required:"true"`
+	PRIVATE_KEY       string `required:"true"`
+	ORG_URL           string `required:"true"`
+	CLIENT_ID         string `required:"true"`
+	DATABRICKS_APP_ID string `required:"true"`
 }
 
 func loadOktaClientEnv() (*OktaClientEnvironment, error) {
@@ -26,6 +27,7 @@ func loadOktaClientEnv() (*OktaClientEnvironment, error) {
 
 type OktaClient struct {
 	Client *okta.Client
+	AppID  string
 }
 
 func GetOktaClient(ctx context.Context) (*OktaClient, error) {
@@ -44,7 +46,7 @@ func GetOktaClient(ctx context.Context) (*OktaClient, error) {
 		okta.WithCache(true),
 	)
 
-	return &OktaClient{client}, errors.Wrap(err, "Unable to configure Okta client")
+	return &OktaClient{Client: client, AppID: env.DATABRICKS_APP_ID}, errors.Wrap(err, "Unable to configure Okta client")
 }
 
 // TODO: Grab from Okta
