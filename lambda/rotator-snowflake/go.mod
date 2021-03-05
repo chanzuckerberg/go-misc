@@ -6,7 +6,6 @@ require (
 	github.com/aws/aws-lambda-go v1.22.0
 	github.com/chanzuckerberg/aws-oidc v0.23.1
 	github.com/chanzuckerberg/go-misc v0.0.0-20210301213341-c3b446d30e9e
-	github.com/davecgh/go-spew v1.1.1
 	github.com/hashicorp/go-multierror v1.1.0
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/okta/okta-sdk-golang v1.1.0
