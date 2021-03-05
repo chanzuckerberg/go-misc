@@ -46,7 +46,7 @@ func Rotate(ctx context.Context) error {
 
 	oktaClient, err := setup.GetOktaClient(context.TODO())
 	if err != nil {
-		return err
+		return errors.Wrap(err, "Unable to configure okta")
 	}
 
 	// Get users from databricks okta app ID
@@ -54,12 +54,14 @@ func Rotate(ctx context.Context) error {
 	if err != nil {
 		return errors.Wrap(err, "Unable to get list of users to rotate")
 	}
+	logrus.Debug(users)
 
 	// Get users from eachsnowflake okta app ID
-	snowflake_apps, err := getSnowflakeApps(oktaClient, oktaClient.SnowflakeAppIDs)
+	snowflakeApps, err := getSnowflakeApps(oktaClient, oktaClient.SnowflakeAppIDs)
 	if err != nil {
 		return errors.Wrap(err, "Unable to map snowflake appIDs with account names")
 	}
+	logrus.Debug(snowflakeApps)
 
 	processUser := func(user, snowflakeAcctName string) error {
 		snowflakeDB, err := setup.Snowflake(snowflakeAcctName)
@@ -108,7 +110,7 @@ func Rotate(ctx context.Context) error {
 		return nil
 	}
 
-	for _, snowflakeApp := range snowflake_apps {
+	for _, snowflakeApp := range snowflakeApps {
 		err = processSnowflake(snowflakeApp.name, snowflakeApp.appID)
 		if err != nil {
 			userErrors = multierror.Append(userErrors, err)
@@ -116,5 +118,4 @@ func Rotate(ctx context.Context) error {
 	}
 
 	return userErrors.ErrorOrNil()
-
 }
