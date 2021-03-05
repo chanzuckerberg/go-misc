@@ -6,7 +6,9 @@ import (
 	"fmt"
 
 	"github.com/chanzuckerberg/go-misc/keypair"
-	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
+	databricksCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
+	oktaCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/okta"
+	snowflakeCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/snowflake"
 	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
@@ -20,51 +22,33 @@ func updateSnowflake(user string, db *sql.DB, pubKey string) error {
 	return err
 }
 
-type snowflakeAccount struct {
-	appID string
-	name  string
-}
-
-// TODO: figure out okta process. It'll have to work with oktaClient
-func getSnowflakeApps(oktaClient *setup.OktaClient, snowflakeAppIDs []string) ([]*snowflakeAccount, error) {
-	accounts := []*snowflakeAccount{}
-	for _, appID := range snowflakeAppIDs {
-		accountName := fmt.Sprintf("%s_account", appID) //TODO: temporary fix until we have something solid
-		accounts = append(accounts, &snowflakeAccount{
-			appID: appID,
-			name:  accountName,
-		})
-	}
-	return accounts, nil
-}
-
 func Rotate(ctx context.Context) error {
-	databricksConnection, err := setup.Databricks()
+	databricksConnection, err := databricksCfg.Databricks()
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure databricks")
 	}
 
-	oktaClient, err := setup.GetOktaClient(context.TODO())
+	oktaClient, err := oktaCfg.GetOktaClient(context.TODO())
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure okta")
 	}
 
 	// Get users from databricks okta app ID
-	users, err := setup.GetOktaAppUsers(oktaClient.AppID, oktaClient.Client.Application.ListApplicationUsers)
+	users, err := oktaCfg.GetOktaAppUsers(oktaClient.AppID, oktaClient.Client.Application.ListApplicationUsers)
 	if err != nil {
 		return errors.Wrap(err, "Unable to get list of users to rotate")
 	}
 	logrus.Debug(users)
 
-	// Get users from eachsnowflake okta app ID
-	snowflakeApps, err := getSnowflakeApps(oktaClient, oktaClient.SnowflakeAppIDs)
+	// Get users from each snowflake okta app ID
+	snowflakeApps, err := snowflakeCfg.GetSnowflakeApps(oktaClient, oktaClient.SnowflakeAppIDs)
 	if err != nil {
 		return errors.Wrap(err, "Unable to map snowflake appIDs with account names")
 	}
 	logrus.Debug(snowflakeApps)
 
 	processUser := func(user, snowflakeAcctName string) error {
-		snowflakeDB, err := setup.Snowflake(snowflakeAcctName)
+		snowflakeDB, err := snowflakeCfg.Snowflake(snowflakeAcctName)
 		if err != nil {
 			return errors.Wrap(err, "Unable to configure snowflake")
 		}
@@ -95,7 +79,7 @@ func Rotate(ctx context.Context) error {
 	// // Collect errors for each user:
 	userErrors := &multierror.Error{}
 	processSnowflake := func(acctName, snowflakeAppID string) error {
-		snowflakeUsers, err := setup.GetOktaAppUsers(snowflakeAppID, oktaClient.Client.Application.ListApplicationUsers)
+		snowflakeUsers, err := oktaCfg.GetOktaAppUsers(snowflakeAppID, oktaClient.Client.Application.ListApplicationUsers)
 		if err != nil {
 			return errors.Wrap(err, "Unable to get list of users to rotate")
 		}
@@ -111,7 +95,7 @@ func Rotate(ctx context.Context) error {
 	}
 
 	for _, snowflakeApp := range snowflakeApps {
-		err = processSnowflake(snowflakeApp.name, snowflakeApp.appID)
+		err = processSnowflake(snowflakeApp.Name, snowflakeApp.AppID)
 		if err != nil {
 			userErrors = multierror.Append(userErrors, err)
 		}

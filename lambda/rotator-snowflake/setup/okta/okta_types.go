@@ -1,4 +1,4 @@
-package setup
+package okta
 
 import (
 	"github.com/kelseyhightower/envconfig"

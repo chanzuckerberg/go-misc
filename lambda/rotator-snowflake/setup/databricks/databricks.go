@@ -1,4 +1,4 @@
-package setup
+package databricks
 
 import (
 	"github.com/chanzuckerberg/go-misc/databricks"

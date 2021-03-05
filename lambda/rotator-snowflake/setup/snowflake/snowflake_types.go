@@ -1,4 +1,4 @@
-package setup
+package snowflake
 
 import (
 	"github.com/kelseyhightower/envconfig"
@@ -17,4 +17,9 @@ func loadSnowflakeClientEnv() (*SnowflakeClientEnvironment, error) {
 	err := envconfig.Process("SNOWFLAKE", env)
 
 	return env, errors.Wrap(err, "Unable to load all the environment variables")
+}
+
+type SnowflakeAccount struct {
+	AppID string
+	Name  string
 }

@@ -1,4 +1,4 @@
-package setup
+package databricks
 
 import (
 	"github.com/kelseyhightower/envconfig"
