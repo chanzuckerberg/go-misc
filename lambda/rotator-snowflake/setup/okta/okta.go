@@ -44,7 +44,7 @@ func GetOktaAppUsers(
 	}
 	assignedUserEmails := sets.NewStringSet()
 	for _, user := range users {
-		assignedUserEmails.Add(user.Credentials.UserName) // TODO: not sure if that is the right property, verify
+		assignedUserEmails.Add(user.Credentials.UserName)
 	}
 
 	return assignedUserEmails, nil
