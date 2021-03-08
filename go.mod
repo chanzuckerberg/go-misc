@@ -29,7 +29,7 @@ require (
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.0
-	github.com/snowflakedb/gosnowflake v1.4.0
+	github.com/snowflakedb/gosnowflake v1.4.1
 	github.com/spf13/cobra v1.1.3
 	github.com/stretchr/testify v1.7.0
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
