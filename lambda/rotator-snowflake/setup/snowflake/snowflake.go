@@ -1,11 +1,10 @@
 package snowflake
 
 import (
-	"database/sql"
 	"fmt"
 
 	oktaCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/okta"
-	"github.com/chanzuckerberg/go-misc/snowflake"
+	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
 )
 
@@ -22,21 +21,9 @@ func GetSnowflakeApps(oktaClient *oktaCfg.OktaClient, snowflakeAppIDs []string) 
 	return accounts, nil
 }
 
-func Snowflake(snowflakeAcct string) (*sql.DB, error) {
-	snowflakeEnv, err := loadSnowflakeClientEnv()
-	if err != nil {
-		return nil, err
-	}
+func LoadSnowflakeClientEnv() (*SnowflakeClientEnvironment, error) {
+	env := &SnowflakeClientEnvironment{}
+	err := envconfig.Process("SNOWFLAKE", env)
 
-	cfg := snowflake.SnowflakeConfig{
-		Account:  snowflakeAcct,
-		User:     snowflakeEnv.USER,
-		Role:     snowflakeEnv.ROLE,
-		Region:   snowflakeEnv.REGION,
-		Password: snowflakeEnv.PASSWORD,
-	}
-
-	sqlDB, err := snowflake.ConfigureSnowflakeDB(&cfg)
-
-	return sqlDB, errors.Wrap(err, "Unable to configure Snowflake DB")
+	return env, errors.Wrap(err, "Unable to load all the environment variables")
 }

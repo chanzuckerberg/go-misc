@@ -6,8 +6,10 @@ import (
 	"fmt"
 
 	"github.com/chanzuckerberg/go-misc/keypair"
-	databricksCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
+	// databricksCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
+	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
 	oktaCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/okta"
+
 	snowflakeCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/snowflake"
 	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/hashicorp/go-multierror"
@@ -23,7 +25,7 @@ func updateSnowflake(user string, db *sql.DB, pubKey string) error {
 }
 
 func Rotate(ctx context.Context) error {
-	databricksConnection, err := databricksCfg.Databricks()
+	databricksConnection, err := setup.Databricks()
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure databricks")
 	}
@@ -48,7 +50,7 @@ func Rotate(ctx context.Context) error {
 	logrus.Debug(snowflakeApps)
 
 	processUser := func(user, snowflakeAcctName string) error {
-		snowflakeDB, err := snowflakeCfg.Snowflake(snowflakeAcctName)
+		snowflakeDB, err := setup.Snowflake(snowflakeAcctName)
 		if err != nil {
 			return errors.Wrap(err, "Unable to configure snowflake")
 		}
