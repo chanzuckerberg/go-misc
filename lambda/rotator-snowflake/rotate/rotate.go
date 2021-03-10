@@ -5,14 +5,15 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/chanzuckerberg/go-misc/keypair"
 	// databricksCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
+
+	"github.com/chanzuckerberg/go-misc/keypair"
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
 	oktaCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/okta"
-
 	snowflakeCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/snowflake"
-	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/hashicorp/go-multierror"
+
+	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
@@ -36,18 +37,16 @@ func Rotate(ctx context.Context) error {
 	}
 
 	// Get users from databricks okta app ID
-	users, err := oktaCfg.GetOktaAppUsers(oktaClient.AppID, oktaClient.Client.Application.ListApplicationUsers)
+	databricksUsers, err := oktaCfg.GetOktaAppUsers(oktaClient.AppID, oktaClient.Client.Application.ListApplicationUsers)
 	if err != nil {
 		return errors.Wrap(err, "Unable to get list of users to rotate")
 	}
-	logrus.Debug(users)
 
-	// Get users from each snowflake okta app ID
-	snowflakeApps, err := snowflakeCfg.GetSnowflakeApps(oktaClient, oktaClient.SnowflakeAppIDs)
+	// Use environment variables to get []SnowflakeAccount
+	snowflakeApps, err := snowflakeCfg.LoadSnowflakeAccounts()
 	if err != nil {
-		return errors.Wrap(err, "Unable to map snowflake appIDs with account names")
+		return errors.Wrap(err, "Unable to get Snowflake Account information")
 	}
-	logrus.Debug(snowflakeApps)
 
 	processUser := func(user, snowflakeAcctName string) error {
 		snowflakeDB, err := setup.Snowflake(snowflakeAcctName)
@@ -69,6 +68,7 @@ func Rotate(ctx context.Context) error {
 		if err != nil {
 			return err
 		}
+
 		snowflakeSecrets, err := buildSnowflakeSecrets(snowflakeDB, user, privKeyStr)
 		if err != nil {
 			return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
@@ -85,14 +85,17 @@ func Rotate(ctx context.Context) error {
 		if err != nil {
 			return errors.Wrap(err, "Unable to get list of users to rotate")
 		}
+
 		for _, user := range snowflakeUsers.List() {
-			if users.ContainsElement(user) {
+
+			if databricksUsers.ContainsElement(user) {
 				err = processUser(user, acctName)
 				userErrors = multierror.Append(userErrors, err)
 				continue
 			}
 			logrus.Debugf("%s not in databricks app", user)
 		}
+
 		return nil
 	}
 

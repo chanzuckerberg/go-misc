@@ -11,7 +11,6 @@ type OktaClientEnvironment struct {
 	ORG_URL           string `required:"true"`
 	CLIENT_ID         string `required:"true"`
 	DATABRICKS_APP_ID string `required:"true"`
-	SNOWFLAKE_APP_IDS []string
 }
 
 func loadOktaClientEnv() (*OktaClientEnvironment, error) {
@@ -22,7 +21,6 @@ func loadOktaClientEnv() (*OktaClientEnvironment, error) {
 }
 
 type OktaClient struct {
-	Client          *okta.Client
-	AppID           string
-	SnowflakeAppIDs []string
+	Client *okta.Client
+	AppID  string
 }

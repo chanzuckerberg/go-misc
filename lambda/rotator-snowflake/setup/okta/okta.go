@@ -28,9 +28,9 @@ func GetOktaClient(ctx context.Context) (*OktaClient, error) {
 	)
 
 	return &OktaClient{
-			Client:          client,
-			AppID:           env.DATABRICKS_APP_ID,
-			SnowflakeAppIDs: env.SNOWFLAKE_APP_IDS},
+			Client: client,
+			AppID:  env.DATABRICKS_APP_ID,
+		},
 		errors.Wrap(err, "Unable to configure Okta client")
 }
 
