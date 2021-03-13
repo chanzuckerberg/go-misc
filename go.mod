@@ -8,9 +8,10 @@ require (
 	github.com/aws/aws-sdk-go v1.37.22
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
+	github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake v0.0.0-20210308173917-b80654827d25 // indirect
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.10.0
-	github.com/go-errors/errors v1.0.2-0.20180813162953-d98b870cc4e0
+	github.com/go-errors/errors v1.1.1
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/golang/mock v1.5.0
 	github.com/google/go-github/v27 v27.0.6

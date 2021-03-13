@@ -1,9 +1,9 @@
 DATE=$(shell date +"%Y/%m/%d")
-S3_PREFIX = go-misc/lambdas/${DATE}
+S3_PREFIX ?= go-misc/lambdas/${DATE}
 S3_BUCKET ?= shared-infra-prod-assets
 AWS_PROFILE ?= czi-si
 
-publish: publish-cloudwatch_to_s3 publish-cloudwatch_to_honeycomb publish-flow_to_s3 publish-github_to_firehose publish-unfurl_cloudtrail publish-cloudwatch_eks_to_s3
+publish: publish-cloudwatch_to_s3 publish-cloudwatch_to_honeycomb publish-flow_to_s3 publish-github_to_firehose publish-unfurl_cloudtrail publish-cloudwatch_eks_to_s3 package-rotator-snowflake
 
 clean-cloudwatch_to_s3:
 	$(call clean,cloudwatch_to_s3.zip)
@@ -93,10 +93,12 @@ test:
 	go test ./...
 
 define clean
+	# Removing the handler file
 	@rm $1 handler 2> /dev/null  || true
 endef
 
 define package
+	# Making the handler file
 	GOOS=linux CGO_ENABLED=0 go build -o handler $1
 	zip $2 handler
 	rm handler
