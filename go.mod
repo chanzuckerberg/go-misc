@@ -8,7 +8,6 @@ require (
 	github.com/aws/aws-sdk-go v1.37.22
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake v0.0.0-20210308173917-b80654827d25 // indirect
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.10.0
 	github.com/go-errors/errors v1.1.1
@@ -22,13 +21,19 @@ require (
 	github.com/hashicorp/go-version v1.2.1
 	github.com/honeycombio/libhoney-go v1.15.2
 	github.com/jmoiron/sqlx v1.3.1
+	github.com/kr/pty v1.1.8 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/lib/pq v1.3.0 // indirect
 	github.com/luna-duclos/instrumentedsql v1.1.3
+	github.com/mattn/go-colorable v0.1.7 // indirect
+	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
+	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/nightlyone/lockfile v1.0.0
 	github.com/nlopes/slack v0.6.0
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
 	github.com/pkg/errors v0.9.1
+	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
 	github.com/sirupsen/logrus v1.8.0
 	github.com/snowflakedb/gosnowflake v1.4.1
 	github.com/spf13/cobra v1.1.3
