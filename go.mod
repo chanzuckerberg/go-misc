@@ -27,6 +27,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/nightlyone/lockfile v1.0.0
 	github.com/nlopes/slack v0.6.0
+	github.com/okta/okta-sdk-golang v1.1.0
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.0
