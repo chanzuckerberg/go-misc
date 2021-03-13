@@ -21,6 +21,7 @@ require (
 	github.com/hashicorp/go-version v1.2.1
 	github.com/honeycombio/libhoney-go v1.15.2
 	github.com/jmoiron/sqlx v1.3.1
+	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/kr/pty v1.1.8 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/lib/pq v1.3.0 // indirect
