@@ -4,8 +4,8 @@ go 1.15
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.2.8
-	github.com/aws/aws-lambda-go v1.22.0
-	github.com/aws/aws-sdk-go v1.37.22
+	github.com/aws/aws-lambda-go v1.23.0
+	github.com/aws/aws-sdk-go v1.37.27
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/coreos/go-oidc v2.2.1+incompatible
@@ -29,7 +29,7 @@ require (
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.0
-	github.com/snowflakedb/gosnowflake v1.4.0
+	github.com/snowflakedb/gosnowflake v1.4.1
 	github.com/spf13/cobra v1.1.3
 	github.com/stretchr/testify v1.7.0
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
