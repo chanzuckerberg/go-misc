@@ -18,7 +18,7 @@ func GetOktaClient(ctx context.Context) (*OktaClient, error) {
 
 	privKeyNoQuotes := strings.ReplaceAll(env.PRIVATE_KEY, `"`, ``)
 	client, err := okta.NewClient(
-		context.TODO(),
+		ctx,
 		okta.WithAuthorizationMode("PrivateKey"),
 		okta.WithClientId(env.CLIENT_ID),
 		okta.WithScopes(([]string{"okta.apps.read"})),

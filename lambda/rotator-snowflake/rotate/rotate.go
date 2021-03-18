@@ -29,7 +29,7 @@ func Rotate(ctx context.Context) error {
 		return errors.Wrap(err, "Unable to configure databricks")
 	}
 
-	oktaClient, err := oktaCfg.GetOktaClient(context.TODO())
+	oktaClient, err := oktaCfg.GetOktaClient(ctx)
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure okta")
 	}
