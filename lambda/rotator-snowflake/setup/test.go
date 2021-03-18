@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/chanzuckerberg/aws-oidc/pkg/util"
-	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
 	"github.com/stretchr/testify/require"
 	"github.com/xinsnake/databricks-sdk-golang/aws"
 )
@@ -42,7 +41,7 @@ func TestSnowflakeSetup(t *testing.T) {
 	err = os.Setenv("SNOWFLAKE_REGION", "testregion")
 	r.NoError(err)
 
-	dbPtr, err := setup.Snowflake("testAccount")
+	dbPtr, err := Snowflake("testAccount")
 	r.NoError(err)
 	r.NotNil(dbPtr)
 	r.IsType(&sql.DB{}, dbPtr)
