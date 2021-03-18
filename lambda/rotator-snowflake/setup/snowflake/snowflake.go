@@ -1,4 +1,4 @@
-package setup
+package snowflake
 
 import (
 	"database/sql"
@@ -8,15 +8,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-type SnowflakeClientEnvironment struct {
-	ACCOUNT  string `required:"true"`
-	REGION   string
-	PASSWORD string `required:"true"`
-	USER     string `required:"true"`
-	ROLE     string `required:"true"`
-}
-
-func loadSnowflakeClientEnv() (*SnowflakeClientEnvironment, error) {
+func LoadSnowflakeClientEnv() (*SnowflakeClientEnvironment, error) {
 	env := &SnowflakeClientEnvironment{}
 	err := envconfig.Process("SNOWFLAKE", env)
 
@@ -24,7 +16,7 @@ func loadSnowflakeClientEnv() (*SnowflakeClientEnvironment, error) {
 }
 
 func Snowflake() (*sql.DB, error) {
-	snowflakeEnv, err := loadSnowflakeClientEnv()
+	snowflakeEnv, err := LoadSnowflakeClientEnv()
 	if err != nil {
 		return nil, err
 	}
