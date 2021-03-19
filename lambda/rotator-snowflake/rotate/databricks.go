@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
+	databricksCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
 	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/pkg/errors"
 	"github.com/xinsnake/databricks-sdk-golang/aws/models"
@@ -16,7 +16,7 @@ type snowflakeUserCredentials struct {
 	pem_private_key string
 }
 
-func (creds *snowflakeUserCredentials) writeSecrets(secretsClient setup.SecretsIface, currentScope string) error {
+func (creds *snowflakeUserCredentials) writeSecrets(secretsClient databricksCfg.SecretsIface, currentScope string) error {
 	if currentScope == "" {
 		return errors.New("empty scope")
 	}
@@ -66,7 +66,7 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) 
 	return &userSecrets, nil
 }
 
-func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, secretsClient setup.SecretsIface) error {
+func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, secretsClient databricksCfg.SecretsIface) error {
 
 	scopes, err := secretsClient.ListSecretScopes()
 	if err != nil {
