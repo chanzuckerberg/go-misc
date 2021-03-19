@@ -1,6 +1,7 @@
 package snowflake
 
-type SnowflakeClientEnvironment struct {
+// TODO: make this specific to an account
+type SnowflakeClientEnv struct {
 	REGION   string
 	PASSWORD string `required:"true"`
 	USER     string `required:"true"`
@@ -14,7 +15,3 @@ type SnowflakeAccount struct {
 
 type snowflakeAcctName string
 type oktaAppID string
-
-type SnowflakeAccountEnvironment struct {
-	OktaMap map[snowflakeAcctName]oktaAppID `required:"true"`
-}

@@ -46,12 +46,7 @@ func Rotate(ctx context.Context) error {
 		return errors.Wrap(err, "Unable to get Snowflake Account information")
 	}
 
-	processUser := func(user, snowflakeAcctName string) error {
-		snowflakeDB, err := setup.Snowflake(snowflakeAcctName)
-		if err != nil {
-			return errors.Wrap(err, "Unable to configure snowflake")
-		}
-
+	processUser := func(user, snowflakeAcctName string, snowflakeDB *sql.DB) error {
 		privKey, err := keypair.GenerateRSAKeypair()
 		if err != nil {
 			return errors.Wrap(err, "Unable to generate RSA keypair")
@@ -78,7 +73,7 @@ func Rotate(ctx context.Context) error {
 
 	// // Collect errors for each user:
 	userErrors := &multierror.Error{}
-	processSnowflake := func(acctName, snowflakeAppID string) error {
+	processSnowflake := func(acctName, snowflakeAppID string, snowflakeDB *sql.DB) error {
 		snowflakeUsers, err := oktaCfg.GetOktaAppUsers(snowflakeAppID, oktaClient.Client.Application.ListApplicationUsers)
 		if err != nil {
 			return errors.Wrap(err, "Unable to get list of users to rotate")
@@ -87,7 +82,7 @@ func Rotate(ctx context.Context) error {
 		for _, user := range snowflakeUsers.List() {
 
 			if databricksUsers.ContainsElement(user) {
-				err = processUser(user, acctName)
+				err = processUser(user, acctName, snowflakeDB)
 				userErrors = multierror.Append(userErrors, err)
 				continue
 			}
@@ -98,7 +93,12 @@ func Rotate(ctx context.Context) error {
 	}
 
 	for _, snowflakeApp := range snowflakeApps {
-		err = processSnowflake(snowflakeApp.Name, snowflakeApp.AppID)
+		snowflakeDB, err := setup.Snowflake(snowflakeApp.Name)
+		if err != nil {
+			return errors.Wrap(err, "Unable to configure snowflake")
+		}
+
+		err = processSnowflake(snowflakeApp.Name, snowflakeApp.AppID, snowflakeDB)
 		if err != nil {
 			userErrors = multierror.Append(userErrors, err)
 		}

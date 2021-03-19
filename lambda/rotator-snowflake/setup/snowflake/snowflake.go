@@ -5,13 +5,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-func LoadSnowflakeClientEnv() (*SnowflakeClientEnvironment, error) {
-	env := &SnowflakeClientEnvironment{}
-	err := envconfig.Process("SNOWFLAKE", env)
+func LoadSnowflakeClientEnv(acctName string) (*SnowflakeClientEnv, error) {
+	env := &SnowflakeClientEnv{}
+	err := envconfig.Process(acctName, env)
 
 	return env, errors.Wrap(err, "Unable to load all the environment variables")
 }
 
+// TODO(aku): Make everything snowflake account-specific
 func LoadSnowflakeAccounts() ([]*SnowflakeAccount, error) {
 	env := &SnowflakeAccountEnvironment{}
 	err := envconfig.Process("SNOWFLAKE", env)
