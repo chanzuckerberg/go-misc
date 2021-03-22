@@ -1,7 +1,11 @@
 package snowflake
 
+import "database/sql"
+
 // TODO: make this specific to an account
 type SnowflakeClientEnv struct {
+	ACCOUNT  string `required:"true"`
+	APP_ID   string `required:"true"`
 	REGION   string
 	PASSWORD string `required:"true"`
 	USER     string `required:"true"`
@@ -11,7 +15,5 @@ type SnowflakeClientEnv struct {
 type SnowflakeAccount struct {
 	AppID string
 	Name  string
+	DB    *sql.DB
 }
-
-type snowflakeAcctName string
-type oktaAppID string
