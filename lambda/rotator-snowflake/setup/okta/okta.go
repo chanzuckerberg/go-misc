@@ -76,6 +76,4 @@ func paginateListUsers(
 		nextLinkMapping := nextLinkURL.Query()
 		qp.After = nextLinkMapping.Get("after")
 	}
-
-	return assignedUserEmails, nil
 }
