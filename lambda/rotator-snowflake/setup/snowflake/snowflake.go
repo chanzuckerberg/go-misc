@@ -1,13 +1,34 @@
 package snowflake
 
 import (
+	"database/sql"
+
 	"github.com/chanzuckerberg/go-misc/errors"
 	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/hashicorp/go-multierror"
 	"github.com/kelseyhightower/envconfig"
 )
 
-// TODO(aku): Make everything snowflake account-specific
+func configureConnection(env *SnowflakeClientEnv) (*sql.DB, error) {
+	cfg := snowflake.SnowflakeConfig{
+		Account:  env.NAME,
+		User:     env.USER,
+		Role:     env.ROLE,
+		Region:   env.REGION,
+		Password: env.PASSWORD,
+	}
+
+	sqlDB, err := snowflake.ConfigureSnowflakeDB(&cfg)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to configure Snowflake SQL connection")
+	}
+	if sqlDB == nil {
+		return nil, errors.Errorf("Unable to create db connection with the %s snowflake account", env.NAME)
+	}
+
+	return sqlDB, nil
+}
+
 func LoadSnowflakeAccounts(accountList []string) ([]*SnowflakeAccount, error) {
 	snowflakeErrs := &multierror.Error{}
 	acctList := []*SnowflakeAccount{}
@@ -17,25 +38,12 @@ func LoadSnowflakeAccounts(accountList []string) ([]*SnowflakeAccount, error) {
 
 		err := envconfig.Process(acctName, env)
 		if err != nil {
-			snowflakeErrs = multierror.Append(snowflakeErrs, err)
+			snowflakeErrs = multierror.Append(snowflakeErrs, errors.Wrap(err, "Error processing Snowflake environment variables"))
 		}
 
-		cfg := snowflake.SnowflakeConfig{
-			Account:  env.NAME,
-			User:     env.USER,
-			Role:     env.ROLE,
-			Region:   env.REGION,
-			Password: env.PASSWORD,
-		}
-
-		sqlDB, err := snowflake.ConfigureSnowflakeDB(&cfg)
+		sqlDB, err := configureConnection(env)
 		if err != nil {
-			snowflakeErrs = multierror.Append(snowflakeErrs, envconfig.Process(acctName, env))
-			continue
-		}
-		if sqlDB != nil {
-			snowflakeErrs = multierror.Append(snowflakeErrs, errors.Errorf("Unable to create db connection with the %s snowflake account", acctName))
-			continue
+			snowflakeErrs = multierror.Append(snowflakeErrs, err)
 		}
 
 		acctList = append(acctList, &SnowflakeAccount{
@@ -45,5 +53,5 @@ func LoadSnowflakeAccounts(accountList []string) ([]*SnowflakeAccount, error) {
 		})
 	}
 
-	return acctList, nil
+	return acctList, snowflakeErrs.ErrorOrNil()
 }
