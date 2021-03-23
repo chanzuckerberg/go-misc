@@ -38,6 +38,7 @@ func GetOktaAppUsers(
 	appID string,
 	getter func(string, *query.Params) ([]*okta.AppUser, *okta.Response, error), // HACK: probably better to use an iface
 ) (*sets.StringSet, error) {
+	// TODO(aku): implement pagination steps
 	users, _, err := getter(appID, nil)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Unable to list users in okta app %s", appID)

@@ -40,6 +40,8 @@ func DSN(conf *SnowflakeConfig) (string, error) {
 		User:    conf.User,
 		Region:  conf.Region,
 		Role:    conf.Role,
+		// TODO(aku): determine whether we want this or not
+		OCSPFailOpen: gosnowflake.OCSPFailOpenFalse,
 	}
 
 	if conf.PrivateKeyPath != "" {

@@ -4,7 +4,7 @@ import "database/sql"
 
 // TODO: make this specific to an account
 type SnowflakeClientEnv struct {
-	ACCOUNT  string `required:"true"`
+	NAME     string `required:"true"`
 	APP_ID   string `required:"true"`
 	PASSWORD string `required:"true"`
 	USER     string `required:"true"`

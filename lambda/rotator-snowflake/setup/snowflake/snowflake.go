@@ -20,13 +20,12 @@ func LoadSnowflakeAccounts(accountList []string) ([]*SnowflakeAccount, error) {
 			snowflakeErrs = multierror.Append(snowflakeErrs, err)
 		}
 
-		// Process acctList
 		cfg := snowflake.SnowflakeConfig{
-			Account:  env.ACCOUNT,
+			Account:  env.NAME,
 			User:     env.USER,
 			Role:     env.ROLE,
 			Region:   env.REGION,
-			Password: env.PASSWORD, //TODO: see if we can use private key instead
+			Password: env.PASSWORD,
 		}
 
 		sqlDB, err := snowflake.ConfigureSnowflakeDB(&cfg)
@@ -41,7 +40,7 @@ func LoadSnowflakeAccounts(accountList []string) ([]*SnowflakeAccount, error) {
 
 		acctList = append(acctList, &SnowflakeAccount{
 			AppID: env.APP_ID,
-			Name:  env.ACCOUNT,
+			Name:  env.NAME,
 			DB:    sqlDB,
 		})
 	}
