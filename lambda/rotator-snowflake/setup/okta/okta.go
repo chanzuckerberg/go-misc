@@ -36,7 +36,7 @@ func GetOktaClient(ctx context.Context) (*OktaClient, error) {
 
 func GetOktaAppUsers(
 	appID string,
-	getter func(string, *query.Params) ([]*okta.AppUser, *okta.Response, error), // HACK: probably better to use an iface
+	getter func(string, *query.Params) ([]*okta.AppUser, *okta.Response, error),
 ) (*sets.StringSet, error) {
 	// TODO(aku): implement pagination steps
 	users, _, err := getter(appID, nil)
