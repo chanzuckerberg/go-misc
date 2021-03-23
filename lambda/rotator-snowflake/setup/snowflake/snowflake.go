@@ -2,11 +2,13 @@ package snowflake
 
 import (
 	"database/sql"
+	"strings"
 
 	"github.com/chanzuckerberg/go-misc/errors"
 	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/hashicorp/go-multierror"
 	"github.com/kelseyhightower/envconfig"
+	"github.com/sirupsen/logrus"
 )
 
 func configureConnection(env *SnowflakeClientEnv) (*sql.DB, error) {
@@ -34,6 +36,17 @@ func LoadSnowflakeAccounts(accountList []string) ([]*SnowflakeAccount, error) {
 	acctList := []*SnowflakeAccount{}
 
 	for _, acctName := range accountList {
+		// If acctName has "okta" or "databricks" in the name, print a warning for possible name collision
+		oktaCollision := strings.Contains(acctName, "okta")
+		if oktaCollision {
+			logrus.Warnf("Snowflake Account %s will likely collide with okta Environment Variables", acctName)
+		}
+
+		databricksCollision := strings.Contains(acctName, "databricks")
+		if databricksCollision {
+			logrus.Warnf("Snowflake Account %s will likely collide with databricks Environment Variables", acctName)
+		}
+
 		env := &SnowflakeClientEnv{}
 
 		err := envconfig.Process(acctName, env)
