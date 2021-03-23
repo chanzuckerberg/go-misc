@@ -7,7 +7,6 @@ import (
 
 	"github.com/chanzuckerberg/go-misc/keypair"
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
-	oktaCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/okta"
 	snowflakeCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/snowflake"
 	"github.com/hashicorp/go-multierror"
 
@@ -24,7 +23,7 @@ func updateSnowflake(user string, db *sql.DB, pubKey string) error {
 }
 
 func Rotate(ctx context.Context) error {
-	databricksAccounts, err := setup.Databricks(ctx)
+	databricksAccount, err := setup.Databricks(ctx)
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure databricks")
 	}
@@ -34,7 +33,7 @@ func Rotate(ctx context.Context) error {
 		return errors.Wrap(err, "Unable to configure okta")
 	}
 
-	databricksUsers, err := oktaCfg.GetOktaAppUsers(databricksAccounts.AppID, oktaClient.Client.Application.ListApplicationUsers)
+	databricksUsers, err := setup.ListDatabricksUsers(ctx, oktaClient, databricksAccount)
 	if err != nil {
 		return errors.Wrap(err, "Unable to get list of users to rotate")
 	}
@@ -66,14 +65,13 @@ func Rotate(ctx context.Context) error {
 		}
 
 		// Intentionally equating databricks scope and user here
-		return updateDatabricks(user, snowflakeAcctName, snowflakeSecrets, databricksAccounts.Client.Secrets())
+		return updateDatabricks(user, snowflakeAcctName, snowflakeSecrets, databricksAccount.Client.Secrets())
 	}
 
 	// // Collect errors for each user:
 	userErrors := &multierror.Error{}
 	processSnowflake := func(snowflakeAcct *snowflakeCfg.SnowflakeAccount) error {
-		userGetter := oktaClient.Client.Application.ListApplicationUsers
-		snowflakeUsers, err := oktaCfg.GetOktaAppUsers(snowflakeAcct.AppID, userGetter)
+		snowflakeUsers, err := setup.ListSnowflakeUsers(ctx, oktaClient, snowflakeAcct)
 		if err != nil {
 			return errors.Wrap(err, "Unable to get list of users to rotate")
 		}

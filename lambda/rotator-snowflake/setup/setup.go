@@ -8,6 +8,7 @@ import (
 	databricksCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
 	oktaCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/okta"
 	snowflakeCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/snowflake"
+	"github.com/chanzuckerberg/go-misc/sets"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -37,4 +38,14 @@ func Snowflake(ctx context.Context) ([]*snowflakeCfg.SnowflakeAccount, error) {
 	}
 	acctList := env.ACCOUNTS
 	return snowflakeCfg.LoadSnowflakeAccounts(acctList)
+}
+
+func ListSnowflakeUsers(ctx context.Context, oktaClient *oktaCfg.OktaClient, snowflakeAcct *snowflakeCfg.SnowflakeAccount) (*sets.StringSet, error) {
+	userGetter := oktaClient.Client.Application.ListApplicationUsers
+	return oktaCfg.GetOktaAppUsers(snowflakeAcct.AppID, userGetter)
+}
+
+func ListDatabricksUsers(ctx context.Context, oktaClient *oktaCfg.OktaClient, databricksAccount *databricksCfg.DatabricksAccount) (*sets.StringSet, error) {
+	userGetter := oktaClient.Client.Application.ListApplicationUsers
+	return oktaCfg.GetOktaAppUsers(databricksAccount.AppID, userGetter)
 }
