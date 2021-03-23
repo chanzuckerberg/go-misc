@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"github.com/chanzuckerberg/aws-oidc/pkg/util"
+	"github.com/okta/okta-sdk-golang/okta"
+	"github.com/okta/okta-sdk-golang/okta/query"
 	"github.com/stretchr/testify/require"
 )
 
@@ -23,7 +25,14 @@ func TestGetOktaClient(t *testing.T) {
 	r.NotNil(oktaClient)
 }
 
+// Ugh... how do I use indices to control the "next" process?
+func testGetterFunc(appID string, qp *query.Params) ([]*okta.AppUser, *okta.Response, error) {
+	return nil, nil, nil
+}
+
+// TODO(aku): define testGetterFunc with some nil but paginated outputs?
 func TestListUsersPagination(t *testing.T) {
 	r := require.New(t)
-	r.Nil(nil)
+	_, err := paginateListUsers(context.TODO(), "testAppID", testGetterFunc)
+	r.Error(err) // r.NoError(err)
 }

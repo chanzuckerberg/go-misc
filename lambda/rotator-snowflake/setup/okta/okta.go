@@ -48,7 +48,6 @@ func paginateListUsers(
 	assignedUserEmails := sets.NewStringSet()
 
 	for {
-		// TODO(aku): implement pagination steps
 		users, resp, err := getter(appID, nil)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Unable to list users in okta app %s", appID)
@@ -57,11 +56,18 @@ func paginateListUsers(
 		for _, user := range users {
 			assignedUserEmails.Add(user.Credentials.UserName)
 		}
+		// HACK(aku): unsure if checking resp for nil values helps with pagination testing
+		if resp == nil {
+			return nil, errors.New("Nil response from okta client")
+		}
+
 		links := link.ParseResponse(resp.Response)
 		if links["next"] == nil {
 			return assignedUserEmails, nil
 		}
+
 		nextLink := links["next"].String()
+
 		nextLinkURL, err := url.Parse(nextLink)
 		if err != nil {
 			return nil, errors.Wrap(err, "error parsing Link Header for the next page")
