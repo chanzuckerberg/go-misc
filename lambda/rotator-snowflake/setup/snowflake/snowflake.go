@@ -11,9 +11,15 @@ import (
 func LoadSnowflakeAccounts(accountList []string) ([]*SnowflakeAccount, error) {
 	snowflakeErrs := &multierror.Error{}
 	acctList := []*SnowflakeAccount{}
+
 	for _, acctName := range accountList {
 		env := &SnowflakeClientEnv{}
-		snowflakeErrs = multierror.Append(snowflakeErrs, envconfig.Process(acctName, env))
+
+		err := envconfig.Process(acctName, env)
+		if err != nil {
+			snowflakeErrs = multierror.Append(snowflakeErrs, err)
+		}
+
 		// Process acctList
 		cfg := snowflake.SnowflakeConfig{
 			Account:  env.ACCOUNT,
@@ -22,6 +28,7 @@ func LoadSnowflakeAccounts(accountList []string) ([]*SnowflakeAccount, error) {
 			Region:   env.REGION,
 			Password: env.PASSWORD, //TODO: see if we can use private key instead
 		}
+
 		sqlDB, err := snowflake.ConfigureSnowflakeDB(&cfg)
 		if err != nil {
 			snowflakeErrs = multierror.Append(snowflakeErrs, envconfig.Process(acctName, env))
@@ -31,7 +38,7 @@ func LoadSnowflakeAccounts(accountList []string) ([]*SnowflakeAccount, error) {
 			snowflakeErrs = multierror.Append(snowflakeErrs, errors.Errorf("Unable to create db connection with the %s snowflake account", acctName))
 			continue
 		}
-		// okay... now all the checks are done:
+
 		acctList = append(acctList, &SnowflakeAccount{
 			AppID: env.APP_ID,
 			Name:  env.ACCOUNT,
