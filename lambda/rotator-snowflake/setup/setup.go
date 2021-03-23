@@ -1,14 +1,21 @@
 package setup
 
 import (
+	"context"
+
 	"github.com/chanzuckerberg/go-misc/databricks"
 	"github.com/chanzuckerberg/go-misc/errors"
 	databricksCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
+	oktaCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/okta"
 	snowflakeCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/snowflake"
 	"github.com/kelseyhightower/envconfig"
 )
 
-func Databricks() (databricksCfg.DatabricksConnection, error) {
+func Okta(ctx context.Context) (*oktaCfg.OktaClient, error) {
+	return oktaCfg.GetOktaClient(ctx)
+}
+
+func Databricks(ctx context.Context) (databricksCfg.DatabricksConnection, error) {
 	databricksEnv, err := databricksCfg.LoadDatabricksClientEnv()
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to get Databricks information from environment variables")
@@ -19,7 +26,7 @@ func Databricks() (databricksCfg.DatabricksConnection, error) {
 	return databricksCfg.DatabricksConnection(dbClient), nil
 }
 
-func Snowflake() ([]*snowflakeCfg.SnowflakeAccount, error) {
+func Snowflake(ctx context.Context) ([]*snowflakeCfg.SnowflakeAccount, error) {
 	env := &snowflakeCfg.Accounts{}
 	err := envconfig.Process("SNOWFLAKE", env)
 	if err != nil {

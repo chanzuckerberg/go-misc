@@ -24,12 +24,12 @@ func updateSnowflake(user string, db *sql.DB, pubKey string) error {
 }
 
 func Rotate(ctx context.Context) error {
-	databricksConnection, err := setup.Databricks()
+	databricksConnection, err := setup.Databricks(ctx)
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure databricks")
 	}
 
-	oktaClient, err := oktaCfg.GetOktaClient(ctx)
+	oktaClient, err := setup.Okta(ctx)
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure okta")
 	}
@@ -40,7 +40,7 @@ func Rotate(ctx context.Context) error {
 		return errors.Wrap(err, "Unable to get list of users to rotate")
 	}
 
-	snowflakeApps, err := setup.Snowflake()
+	snowflakeApps, err := setup.Snowflake(ctx)
 
 	processUser := func(user, snowflakeAcctName string, snowflakeDB *sql.DB) error {
 		privKey, err := keypair.GenerateRSAKeypair()
