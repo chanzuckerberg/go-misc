@@ -6,7 +6,6 @@ import (
 
 	"github.com/chanzuckerberg/aws-oidc/pkg/util"
 	"github.com/stretchr/testify/require"
-	"github.com/xinsnake/databricks-sdk-golang/aws"
 )
 
 func TestDatabricksSetup(t *testing.T) {
@@ -19,10 +18,9 @@ func TestDatabricksSetup(t *testing.T) {
 	clientPtr, err := LoadDatabricksClientEnv()
 	r.NoError(err)
 	r.NotNil(clientPtr)
-	r.IsType(&aws.DBClient{}, clientPtr)
+	r.IsType(&DatabricksClientEnvironment{}, clientPtr)
 
 	os.Unsetenv("DATABRICKS_TOKEN")
 	clientPtr, err = LoadDatabricksClientEnv()
 	r.Error(err)
-	r.Nil(clientPtr)
 }
