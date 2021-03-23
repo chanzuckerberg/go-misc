@@ -34,7 +34,6 @@ func Rotate(ctx context.Context) error {
 		return errors.Wrap(err, "Unable to configure okta")
 	}
 
-	// Get users from databricks okta app ID
 	databricksUsers, err := oktaCfg.GetOktaAppUsers(databricksAccounts.AppID, oktaClient.Client.Application.ListApplicationUsers)
 	if err != nil {
 		return errors.Wrap(err, "Unable to get list of users to rotate")
@@ -80,10 +79,10 @@ func Rotate(ctx context.Context) error {
 		}
 
 		for _, user := range snowflakeUsers.List() {
-
 			if databricksUsers.ContainsElement(user) {
 				err = processUser(user, snowflakeAcct.Name, snowflakeAcct.DB)
 				userErrors = multierror.Append(userErrors, err)
+
 				continue
 			}
 			logrus.Debugf("%s not in databricks app", user)
