@@ -7,10 +7,9 @@ import (
 )
 
 type OktaClientEnvironment struct {
-	PRIVATE_KEY       string `required:"true"`
-	ORG_URL           string `required:"true"`
-	CLIENT_ID         string `required:"true"`
-	DATABRICKS_APP_ID string `required:"true"`
+	PRIVATE_KEY string `required:"true"`
+	ORG_URL     string `required:"true"`
+	CLIENT_ID   string `required:"true"`
 }
 
 func loadOktaClientEnv() (*OktaClientEnvironment, error) {

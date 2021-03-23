@@ -15,15 +15,18 @@ func Okta(ctx context.Context) (*oktaCfg.OktaClient, error) {
 	return oktaCfg.GetOktaClient(ctx)
 }
 
-func Databricks(ctx context.Context) (databricksCfg.DatabricksConnection, error) {
+func Databricks(ctx context.Context) (*databricksCfg.DatabricksAccount, error) {
 	databricksEnv, err := databricksCfg.LoadDatabricksClientEnv()
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to get Databricks information from environment variables")
 	}
 
 	dbClient := databricks.NewAWSClient(databricksEnv.HOST, databricksEnv.TOKEN)
-
-	return databricksCfg.DatabricksConnection(dbClient), nil
+	databricksAccount := &databricksCfg.DatabricksAccount{
+		AppID:  databricksEnv.APP_ID,
+		Client: dbClient,
+	}
+	return databricksAccount, nil
 }
 
 func Snowflake(ctx context.Context) ([]*snowflakeCfg.SnowflakeAccount, error) {

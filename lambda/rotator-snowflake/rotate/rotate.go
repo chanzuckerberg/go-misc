@@ -24,7 +24,7 @@ func updateSnowflake(user string, db *sql.DB, pubKey string) error {
 }
 
 func Rotate(ctx context.Context) error {
-	databricksConnection, err := setup.Databricks(ctx)
+	databricksAccounts, err := setup.Databricks(ctx)
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure databricks")
 	}
@@ -35,12 +35,15 @@ func Rotate(ctx context.Context) error {
 	}
 
 	// Get users from databricks okta app ID
-	databricksUsers, err := oktaCfg.GetOktaAppUsers(oktaClient.AppID, oktaClient.Client.Application.ListApplicationUsers)
+	databricksUsers, err := oktaCfg.GetOktaAppUsers(databricksAccounts.AppID, oktaClient.Client.Application.ListApplicationUsers)
 	if err != nil {
 		return errors.Wrap(err, "Unable to get list of users to rotate")
 	}
 
 	snowflakeApps, err := setup.Snowflake(ctx)
+	if err != nil {
+		return err
+	}
 
 	processUser := func(user, snowflakeAcctName string, snowflakeDB *sql.DB) error {
 		privKey, err := keypair.GenerateRSAKeypair()
@@ -64,7 +67,7 @@ func Rotate(ctx context.Context) error {
 		}
 
 		// Intentionally equating databricks scope and user here
-		return updateDatabricks(user, snowflakeAcctName, snowflakeSecrets, databricksConnection.Secrets())
+		return updateDatabricks(user, snowflakeAcctName, snowflakeSecrets, databricksAccounts.Client.Secrets())
 	}
 
 	// // Collect errors for each user:

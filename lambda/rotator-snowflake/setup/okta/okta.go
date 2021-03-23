@@ -27,11 +27,7 @@ func GetOktaClient(ctx context.Context) (*OktaClient, error) {
 		okta.WithCache(true),
 	)
 
-	return &OktaClient{
-			Client: client,
-			AppID:  env.DATABRICKS_APP_ID,
-		},
-		errors.Wrap(err, "Unable to configure Okta client")
+	return &OktaClient{Client: client}, errors.Wrap(err, "Unable to configure Okta client")
 }
 
 func GetOktaAppUsers(
