@@ -15,6 +15,8 @@ func TestDatabricksSetup(t *testing.T) {
 	r.NoError(err)
 	os.Setenv("DATABRICKS_TOKEN", "testtoken")
 	r.NoError(err)
+	os.Setenv("DATABRICKS_APP_ID", "testappID")
+	r.NoError(err)
 	clientPtr, err := LoadDatabricksClientEnv()
 	r.NoError(err)
 	r.NotNil(clientPtr)
