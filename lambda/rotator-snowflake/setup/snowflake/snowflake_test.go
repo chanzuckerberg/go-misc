@@ -54,9 +54,8 @@ func TestSnowflakeConfigure(t *testing.T) {
 		r.NoError(err)
 	}
 
-	// Despite having all the environment variables defined, LoadSnowflakeAccounts() won't work
-	// 	Because these credentials are bogus
-	accountInfo, err := LoadSnowflakeAccounts(env.ACCOUNTS)
-	r.Error(err) // These credentials are dummy anyway. They shouldn't work in this case
-	r.Len(accountInfo, 0)
+	// // TODO(aku): Uncomment once failopen = false in go-misc/snowflake is merged:
+	// accountInfo, err := LoadSnowflakeAccounts(env.ACCOUNTS)
+	// r.Error(err) // These credentials are dummy anyway. They shouldn't work in this case
+	// r.Len(accountInfo, 0)
 }
