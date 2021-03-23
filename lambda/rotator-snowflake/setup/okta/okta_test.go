@@ -11,7 +11,6 @@ import (
 
 func TestGetOktaClient(t *testing.T) {
 	r := require.New(t)
-	r.Nil(nil)
 	defer util.ResetEnv(os.Environ())
 
 	os.Setenv("OKTA_PRIVATE_KEY", "testPrivKey")
@@ -22,4 +21,9 @@ func TestGetOktaClient(t *testing.T) {
 	oktaClient, err := GetOktaClient(context.Background())
 	r.NoError(err)
 	r.NotNil(oktaClient)
+}
+
+func TestListUsersPagination(t *testing.T) {
+	r := require.New(t)
+	r.Nil(nil)
 }
