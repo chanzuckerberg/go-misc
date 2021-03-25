@@ -44,7 +44,7 @@ func ParseRSAPrivateKeyFile(privateKeyPath string) (*rsa.PrivateKey, error) {
 
 func ParseRSAPrivateKeyString(privateKeyValue string) (*rsa.PrivateKey, error) {
 	// TODO(aku): figure out right way to get bytes value of private key value
-
+	// 	write tests too
 	privPemBlock, _ := pem.Decode(privKeyBytes)
 
 	priv, err := x509.ParsePKCS8PrivateKey(privPemBlock.Bytes)
