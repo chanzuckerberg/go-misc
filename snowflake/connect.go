@@ -14,6 +14,7 @@ type SnowflakeConfig struct {
 	Password         string `yaml:"password"`
 	BrowserAuth      bool   `yaml:"browser_auth"`
 	PrivateKeyPath   string `yaml:"private_key_path"`
+	PrivateKeyValue  string `yaml:"private_value"`
 	OauthAccessToken string `yaml:"oauth_access_token"`
 	Region           string `yaml:"region"`
 	Role             string `yaml:"role"`
@@ -43,9 +44,9 @@ func DSN(conf *SnowflakeConfig) (string, error) {
 	}
 
 	if conf.PrivateKeyPath != "" {
-		rsaPrivateKey, err := keypair.ParseRSAPrivateKey(conf.PrivateKeyPath)
+		rsaPrivateKey, err := keypair.ParseRSAPrivateKeyFile(conf.PrivateKeyPath)
 		if err != nil {
-			return "", errors.Wrap(err, "Private Key could not be parsed")
+			return "", errors.Wrap(err, "Private Key file could not be parsed")
 		}
 
 		config.PrivateKey = rsaPrivateKey
@@ -57,6 +58,12 @@ func DSN(conf *SnowflakeConfig) (string, error) {
 		config.Token = conf.OauthAccessToken
 	} else if conf.Password != "" {
 		config.Password = conf.Password
+	} else if conf.PrivateKeyValue != "" {
+		privKey, ok := keypair.ParseRSAPrivateKeyString(conf.PrivateKeyValue)
+		if !ok {
+			return "", errors.New("Private Key value could not be parsed")
+		}
+		config.PrivateKey = privKey
 	} else {
 		return "", errors.New("no authentication method provided")
 	}
