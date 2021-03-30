@@ -17,7 +17,7 @@ require (
 	github.com/google/uuid v1.2.0
 	github.com/gruntwork-io/terratest v0.32.14
 	github.com/hashicorp/go-multierror v1.1.1
-	github.com/hashicorp/go-tfe v0.12.1
+	github.com/hashicorp/go-tfe v0.13.0
 	github.com/hashicorp/go-version v1.2.1
 	github.com/honeycombio/libhoney-go v1.15.2
 	github.com/jmoiron/sqlx v1.3.1
