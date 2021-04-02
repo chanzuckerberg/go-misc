@@ -36,8 +36,8 @@ func Snowflake(ctx context.Context) ([]*snowflakeCfg.SnowflakeAccount, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to parse list of accounts from environment variables")
 	}
-	acctList := env.ACCOUNTS
-	return snowflakeCfg.LoadSnowflakeAccounts(acctList)
+	acctMapping := env.OKTAMAP
+	return snowflakeCfg.LoadSnowflakeAccounts(acctMapping)
 }
 
 func ListSnowflakeUsers(ctx context.Context, oktaClient *oktaCfg.OktaClient, snowflakeAcct *snowflakeCfg.SnowflakeAccount) (*sets.StringSet, error) {

@@ -2,10 +2,9 @@ package snowflake
 
 import "database/sql"
 
-// TODO: make this specific to an account
+// envconfig that's prefixed by the snowflake account name
 type SnowflakeClientEnv struct {
 	NAME     string `required:"true"`
-	APP_ID   string `required:"true"`
 	PASSWORD string `required:"true"`
 	USER     string `required:"true"`
 	ROLE     string `required:"true"`
@@ -19,5 +18,5 @@ type SnowflakeAccount struct {
 }
 
 type Accounts struct {
-	ACCOUNTS []string `required:"true"`
+	OKTAMAP map[string]string `required:"true"`
 }

@@ -31,11 +31,11 @@ func configureConnection(env *SnowflakeClientEnv) (*sql.DB, error) {
 	return sqlDB, nil
 }
 
-func LoadSnowflakeAccounts(accountList []string) ([]*SnowflakeAccount, error) {
+func LoadSnowflakeAccounts(accountMap map[string]string) ([]*SnowflakeAccount, error) {
 	snowflakeErrs := &multierror.Error{}
 	acctList := []*SnowflakeAccount{}
 
-	for _, acctName := range accountList {
+	for acctName, snowflakeAppID := range accountMap {
 		// If acctName has "okta" or "databricks" in the name, print a warning for possible name collision
 		oktaCollision := strings.Contains(acctName, "okta")
 		if oktaCollision {
@@ -47,21 +47,21 @@ func LoadSnowflakeAccounts(accountList []string) ([]*SnowflakeAccount, error) {
 			logrus.Warnf("Snowflake Account %s will likely collide with databricks Environment Variables", acctName)
 		}
 
-		env := &SnowflakeClientEnv{}
+		snowflakeEnv := &SnowflakeClientEnv{}
 
-		err := envconfig.Process(acctName, env)
+		err := envconfig.Process(acctName, snowflakeEnv)
 		if err != nil {
 			snowflakeErrs = multierror.Append(snowflakeErrs, errors.Wrap(err, "Error processing Snowflake environment variables"))
 		}
 
-		sqlDB, err := configureConnection(env)
+		sqlDB, err := configureConnection(snowflakeEnv)
 		if err != nil {
 			snowflakeErrs = multierror.Append(snowflakeErrs, err)
 		}
 
 		acctList = append(acctList, &SnowflakeAccount{
-			AppID: env.APP_ID,
-			Name:  env.NAME,
+			AppID: snowflakeAppID,
+			Name:  snowflakeEnv.NAME,
 			DB:    sqlDB,
 		})
 	}
