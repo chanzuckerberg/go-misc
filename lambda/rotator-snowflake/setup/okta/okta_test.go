@@ -2,6 +2,7 @@ package okta
 
 import (
 	"context"
+	"net/http"
 	"os"
 	"testing"
 
@@ -20,19 +21,77 @@ func TestGetOktaClient(t *testing.T) {
 	os.Setenv("OKTA_CLIENT_ID", "testClientID")
 	os.Setenv("OKTA_DATABRICKS_APP_ID", "databricksAppID")
 	os.Setenv("OKTA_SNOWFLAKE_APP_IDS", "snowflakeAppID1,snowflakeAppID2,snowflakeAppID3")
+
 	oktaClient, err := GetOktaClient(context.Background())
 	r.NoError(err)
 	r.NotNil(oktaClient)
 }
 
-// Ugh... how do I use indices to control the "next" process?
-func testGetterFunc(appID string, qp *query.Params) ([]*okta.AppUser, *okta.Response, error) {
-	return nil, nil, nil
+var testIndexedApplications = map[int][]*okta.AppUser{
+	1: {
+		&okta.AppUser{
+			Credentials: &okta.AppUserCredentials{
+				UserName: "user1",
+			}},
+		&okta.AppUser{
+			Credentials: &okta.AppUserCredentials{
+				UserName: "user2",
+			}},
+		&okta.AppUser{
+			Credentials: &okta.AppUserCredentials{
+				UserName: "user3",
+			},
+		},
+	},
+	2: {
+		&okta.AppUser{
+			Credentials: &okta.AppUserCredentials{
+				UserName: "user4",
+			},
+		},
+	},
+	3: {
+		&okta.AppUser{
+			Credentials: &okta.AppUserCredentials{
+				UserName: "user5",
+			},
+		},
+		&okta.AppUser{
+			Credentials: &okta.AppUserCredentials{
+				UserName: "user6",
+			},
+		},
+		&okta.AppUser{
+			Credentials: &okta.AppUserCredentials{
+				UserName: "user7",
+			},
+		},
+	},
 }
 
-// TODO(aku): define testGetterFunc with some nil but paginated outputs?
+var testAppIndex = 1
+
+func testGetterFunc(appID string, qp *query.Params) ([]*okta.AppUser, *okta.Response, error) {
+	AppUsers, ok := testIndexedApplications[testAppIndex]
+	if !ok {
+		return nil, &okta.Response{}, nil
+	}
+
+	respWithNext := &okta.Response{
+		&http.Response{
+			Header: http.Header{
+				"Link": []string{"<localhost?after=afterToken&limit=2>; rel=\"next\""},
+			},
+		},
+	}
+	testAppIndex = testAppIndex + 1
+
+	return AppUsers, respWithNext, nil
+}
+
 func TestListUsersPagination(t *testing.T) {
 	r := require.New(t)
-	_, err := paginateListUsers(context.TODO(), "testAppID", testGetterFunc)
-	r.Error(err) // r.NoError(err)
+	users, err := paginateListUsers(context.TODO(), "testAppID", testGetterFunc)
+	r.NoError(err)
+	r.Len(users.List(), 7)
 }
