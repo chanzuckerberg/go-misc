@@ -42,10 +42,10 @@ func Snowflake(ctx context.Context) ([]*snowflakeCfg.Account, error) {
 
 func ListSnowflakeUsers(ctx context.Context, oktaClient *oktaCfg.OktaClient, snowflakeAcct *snowflakeCfg.Account) (*sets.StringSet, error) {
 	userGetter := oktaClient.Client.Application.ListApplicationUsers
-	return oktaCfg.GetOktaAppUsers(snowflakeAcct.AppID, userGetter)
+	return oktaCfg.GetOktaAppUsers(ctx, snowflakeAcct.AppID, userGetter)
 }
 
 func ListDatabricksUsers(ctx context.Context, oktaClient *oktaCfg.OktaClient, databricksAccount *databricksCfg.Account) (*sets.StringSet, error) {
 	userGetter := oktaClient.Client.Application.ListApplicationUsers
-	return oktaCfg.GetOktaAppUsers(databricksAccount.AppID, userGetter)
+	return oktaCfg.GetOktaAppUsers(ctx, databricksAccount.AppID, userGetter)
 }

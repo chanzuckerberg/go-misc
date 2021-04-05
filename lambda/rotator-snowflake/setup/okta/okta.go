@@ -33,10 +33,11 @@ func GetOktaClient(ctx context.Context) (*OktaClient, error) {
 }
 
 func GetOktaAppUsers(
+	ctx context.Context,
 	appID string,
 	getter func(string, *query.Params) ([]*okta.AppUser, *okta.Response, error),
 ) (*sets.StringSet, error) {
-	return paginateListUsers(context.TODO(), appID, getter)
+	return paginateListUsers(ctx, appID, getter)
 }
 
 func paginateListUsers(
@@ -56,7 +57,7 @@ func paginateListUsers(
 		for _, user := range users {
 			assignedUserEmails.Add(user.Credentials.UserName)
 		}
-		// HACK(aku): unsure if checking resp for nil values helps with pagination testing
+
 		if resp == nil {
 			return nil, errors.New("Nil response from okta client")
 		}
