@@ -14,7 +14,7 @@ func TestSnowflakeConfigure(t *testing.T) {
 	// keep the original values....
 	defer util.ResetEnv(os.Environ()) // TODO: make ResetEnv() part of a go-misc package
 	// First define the snowflake Account Names
-	err := os.Setenv("SNOWFLAKE_ACCOUNTS", "test1,test2")
+	err := os.Setenv("SNOWFLAKE_OKTAMAP", "TEST1:clientID1,TEST2:clientID2")
 	r.NoError(err)
 
 	err = os.Setenv("TEST1_NAME", "test1name")
@@ -47,11 +47,12 @@ func TestSnowflakeConfigure(t *testing.T) {
 	env := &Accounts{}
 	err = envconfig.Process("SNOWFLAKE", env)
 	r.NoError(err)
-	r.Len(env.ACCOUNTS, 2)
-	for _, accountName := range env.ACCOUNTS {
+	r.Len(env.OKTAMAP, 2)
+	for accountName, clientID := range env.OKTAMAP {
 		env := &SnowflakeClientEnv{}
 		err = envconfig.Process(accountName, env)
 		r.NoError(err)
+		r.NotEmpty(clientID)
 	}
 
 	// // TODO(aku): Uncomment once failopen = false in go-misc/snowflake is merged:
