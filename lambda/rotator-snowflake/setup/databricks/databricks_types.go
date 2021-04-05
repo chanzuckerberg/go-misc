@@ -11,7 +11,7 @@ type DatabricksClientEnvironment struct {
 	APP_ID string `required:"true"`
 }
 
-type DatabricksAccount struct {
+type Account struct {
 	AppID  string
 	Client *DBAWS.DBClient
 }

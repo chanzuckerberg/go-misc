@@ -11,7 +11,7 @@ type SnowflakeClientEnv struct {
 	REGION   string
 }
 
-type SnowflakeAccount struct {
+type Account struct {
 	AppID string
 	Name  string
 	DB    *sql.DB

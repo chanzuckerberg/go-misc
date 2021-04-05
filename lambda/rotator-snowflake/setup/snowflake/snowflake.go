@@ -31,9 +31,9 @@ func configureConnection(env *SnowflakeClientEnv) (*sql.DB, error) {
 	return sqlDB, nil
 }
 
-func LoadSnowflakeAccounts(accountMap map[string]string) ([]*SnowflakeAccount, error) {
+func LoadSnowflakeAccounts(accountMap map[string]string) ([]*Account, error) {
 	snowflakeErrs := &multierror.Error{}
-	acctList := []*SnowflakeAccount{}
+	acctList := []*Account{}
 
 	for acctName, snowflakeAppID := range accountMap {
 		// If acctName has "okta" or "databricks" in the name, print a warning for possible name collision
@@ -59,7 +59,7 @@ func LoadSnowflakeAccounts(accountMap map[string]string) ([]*SnowflakeAccount, e
 			snowflakeErrs = multierror.Append(snowflakeErrs, err)
 		}
 
-		acctList = append(acctList, &SnowflakeAccount{
+		acctList = append(acctList, &Account{
 			AppID: snowflakeAppID,
 			Name:  snowflakeEnv.NAME,
 			DB:    sqlDB,

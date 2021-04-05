@@ -16,21 +16,21 @@ func Okta(ctx context.Context) (*oktaCfg.OktaClient, error) {
 	return oktaCfg.GetOktaClient(ctx)
 }
 
-func Databricks(ctx context.Context) (*databricksCfg.DatabricksAccount, error) {
+func Databricks(ctx context.Context) (*databricksCfg.Account, error) {
 	databricksEnv, err := databricksCfg.LoadDatabricksClientEnv()
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to get Databricks information from environment variables")
 	}
 
 	dbClient := databricks.NewAWSClient(databricksEnv.HOST, databricksEnv.TOKEN)
-	databricksAccount := &databricksCfg.DatabricksAccount{
+	databricksAccount := &databricksCfg.Account{
 		AppID:  databricksEnv.APP_ID,
 		Client: dbClient,
 	}
 	return databricksAccount, nil
 }
 
-func Snowflake(ctx context.Context) ([]*snowflakeCfg.SnowflakeAccount, error) {
+func Snowflake(ctx context.Context) ([]*snowflakeCfg.Account, error) {
 	env := &snowflakeCfg.Accounts{}
 	err := envconfig.Process("SNOWFLAKE", env)
 	if err != nil {
@@ -40,12 +40,12 @@ func Snowflake(ctx context.Context) ([]*snowflakeCfg.SnowflakeAccount, error) {
 	return snowflakeCfg.LoadSnowflakeAccounts(acctMapping)
 }
 
-func ListSnowflakeUsers(ctx context.Context, oktaClient *oktaCfg.OktaClient, snowflakeAcct *snowflakeCfg.SnowflakeAccount) (*sets.StringSet, error) {
+func ListSnowflakeUsers(ctx context.Context, oktaClient *oktaCfg.OktaClient, snowflakeAcct *snowflakeCfg.Account) (*sets.StringSet, error) {
 	userGetter := oktaClient.Client.Application.ListApplicationUsers
 	return oktaCfg.GetOktaAppUsers(snowflakeAcct.AppID, userGetter)
 }
 
-func ListDatabricksUsers(ctx context.Context, oktaClient *oktaCfg.OktaClient, databricksAccount *databricksCfg.DatabricksAccount) (*sets.StringSet, error) {
+func ListDatabricksUsers(ctx context.Context, oktaClient *oktaCfg.OktaClient, databricksAccount *databricksCfg.Account) (*sets.StringSet, error) {
 	userGetter := oktaClient.Client.Application.ListApplicationUsers
 	return oktaCfg.GetOktaAppUsers(databricksAccount.AppID, userGetter)
 }
