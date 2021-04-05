@@ -55,8 +55,4 @@ func TestSnowflakeConfigure(t *testing.T) {
 		r.NotEmpty(clientID)
 	}
 
-	// // TODO(aku): Uncomment once failopen = false in go-misc/snowflake is merged:
-	// accountInfo, err := LoadSnowflakeAccounts(env.ACCOUNTS)
-	// r.Error(err) // These credentials are dummy anyway. They shouldn't work in this case
-	// r.Len(accountInfo, 0)
 }
