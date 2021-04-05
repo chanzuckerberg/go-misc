@@ -1,7 +1,6 @@
 package rotate
 
 import (
-	"database/sql"
 	"fmt"
 
 	"github.com/chanzuckerberg/go-misc/keypair"
@@ -12,13 +11,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) (*snowflakeUserCredentials, error) {
+func buildSnowflakeSecrets(snowflakeAccount *snowflakeConfig.Account, username string, privKey string) (*snowflakeUserCredentials, error) {
 	if username == "" {
 		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
 	}
+	snowflakeDB := snowflakeAccount.DB
 
 	userQuery := fmt.Sprintf(`SHOW USERS LIKE '%s'`, username)
-	connectionRow := snowflake.QueryRow(connection, userQuery)
+	connectionRow := snowflake.QueryRow(snowflakeDB, userQuery)
 	if connectionRow == nil {
 		return nil, errors.New("Couldn't get a row output from snowflake")
 	}
@@ -38,15 +38,13 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) 
 		user:            username,
 		role:            defaultRole,
 		pem_private_key: privKey,
+		accountName:     snowflakeAccount.Name,
 	}
 
 	return &userSecrets, nil
 }
 
 func ProcessUser(user string, snowflakeAccount *snowflakeConfig.Account, databricksAccount *databricksConfig.Account) error {
-	snowflakeDB := snowflakeAccount.DB
-	snowflakeAcctName := snowflakeAccount.Name
-	databricksSecretsAPI := databricksAccount.Client.Secrets()
 
 	privKey, err := keypair.GenerateRSAKeypair()
 	if err != nil {
@@ -58,17 +56,18 @@ func ProcessUser(user string, snowflakeAccount *snowflakeConfig.Account, databri
 		return errors.Wrap(err, "Unable to format new keypair for snowflake and databricks")
 	}
 
+	snowflakeDB := snowflakeAccount.DB
 	err = updateSnowflake(user, snowflakeDB, pubKeyStr)
 	if err != nil {
 		return err
 	}
 
-	formattedSecrets, err := buildSnowflakeSecrets(snowflakeDB, user, privKeyStr)
+	formattedSecrets, err := buildSnowflakeSecrets(snowflakeAccount, user, privKeyStr)
 	if err != nil {
 		return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
 	}
 
-	// Intentionally equating databricks scope and user here
-	databricksScope := user
-	return updateDatabricks(databricksScope, snowflakeAcctName, formattedSecrets, databricksSecretsAPI)
+	databricksSecretsAPI := databricksAccount.Client.Secrets()
+	databricksScope := user // Intentionally equating databricks scope and user here
+	return updateDatabricks(databricksScope, formattedSecrets, databricksSecretsAPI)
 }
