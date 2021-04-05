@@ -69,11 +69,13 @@ func TestUpdateDatabricksNewScopes(t *testing.T) {
 			user:            "user1",
 			role:            "role1",
 			pem_private_key: "privkey1",
+			accountName:     acctName,
 		},
 		{
 			user:            "user2",
 			role:            "role2",
 			pem_private_key: "privkey2",
+			accountName:     acctName,
 		},
 	}
 	dummySecretClient := newTestSecretAPI()
@@ -83,7 +85,7 @@ func TestUpdateDatabricksNewScopes(t *testing.T) {
 	r.NoError(err)
 	r.Len(dummyScopeList, 0)
 	for i, testCredential := range testSnowflakeCredentials {
-		err := updateDatabricks(uniqueScopes[i], acctName, testCredential, dummySecretClient)
+		err := updateDatabricks(uniqueScopes[i], testCredential, dummySecretClient)
 		r.NoError(err)
 	}
 
@@ -91,15 +93,16 @@ func TestUpdateDatabricksNewScopes(t *testing.T) {
 	r.NoError(err)
 	r.Len(dummyScopeList, 2)
 
-	// Writing the credentials again with new users, same scopes
+	// Writing the credentials again with new users, same scopes, same account
 	// the scope list should be the same length
 	// secrets map should be expanded ()
 	testSnowflakeCredentials[0].user = "user3"
 	testSnowflakeCredentials[0].pem_private_key = "privkey3"
 	testSnowflakeCredentials[1].user = "user4"
 	testSnowflakeCredentials[1].pem_private_key = "privkey4"
+
 	for i, testCredential := range testSnowflakeCredentials {
-		err := updateDatabricks(uniqueScopes[i], acctName, testCredential, dummySecretClient)
+		err := updateDatabricks(uniqueScopes[i], testCredential, dummySecretClient)
 		r.NoError(err)
 	}
 	dummyScopeList, err = dummySecretClient.ListSecretScopes()
