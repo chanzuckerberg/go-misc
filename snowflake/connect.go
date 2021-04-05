@@ -36,11 +36,10 @@ func DSN(conf *SnowflakeConfig) (string, error) {
 	}
 
 	config := gosnowflake.Config{
-		Account: conf.Account,
-		User:    conf.User,
-		Region:  conf.Region,
-		Role:    conf.Role,
-		// TODO(aku): determine whether we want this or not
+		Account:      conf.Account,
+		User:         conf.User,
+		Region:       conf.Region,
+		Role:         conf.Role,
 		OCSPFailOpen: gosnowflake.OCSPFailOpenFalse,
 	}
 
