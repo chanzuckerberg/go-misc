@@ -11,14 +11,14 @@ import (
 	"github.com/pkg/errors"
 )
 
-func buildSnowflakeSecrets(snowflakeAccount *snowflakeConfig.Account, username string, privKey string) (*snowflakeUserCredentials, error) {
+func buildSnowflakeSecrets(ctx context.Context, snowflakeAccount *snowflakeConfig.Account, username string, privKey string) (*snowflakeUserCredentials, error) {
 	if username == "" {
 		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
 	}
 	snowflakeDB := snowflakeAccount.DB
 
 	userQuery := "SHOW USERS LIKE '?'"
-	connectionRow := snowflake.QueryRow(context.TODO(), snowflakeDB, userQuery, username)
+	connectionRow := snowflake.QueryRow(ctx, snowflakeDB, userQuery, username)
 	if connectionRow == nil {
 		return nil, errors.New("Couldn't get a row output from snowflake")
 	}
@@ -44,7 +44,7 @@ func buildSnowflakeSecrets(snowflakeAccount *snowflakeConfig.Account, username s
 	return &userSecrets, nil
 }
 
-func ProcessUser(user string, snowflakeAccount *snowflakeConfig.Account, databricksAccount *databricksConfig.Account) error {
+func ProcessUser(ctx context.Context, user string, snowflakeAccount *snowflakeConfig.Account, databricksAccount *databricksConfig.Account) error {
 
 	privKey, err := keypair.GenerateRSAKeypair()
 	if err != nil {
@@ -57,17 +57,18 @@ func ProcessUser(user string, snowflakeAccount *snowflakeConfig.Account, databri
 	}
 
 	snowflakeDB := snowflakeAccount.DB
-	err = updateSnowflake(user, snowflakeDB, pubKeyStr)
+	err = updateSnowflake(ctx, user, snowflakeDB, pubKeyStr)
 	if err != nil {
 		return err
 	}
 
-	formattedSecrets, err := buildSnowflakeSecrets(snowflakeAccount, user, privKeyStr)
+	formattedSecrets, err := buildSnowflakeSecrets(ctx, snowflakeAccount, user, privKeyStr)
 	if err != nil {
 		return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
 	}
 
 	databricksSecretsAPI := databricksAccount.Client.Secrets()
 	databricksScope := user // Intentionally equating databricks scope and user here
+
 	return updateDatabricks(databricksScope, formattedSecrets, databricksSecretsAPI)
 }

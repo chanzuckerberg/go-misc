@@ -44,7 +44,7 @@ func Rotate(ctx context.Context) error {
 
 		for _, user := range snowflakeUsers.List() {
 			if databricksUsers.ContainsElement(user) {
-				err = rotate.ProcessUser(user, snowflakeAccount, databricksAccount)
+				err = rotate.ProcessUser(ctx, user, snowflakeAccount, databricksAccount)
 			}
 		}
 	}
