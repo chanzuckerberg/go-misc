@@ -1,11 +1,9 @@
 package rotate
 
 import (
-	"database/sql"
 	"fmt"
 
 	databricksCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
-	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/pkg/errors"
 	"github.com/xinsnake/databricks-sdk-golang/aws/models"
 )
@@ -14,6 +12,7 @@ type snowflakeUserCredentials struct {
 	user            string
 	role            string
 	pem_private_key string
+	accountName     string
 }
 
 func (creds *snowflakeUserCredentials) writeSecrets(secretsClient databricksCfg.SecretsIface, currentScope string) error {
@@ -21,49 +20,18 @@ func (creds *snowflakeUserCredentials) writeSecrets(secretsClient databricksCfg.
 		return errors.New("empty scope")
 	}
 
-	err := secretsClient.PutSecret([]byte(creds.user), currentScope, "snowflake.user")
+	err := secretsClient.PutSecret([]byte(creds.user), currentScope, fmt.Sprintf("snowflake.%s.user", creds.accountName))
 	if err != nil {
 		return errors.Wrapf(err, "Unable to put secret username %s in scope %s", creds.user, currentScope)
 	}
 
-	err = secretsClient.PutSecret([]byte(creds.role), currentScope, "snowflake.role")
+	err = secretsClient.PutSecret([]byte(creds.role), currentScope, fmt.Sprintf("snowflake.%s.role", creds.accountName))
 	if err != nil {
 		return errors.Wrapf(err, "Unable to put role %s in scope %s", creds.role, currentScope)
 	}
 
-	err = secretsClient.PutSecret([]byte(creds.pem_private_key), currentScope, "snowflake.pem_private_key")
+	err = secretsClient.PutSecret([]byte(creds.pem_private_key), currentScope, fmt.Sprintf("snowflake.%s.pem_private_key", creds.accountName))
 	return errors.Wrapf(err, "Unable to put private key in scope %s", currentScope)
-}
-
-func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) (*snowflakeUserCredentials, error) {
-	if username == "" {
-		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
-	}
-
-	userQuery := fmt.Sprintf(`SHOW USERS LIKE '%s'`, username)
-	connectionRow := snowflake.QueryRow(connection, userQuery)
-	if connectionRow == nil {
-		return nil, errors.New("Couldn't get a row output from snowflake")
-	}
-	snowflakeUser, err := snowflake.ScanUser(connectionRow)
-	if err != nil {
-		return nil, errors.Wrapf(err, "Unable to read snowflake user from (%s)", userQuery)
-	}
-	if snowflakeUser == nil {
-		return nil, errors.New("Could not create snowflake User profile")
-	}
-	defaultRole := snowflakeUser.DefaultRole.String
-	if defaultRole == "" {
-		defaultRole = "PUBLIC"
-	}
-
-	userSecrets := snowflakeUserCredentials{
-		user:            username,
-		role:            defaultRole,
-		pem_private_key: privKey,
-	}
-
-	return &userSecrets, nil
 }
 
 func updateDatabricks(currentScope string, creds *snowflakeUserCredentials, secretsClient databricksCfg.SecretsIface) error {

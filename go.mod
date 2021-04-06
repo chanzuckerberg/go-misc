@@ -22,11 +22,12 @@ require (
 	github.com/honeycombio/libhoney-go v1.15.2
 	github.com/jmoiron/sqlx v1.3.1
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/nightlyone/lockfile v1.0.0
 	github.com/nlopes/slack v0.6.0
+	github.com/okta/okta-sdk-golang v1.1.0
+	github.com/peterhellberg/link v1.1.0
 	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
