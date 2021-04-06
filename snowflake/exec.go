@@ -9,13 +9,18 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func ExecNoRows(ctx context.Context, db *sql.DB, prepareQuery string, args ...interface{}) (sql.Result, error) {
-	logrus.Debugf("[DEBUG] exec stmt (%s)", prepareQuery)
+func ExecNoRows(ctx context.Context, db *sql.DB, query string, args ...interface{}) (sql.Result, error) {
+	logrus.Debugf("[DEBUG] exec stmt (%s)", query)
+
+	// if no args, then don't prepare:
+	if len(args) == 0 {
+		return db.ExecContext(ctx, query)
+	}
 
 	// Prepare the statement
-	preparedStmt, err := db.PrepareContext(ctx, prepareQuery)
+	preparedStmt, err := db.PrepareContext(ctx, query)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Unable to prepare sql statement (%s)", prepareQuery)
+		return nil, errors.Wrapf(err, "Unable to prepare sql statement (%s)", query)
 	}
 	defer preparedStmt.Close()
 
@@ -70,15 +75,15 @@ func QueryRow(ctx context.Context, db *sql.DB, stmt string, args ...interface{})
 
 	sdb := sqlx.NewDb(db, "snowflake").Unsafe()
 
-	preparedSQLxStmt, err := sdb.PreparexContext(ctx, stmt)
+	preparedStmt, err := sdb.PreparexContext(ctx, stmt)
 	if err != nil {
 		logrus.Warn(errors.Wrapf(err, "Unable to prepare query (%s)", stmt))
 
 		return nil
 	}
-	defer preparedSQLxStmt.Close()
+	defer preparedStmt.Close()
 
-	return preparedSQLxStmt.QueryRowxContext(ctx, args)
+	return preparedStmt.QueryRowxContext(ctx, args)
 }
 
 // Query will run stmt against the db and return the rows. We use

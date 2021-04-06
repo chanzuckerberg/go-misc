@@ -3,6 +3,7 @@ package rotate
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/chanzuckerberg/go-misc/keypair"
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
@@ -12,8 +13,10 @@ import (
 )
 
 func updateSnowflake(user string, db *sql.DB, pubKey string) error {
-	query := "ALTER USER ? SET RSA_PUBLIC_KEY_2 = ?"
-	_, err := snowflake.ExecNoRows(context.TODO(), db, query, user, pubKey)
+	query := fmt.Sprintf(`ALTER USER "%s" SET RSA_PUBLIC_KEY_2 = "%s"`, user, pubKey)
+	// Note(aku): Snowflake only supports preparation for these SQL statements: https://docs.snowflake.com/en/user-guide/sql-prepare.html
+	// For now: no arguments means no preparation
+	_, err := snowflake.ExecNoRows(context.TODO(), db, query)
 
 	return err
 }

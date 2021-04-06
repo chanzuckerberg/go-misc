@@ -40,7 +40,7 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) 
 		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
 	}
 
-	userQuery := `SHOW USERS LIKE '?'`
+	userQuery := "SHOW USERS LIKE '?'"
 
 	connectionRow := snowflake.QueryRow(context.TODO(), connection, userQuery, username)
 	if connectionRow == nil {
@@ -49,7 +49,7 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) 
 
 	snowflakeUser, err := snowflake.ScanUser(connectionRow)
 	if err != nil {
-		return nil, errors.Wrapf(err, "Unable to read snowflake user from (%s)", userQuery)
+		return nil, errors.Wrapf(err, "Unable to read snowflake user")
 	}
 
 	if snowflakeUser == nil {
