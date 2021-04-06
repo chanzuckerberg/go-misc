@@ -2,7 +2,6 @@ package rotate
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/chanzuckerberg/go-misc/keypair"
 	databricksConfig "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
@@ -18,8 +17,8 @@ func buildSnowflakeSecrets(snowflakeAccount *snowflakeConfig.Account, username s
 	}
 	snowflakeDB := snowflakeAccount.DB
 
-	userQuery := fmt.Sprintf(`SHOW USERS LIKE '%s'`, username)
-	connectionRow := snowflake.QueryRow(context.TODO(), snowflakeDB, userQuery)
+	userQuery := "SHOW USERS LIKE '?'"
+	connectionRow := snowflake.QueryRow(context.TODO(), snowflakeDB, userQuery, username)
 	if connectionRow == nil {
 		return nil, errors.New("Couldn't get a row output from snowflake")
 	}

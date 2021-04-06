@@ -47,6 +47,15 @@ func ExecMulti(ctx context.Context, db *sql.DB, queries []string, args ...[]inte
 	for i, query := range queries {
 		// Prepare the statement
 		logrus.Debugf("[DEBUG] exec (%s) ", query)
+		// if no args, then don't prepare:
+		if len(args[i]) == 0 {
+			_, err = db.ExecContext(ctx, query)
+			if err != nil {
+				return errors.Wrap(err, "Unable to execute statement")
+			}
+
+			return nil
+		}
 
 		preparedStmt, err := tx.PrepareContext(ctx, query)
 		if err != nil {
@@ -75,6 +84,11 @@ func QueryRow(ctx context.Context, db *sql.DB, stmt string, args ...interface{})
 
 	sdb := sqlx.NewDb(db, "snowflake").Unsafe()
 
+	if len(args) == 0 {
+		// Don't prepare the statement
+		return sdb.QueryRowxContext(ctx, stmt)
+	}
+
 	preparedStmt, err := sdb.PreparexContext(ctx, stmt)
 	if err != nil {
 		logrus.Warn(errors.Wrapf(err, "Unable to prepare query (%s)", stmt))
@@ -93,6 +107,10 @@ func Query(ctx context.Context, db *sql.DB, stmt string, args ...interface{}) (*
 	logrus.Debug("[DEBUG] query stmt ", stmt)
 
 	sdb := sqlx.NewDb(db, "snowflake").Unsafe()
+
+	if len(args) == 0 {
+		return sdb.QueryxContext(ctx, stmt)
+	}
 
 	preparedSQLxStmt, err := sdb.PreparexContext(ctx, stmt)
 	if err != nil {
