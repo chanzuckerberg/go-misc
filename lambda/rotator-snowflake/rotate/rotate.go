@@ -2,74 +2,73 @@ package rotate
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 
 	"github.com/chanzuckerberg/go-misc/keypair"
-	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
+	databricksConfig "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
+	snowflakeConfig "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/snowflake"
+
 	"github.com/chanzuckerberg/go-misc/snowflake"
-	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
 )
 
-func updateSnowflake(user string, db *sql.DB, pubKey string) error {
-	query := fmt.Sprintf(`ALTER USER "%s" SET RSA_PUBLIC_KEY_2 = "%s"`, user, pubKey)
-	// Note(aku): Snowflake only supports preparation for these SQL statements: https://docs.snowflake.com/en/user-guide/sql-prepare.html
-	// For now: no arguments means no preparation
-	_, err := snowflake.ExecNoRows(context.TODO(), db, query)
+func buildSnowflakeSecrets(snowflakeAccount *snowflakeConfig.Account, username string, privKey string) (*snowflakeUserCredentials, error) {
+	if username == "" {
+		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
+	}
+	snowflakeDB := snowflakeAccount.DB
 
-	return err
+	userQuery := fmt.Sprintf(`SHOW USERS LIKE '%s'`, username)
+	connectionRow := snowflake.QueryRow(context.TODO(), snowflakeDB, userQuery)
+	if connectionRow == nil {
+		return nil, errors.New("Couldn't get a row output from snowflake")
+	}
+	snowflakeUser, err := snowflake.ScanUser(connectionRow)
+	if err != nil {
+		return nil, errors.Wrapf(err, "Unable to read snowflake user from (%s)", userQuery)
+	}
+	if snowflakeUser == nil {
+		return nil, errors.New("Could not create snowflake User profile")
+	}
+	defaultRole := snowflakeUser.DefaultRole.String
+	if defaultRole == "" {
+		defaultRole = "PUBLIC"
+	}
+
+	userSecrets := snowflakeUserCredentials{
+		user:            username,
+		role:            defaultRole,
+		pem_private_key: privKey,
+		accountName:     snowflakeAccount.Name,
+	}
+
+	return &userSecrets, nil
 }
 
-func Rotate(ctx context.Context) error {
-	snowflakeDB, err := setup.Snowflake()
+func ProcessUser(user string, snowflakeAccount *snowflakeConfig.Account, databricksAccount *databricksConfig.Account) error {
+
+	privKey, err := keypair.GenerateRSAKeypair()
 	if err != nil {
-		return errors.Wrap(err, "Unable to configure snowflake")
+		return errors.Wrap(err, "Unable to generate RSA keypair")
 	}
 
-	databricksConnection, err := setup.Databricks()
+	privKeyStr, pubKeyStr, err := snowflake.RSAKeypairToString(privKey)
 	if err != nil {
-		return errors.Wrap(err, "Unable to configure databricks")
+		return errors.Wrap(err, "Unable to format new keypair for snowflake and databricks")
 	}
 
-	users, err := setup.GetUsers()
+	snowflakeDB := snowflakeAccount.DB
+	err = updateSnowflake(user, snowflakeDB, pubKeyStr)
 	if err != nil {
-		return errors.Wrap(err, "Unable to get list of users to rotate")
+		return err
 	}
 
-	// Collect errors for each user:
-	userErrors := &multierror.Error{}
-	processUser := func(user string) error {
-		privKey, err := keypair.GenerateRSAKeypair()
-		if err != nil {
-			return errors.Wrap(err, "Unable to generate RSA keypair")
-		}
-
-		privKeyStr, pubKeyStr, err := snowflake.RSAKeypairToString(privKey)
-		if err != nil {
-			return errors.Wrap(err, "Unable to format new keypair for snowflake and databricks")
-		}
-
-		err = updateSnowflake(user, snowflakeDB, pubKeyStr)
-		if err != nil {
-			return err
-		}
-
-		snowflakeSecrets, err := buildSnowflakeSecrets(snowflakeDB, user, privKeyStr)
-		if err != nil {
-			return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
-		}
-
-		// Intentionally equating databricks scope and user here
-		return updateDatabricks(user, snowflakeSecrets, databricksConnection.Secrets())
+	formattedSecrets, err := buildSnowflakeSecrets(snowflakeAccount, user, privKeyStr)
+	if err != nil {
+		return errors.Wrap(err, "Cannot generate Snowflake Secrets Map")
 	}
 
-	for _, user := range users {
-		err := processUser(user)
-		if err != nil {
-			userErrors = multierror.Append(userErrors, err)
-		}
-	}
-
-	return userErrors.ErrorOrNil()
+	databricksSecretsAPI := databricksAccount.Client.Secrets()
+	databricksScope := user // Intentionally equating databricks scope and user here
+	return updateDatabricks(databricksScope, formattedSecrets, databricksSecretsAPI)
 }
