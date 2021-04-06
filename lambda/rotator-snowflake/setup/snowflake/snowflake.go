@@ -20,7 +20,6 @@ func Snowflake() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	cfg := snowflake.SnowflakeConfig{
 		Account:  snowflakeEnv.ACCOUNT,
 		User:     snowflakeEnv.USER,
@@ -28,7 +27,6 @@ func Snowflake() (*sql.DB, error) {
 		Region:   snowflakeEnv.REGION,
 		Password: snowflakeEnv.PASSWORD,
 	}
-
 	sqlDB, err := snowflake.ConfigureSnowflakeDB(&cfg)
 
 	return sqlDB, errors.Wrap(err, "Unable to configure Snowflake DB")

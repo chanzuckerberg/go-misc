@@ -1,8 +1,8 @@
 package rotate
 
 import (
+	"context"
 	"database/sql"
-	"fmt"
 
 	databricksCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
 	"github.com/chanzuckerberg/go-misc/snowflake"
@@ -40,18 +40,22 @@ func buildSnowflakeSecrets(connection *sql.DB, username string, privKey string) 
 		return nil, errors.New("Empty username. Snowflake secrets cannot be built")
 	}
 
-	userQuery := fmt.Sprintf(`SHOW USERS LIKE '%s'`, username)
-	connectionRow := snowflake.QueryRow(connection, userQuery)
+	userQuery := `SHOW USERS LIKE '?'`
+
+	connectionRow := snowflake.QueryRow(context.TODO(), connection, userQuery, username)
 	if connectionRow == nil {
 		return nil, errors.New("Couldn't get a row output from snowflake")
 	}
+
 	snowflakeUser, err := snowflake.ScanUser(connectionRow)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Unable to read snowflake user from (%s)", userQuery)
 	}
+
 	if snowflakeUser == nil {
 		return nil, errors.New("Could not create snowflake User profile")
 	}
+
 	defaultRole := snowflakeUser.DefaultRole.String
 	if defaultRole == "" {
 		defaultRole = "PUBLIC"
