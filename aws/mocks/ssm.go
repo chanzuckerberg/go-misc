@@ -7371,6 +7371,56 @@ func (mr *MockSSMAPIMockRecorder) TerminateSessionWithContext(arg0, arg1 interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "TerminateSessionWithContext", reflect.TypeOf((*MockSSMAPI)(nil).TerminateSessionWithContext), varargs...)
 }
 
+// UnlabelParameterVersion mocks base method.
+func (m *MockSSMAPI) UnlabelParameterVersion(arg0 *ssm.UnlabelParameterVersionInput) (*ssm.UnlabelParameterVersionOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UnlabelParameterVersion", arg0)
+	ret0, _ := ret[0].(*ssm.UnlabelParameterVersionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UnlabelParameterVersion indicates an expected call of UnlabelParameterVersion.
+func (mr *MockSSMAPIMockRecorder) UnlabelParameterVersion(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnlabelParameterVersion", reflect.TypeOf((*MockSSMAPI)(nil).UnlabelParameterVersion), arg0)
+}
+
+// UnlabelParameterVersionRequest mocks base method.
+func (m *MockSSMAPI) UnlabelParameterVersionRequest(arg0 *ssm.UnlabelParameterVersionInput) (*request.Request, *ssm.UnlabelParameterVersionOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UnlabelParameterVersionRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ssm.UnlabelParameterVersionOutput)
+	return ret0, ret1
+}
+
+// UnlabelParameterVersionRequest indicates an expected call of UnlabelParameterVersionRequest.
+func (mr *MockSSMAPIMockRecorder) UnlabelParameterVersionRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnlabelParameterVersionRequest", reflect.TypeOf((*MockSSMAPI)(nil).UnlabelParameterVersionRequest), arg0)
+}
+
+// UnlabelParameterVersionWithContext mocks base method.
+func (m *MockSSMAPI) UnlabelParameterVersionWithContext(arg0 context.Context, arg1 *ssm.UnlabelParameterVersionInput, arg2 ...request.Option) (*ssm.UnlabelParameterVersionOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UnlabelParameterVersionWithContext", varargs...)
+	ret0, _ := ret[0].(*ssm.UnlabelParameterVersionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UnlabelParameterVersionWithContext indicates an expected call of UnlabelParameterVersionWithContext.
+func (mr *MockSSMAPIMockRecorder) UnlabelParameterVersionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnlabelParameterVersionWithContext", reflect.TypeOf((*MockSSMAPI)(nil).UnlabelParameterVersionWithContext), varargs...)
+}
+
 // UpdateAssociation mocks base method.
 func (m *MockSSMAPI) UpdateAssociation(arg0 *ssm.UpdateAssociationInput) (*ssm.UpdateAssociationOutput, error) {
 	m.ctrl.T.Helper()
