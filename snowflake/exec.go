@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/hashicorp/go-multierror"
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -36,44 +37,51 @@ func ExecNoRows(ctx context.Context, db *sql.DB, query string, args ...interface
 func ExecMulti(ctx context.Context, db *sql.DB, queries []string, args ...[]interface{}) error {
 	logrus.Debug("[DEBUG] exec stmts ", queries)
 
+	if len(queries) != len(args) {
+		return errors.Errorf("Number of queries (%d) does not match with number of argument groups (%d)", len(queries), len(args))
+	}
+
 	tx, err := db.BeginTx(ctx, nil)
 	if err != nil {
 		return errors.Wrap(err, "Unable to begin transaction with database")
 	}
 
-	// NOTE(aku): do we need to store these statements one-by-one so we can programmatically close them all?
-	// preparedStmts := []*sql.Stmt{}
+	queryErrors := &multierror.Error{}
 
 	for i, query := range queries {
-		// Prepare the statement
 		logrus.Debugf("[DEBUG] exec (%s) ", query)
 		// if no args, then don't prepare:
 		if len(args[i]) == 0 {
 			_, err = db.ExecContext(ctx, query)
-			if err != nil {
-				return errors.Wrap(err, "Unable to execute statement")
-			}
+			queryErrors = multierror.Append(queryErrors, errors.Wrap(err, "Unable to execute statement"))
 
-			return nil
+			continue
 		}
-
+		// Prepare the statement
 		preparedStmt, err := tx.PrepareContext(ctx, query)
 		if err != nil {
-			return errors.Wrapf(err, "Unable to prepare query (%s)", query)
+			queryErrors = multierror.Append(queryErrors, errors.Wrapf(err, "Unable to prepare query (%s)", query))
 		}
 		defer preparedStmt.Close()
-		// TODO(aku): do we need to do this?
-		// preparedStmts = append(preparedStmts, preparedStmt)
-		// defer preparedStmts[i].Close()
 
 		// Run statement with arguments
 		_, err = preparedStmt.ExecContext(ctx, args[i]...)
 		if err != nil {
-			return tx.Rollback()
+			queryErrors = multierror.Append(queryErrors, errors.Wrapf(err, "Unable to execute query (%s)", query))
+
+			// If executing this statement returns an error, rollback, collect error from rollback if any, and return all errors
+			err = tx.Rollback()
+			if err != nil {
+				queryErrors = multierror.Append(queryErrors, errors.Wrapf(err, "Unable to roll back transaction"))
+			}
+			return queryErrors.ErrorOrNil()
 		}
 	}
 
-	return tx.Commit()
+	err = tx.Commit()
+	queryErrors = multierror.Append(queryErrors, err)
+
+	return queryErrors.ErrorOrNil()
 }
 
 // QueryRow will run stmt against the db and return the row. We use
