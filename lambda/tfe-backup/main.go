@@ -6,7 +6,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
-	"github.com/chanzuckerberg/go-misc/aws"
+	cziAWS "github.com/chanzuckerberg/go-misc/aws"
 	"github.com/chanzuckerberg/go-misc/lambda/tfe-backup/runner"
 	"github.com/getsentry/sentry-go"
 	"github.com/kelseyhightower/envconfig"
@@ -41,7 +41,7 @@ func run0(ctx context.Context, config *runner.Config) error {
 		return errors.Wrap(err, "could not instantiate AWS session")
 	}
 
-	client := aws.New(sess).WithSecretsManager(sess.Config).WithKMS(sess.Config)
+	client := cziAWS.New(sess).WithSecretsManager(sess.Config).WithKMS(sess.Config)
 	uploader := s3manager.NewUploader(sess)
 
 	tfeToken, err := client.SecretsManager.ReadStringLatestVersion(ctx, config.TFETokenSecretARN)
