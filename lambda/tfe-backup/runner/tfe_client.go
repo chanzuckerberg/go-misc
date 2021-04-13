@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"path"
@@ -26,7 +27,10 @@ type TFE struct {
 }
 
 func NewTFE(token, host string) TFEiface {
-	return &TFE{}
+	return &TFE{
+		token: token,
+		host:  host,
+	}
 }
 
 func (t *TFE) createBackupRequest(ctx context.Context, password string) (*http.Request, error) {
@@ -35,7 +39,7 @@ func (t *TFE) createBackupRequest(ctx context.Context, password string) (*http.R
 		return nil, errors.Wrap(err, "could not marshal ")
 	}
 
-	url := path.Join(t.host, "/_backup/api/v1/backup")
+	url := fmt.Sprintf("%s/_backup/api/v1/backup", t.host)
 
 	req, err := http.NewRequestWithContext(
 		ctx,
@@ -43,6 +47,10 @@ func (t *TFE) createBackupRequest(ctx context.Context, password string) (*http.R
 		url,
 		bytes.NewReader(body),
 	)
+
+	// Add authentication token
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", t.token))
+
 	return req, errors.Wrap(err, "could not create backup request")
 }
 
@@ -52,6 +60,7 @@ func (t *TFE) Backup(
 	dataKey *DataKey,
 	config *Config,
 ) error {
+
 	// ask for backup
 	req, err := t.createBackupRequest(ctx, dataKey.Plaintext)
 	if err != nil {
