@@ -6,8 +6,14 @@ import (
 )
 
 type DatabricksClientEnvironment struct {
-	HOST  string `required:"true"`
-	TOKEN string `required:"true"`
+	HOST   string `required:"true"`
+	TOKEN  string `required:"true"`
+	APP_ID string `required:"true"`
+}
+
+type Account struct {
+	AppID  string
+	Client *DBAWS.DBClient
 }
 
 type DatabricksConnection interface {
