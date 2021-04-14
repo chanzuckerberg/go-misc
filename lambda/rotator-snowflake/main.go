@@ -51,6 +51,9 @@ func Rotate(ctx context.Context) error {
 			}
 		}
 	}
+	// TODO(aku): rotate(!) the service account credentials!
+	// Chamber write the thing
+	// Alter the snowflake_rotator user with password
 
 	return accountErrors.ErrorOrNil()
 }

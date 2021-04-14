@@ -15,7 +15,6 @@ import (
 // 	r := require.New(t)
 // 	defer util.ResetEnv(os.Environ())
 
-// 	os.Setenv("OKTA_PRIVATE_KEY", "testPrivKey")
 // 	os.Setenv("OKTA_ORG_URL", "https://www.testOrgURL.com")
 // 	os.Setenv("OKTA_CLIENT_ID", "testClientID")
 
