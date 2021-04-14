@@ -4,11 +4,11 @@ import "database/sql"
 
 // envconfig that's prefixed by the snowflake account name
 type SnowflakeClientEnv struct {
-	NAME     string `required:"true"`
-	PASSWORD string `required:"true"`
-	USER     string `required:"true"`
-	ROLE     string `required:"true"`
-	REGION   string
+	NAME                string `required:"true"`
+	USER                string `required:"true"`
+	ROLE                string `required:"true"`
+	PARAM_STORE_SERVICE string `required:"true"`
+	REGION              string
 }
 
 type Account struct {

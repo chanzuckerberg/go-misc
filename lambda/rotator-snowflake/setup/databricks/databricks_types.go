@@ -6,9 +6,9 @@ import (
 )
 
 type DatabricksClientEnvironment struct {
-	HOST   string `required:"true"`
-	TOKEN  string `required:"true"`
-	APP_ID string `required:"true"`
+	HOST                string `required:"true"`
+	APP_ID              string `required:"true"`
+	PARAM_STORE_SERVICE string `required:"true"`
 }
 
 type Account struct {

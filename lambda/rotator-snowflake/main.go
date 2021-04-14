@@ -9,23 +9,26 @@ import (
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/rotate"
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
 	"github.com/hashicorp/go-multierror"
+	"github.com/segmentio/chamber/store"
 	"github.com/sirupsen/logrus"
 )
 
 var localFlag = flag.Bool("local", false, "Whether this lambda should be run locally")
 
 func Rotate(ctx context.Context) error {
-	databricksAccount, err := setup.Databricks(ctx)
+	secretStore := store.NewSSMStore(2)
+
+	databricksAccount, err := setup.Databricks(ctx, secretStore)
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure databricks")
 	}
 
-	oktaClient, err := setup.Okta(ctx)
+	oktaClient, err := setup.Okta(ctx, secretStore)
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure okta")
 	}
 
-	snowflakeAccounts, err := setup.Snowflake(ctx)
+	snowflakeAccounts, err := setup.Snowflake(ctx, secretStore)
 	if err != nil {
 		return err
 	}

@@ -10,19 +10,31 @@ import (
 	snowflakeCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/snowflake"
 	"github.com/chanzuckerberg/go-misc/sets"
 	"github.com/kelseyhightower/envconfig"
+	"github.com/segmentio/chamber/store"
 )
 
-func Okta(ctx context.Context) (*oktaCfg.OktaClient, error) {
-	return oktaCfg.GetOktaClient(ctx)
+func Okta(ctx context.Context, secrets *store.SSMStore) (*oktaCfg.OktaClient, error) {
+	return oktaCfg.GetOktaClient(ctx, secrets)
 }
 
-func Databricks(ctx context.Context) (*databricksCfg.Account, error) {
+func Databricks(ctx context.Context, secrets *store.SSMStore) (*databricksCfg.Account, error) {
 	databricksEnv, err := databricksCfg.LoadDatabricksClientEnv()
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to get Databricks information from environment variables")
 	}
+	host := databricksEnv.HOST
 
-	dbClient := databricks.NewAWSClient(databricksEnv.HOST, databricksEnv.TOKEN)
+	service := databricksEnv.PARAM_STORE_SERVICE
+	tokenSecretID := store.SecretId{
+		Service: service,
+		Key:     "databricks_token",
+	}
+	token, err := secrets.Read(tokenSecretID, -1)
+	if err != nil {
+		return nil, errors.Wrapf(err, "Can't find Databricks Token in AWS Parameter Store in service (%s)", service)
+	}
+
+	dbClient := databricks.NewAWSClient(host, *token.Value)
 	databricksAccount := &databricksCfg.Account{
 		AppID:  databricksEnv.APP_ID,
 		Client: dbClient,
@@ -30,14 +42,14 @@ func Databricks(ctx context.Context) (*databricksCfg.Account, error) {
 	return databricksAccount, nil
 }
 
-func Snowflake(ctx context.Context) ([]*snowflakeCfg.Account, error) {
+func Snowflake(ctx context.Context, secrets *store.SSMStore) ([]*snowflakeCfg.Account, error) {
 	env := &snowflakeCfg.Accounts{}
 	err := envconfig.Process("SNOWFLAKE", env)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to parse list of accounts from environment variables")
 	}
 	acctMapping := env.OKTAMAP
-	return snowflakeCfg.LoadSnowflakeAccounts(acctMapping)
+	return snowflakeCfg.LoadSnowflakeAccounts(acctMapping, secrets)
 }
 
 func ListSnowflakeUsers(ctx context.Context, oktaClient *oktaCfg.OktaClient, snowflakeAcct *snowflakeCfg.Account) (*sets.StringSet, error) {
