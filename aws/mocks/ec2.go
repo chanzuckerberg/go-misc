@@ -14847,6 +14847,39 @@ func (mr *MockEC2APIMockRecorder) DescribeStoreImageTasks(arg0 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeStoreImageTasks", reflect.TypeOf((*MockEC2API)(nil).DescribeStoreImageTasks), arg0)
 }
 
+// DescribeStoreImageTasksPages mocks base method.
+func (m *MockEC2API) DescribeStoreImageTasksPages(arg0 *ec2.DescribeStoreImageTasksInput, arg1 func(*ec2.DescribeStoreImageTasksOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeStoreImageTasksPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeStoreImageTasksPages indicates an expected call of DescribeStoreImageTasksPages.
+func (mr *MockEC2APIMockRecorder) DescribeStoreImageTasksPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeStoreImageTasksPages", reflect.TypeOf((*MockEC2API)(nil).DescribeStoreImageTasksPages), arg0, arg1)
+}
+
+// DescribeStoreImageTasksPagesWithContext mocks base method.
+func (m *MockEC2API) DescribeStoreImageTasksPagesWithContext(arg0 context.Context, arg1 *ec2.DescribeStoreImageTasksInput, arg2 func(*ec2.DescribeStoreImageTasksOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeStoreImageTasksPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeStoreImageTasksPagesWithContext indicates an expected call of DescribeStoreImageTasksPagesWithContext.
+func (mr *MockEC2APIMockRecorder) DescribeStoreImageTasksPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeStoreImageTasksPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeStoreImageTasksPagesWithContext), varargs...)
+}
+
 // DescribeStoreImageTasksRequest mocks base method.
 func (m *MockEC2API) DescribeStoreImageTasksRequest(arg0 *ec2.DescribeStoreImageTasksInput) (*request.Request, *ec2.DescribeStoreImageTasksOutput) {
 	m.ctrl.T.Helper()
