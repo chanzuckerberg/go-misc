@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var testSnowflakeConfig = SnowflakeConfig{
+var testSnowflakeConfig = Config{
 	Account:          "test-acct",
 	User:             "test-user",
 	Password:         "test-password",

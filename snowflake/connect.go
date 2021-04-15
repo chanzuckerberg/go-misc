@@ -8,7 +8,7 @@ import (
 	"github.com/snowflakedb/gosnowflake"
 )
 
-type SnowflakeConfig struct {
+type Config struct {
 	Account          string `yaml:"account"`
 	User             string `yaml:"username"`
 	Password         string `yaml:"password"`
@@ -19,7 +19,7 @@ type SnowflakeConfig struct {
 	Role             string `yaml:"role"`
 }
 
-func ConfigureSnowflakeDB(s *SnowflakeConfig) (*sql.DB, error) {
+func ConfigureSnowflakeDB(s *Config) (*sql.DB, error) {
 	dsn, err := DSN(s)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not build dsn for snowflake connection")
@@ -28,7 +28,7 @@ func ConfigureSnowflakeDB(s *SnowflakeConfig) (*sql.DB, error) {
 	return Open(dsn)
 }
 
-func DSN(conf *SnowflakeConfig) (string, error) {
+func DSN(conf *Config) (string, error) {
 	// us-west-2 is their default region, but if you actually specify that it won't trigger their default code
 	//  https://github.com/snowflakedb/gosnowflake/blob/52137ce8c32eaf93b0bd22fc5c7297beff339812/dsn.go#L61
 	if conf.Region == "us-west-2" {
