@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/chanzuckerberg/aws-oidc/pkg/util"
+	"github.com/chanzuckerberg/go-misc/osutil"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"github.com/xinsnake/databricks-sdk-golang/aws/models"
@@ -62,7 +62,7 @@ func (t *testSecretAPI) PutSecret(bytesValue []byte, scopeName string, key strin
 
 func TestUpdateDatabricksNewScopes(t *testing.T) {
 	r := require.New(t)
-	defer util.ResetEnv(os.Environ())
+	defer osutil.ResetEnv(os.Environ())
 	acctName := "testAccount"
 	testSnowflakeCredentials := []*snowflakeUserCredentials{
 		{

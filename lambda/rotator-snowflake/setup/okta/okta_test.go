@@ -5,10 +5,24 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/chanzuckerberg/go-misc/osutil"
 	"github.com/okta/okta-sdk-golang/okta"
 	"github.com/okta/okta-sdk-golang/okta/query"
 	"github.com/stretchr/testify/require"
 )
+
+func TestGetOktaClient(t *testing.T) {
+	r := require.New(t)
+	defer osutil.ResetEnv(os.Environ())
+
+	os.Setenv("OKTA_PRIVATE_KEY", "testPrivKey")
+	os.Setenv("OKTA_ORG_URL", "https://www.testOrgURL.com")
+	os.Setenv("OKTA_CLIENT_ID", "testClientID")
+
+	oktaClient, err := GetOktaClient(context.Background())
+	r.NoError(err)
+	r.NotNil(oktaClient)
+}
 
 var testIndexedApplications = map[int][]*okta.AppUser{
 	1: {
