@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/chanzuckerberg/aws-oidc/pkg/util"
+	"github.com/chanzuckerberg/go-misc/osutil"
 	"github.com/okta/okta-sdk-golang/okta"
 	"github.com/okta/okta-sdk-golang/okta/query"
 	"github.com/stretchr/testify/require"
@@ -14,7 +14,7 @@ import (
 
 func TestGetOktaClient(t *testing.T) {
 	r := require.New(t)
-	defer util.ResetEnv(os.Environ())
+	defer osutil.ResetEnv(os.Environ())
 
 	os.Setenv("OKTA_PRIVATE_KEY", "testPrivKey")
 	os.Setenv("OKTA_ORG_URL", "https://www.testOrgURL.com")

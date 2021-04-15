@@ -4,13 +4,13 @@ import (
 	"os"
 	"testing"
 
-	"github.com/chanzuckerberg/aws-oidc/pkg/util"
+	"github.com/chanzuckerberg/go-misc/osutil"
 	"github.com/stretchr/testify/require"
 )
 
 func TestDatabricksSetup(t *testing.T) {
 	r := require.New(t)
-	defer util.ResetEnv(os.Environ())
+	defer osutil.ResetEnv(os.Environ())
 	err := os.Setenv("DATABRICKS_HOST", "testhost")
 	r.NoError(err)
 	os.Setenv("DATABRICKS_TOKEN", "testtoken")
