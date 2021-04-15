@@ -48,12 +48,10 @@ func Rotate(ctx context.Context) error {
 		for _, user := range snowflakeUsers.List() {
 			if databricksUsers.ContainsElement(user) {
 				err = rotate.ProcessUser(ctx, user, snowflakeAccount, databricksAccount)
+				accountErrors = multierror.Append(accountErrors, errors.Wrapf(err, "Unable to rotate %s's credentials", user))
 			}
 		}
 	}
-	// TODO(aku): rotate(!) the service account credentials!
-	// Chamber write the thing
-	// Alter the snowflake_rotator user with password
 
 	return accountErrors.ErrorOrNil()
 }

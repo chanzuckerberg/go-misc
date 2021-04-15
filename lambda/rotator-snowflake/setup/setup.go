@@ -104,7 +104,6 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 			Service: service,
 			Key:     passwordName,
 		}
-
 		password, err := secrets.Read(tokenSecretID, -1)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Can't find %s's password in AWS Parameter Store in service (%s)", snowflakeEnv.NAME, service)
@@ -115,6 +114,7 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 		sqlDB, err := snowflakeCfg.ConfigureConnection(cfg)
 		if err != nil {
 			snowflakeErrs = multierror.Append(snowflakeErrs, err)
+
 			continue
 		}
 
