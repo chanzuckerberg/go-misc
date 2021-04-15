@@ -12,7 +12,7 @@ import (
 )
 
 func configureConnection(env *SnowflakeClientEnv) (*sql.DB, error) {
-	cfg := snowflake.SnowflakeConfig{
+	cfg := snowflake.Config{
 		Account:  env.NAME,
 		User:     env.USER,
 		Role:     env.ROLE,
