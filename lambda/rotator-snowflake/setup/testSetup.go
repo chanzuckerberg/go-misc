@@ -55,9 +55,7 @@ func TestGetDatabricksAccount(t *testing.T) {
 
 func TestGetSnowflakeAccounts(t *testing.T) {
 	r := require.New(t)
-	// keep the original values....
-	defer util.ResetEnv(os.Environ()) // TODO: make ResetEnv() part of a go-misc package
-	// First define the snowflake Account Names
+	defer util.ResetEnv(os.Environ())
 	err := os.Setenv("SNOWFLAKE_OKTAMAP", "TEST1:clientID1,TEST2:clientID2")
 	r.NoError(err)
 
