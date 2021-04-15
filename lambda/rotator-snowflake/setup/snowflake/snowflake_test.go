@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/chanzuckerberg/aws-oidc/pkg/util"
+	"github.com/chanzuckerberg/go-misc/osutil"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/stretchr/testify/require"
 )
@@ -12,7 +12,7 @@ import (
 func TestSnowflakeConfigure(t *testing.T) {
 	r := require.New(t)
 	// keep the original values....
-	defer util.ResetEnv(os.Environ()) // TODO: make ResetEnv() part of a go-misc package
+	defer osutil.ResetEnv(os.Environ())
 	// First define the snowflake Account Names
 	err := os.Setenv("SNOWFLAKE_OKTAMAP", "TEST1:clientID1,TEST2:clientID2")
 	r.NoError(err)
