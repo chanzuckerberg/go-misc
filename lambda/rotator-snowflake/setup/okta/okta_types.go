@@ -12,7 +12,7 @@ type OktaClientEnvironment struct {
 	PARAM_STORE_SERVICE string `required:"true"`
 }
 
-func loadOktaClientEnv() (*OktaClientEnvironment, error) {
+func LoadOktaClientEnv() (*OktaClientEnvironment, error) {
 	env := &OktaClientEnvironment{}
 	err := envconfig.Process("OKTA", env)
 

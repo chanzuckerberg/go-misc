@@ -3,45 +3,43 @@ package okta
 import (
 	"context"
 	"net/url"
-	"strings"
 
 	"github.com/chanzuckerberg/go-misc/sets"
 	"github.com/okta/okta-sdk-golang/okta"
 	"github.com/okta/okta-sdk-golang/okta/query"
 	"github.com/peterhellberg/link"
 	"github.com/pkg/errors"
-	"github.com/segmentio/chamber/store"
 )
 
-func GetOktaClient(ctx context.Context, secrets *store.SSMStore) (*OktaClient, error) {
-	env, err := loadOktaClientEnv()
-	if err != nil {
-		return nil, errors.Wrap(err, "Unable to load right Okta env variables")
-	}
+// func GetOktaClient(ctx context.Context, secrets setup.SecretStore) (*OktaClient, error) {
+// 	env, err := loadOktaClientEnv()
+// 	if err != nil {
+// 		return nil, errors.Wrap(err, "Unable to load right Okta env variables")
+// 	}
 
-	service := env.PARAM_STORE_SERVICE
-	tokenSecretID := store.SecretId{
-		Service: service, // TODO(aku): Figure out how to feed this value in through environment variables
-		Key:     "okta_private_key",
-	}
-	private_key, err := secrets.Read(tokenSecretID, -1)
-	if err != nil {
-		return nil, errors.Wrapf(err, "Can't find Okta Private Key in AWS Parameter Store in service (%s)", service)
-	}
+// 	service := env.PARAM_STORE_SERVICE
+// 	tokenSecretID := store.SecretId{
+// 		Service: service,
+// 		Key:     "okta_private_key",
+// 	}
+// 	private_key, err := secrets.Read(tokenSecretID, -1)
+// 	if err != nil {
+// 		return nil, errors.Wrapf(err, "Can't find Okta Private Key in AWS Parameter Store in service (%s)", service)
+// 	}
 
-	privKeyNoQuotes := strings.ReplaceAll(*private_key.Value, `"`, ``)
-	client, err := okta.NewClient(
-		ctx,
-		okta.WithAuthorizationMode("PrivateKey"),
-		okta.WithClientId(env.CLIENT_ID),
-		okta.WithScopes(([]string{"okta.apps.read"})),
-		okta.WithPrivateKey(privKeyNoQuotes),
-		okta.WithOrgUrl(env.ORG_URL),
-		okta.WithCache(true),
-	)
+// 	privKeyNoQuotes := strings.ReplaceAll(*private_key.Value, `"`, ``)
+// 	client, err := okta.NewClient(
+// 		ctx,
+// 		okta.WithAuthorizationMode("PrivateKey"),
+// 		okta.WithClientId(env.CLIENT_ID),
+// 		okta.WithScopes(([]string{"okta.apps.read"})),
+// 		okta.WithPrivateKey(privKeyNoQuotes),
+// 		okta.WithOrgUrl(env.ORG_URL),
+// 		okta.WithCache(true),
+// 	)
 
-	return &OktaClient{Client: client}, errors.Wrap(err, "Unable to configure Okta client")
-}
+// 	return &OktaClient{Client: client}, errors.Wrap(err, "Unable to configure Okta client")
+// }
 
 func GetOktaAppUsers(
 	ctx context.Context,

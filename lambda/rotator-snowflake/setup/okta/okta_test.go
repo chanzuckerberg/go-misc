@@ -10,15 +10,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-// TODO: try to get a mock ssm input into GetOktaClient()
 // func TestGetOktaClient(t *testing.T) {
 // 	r := require.New(t)
 // 	defer util.ResetEnv(os.Environ())
-
 // 	os.Setenv("OKTA_ORG_URL", "https://www.testOrgURL.com")
 // 	os.Setenv("OKTA_CLIENT_ID", "testClientID")
-
-// 	oktaClient, err := GetOktaClient(context.Background())
+// 	os.Setenv("OKTA_PARAM_STORE_SERVICE", "testService")
+// 	store :=
+// 	oktaClient, err := GetOktaClient(context.Background(), store)
 // 	r.NoError(err)
 // 	r.NotNil(oktaClient)
 // }
