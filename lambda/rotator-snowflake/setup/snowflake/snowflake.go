@@ -32,8 +32,7 @@ func LoadSnowflakeEnv(acctName string) (*SnowflakeClientEnv, error) {
 	return snowflakeEnv, nil
 }
 
-func ConfigureConnection(cfg snowflake.SnowflakeConfig) (*sql.DB, error) {
-
+func ConfigureConnection(cfg snowflake.Config) (*sql.DB, error) {
 	sqlDB, err := snowflake.ConfigureSnowflakeDB(&cfg)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to configure Snowflake SQL connection")

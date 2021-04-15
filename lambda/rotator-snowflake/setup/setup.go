@@ -91,7 +91,7 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 	for acctName, snowflakeAppID := range acctMapping {
 		snowflakeEnv, err := snowflakeCfg.LoadSnowflakeEnv(acctName)
 
-		cfg := snowflake.SnowflakeConfig{
+		cfg := snowflake.Config{
 			Account: snowflakeEnv.NAME,
 			User:    snowflakeEnv.USER,
 			Role:    snowflakeEnv.ROLE,
