@@ -1,41 +1,46 @@
 package snowflake
 
-// func LoadSnowflakeAccounts(accountMap map[string]string, secrets setup.SecretStore) ([]*Account, error) {
-// 	snowflakeErrs := &multierror.Error{}
-// 	acctList := []*Account{}
+import (
+	"database/sql"
+	"strings"
 
-// 	for acctName, snowflakeAppID := range accountMap {
-// 		// If acctName has "okta" or "databricks" in the name, print a warning for possible name collision
-// 		oktaCollision := strings.Contains(acctName, "okta")
-// 		if oktaCollision {
-// 			logrus.Warnf("Snowflake Account %s will likely collide with okta Environment Variables", acctName)
-// 		}
+	"github.com/chanzuckerberg/go-misc/errors"
+	"github.com/chanzuckerberg/go-misc/snowflake"
+	"github.com/kelseyhightower/envconfig"
+	"github.com/sirupsen/logrus"
+)
 
-// 		databricksCollision := strings.Contains(acctName, "databricks")
-// 		if databricksCollision {
-// 			logrus.Warnf("Snowflake Account %s will likely collide with databricks Environment Variables", acctName)
-// 		}
+func LoadSnowflakeEnv(acctName string) (*SnowflakeClientEnv, error) {
+	// If acctName has "okta" or "databricks" in the name, print a warning for possible name collision
+	oktaCollision := strings.Contains(acctName, "okta")
+	if oktaCollision {
+		logrus.Warnf("Snowflake Account %s will likely collide with okta Environment Variables", acctName)
+	}
 
-// 		snowflakeEnv := &SnowflakeClientEnv{}
+	databricksCollision := strings.Contains(acctName, "databricks")
+	if databricksCollision {
+		logrus.Warnf("Snowflake Account %s will likely collide with databricks Environment Variables", acctName)
+	}
 
-// 		err := envconfig.Process(acctName, snowflakeEnv)
-// 		if err != nil {
-// 			snowflakeErrs = multierror.Append(snowflakeErrs, errors.Wrap(err, "Error processing Snowflake environment variables"))
-// 		}
+	snowflakeEnv := &SnowflakeClientEnv{}
 
-// 		sqlDB, err := ConfigureConnection(snowflakeEnv, secrets)
-// 		if err != nil {
-// 			snowflakeErrs = multierror.Append(snowflakeErrs, err)
+	err := envconfig.Process(acctName, snowflakeEnv)
+	if err != nil {
+		return nil, errors.Wrapf(err, "Unable to get right env variables for %s snowflake account", acctName)
+	}
 
-// 			continue
-// 		}
+	return snowflakeEnv, nil
+}
 
-// 		acctList = append(acctList, &Account{
-// 			AppID: snowflakeAppID,
-// 			Name:  snowflakeEnv.NAME,
-// 			DB:    sqlDB,
-// 		})
-// 	}
+func ConfigureConnection(cfg snowflake.SnowflakeConfig) (*sql.DB, error) {
 
-// 	return acctList, snowflakeErrs.ErrorOrNil()
-// }
+	sqlDB, err := snowflake.ConfigureSnowflakeDB(&cfg)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to configure Snowflake SQL connection")
+	}
+	if sqlDB == nil {
+		return nil, errors.Errorf("Unable to create db connection with the %s snowflake account", cfg.Account)
+	}
+
+	return sqlDB, nil
+}
