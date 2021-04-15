@@ -11,36 +11,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-// func GetOktaClient(ctx context.Context, secrets setup.SecretStore) (*OktaClient, error) {
-// 	env, err := loadOktaClientEnv()
-// 	if err != nil {
-// 		return nil, errors.Wrap(err, "Unable to load right Okta env variables")
-// 	}
-
-// 	service := env.PARAM_STORE_SERVICE
-// 	tokenSecretID := store.SecretId{
-// 		Service: service,
-// 		Key:     "okta_private_key",
-// 	}
-// 	private_key, err := secrets.Read(tokenSecretID, -1)
-// 	if err != nil {
-// 		return nil, errors.Wrapf(err, "Can't find Okta Private Key in AWS Parameter Store in service (%s)", service)
-// 	}
-
-// 	privKeyNoQuotes := strings.ReplaceAll(*private_key.Value, `"`, ``)
-// 	client, err := okta.NewClient(
-// 		ctx,
-// 		okta.WithAuthorizationMode("PrivateKey"),
-// 		okta.WithClientId(env.CLIENT_ID),
-// 		okta.WithScopes(([]string{"okta.apps.read"})),
-// 		okta.WithPrivateKey(privKeyNoQuotes),
-// 		okta.WithOrgUrl(env.ORG_URL),
-// 		okta.WithCache(true),
-// 	)
-
-// 	return &OktaClient{Client: client}, errors.Wrap(err, "Unable to configure Okta client")
-// }
-
 func GetOktaAppUsers(
 	ctx context.Context,
 	appID string,
