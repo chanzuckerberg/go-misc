@@ -16,7 +16,8 @@ import (
 var localFlag = flag.Bool("local", false, "Whether this lambda should be run locally")
 
 func Rotate(ctx context.Context) error {
-	secretStore := store.NewSSMStore(2)
+	numRetries := 2
+	secretStore := store.NewSSMStore(numRetries)
 
 	databricksAccount, err := setup.Databricks(ctx, secretStore)
 	if err != nil {
