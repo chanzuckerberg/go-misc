@@ -90,9 +90,10 @@ func TestGetSnowflakeAccounts(t *testing.T) {
 
 func TestGetMissingSnowflakeEnvVar(t *testing.T) {
 	r := require.New(t)
+	store := &mockStore{}
+	defer util.ResetEnv(os.Environ())
 
 	// We're missing SNOWFLAKE_OKTAMAP
-	store := &mockStore{}
 	_, err := Snowflake(context.Background(), store)
 	r.Error(err)
 
