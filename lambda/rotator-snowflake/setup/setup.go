@@ -88,7 +88,7 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 	}
 
 	acctMapping := snowflakeAccts.OKTAMAP
-
+	fmt.Println(acctMapping)
 	snowflakeErrs := &multierror.Error{}
 	acctList := []*snowflakeCfg.Account{}
 
