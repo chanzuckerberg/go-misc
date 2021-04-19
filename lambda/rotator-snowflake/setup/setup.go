@@ -3,7 +3,6 @@ package setup
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/chanzuckerberg/go-misc/databricks"
 	"github.com/chanzuckerberg/go-misc/errors"
@@ -42,13 +41,12 @@ func Okta(ctx context.Context, secrets SecretStore) (*oktaCfg.OktaClient, error)
 		return nil, errors.Wrapf(err, "Can't find Okta Private Key in AWS Parameter Store in service (%s)", service)
 	}
 
-	privKeyNoQuotes := strings.ReplaceAll(*private_key.Value, `"`, ``)
 	client, err := okta.NewClient(
 		ctx,
 		okta.WithAuthorizationMode("PrivateKey"),
 		okta.WithClientId(env.CLIENT_ID),
 		okta.WithScopes(([]string{"okta.apps.read"})),
-		okta.WithPrivateKey(privKeyNoQuotes),
+		okta.WithPrivateKey(*private_key.Value),
 		okta.WithOrgUrl(env.ORG_URL),
 		okta.WithCache(true),
 	)
