@@ -96,6 +96,7 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 		snowflakeEnv, err := snowflakeCfg.LoadSnowflakeEnv(acctName)
 		if err != nil {
 			snowflakeErrs = multierror.Append(err, errors.Wrapf(err, "Error configuring Snowflake %s account", acctName))
+			continue
 		}
 
 		cfg := snowflake.Config{

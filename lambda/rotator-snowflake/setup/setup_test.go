@@ -87,3 +87,27 @@ func TestGetSnowflakeAccounts(t *testing.T) {
 	r.NotNil(snowflakeAccounts)
 	r.Len(snowflakeAccounts, 2)
 }
+
+func TestGetMissingSnowflakeEnvVar(t *testing.T) {
+	r := require.New(t)
+
+	// We're missing SNOWFLAKE_OKTAMAP
+	store := &mockStore{}
+	_, err := Snowflake(context.Background(), store)
+	r.Error(err)
+
+	err = os.Setenv("SNOWFLAKE_OKTAMAP", "TEST1:clientID1")
+	r.NoError(err)
+	err = os.Setenv("SNOWFLAKE_TEST1_NAME", "test1name")
+	r.NoError(err)
+	err = os.Setenv("SNOWFLAKE_TEST1_USER", "test1user")
+	r.NoError(err)
+	err = os.Setenv("SNOWFLAKE_TEST1_ROLE", "test1role")
+	r.NoError(err)
+	err = os.Setenv("SNOWFLAKE_TEST1_REGION", "test1region")
+	r.NoError(err)
+	// We're missing SNOWFLAKE_TEST1_PARAM_STORE_SERVICE
+
+	_, err = Snowflake(context.Background(), store)
+	r.Error(err)
+}
