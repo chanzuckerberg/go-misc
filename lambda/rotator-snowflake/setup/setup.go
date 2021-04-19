@@ -18,6 +18,9 @@ import (
 	"github.com/segmentio/chamber/store"
 )
 
+// For getting the latest version of a secret, use -1
+var latestSecretVersionIndex = -1
+
 type SecretStore interface {
 	Read(id store.SecretId, version int) (store.Secret, error)
 }
@@ -33,7 +36,8 @@ func Okta(ctx context.Context, secrets SecretStore) (*oktaCfg.OktaClient, error)
 		Service: service,
 		Key:     "okta_private_key",
 	}
-	private_key, err := secrets.Read(tokenSecretID, -1)
+
+	private_key, err := secrets.Read(tokenSecretID, latestSecretVersionIndex)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Can't find Okta Private Key in AWS Parameter Store in service (%s)", service)
 	}
@@ -64,7 +68,7 @@ func Databricks(ctx context.Context, secrets SecretStore) (*databricksCfg.Accoun
 		Service: service,
 		Key:     "databricks_token",
 	}
-	token, err := secrets.Read(tokenSecretID, -1)
+	token, err := secrets.Read(tokenSecretID, latestSecretVersionIndex)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Can't find Databricks Token in AWS Parameter Store in service (%s)", service)
 	}
@@ -104,7 +108,7 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 			Service: service,
 			Key:     passwordName,
 		}
-		password, err := secrets.Read(tokenSecretID, -1)
+		password, err := secrets.Read(tokenSecretID, latestSecretVersionIndex)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Can't find %s's password in AWS Parameter Store in service (%s)", snowflakeEnv.NAME, service)
 		}
