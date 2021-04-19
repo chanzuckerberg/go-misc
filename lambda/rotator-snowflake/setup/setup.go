@@ -81,10 +81,12 @@ func Databricks(ctx context.Context, secrets SecretStore) (*databricksCfg.Accoun
 
 func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Account, error) {
 	snowflakeAccts := &snowflakeCfg.Accounts{}
+
 	err := envconfig.Process("SNOWFLAKE", snowflakeAccts)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to parse list of accounts from environment variables")
 	}
+
 	acctMapping := snowflakeAccts.OKTAMAP
 
 	snowflakeErrs := &multierror.Error{}
@@ -92,6 +94,9 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 
 	for acctName, snowflakeAppID := range acctMapping {
 		snowflakeEnv, err := snowflakeCfg.LoadSnowflakeEnv(acctName)
+		if err != nil {
+			snowflakeErrs = multierror.Append(err, errors.Wrapf(err, "Error configuring Snowflake %s account", acctName))
+		}
 
 		cfg := snowflake.Config{
 			Account: snowflakeEnv.NAME,
@@ -101,11 +106,12 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 		}
 		// Get the password through the account name
 		service := snowflakeEnv.PARAM_STORE_SERVICE
-		passwordName := fmt.Sprintf("%s_password", snowflakeEnv.NAME)
+		passwordName := fmt.Sprintf("snowflake_%s_password", snowflakeEnv.NAME)
 		tokenSecretID := store.SecretId{
 			Service: service,
 			Key:     passwordName,
 		}
+
 		password, err := secrets.Read(tokenSecretID, latestSecretVersionIndex)
 		if err != nil {
 			return nil, errors.Wrapf(err, "Can't find %s's password in AWS Parameter Store in service (%s)", snowflakeEnv.NAME, service)

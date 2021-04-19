@@ -2,29 +2,19 @@ package snowflake
 
 import (
 	"database/sql"
-	"strings"
+	"fmt"
 
 	"github.com/chanzuckerberg/go-misc/errors"
 	"github.com/chanzuckerberg/go-misc/snowflake"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/sirupsen/logrus"
 )
 
 func LoadSnowflakeEnv(acctName string) (*SnowflakeClientEnv, error) {
-	// If acctName has "okta" or "databricks" in the name, print a warning for possible name collision
-	oktaCollision := strings.Contains(acctName, "okta")
-	if oktaCollision {
-		logrus.Warnf("Snowflake Account %s will likely collide with okta Environment Variables", acctName)
-	}
-
-	databricksCollision := strings.Contains(acctName, "databricks")
-	if databricksCollision {
-		logrus.Warnf("Snowflake Account %s will likely collide with databricks Environment Variables", acctName)
-	}
+	envVarPrefix := fmt.Sprintf("snowflake_%s", acctName)
 
 	snowflakeEnv := &SnowflakeClientEnv{}
 
-	err := envconfig.Process(acctName, snowflakeEnv)
+	err := envconfig.Process(envVarPrefix, snowflakeEnv)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Unable to get right env variables for %s snowflake account", acctName)
 	}
