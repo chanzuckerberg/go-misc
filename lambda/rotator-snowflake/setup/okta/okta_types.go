@@ -7,12 +7,12 @@ import (
 )
 
 type OktaClientEnvironment struct {
-	PRIVATE_KEY string `required:"true"`
-	ORG_URL     string `required:"true"`
-	CLIENT_ID   string `required:"true"`
+	ORG_URL             string `required:"true"`
+	CLIENT_ID           string `required:"true"`
+	PARAM_STORE_SERVICE string `required:"true"`
 }
 
-func loadOktaClientEnv() (*OktaClientEnvironment, error) {
+func LoadOktaClientEnv() (*OktaClientEnvironment, error) {
 	env := &OktaClientEnvironment{}
 	err := envconfig.Process("OKTA", env)
 
