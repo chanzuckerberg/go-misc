@@ -22,6 +22,7 @@ var latestSecretVersionIndex = -1
 
 type SecretStore interface {
 	Read(id store.SecretId, version int) (store.Secret, error)
+	Write(id store.SecretId, value string) error
 }
 
 func Okta(ctx context.Context, secrets SecretStore) (*oktaCfg.OktaClient, error) {
