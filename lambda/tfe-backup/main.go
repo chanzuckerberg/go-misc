@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -11,6 +12,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 func run(ctx context.Context) error {
@@ -60,5 +62,18 @@ func run0(ctx context.Context, config *runner.Config) error {
 }
 
 func main() {
-	lambda.Start(run)
+	local := flag.Bool("local", false, "Set to true if you intent to run this local or docker (not lambda).")
+	flag.Parse()
+
+	if local == nil || !*local {
+		logrus.Info("executing in lambda environment")
+		lambda.Start(run)
+		return
+	}
+
+	logrus.Info("executing in local environment")
+	err := run(context.Background())
+	if err != nil {
+		logrus.Fatal(err)
+	}
 }
