@@ -8,7 +8,8 @@ import (
 
 type Report struct {
 	reader io.Reader
-	total  uint64
+
+	total uint64
 }
 
 func (r *Report) Read(p []byte) (int, error) {
