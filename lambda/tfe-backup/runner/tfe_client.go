@@ -83,12 +83,15 @@ func (t *TFE) Backup(
 	tags := url.Values{}
 	tags.Add("base64_ciphertext", dataKey.Ciphertext)
 
+	// report how many bytes read from resp
+	body := &Report{reader: resp.Body}
+
 	// streaming upload to S3
 	_, err = s3.UploadWithContext(ctx, &s3manager.UploadInput{
 		Bucket:  &config.S3Bucket,
 		Key:     &key,
 		Tagging: aws.String(tags.Encode()),
-		Body:    resp.Body,
+		Body:    body,
 	})
 
 	return errors.Wrap(err, "could not upload backup")
