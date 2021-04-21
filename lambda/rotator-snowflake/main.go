@@ -9,23 +9,27 @@ import (
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/rotate"
 	"github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup"
 	"github.com/hashicorp/go-multierror"
+	"github.com/segmentio/chamber/store"
 	"github.com/sirupsen/logrus"
 )
 
 var localFlag = flag.Bool("local", false, "Whether this lambda should be run locally")
 
 func Rotate(ctx context.Context) error {
-	databricksAccount, err := setup.Databricks(ctx)
+	numRetries := 2
+	secretStore := store.NewSSMStore(numRetries)
+
+	databricksAccount, err := setup.Databricks(ctx, secretStore)
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure databricks")
 	}
 
-	oktaClient, err := setup.Okta(ctx)
+	oktaClient, err := setup.Okta(ctx, secretStore)
 	if err != nil {
 		return errors.Wrap(err, "Unable to configure okta")
 	}
 
-	snowflakeAccounts, err := setup.Snowflake(ctx)
+	snowflakeAccounts, err := setup.Snowflake(ctx, secretStore)
 	if err != nil {
 		return err
 	}
@@ -44,7 +48,8 @@ func Rotate(ctx context.Context) error {
 
 		for _, user := range snowflakeUsers.List() {
 			if databricksUsers.ContainsElement(user) {
-				err = rotate.ProcessUser(user, snowflakeAccount, databricksAccount)
+				err = rotate.ProcessUser(ctx, user, snowflakeAccount, databricksAccount)
+				accountErrors = multierror.Append(accountErrors, errors.Wrapf(err, "Unable to rotate %s's credentials", user))
 			}
 		}
 	}
