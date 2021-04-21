@@ -30,6 +30,8 @@ func run(ctx context.Context) error {
 		sentry.CaptureException(err)
 		return err
 	}
+
+	logrus.Info("done")
 	return nil
 }
 

@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"path"
@@ -15,6 +16,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager/s3manageriface"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 type TFEiface interface {
@@ -78,6 +80,7 @@ func (t *TFE) Backup(
 
 	// calculate s3 object key
 	key := path.Join(config.S3Prefix, time.Now().Format("2006/01/02"), uuid.NewString())
+	logrus.Infof("uploading to s3 key %s", key)
 	// tag backup with ciphertext
 	// to fetch plaintext, caller must decrypt through KMS
 	tags := url.Values{}
@@ -86,12 +89,21 @@ func (t *TFE) Backup(
 	// report how many bytes read from resp
 	body := &Report{reader: resp.Body}
 
+	logrus.Info("reading backup")
+	// HACK(el): for now, read all backup to local memory before uploading
+	buffered := bytes.NewBuffer(nil)
+	_, err = io.Copy(buffered, body)
+	if err != nil {
+		return errors.Wrap(err, "could not read backup to local memory")
+	}
+
+	logrus.Info("uploading to S3")
 	// streaming upload to S3
 	_, err = s3.UploadWithContext(ctx, &s3manager.UploadInput{
 		Bucket:  &config.S3Bucket,
 		Key:     &key,
 		Tagging: aws.String(tags.Encode()),
-		Body:    body,
+		Body:    buffered,
 	})
 
 	return errors.Wrap(err, "could not upload backup")
