@@ -111,5 +111,6 @@ func (t *TFE) Backup(
 		Body:    bytes.NewBuffer(backup),
 	})
 
+	logrus.Info("done uploading to s3")
 	return errors.Wrap(err, "could not upload backup")
 }
