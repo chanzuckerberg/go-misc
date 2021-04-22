@@ -68,6 +68,8 @@ func (t *TFE) Backup(
 	if err != nil {
 		return err
 	}
+
+	logrus.Info("requesting backup")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return errors.Wrap(err, "could not perform backup request")
@@ -92,7 +94,7 @@ func (t *TFE) Backup(
 	logrus.Info("reading backup")
 	// HACK(el): for now, read all backup to local memory before uploading
 	buffered := bytes.NewBuffer(nil)
-	_, err = io.Copy(buffered, body)
+	_, err = io.ReadAll(buffered, body)
 	if err != nil {
 		return errors.Wrap(err, "could not read backup to local memory")
 	}
