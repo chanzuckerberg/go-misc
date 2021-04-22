@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"net/url"
 	"path"
@@ -91,13 +90,12 @@ func (t *TFE) Backup(
 	// report how many bytes read from resp
 	body := &Report{reader: resp.Body}
 
-	logrus.Info("reading backup")
+	// logrus.Info("reading backup")
 	// HACK(el): for now, read all backup to local memory before uploading
-	buffered := bytes.NewBuffer(nil)
-	_, err = io.ReadAll(buffered, body)
-	if err != nil {
-		return errors.Wrap(err, "could not read backup to local memory")
-	}
+	// _, err = io.ReadAll(buffered, body)
+	// if err != nil {
+	// return errors.Wrap(err, "could not read backup to local memory")
+	// }
 
 	logrus.Info("uploading to S3")
 	// streaming upload to S3
@@ -105,7 +103,7 @@ func (t *TFE) Backup(
 		Bucket:  &config.S3Bucket,
 		Key:     &key,
 		Tagging: aws.String(tags.Encode()),
-		Body:    buffered,
+		Body:    body,
 	})
 
 	return errors.Wrap(err, "could not upload backup")

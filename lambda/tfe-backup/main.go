@@ -46,7 +46,12 @@ func run0(ctx context.Context, config *runner.Config) error {
 	}
 
 	client := cziAWS.New(sess).WithSecretsManager(sess.Config).WithKMS(sess.Config)
-	uploader := s3manager.NewUploader(sess)
+	uploader := s3manager.NewUploader(
+		sess,
+		func(u *s3manager.Uploader) {
+			u.Concurrency = 10
+		},
+	)
 
 	tfeToken, err := client.SecretsManager.ReadStringLatestVersion(ctx, config.TFETokenSecretARN)
 	if err != nil {
