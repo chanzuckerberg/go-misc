@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"path"
@@ -96,6 +97,10 @@ func (t *TFE) Backup(
 	// if err != nil {
 	// return errors.Wrap(err, "could not read backup to local memory")
 	// }
+	backup, err := io.ReadAll(body)
+	if err != nil {
+		return errors.Wrap(err, "could not read backup from tfe")
+	}
 
 	logrus.Info("uploading to S3")
 	// streaming upload to S3
@@ -103,7 +108,7 @@ func (t *TFE) Backup(
 		Bucket:  &config.S3Bucket,
 		Key:     &key,
 		Tagging: aws.String(tags.Encode()),
-		Body:    body,
+		Body:    bytes.NewBuffer(backup),
 	})
 
 	return errors.Wrap(err, "could not upload backup")
