@@ -1,23 +1,36 @@
 package runner
 
 import (
-	"fmt"
 	"io"
-	"sync/atomic"
+	"sync"
+	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Report struct {
 	reader io.Reader
 
-	total uint64
+	total        int
+	lastReported time.Time
+
+	mu sync.Mutex
 }
 
 func (r *Report) Read(p []byte) (int, error) {
-	n, err := r.reader.Read(p)
-	atomic.AddUint64(&r.total, uint64(n))
+	r.mu.Lock()
+	defer r.mu.Unlock()
 
-	if err == nil {
-		fmt.Println("Read", n, "bytes for a total of", r.total)
+	n, err := r.reader.Read(p)
+	r.total += n
+
+	if time.Since(r.lastReported) >= time.Minute {
+		r.lastReported = time.Now()
+		logrus.Infof("Read %d bytes so far", r.total)
+	}
+
+	if err != nil {
+		logrus.Error(err)
 	}
 
 	return n, err
