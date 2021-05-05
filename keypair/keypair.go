@@ -23,7 +23,11 @@ func ParseRSAPrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
 		return nil, errors.Errorf("Unable to read private key file")
 	}
 
-	privPemBlock, _ := pem.Decode(privKeyBytes)
+	return UnmarshalRSAPrivateKey(privKeyBytes)
+}
+
+func UnmarshalRSAPrivateKey(privateKey []byte) (*rsa.PrivateKey, error) {
+	privPemBlock, _ := pem.Decode(privateKey)
 
 	priv, err := x509.ParsePKCS8PrivateKey(privPemBlock.Bytes)
 	if err != nil {
