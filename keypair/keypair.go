@@ -29,9 +29,19 @@ func ParseRSAPrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
 func UnmarshalRSAPrivateKey(privateKey []byte) (*rsa.PrivateKey, error) {
 	privPemBlock, _ := pem.Decode(privateKey)
 
-	priv, err := x509.ParsePKCS8PrivateKey(privPemBlock.Bytes)
-	if err != nil {
-		return nil, errors.Wrap(err, "Unable to parse private key file bytes")
+	var (
+		priv      interface{}
+		privPKCS1 *rsa.PrivateKey
+		err       error
+	)
+	// first try to parse as PKCS1 then try PKCS8
+	if privPKCS1, err = x509.ParsePKCS1PrivateKey(privPemBlock.Bytes); err != nil {
+		if priv, err = x509.ParsePKCS8PrivateKey(privPemBlock.Bytes); err != nil {
+			return nil, errors.Wrap(err, "unable to parse private key file bytes")
+		}
+	}
+	if privPKCS1 != nil {
+		return privPKCS1, nil
 	}
 
 	if priv == nil {
