@@ -14,6 +14,7 @@ type Config struct {
 	Password         string `yaml:"password"`
 	BrowserAuth      bool   `yaml:"browser_auth"`
 	PrivateKeyPath   string `yaml:"private_key_path"`
+	PrivateKeyBytes  []byte `yaml:"private_key"`
 	OauthAccessToken string `yaml:"oauth_access_token"`
 	Region           string `yaml:"region"`
 	Role             string `yaml:"role"`
@@ -43,12 +44,18 @@ func DSN(conf *Config) (string, error) {
 		OCSPFailOpen: gosnowflake.OCSPFailOpenFalse,
 	}
 
-	if conf.PrivateKeyPath != "" {
+	if conf.PrivateKeyBytes != nil {
+		privateKey, err := keypair.UnmarshalRSAPrivateKey(conf.PrivateKeyBytes)
+		if err != nil {
+			return "", err
+		}
+		config.PrivateKey = privateKey
+		config.Authenticator = gosnowflake.AuthTypeJwt
+	} else if conf.PrivateKeyPath != "" {
 		rsaPrivateKey, err := keypair.ParseRSAPrivateKey(conf.PrivateKeyPath)
 		if err != nil {
 			return "", errors.Wrap(err, "Private Key could not be parsed")
 		}
-
 		config.PrivateKey = rsaPrivateKey
 		config.Authenticator = gosnowflake.AuthTypeJwt
 	} else if conf.BrowserAuth {
