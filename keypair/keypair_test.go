@@ -1,9 +1,6 @@
 package keypair
 
 import (
-	"crypto/rsa"
-	"crypto/x509"
-	"encoding/pem"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -58,10 +55,7 @@ func TestBufferHandling(t *testing.T) {
 	r.NoError(err)
 
 	// Decode Private block buffer and ensure its the same as original private key
-	bufferPEMBlock, _ := pem.Decode(privKeyBuffer.Bytes())
-	bufferPrivateKey, err := x509.ParsePKCS8PrivateKey(bufferPEMBlock.Bytes)
-	pkcs8Key, ok := bufferPrivateKey.(*rsa.PrivateKey)
-	r.True(ok)
+	pkcs8Key, err := UnmarshalRSAPrivateKey(privKeyBuffer.Bytes())
 	r.NoError(err)
 	r.Equal(pkcs8Key, originalPriv)
 

@@ -10,6 +10,7 @@ import (
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
+	"golang.org/x/crypto/ssh"
 )
 
 func ParseRSAPrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
@@ -27,33 +28,17 @@ func ParseRSAPrivateKey(privateKeyPath string) (*rsa.PrivateKey, error) {
 }
 
 func UnmarshalRSAPrivateKey(privateKey []byte) (*rsa.PrivateKey, error) {
-	privPemBlock, _ := pem.Decode(privateKey)
-
-	var (
-		priv      interface{}
-		privPKCS1 *rsa.PrivateKey
-		err       error
-	)
-	// first try to parse as PKCS1 then try PKCS8
-	if privPKCS1, err = x509.ParsePKCS1PrivateKey(privPemBlock.Bytes); err != nil {
-		if priv, err = x509.ParsePKCS8PrivateKey(privPemBlock.Bytes); err != nil {
-			return nil, errors.Wrap(err, "unable to parse private key file bytes")
-		}
-	}
-	if privPKCS1 != nil {
-		return privPKCS1, nil
+	key, err := ssh.ParseRawPrivateKey(privateKey)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to parse RSA private key")
 	}
 
-	if priv == nil {
-		return nil, errors.Errorf("nil private key")
-	}
-
-	pkcs8Key, ok := priv.(*rsa.PrivateKey)
+	k, ok := key.(*rsa.PrivateKey)
 	if !ok {
-		return nil, errors.Errorf("Unable to convert private key interface as rsa.PrivateKey. Got %T", priv)
+		return nil, errors.Errorf("unable to convert private key interface as rsa.PrivateKey. Got %T", key)
 	}
 
-	return pkcs8Key, nil
+	return k, nil
 }
 
 func GetRSAPublicKey(privateKeyPath string) (*rsa.PublicKey, error) {
@@ -83,12 +68,9 @@ func SaveRSAKey(privateKey *rsa.PrivateKey) (privateKeyBuffer *bytes.Buffer, err
 		return &bytes.Buffer{}, errors.New("No private key set")
 	}
 
-	privateKeyBytes, err := x509.MarshalPKCS8PrivateKey(privateKey)
-	if err != nil {
-		return &bytes.Buffer{}, errors.New("Unable to marshal private key to pkcs8 format")
-	}
+	privateKeyBytes := x509.MarshalPKCS1PrivateKey(privateKey)
 	privateKeyBlock := &pem.Block{
-		Type:  "RSA PRIVATE KEY",
+		Type:  "RSA PRIVATE KEY", // "RSA PRIVATE KEY" is associated with PKCS1, whereas "PRIVATE KEY" is associated with PKCS8
 		Bytes: privateKeyBytes,
 	}
 	privKeyBuffer := bytes.NewBuffer(pem.EncodeToMemory(privateKeyBlock))
