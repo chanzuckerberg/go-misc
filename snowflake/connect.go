@@ -18,6 +18,7 @@ type Config struct {
 	OauthAccessToken string `yaml:"oauth_access_token"`
 	Region           string `yaml:"region"`
 	Role             string `yaml:"role"`
+	Warehouse        string `yaml:"warehouse"`
 }
 
 func ConfigureSnowflakeDB(s *Config) (*sql.DB, error) {
@@ -41,6 +42,7 @@ func DSN(conf *Config) (string, error) {
 		User:         conf.User,
 		Region:       conf.Region,
 		Role:         conf.Role,
+		Warehouse:    conf.Warehouse,
 		OCSPFailOpen: gosnowflake.OCSPFailOpenFalse,
 	}
 
