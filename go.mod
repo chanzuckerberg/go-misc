@@ -5,13 +5,13 @@ go 1.15
 require (
 	github.com/AlecAivazis/survey/v2 v2.2.12
 	github.com/aws/aws-lambda-go v1.23.0
-	github.com/aws/aws-sdk-go v1.38.32
+	github.com/aws/aws-sdk-go v1.38.38
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/chanzuckerberg/aws-oidc v0.23.1
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.10.0
-	github.com/go-errors/errors v1.1.1
+	github.com/go-errors/errors v1.3.0
 	github.com/golang/mock v1.5.0
 	github.com/google/go-github/v27 v27.0.6
 	github.com/google/uuid v1.2.0
@@ -38,7 +38,7 @@ require (
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
 	github.com/zalando/go-keyring v0.1.1
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
-	golang.org/x/net v0.0.0-20210504132125-bbd867fde50d // indirect
+	golang.org/x/net v0.0.0-20210510120150-4163338589ed // indirect
 	golang.org/x/oauth2 v0.0.0-20210220000619-9bb904979d93
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/square/go-jose.v2 v2.5.1
