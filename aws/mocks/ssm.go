@@ -86,6 +86,56 @@ func (mr *MockSSMAPIMockRecorder) AddTagsToResourceWithContext(arg0, arg1 interf
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddTagsToResourceWithContext", reflect.TypeOf((*MockSSMAPI)(nil).AddTagsToResourceWithContext), varargs...)
 }
 
+// AssociateOpsItemRelatedItem mocks base method.
+func (m *MockSSMAPI) AssociateOpsItemRelatedItem(arg0 *ssm.AssociateOpsItemRelatedItemInput) (*ssm.AssociateOpsItemRelatedItemOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AssociateOpsItemRelatedItem", arg0)
+	ret0, _ := ret[0].(*ssm.AssociateOpsItemRelatedItemOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AssociateOpsItemRelatedItem indicates an expected call of AssociateOpsItemRelatedItem.
+func (mr *MockSSMAPIMockRecorder) AssociateOpsItemRelatedItem(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateOpsItemRelatedItem", reflect.TypeOf((*MockSSMAPI)(nil).AssociateOpsItemRelatedItem), arg0)
+}
+
+// AssociateOpsItemRelatedItemRequest mocks base method.
+func (m *MockSSMAPI) AssociateOpsItemRelatedItemRequest(arg0 *ssm.AssociateOpsItemRelatedItemInput) (*request.Request, *ssm.AssociateOpsItemRelatedItemOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AssociateOpsItemRelatedItemRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ssm.AssociateOpsItemRelatedItemOutput)
+	return ret0, ret1
+}
+
+// AssociateOpsItemRelatedItemRequest indicates an expected call of AssociateOpsItemRelatedItemRequest.
+func (mr *MockSSMAPIMockRecorder) AssociateOpsItemRelatedItemRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateOpsItemRelatedItemRequest", reflect.TypeOf((*MockSSMAPI)(nil).AssociateOpsItemRelatedItemRequest), arg0)
+}
+
+// AssociateOpsItemRelatedItemWithContext mocks base method.
+func (m *MockSSMAPI) AssociateOpsItemRelatedItemWithContext(arg0 context.Context, arg1 *ssm.AssociateOpsItemRelatedItemInput, arg2 ...request.Option) (*ssm.AssociateOpsItemRelatedItemOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "AssociateOpsItemRelatedItemWithContext", varargs...)
+	ret0, _ := ret[0].(*ssm.AssociateOpsItemRelatedItemOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AssociateOpsItemRelatedItemWithContext indicates an expected call of AssociateOpsItemRelatedItemWithContext.
+func (mr *MockSSMAPIMockRecorder) AssociateOpsItemRelatedItemWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AssociateOpsItemRelatedItemWithContext", reflect.TypeOf((*MockSSMAPI)(nil).AssociateOpsItemRelatedItemWithContext), varargs...)
+}
+
 // CancelCommand mocks base method.
 func (m *MockSSMAPI) CancelCommand(arg0 *ssm.CancelCommandInput) (*ssm.CancelCommandOutput, error) {
 	m.ctrl.T.Helper()
@@ -3860,6 +3910,56 @@ func (mr *MockSSMAPIMockRecorder) DescribeSessionsWithContext(arg0, arg1 interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSessionsWithContext", reflect.TypeOf((*MockSSMAPI)(nil).DescribeSessionsWithContext), varargs...)
 }
 
+// DisassociateOpsItemRelatedItem mocks base method.
+func (m *MockSSMAPI) DisassociateOpsItemRelatedItem(arg0 *ssm.DisassociateOpsItemRelatedItemInput) (*ssm.DisassociateOpsItemRelatedItemOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisassociateOpsItemRelatedItem", arg0)
+	ret0, _ := ret[0].(*ssm.DisassociateOpsItemRelatedItemOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisassociateOpsItemRelatedItem indicates an expected call of DisassociateOpsItemRelatedItem.
+func (mr *MockSSMAPIMockRecorder) DisassociateOpsItemRelatedItem(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateOpsItemRelatedItem", reflect.TypeOf((*MockSSMAPI)(nil).DisassociateOpsItemRelatedItem), arg0)
+}
+
+// DisassociateOpsItemRelatedItemRequest mocks base method.
+func (m *MockSSMAPI) DisassociateOpsItemRelatedItemRequest(arg0 *ssm.DisassociateOpsItemRelatedItemInput) (*request.Request, *ssm.DisassociateOpsItemRelatedItemOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisassociateOpsItemRelatedItemRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ssm.DisassociateOpsItemRelatedItemOutput)
+	return ret0, ret1
+}
+
+// DisassociateOpsItemRelatedItemRequest indicates an expected call of DisassociateOpsItemRelatedItemRequest.
+func (mr *MockSSMAPIMockRecorder) DisassociateOpsItemRelatedItemRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateOpsItemRelatedItemRequest", reflect.TypeOf((*MockSSMAPI)(nil).DisassociateOpsItemRelatedItemRequest), arg0)
+}
+
+// DisassociateOpsItemRelatedItemWithContext mocks base method.
+func (m *MockSSMAPI) DisassociateOpsItemRelatedItemWithContext(arg0 context.Context, arg1 *ssm.DisassociateOpsItemRelatedItemInput, arg2 ...request.Option) (*ssm.DisassociateOpsItemRelatedItemOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DisassociateOpsItemRelatedItemWithContext", varargs...)
+	ret0, _ := ret[0].(*ssm.DisassociateOpsItemRelatedItemOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisassociateOpsItemRelatedItemWithContext indicates an expected call of DisassociateOpsItemRelatedItemWithContext.
+func (mr *MockSSMAPIMockRecorder) DisassociateOpsItemRelatedItemWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisassociateOpsItemRelatedItemWithContext", reflect.TypeOf((*MockSSMAPI)(nil).DisassociateOpsItemRelatedItemWithContext), varargs...)
+}
+
 // GetAutomationExecution mocks base method.
 func (m *MockSSMAPI) GetAutomationExecution(arg0 *ssm.GetAutomationExecutionInput) (*ssm.GetAutomationExecutionOutput, error) {
 	m.ctrl.T.Helper()
@@ -6120,6 +6220,89 @@ func (mr *MockSSMAPIMockRecorder) ListOpsItemEventsWithContext(arg0, arg1 interf
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOpsItemEventsWithContext", reflect.TypeOf((*MockSSMAPI)(nil).ListOpsItemEventsWithContext), varargs...)
+}
+
+// ListOpsItemRelatedItems mocks base method.
+func (m *MockSSMAPI) ListOpsItemRelatedItems(arg0 *ssm.ListOpsItemRelatedItemsInput) (*ssm.ListOpsItemRelatedItemsOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListOpsItemRelatedItems", arg0)
+	ret0, _ := ret[0].(*ssm.ListOpsItemRelatedItemsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListOpsItemRelatedItems indicates an expected call of ListOpsItemRelatedItems.
+func (mr *MockSSMAPIMockRecorder) ListOpsItemRelatedItems(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOpsItemRelatedItems", reflect.TypeOf((*MockSSMAPI)(nil).ListOpsItemRelatedItems), arg0)
+}
+
+// ListOpsItemRelatedItemsPages mocks base method.
+func (m *MockSSMAPI) ListOpsItemRelatedItemsPages(arg0 *ssm.ListOpsItemRelatedItemsInput, arg1 func(*ssm.ListOpsItemRelatedItemsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListOpsItemRelatedItemsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ListOpsItemRelatedItemsPages indicates an expected call of ListOpsItemRelatedItemsPages.
+func (mr *MockSSMAPIMockRecorder) ListOpsItemRelatedItemsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOpsItemRelatedItemsPages", reflect.TypeOf((*MockSSMAPI)(nil).ListOpsItemRelatedItemsPages), arg0, arg1)
+}
+
+// ListOpsItemRelatedItemsPagesWithContext mocks base method.
+func (m *MockSSMAPI) ListOpsItemRelatedItemsPagesWithContext(arg0 context.Context, arg1 *ssm.ListOpsItemRelatedItemsInput, arg2 func(*ssm.ListOpsItemRelatedItemsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ListOpsItemRelatedItemsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ListOpsItemRelatedItemsPagesWithContext indicates an expected call of ListOpsItemRelatedItemsPagesWithContext.
+func (mr *MockSSMAPIMockRecorder) ListOpsItemRelatedItemsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOpsItemRelatedItemsPagesWithContext", reflect.TypeOf((*MockSSMAPI)(nil).ListOpsItemRelatedItemsPagesWithContext), varargs...)
+}
+
+// ListOpsItemRelatedItemsRequest mocks base method.
+func (m *MockSSMAPI) ListOpsItemRelatedItemsRequest(arg0 *ssm.ListOpsItemRelatedItemsInput) (*request.Request, *ssm.ListOpsItemRelatedItemsOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListOpsItemRelatedItemsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ssm.ListOpsItemRelatedItemsOutput)
+	return ret0, ret1
+}
+
+// ListOpsItemRelatedItemsRequest indicates an expected call of ListOpsItemRelatedItemsRequest.
+func (mr *MockSSMAPIMockRecorder) ListOpsItemRelatedItemsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOpsItemRelatedItemsRequest", reflect.TypeOf((*MockSSMAPI)(nil).ListOpsItemRelatedItemsRequest), arg0)
+}
+
+// ListOpsItemRelatedItemsWithContext mocks base method.
+func (m *MockSSMAPI) ListOpsItemRelatedItemsWithContext(arg0 context.Context, arg1 *ssm.ListOpsItemRelatedItemsInput, arg2 ...request.Option) (*ssm.ListOpsItemRelatedItemsOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ListOpsItemRelatedItemsWithContext", varargs...)
+	ret0, _ := ret[0].(*ssm.ListOpsItemRelatedItemsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListOpsItemRelatedItemsWithContext indicates an expected call of ListOpsItemRelatedItemsWithContext.
+func (mr *MockSSMAPIMockRecorder) ListOpsItemRelatedItemsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListOpsItemRelatedItemsWithContext", reflect.TypeOf((*MockSSMAPI)(nil).ListOpsItemRelatedItemsWithContext), varargs...)
 }
 
 // ListOpsMetadata mocks base method.
