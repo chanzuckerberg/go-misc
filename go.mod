@@ -20,7 +20,7 @@ require (
 	github.com/hashicorp/go-tfe v0.14.0
 	github.com/hashicorp/go-version v1.2.1
 	github.com/honeycombio/libhoney-go v1.15.2
-	github.com/jmoiron/sqlx v1.3.1
+	github.com/jmoiron/sqlx v1.3.4
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/mitchellh/go-homedir v1.1.0
