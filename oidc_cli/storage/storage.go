@@ -6,11 +6,12 @@ import (
 	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
 	"github.com/mitchellh/go-homedir"
 	"github.com/chanzuckerberg/go-misc/osutil"
+	"github.com/pkg/errors"
 )
 
 const (
 	service = "aws-oidc"
-
+	defaultFileStorageDir = "~/.oidc-cli"
 	storageVersion = "v0"
 )
 
