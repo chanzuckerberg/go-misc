@@ -19,39 +19,46 @@ func Rotate(ctx context.Context) error {
 	numRetries := 2
 	secretStore := store.NewSSMStore(numRetries)
 
-	databricksAccount, err := setup.Databricks(ctx, secretStore)
-	if err != nil {
-		return errors.Wrap(err, "Unable to configure databricks")
-	}
+	// databricksAccount, err := setup.Databricks(ctx, secretStore)
+	// if err != nil {
+	// 	return errors.Wrap(err, "Unable to configure databricks")
+	// }
 
-	oktaClient, err := setup.Okta(ctx, secretStore)
-	if err != nil {
-		return errors.Wrap(err, "Unable to configure okta")
-	}
+	// oktaClient, err := setup.Okta(ctx, secretStore)
+	// if err != nil {
+	// 	return errors.Wrap(err, "Unable to configure okta")
+	// }
 
 	snowflakeAccounts, err := setup.Snowflake(ctx, secretStore)
 	if err != nil {
 		return err
 	}
 
-	databricksUsers, err := setup.ListDatabricksUsers(ctx, oktaClient, databricksAccount)
-	if err != nil {
-		return errors.Wrap(err, "Unable to get list of users to rotate")
-	}
+	// databricksUsers, err := setup.ListDatabricksUsers(ctx, oktaClient, databricksAccount)
+	// if err != nil {
+	// 	return errors.Wrap(err, "Unable to get list of users to rotate")
+	// }
 
 	accountErrors := &multierror.Error{}
 	for _, snowflakeAccount := range snowflakeAccounts {
-		snowflakeUsers, err := setup.ListSnowflakeUsers(ctx, oktaClient, snowflakeAccount)
-		if err != nil {
-			accountErrors = multierror.Append(accountErrors, errors.Wrap(err, "Unable to list Snowflake Users"))
-		}
+		// snowflakeUsers, err := setup.ListSnowflakeUsers(ctx, oktaClient, snowflakeAccount)
+		// if err != nil {
+		// 	accountErrors = multierror.Append(accountErrors, errors.Wrap(err, "Unable to list Snowflake Users"))
+		// }
 
-		for _, user := range snowflakeUsers.List() {
-			if databricksUsers.ContainsElement(user) {
-				err = rotate.ProcessUser(ctx, user, snowflakeAccount, databricksAccount)
-				accountErrors = multierror.Append(accountErrors, errors.Wrapf(err, "Unable to rotate %s's credentials", user))
-			}
+		// for _, user := range snowflakeUsers.List() {
+		// 	if databricksUsers.ContainsElement(user) {
+		// 		err = rotate.ProcessUser(ctx, user, snowflakeAccount, databricksAccount)
+		// 		accountErrors = multierror.Append(accountErrors, errors.Wrapf(err, "Unable to rotate %s's credentials", user))
+		// 	}
+		// }
+		err = rotate.RotatePassword(ctx, "placeholderuser", snowflakeAccount.DB)
+		if err != nil {
+			accountErrors = multierror.Append(accountErrors, errors.Wrap(err, "Unable to change service account password"))
+			continue
 		}
+		// Write to chamber (how will the password get propagated?)
+		err = rotate.WritePasswordSecretStore(ctx, "placeholderuser", secretStore, newPassword)
 	}
 
 	return accountErrors.ErrorOrNil()
