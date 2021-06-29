@@ -38,7 +38,7 @@ func GetToken(ctx context.Context, clientID string, issuerURL string, clientOpti
 		return nil, errors.Wrap(err, "Unable to create client")
 	}
 
-	storage, err := storage.getStorage(clientID, issuerURL)
+	storage, err := storage.GetStorage(clientID, issuerURL)
 	if err != nil {
 		return nil, err
 	}
