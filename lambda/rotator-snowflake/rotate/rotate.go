@@ -2,6 +2,7 @@ package rotate
 
 import (
 	"context"
+	"strings"
 
 	"github.com/chanzuckerberg/go-misc/keypair"
 	databricksConfig "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
@@ -17,8 +18,10 @@ func buildSnowflakeSecrets(ctx context.Context, snowflakeAccount *snowflakeConfi
 	}
 	snowflakeDB := snowflakeAccount.DB
 
+	cappedUser := strings.ToUpper(username)
+
 	userQuery := "SHOW USERS LIKE '?'"
-	connectionRow := snowflake.QueryRow(ctx, snowflakeDB, userQuery, username)
+	connectionRow := snowflake.QueryRow(ctx, snowflakeDB, userQuery, cappedUser)
 	if connectionRow == nil {
 		return nil, errors.New("Couldn't get a row output from snowflake")
 	}
@@ -35,7 +38,7 @@ func buildSnowflakeSecrets(ctx context.Context, snowflakeAccount *snowflakeConfi
 	}
 
 	userSecrets := snowflakeUserCredentials{
-		user:            username,
+		user:            cappedUser,
 		role:            defaultRole,
 		pem_private_key: privKey,
 		accountName:     snowflakeAccount.Name,

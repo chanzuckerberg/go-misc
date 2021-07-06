@@ -31,7 +31,7 @@ func Rotate(ctx context.Context) error {
 
 	snowflakeAccounts, err := setup.Snowflake(ctx, secretStore)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "Unable to configure snowflake accounts")
 	}
 
 	databricksUsers, err := setup.ListDatabricksUsers(ctx, oktaClient, databricksAccount)
