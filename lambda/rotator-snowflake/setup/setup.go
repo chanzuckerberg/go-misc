@@ -88,7 +88,7 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 	}
 
 	acctMapping := snowflakeAccts.OKTAMAP
-	logrus.Debug(acctMapping)
+	logrus.Debug("Snowflake: Okta Client ID Mapping: ", acctMapping)
 
 	acctList := []*snowflakeCfg.Account{}
 

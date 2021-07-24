@@ -2,7 +2,7 @@ package rotate
 
 import (
 	"context"
-	"strings"
+	"fmt"
 
 	"github.com/chanzuckerberg/go-misc/keypair"
 	databricksConfig "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/databricks"
