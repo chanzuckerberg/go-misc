@@ -18,10 +18,8 @@ func buildSnowflakeSecrets(ctx context.Context, snowflakeAccount *snowflakeConfi
 	}
 	snowflakeDB := snowflakeAccount.DB
 
-	cappedUser := strings.ToUpper(username)
-
-	userQuery := "SHOW USERS LIKE '?'"
-	connectionRow := snowflake.QueryRow(ctx, snowflakeDB, userQuery, cappedUser)
+	userQuery := fmt.Sprintf("SHOW USERS LIKE '%s'", username)
+	connectionRow := snowflake.QueryRow(ctx, snowflakeDB, userQuery)
 	if connectionRow == nil {
 		return nil, errors.New("Couldn't get a row output from snowflake")
 	}
@@ -38,7 +36,7 @@ func buildSnowflakeSecrets(ctx context.Context, snowflakeAccount *snowflakeConfi
 	}
 
 	userSecrets := snowflakeUserCredentials{
-		user:            cappedUser,
+		user:            username,
 		role:            defaultRole,
 		pem_private_key: privKey,
 		accountName:     snowflakeAccount.Name,
