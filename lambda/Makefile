@@ -1,5 +1,5 @@
 DATE=$(shell date +"%Y/%m/%d")
-S3_PREFIX ?= go-misc/lambdas
+S3_PREFIX ?= go-misc/lambdas/${DATE}
 S3_BUCKET ?= shared-infra-prod-assets
 AWS_PROFILE ?= czi-si
 
