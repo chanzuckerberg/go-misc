@@ -1,6 +1,14 @@
 # Guide to rotator-snowflake
 This is a package that connects to Okta, Snowflake, and Databricks in order to 
 
+## How does this work?
+After configuring [Okta, Databricks, and Snowflake](https://github.com/chanzuckerberg/go-misc/blob/main/lambda/rotator-snowflake/main.go#L22-L41), the authenticated Snowflake User will pull the people assigned to both Snowflake and Databricks. For each Okta User in this Snowflake-Databricks intersection, the Snowflake User will:
+1. [Generate the Keypair](https://github.com/chanzuckerberg/go-misc/blob/ddf185cf910930996716cbd2177effa9a82165d6/lambda/rotator-snowflake/rotate/rotate.go#L49-L57)
+2. [Pull the Snowflake profile](https://github.com/chanzuckerberg/go-misc/blob/ddf185cf910930996716cbd2177effa9a82165d6/lambda/rotator-snowflake/rotate/rotate.go#L20-L24)
+3. [Update Snowflake Public Key](https://github.com/chanzuckerberg/go-misc/blob/ddf185cf910930996716cbd2177effa9a82165d6/lambda/rotator-snowflake/rotate/snowflake.go#L11)
+4. [Update Databricks Secrets](https://github.com/chanzuckerberg/go-misc/blob/ddf185cf910930996716cbd2177effa9a82165d6/lambda/rotator-snowflake/rotate/databricks.go#L18)
+
+
 ## Requirements
 ### Okta
 You'll need to set up a keypair to use with an Okta OAuth app so you can talk to both Snowflake and Databricks apps.
