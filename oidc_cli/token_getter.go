@@ -11,7 +11,6 @@ import (
 
 const (
 	lockFilePath          = "/tmp/aws-oidc.lock"
-	defaultFileStorageDir = "~/.oidc-cli"
 )
 
 // GetToken gets an oidc token.
