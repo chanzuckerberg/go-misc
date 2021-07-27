@@ -98,7 +98,7 @@ rotator-snowflake $  go run main.go -local true
 Locally using aws-oidc:
 ```bash
 $ cd go-misc/lambda/rotator-snowflake
-rotator-snowflake $ AWS_PROFILE=<profile> aws-oidc exec <AWS_PROFILE> -- go run main.go -local true
+rotator-snowflake $ AWS_PROFILE=<profile> go run main.go -local true
 ```
 ### With AWS Lambda
 1. Publish the package
