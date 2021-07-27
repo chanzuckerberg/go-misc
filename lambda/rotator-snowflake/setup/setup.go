@@ -95,8 +95,8 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 	for acctName, snowflakeAppID := range acctMapping {
 		snowflakeEnv, err := snowflakeCfg.LoadSnowflakeEnv(acctName)
 		if err != nil {
-			currentError := errors.Wrapf(err, "Error configuring Snowflake %s account", acctName)
-			return nil, currentError
+			configureErr := errors.Wrapf(err, "Error configuring Snowflake %s account", acctName)
+			return nil, configureErr
 		}
 
 		cfg := snowflake.Config{
