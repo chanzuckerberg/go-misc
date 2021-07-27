@@ -8,6 +8,7 @@ import (
 	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
 	"github.com/chanzuckerberg/go-misc/oidc_cli/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
+)
 
 const (
 	lockFilePath          = "/tmp/aws-oidc.lock"
