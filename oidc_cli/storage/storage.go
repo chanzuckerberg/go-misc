@@ -24,7 +24,7 @@ type Storage interface {
 	MarshalOpts() []client.MarshalOpts
 }
 
-func GetStorage(clientID string, issuerURL string) (Storage, error) {
+func GetOIDC(clientID string, issuerURL string) (Storage, error) {
 	isWSL, err := osutil.IsWSL()
 	if err != nil {
 		return nil, err
