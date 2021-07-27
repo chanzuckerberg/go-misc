@@ -11,7 +11,7 @@ import (
 
 const (
 	service = "aws-oidc"
-	defaultFileStorageDir = "~/.oidc-cli"
+	defaultFileStorageDir = "~/.cache/oidc-cli"
 	storageVersion = "v0"
 )
 
