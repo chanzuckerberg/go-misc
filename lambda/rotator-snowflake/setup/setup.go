@@ -11,10 +11,10 @@ import (
 	snowflakeCfg "github.com/chanzuckerberg/go-misc/lambda/rotator-snowflake/setup/snowflake"
 	"github.com/chanzuckerberg/go-misc/sets"
 	"github.com/chanzuckerberg/go-misc/snowflake"
-	"github.com/hashicorp/go-multierror"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/okta/okta-sdk-golang/okta"
 	"github.com/segmentio/chamber/store"
+	"github.com/sirupsen/logrus"
 )
 
 // For getting the latest version of a secret, use -1
@@ -88,15 +88,15 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 	}
 
 	acctMapping := snowflakeAccts.OKTAMAP
-	fmt.Println(acctMapping)
-	snowflakeErrs := &multierror.Error{}
+	logrus.Debug("Snowflake: Okta Client ID Mapping: ", acctMapping)
+
 	acctList := []*snowflakeCfg.Account{}
 
 	for acctName, snowflakeAppID := range acctMapping {
 		snowflakeEnv, err := snowflakeCfg.LoadSnowflakeEnv(acctName)
 		if err != nil {
-			snowflakeErrs = multierror.Append(err, errors.Wrapf(err, "Error configuring Snowflake %s account", acctName))
-			continue
+			configureErr := errors.Wrapf(err, "Error configuring Snowflake %s account", acctName)
+			return nil, configureErr
 		}
 
 		cfg := snowflake.Config{
@@ -122,9 +122,8 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 
 		sqlDB, err := snowflakeCfg.ConfigureConnection(cfg)
 		if err != nil {
-			snowflakeErrs = multierror.Append(snowflakeErrs, err)
-
-			continue
+			logrus.Debug(err)
+			return nil, errors.Wrap(err, "Unable to configure SQL Connection")
 		}
 
 		acctList = append(acctList, &snowflakeCfg.Account{
@@ -134,7 +133,7 @@ func Snowflake(ctx context.Context, secrets SecretStore) ([]*snowflakeCfg.Accoun
 		})
 	}
 
-	return acctList, snowflakeErrs.ErrorOrNil()
+	return acctList, nil
 }
 
 func ListSnowflakeUsers(ctx context.Context, oktaClient *oktaCfg.OktaClient, snowflakeAcct *snowflakeCfg.Account) (*sets.StringSet, error) {

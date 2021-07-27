@@ -31,7 +31,7 @@ func Rotate(ctx context.Context) error {
 
 	snowflakeAccounts, err := setup.Snowflake(ctx, secretStore)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "Unable to configure snowflake accounts")
 	}
 
 	databricksUsers, err := setup.ListDatabricksUsers(ctx, oktaClient, databricksAccount)
@@ -39,22 +39,24 @@ func Rotate(ctx context.Context) error {
 		return errors.Wrap(err, "Unable to get list of users to rotate")
 	}
 
-	accountErrors := &multierror.Error{}
+	userErrors := &multierror.Error{}
 	for _, snowflakeAccount := range snowflakeAccounts {
 		snowflakeUsers, err := setup.ListSnowflakeUsers(ctx, oktaClient, snowflakeAccount)
 		if err != nil {
-			accountErrors = multierror.Append(accountErrors, errors.Wrap(err, "Unable to list Snowflake Users"))
+			return errors.Wrap(err, "Unable to list Snowflake Users")
 		}
-
+		if snowflakeUsers == nil {
+			return errors.Errorf("Got no snowflakeUsers listed for %s account", snowflakeAccount.Name)
+		}
 		for _, user := range snowflakeUsers.List() {
 			if databricksUsers.ContainsElement(user) {
 				err = rotate.ProcessUser(ctx, user, snowflakeAccount, databricksAccount)
-				accountErrors = multierror.Append(accountErrors, errors.Wrapf(err, "Unable to rotate %s's credentials", user))
+				userErrors = multierror.Append(userErrors, errors.Wrapf(err, "Unable to rotate %s's credentials", user))
 			}
 		}
 	}
 
-	return accountErrors.ErrorOrNil()
+	return userErrors.ErrorOrNil()
 }
 
 func main() {
