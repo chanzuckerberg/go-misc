@@ -2,7 +2,7 @@ name: Upgrade AWS Mocks nightly
 
 on:
   schedule:
-  - cron: "10 20 * * 2"
+    - cron: "10 20 * * 2"
   # So I can test manually
   workflow_dispatch: {}
 
@@ -10,18 +10,18 @@ jobs:
   upgrade-aws-mocks:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.16
-      id: go
-    - run: make generate-mocks
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v3
-      with:
-        token: ${{ secrets.CZIBUILDBOT_GITHUB_TOKEN }}
-        branch: actionsbot/upgrade-aws-mocks
-        commit-message: "Auto upgrade AWS Mocks"
-        title: "[bot] Upgrade AWS Mocks"
-        labels: "bot/merge"
+      - uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+        id: go
+      - run: make generate-mocks
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.CZIBUILDBOT_GITHUB_TOKEN }}
+          branch: actionsbot/upgrade-aws-mocks
+          commit-message: "Auto upgrade AWS Mocks"
+          title: "[bot] Upgrade AWS Mocks"
+          labels: "bot/merge"
