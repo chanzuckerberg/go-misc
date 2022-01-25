@@ -19,7 +19,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-tfe v0.20.0
 	github.com/hashicorp/go-version v1.3.0
-	github.com/honeycombio/libhoney-go v1.15.5
+	github.com/honeycombio/libhoney-go v1.15.8
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/luna-duclos/instrumentedsql v1.1.3
