@@ -3280,6 +3280,39 @@ func (mr *MockLambdaAPIMockRecorder) WaitUntilFunctionActive(arg0 interface{}) *
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilFunctionActive", reflect.TypeOf((*MockLambdaAPI)(nil).WaitUntilFunctionActive), arg0)
 }
 
+// WaitUntilFunctionActiveV2 mocks base method.
+func (m *MockLambdaAPI) WaitUntilFunctionActiveV2(arg0 *lambda.GetFunctionInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "WaitUntilFunctionActiveV2", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// WaitUntilFunctionActiveV2 indicates an expected call of WaitUntilFunctionActiveV2.
+func (mr *MockLambdaAPIMockRecorder) WaitUntilFunctionActiveV2(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilFunctionActiveV2", reflect.TypeOf((*MockLambdaAPI)(nil).WaitUntilFunctionActiveV2), arg0)
+}
+
+// WaitUntilFunctionActiveV2WithContext mocks base method.
+func (m *MockLambdaAPI) WaitUntilFunctionActiveV2WithContext(arg0 context.Context, arg1 *lambda.GetFunctionInput, arg2 ...request.WaiterOption) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "WaitUntilFunctionActiveV2WithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// WaitUntilFunctionActiveV2WithContext indicates an expected call of WaitUntilFunctionActiveV2WithContext.
+func (mr *MockLambdaAPIMockRecorder) WaitUntilFunctionActiveV2WithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilFunctionActiveV2WithContext", reflect.TypeOf((*MockLambdaAPI)(nil).WaitUntilFunctionActiveV2WithContext), varargs...)
+}
+
 // WaitUntilFunctionActiveWithContext mocks base method.
 func (m *MockLambdaAPI) WaitUntilFunctionActiveWithContext(arg0 context.Context, arg1 *lambda.GetFunctionConfigurationInput, arg2 ...request.WaiterOption) error {
 	m.ctrl.T.Helper()
@@ -3344,6 +3377,39 @@ func (m *MockLambdaAPI) WaitUntilFunctionUpdated(arg0 *lambda.GetFunctionConfigu
 func (mr *MockLambdaAPIMockRecorder) WaitUntilFunctionUpdated(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilFunctionUpdated", reflect.TypeOf((*MockLambdaAPI)(nil).WaitUntilFunctionUpdated), arg0)
+}
+
+// WaitUntilFunctionUpdatedV2 mocks base method.
+func (m *MockLambdaAPI) WaitUntilFunctionUpdatedV2(arg0 *lambda.GetFunctionInput) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "WaitUntilFunctionUpdatedV2", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// WaitUntilFunctionUpdatedV2 indicates an expected call of WaitUntilFunctionUpdatedV2.
+func (mr *MockLambdaAPIMockRecorder) WaitUntilFunctionUpdatedV2(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilFunctionUpdatedV2", reflect.TypeOf((*MockLambdaAPI)(nil).WaitUntilFunctionUpdatedV2), arg0)
+}
+
+// WaitUntilFunctionUpdatedV2WithContext mocks base method.
+func (m *MockLambdaAPI) WaitUntilFunctionUpdatedV2WithContext(arg0 context.Context, arg1 *lambda.GetFunctionInput, arg2 ...request.WaiterOption) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "WaitUntilFunctionUpdatedV2WithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// WaitUntilFunctionUpdatedV2WithContext indicates an expected call of WaitUntilFunctionUpdatedV2WithContext.
+func (mr *MockLambdaAPIMockRecorder) WaitUntilFunctionUpdatedV2WithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitUntilFunctionUpdatedV2WithContext", reflect.TypeOf((*MockLambdaAPI)(nil).WaitUntilFunctionUpdatedV2WithContext), varargs...)
 }
 
 // WaitUntilFunctionUpdatedWithContext mocks base method.
