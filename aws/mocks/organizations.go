@@ -186,6 +186,56 @@ func (mr *MockOrganizationsAPIMockRecorder) CancelHandshakeWithContext(arg0, arg
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelHandshakeWithContext", reflect.TypeOf((*MockOrganizationsAPI)(nil).CancelHandshakeWithContext), varargs...)
 }
 
+// CloseAccount mocks base method.
+func (m *MockOrganizationsAPI) CloseAccount(arg0 *organizations.CloseAccountInput) (*organizations.CloseAccountOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CloseAccount", arg0)
+	ret0, _ := ret[0].(*organizations.CloseAccountOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CloseAccount indicates an expected call of CloseAccount.
+func (mr *MockOrganizationsAPIMockRecorder) CloseAccount(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CloseAccount", reflect.TypeOf((*MockOrganizationsAPI)(nil).CloseAccount), arg0)
+}
+
+// CloseAccountRequest mocks base method.
+func (m *MockOrganizationsAPI) CloseAccountRequest(arg0 *organizations.CloseAccountInput) (*request.Request, *organizations.CloseAccountOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CloseAccountRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*organizations.CloseAccountOutput)
+	return ret0, ret1
+}
+
+// CloseAccountRequest indicates an expected call of CloseAccountRequest.
+func (mr *MockOrganizationsAPIMockRecorder) CloseAccountRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CloseAccountRequest", reflect.TypeOf((*MockOrganizationsAPI)(nil).CloseAccountRequest), arg0)
+}
+
+// CloseAccountWithContext mocks base method.
+func (m *MockOrganizationsAPI) CloseAccountWithContext(arg0 context.Context, arg1 *organizations.CloseAccountInput, arg2 ...request.Option) (*organizations.CloseAccountOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CloseAccountWithContext", varargs...)
+	ret0, _ := ret[0].(*organizations.CloseAccountOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CloseAccountWithContext indicates an expected call of CloseAccountWithContext.
+func (mr *MockOrganizationsAPIMockRecorder) CloseAccountWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CloseAccountWithContext", reflect.TypeOf((*MockOrganizationsAPI)(nil).CloseAccountWithContext), varargs...)
+}
+
 // CreateAccount mocks base method.
 func (m *MockOrganizationsAPI) CreateAccount(arg0 *organizations.CreateAccountInput) (*organizations.CreateAccountOutput, error) {
 	m.ctrl.T.Helper()
