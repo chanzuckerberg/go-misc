@@ -316,6 +316,56 @@ func (mr *MockLambdaAPIMockRecorder) CreateFunctionRequest(arg0 interface{}) *go
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateFunctionRequest", reflect.TypeOf((*MockLambdaAPI)(nil).CreateFunctionRequest), arg0)
 }
 
+// CreateFunctionUrlConfig mocks base method.
+func (m *MockLambdaAPI) CreateFunctionUrlConfig(arg0 *lambda.CreateFunctionUrlConfigInput) (*lambda.CreateFunctionUrlConfigOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateFunctionUrlConfig", arg0)
+	ret0, _ := ret[0].(*lambda.CreateFunctionUrlConfigOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateFunctionUrlConfig indicates an expected call of CreateFunctionUrlConfig.
+func (mr *MockLambdaAPIMockRecorder) CreateFunctionUrlConfig(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateFunctionUrlConfig", reflect.TypeOf((*MockLambdaAPI)(nil).CreateFunctionUrlConfig), arg0)
+}
+
+// CreateFunctionUrlConfigRequest mocks base method.
+func (m *MockLambdaAPI) CreateFunctionUrlConfigRequest(arg0 *lambda.CreateFunctionUrlConfigInput) (*request.Request, *lambda.CreateFunctionUrlConfigOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateFunctionUrlConfigRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*lambda.CreateFunctionUrlConfigOutput)
+	return ret0, ret1
+}
+
+// CreateFunctionUrlConfigRequest indicates an expected call of CreateFunctionUrlConfigRequest.
+func (mr *MockLambdaAPIMockRecorder) CreateFunctionUrlConfigRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateFunctionUrlConfigRequest", reflect.TypeOf((*MockLambdaAPI)(nil).CreateFunctionUrlConfigRequest), arg0)
+}
+
+// CreateFunctionUrlConfigWithContext mocks base method.
+func (m *MockLambdaAPI) CreateFunctionUrlConfigWithContext(arg0 context.Context, arg1 *lambda.CreateFunctionUrlConfigInput, arg2 ...request.Option) (*lambda.CreateFunctionUrlConfigOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CreateFunctionUrlConfigWithContext", varargs...)
+	ret0, _ := ret[0].(*lambda.CreateFunctionUrlConfigOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CreateFunctionUrlConfigWithContext indicates an expected call of CreateFunctionUrlConfigWithContext.
+func (mr *MockLambdaAPIMockRecorder) CreateFunctionUrlConfigWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateFunctionUrlConfigWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).CreateFunctionUrlConfigWithContext), varargs...)
+}
+
 // CreateFunctionWithContext mocks base method.
 func (m *MockLambdaAPI) CreateFunctionWithContext(arg0 context.Context, arg1 *lambda.CreateFunctionInput, arg2 ...request.Option) (*lambda.FunctionConfiguration, error) {
 	m.ctrl.T.Helper()
@@ -664,6 +714,56 @@ func (m *MockLambdaAPI) DeleteFunctionRequest(arg0 *lambda.DeleteFunctionInput) 
 func (mr *MockLambdaAPIMockRecorder) DeleteFunctionRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFunctionRequest", reflect.TypeOf((*MockLambdaAPI)(nil).DeleteFunctionRequest), arg0)
+}
+
+// DeleteFunctionUrlConfig mocks base method.
+func (m *MockLambdaAPI) DeleteFunctionUrlConfig(arg0 *lambda.DeleteFunctionUrlConfigInput) (*lambda.DeleteFunctionUrlConfigOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteFunctionUrlConfig", arg0)
+	ret0, _ := ret[0].(*lambda.DeleteFunctionUrlConfigOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteFunctionUrlConfig indicates an expected call of DeleteFunctionUrlConfig.
+func (mr *MockLambdaAPIMockRecorder) DeleteFunctionUrlConfig(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFunctionUrlConfig", reflect.TypeOf((*MockLambdaAPI)(nil).DeleteFunctionUrlConfig), arg0)
+}
+
+// DeleteFunctionUrlConfigRequest mocks base method.
+func (m *MockLambdaAPI) DeleteFunctionUrlConfigRequest(arg0 *lambda.DeleteFunctionUrlConfigInput) (*request.Request, *lambda.DeleteFunctionUrlConfigOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteFunctionUrlConfigRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*lambda.DeleteFunctionUrlConfigOutput)
+	return ret0, ret1
+}
+
+// DeleteFunctionUrlConfigRequest indicates an expected call of DeleteFunctionUrlConfigRequest.
+func (mr *MockLambdaAPIMockRecorder) DeleteFunctionUrlConfigRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFunctionUrlConfigRequest", reflect.TypeOf((*MockLambdaAPI)(nil).DeleteFunctionUrlConfigRequest), arg0)
+}
+
+// DeleteFunctionUrlConfigWithContext mocks base method.
+func (m *MockLambdaAPI) DeleteFunctionUrlConfigWithContext(arg0 context.Context, arg1 *lambda.DeleteFunctionUrlConfigInput, arg2 ...request.Option) (*lambda.DeleteFunctionUrlConfigOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteFunctionUrlConfigWithContext", varargs...)
+	ret0, _ := ret[0].(*lambda.DeleteFunctionUrlConfigOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteFunctionUrlConfigWithContext indicates an expected call of DeleteFunctionUrlConfigWithContext.
+func (mr *MockLambdaAPIMockRecorder) DeleteFunctionUrlConfigWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteFunctionUrlConfigWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).DeleteFunctionUrlConfigWithContext), varargs...)
 }
 
 // DeleteFunctionWithContext mocks base method.
@@ -1214,6 +1314,56 @@ func (m *MockLambdaAPI) GetFunctionRequest(arg0 *lambda.GetFunctionInput) (*requ
 func (mr *MockLambdaAPIMockRecorder) GetFunctionRequest(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFunctionRequest", reflect.TypeOf((*MockLambdaAPI)(nil).GetFunctionRequest), arg0)
+}
+
+// GetFunctionUrlConfig mocks base method.
+func (m *MockLambdaAPI) GetFunctionUrlConfig(arg0 *lambda.GetFunctionUrlConfigInput) (*lambda.GetFunctionUrlConfigOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFunctionUrlConfig", arg0)
+	ret0, _ := ret[0].(*lambda.GetFunctionUrlConfigOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFunctionUrlConfig indicates an expected call of GetFunctionUrlConfig.
+func (mr *MockLambdaAPIMockRecorder) GetFunctionUrlConfig(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFunctionUrlConfig", reflect.TypeOf((*MockLambdaAPI)(nil).GetFunctionUrlConfig), arg0)
+}
+
+// GetFunctionUrlConfigRequest mocks base method.
+func (m *MockLambdaAPI) GetFunctionUrlConfigRequest(arg0 *lambda.GetFunctionUrlConfigInput) (*request.Request, *lambda.GetFunctionUrlConfigOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetFunctionUrlConfigRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*lambda.GetFunctionUrlConfigOutput)
+	return ret0, ret1
+}
+
+// GetFunctionUrlConfigRequest indicates an expected call of GetFunctionUrlConfigRequest.
+func (mr *MockLambdaAPIMockRecorder) GetFunctionUrlConfigRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFunctionUrlConfigRequest", reflect.TypeOf((*MockLambdaAPI)(nil).GetFunctionUrlConfigRequest), arg0)
+}
+
+// GetFunctionUrlConfigWithContext mocks base method.
+func (m *MockLambdaAPI) GetFunctionUrlConfigWithContext(arg0 context.Context, arg1 *lambda.GetFunctionUrlConfigInput, arg2 ...request.Option) (*lambda.GetFunctionUrlConfigOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetFunctionUrlConfigWithContext", varargs...)
+	ret0, _ := ret[0].(*lambda.GetFunctionUrlConfigOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetFunctionUrlConfigWithContext indicates an expected call of GetFunctionUrlConfigWithContext.
+func (mr *MockLambdaAPIMockRecorder) GetFunctionUrlConfigWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetFunctionUrlConfigWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).GetFunctionUrlConfigWithContext), varargs...)
 }
 
 // GetFunctionWithContext mocks base method.
@@ -1916,6 +2066,89 @@ func (mr *MockLambdaAPIMockRecorder) ListFunctionEventInvokeConfigsWithContext(a
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFunctionEventInvokeConfigsWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).ListFunctionEventInvokeConfigsWithContext), varargs...)
+}
+
+// ListFunctionUrlConfigs mocks base method.
+func (m *MockLambdaAPI) ListFunctionUrlConfigs(arg0 *lambda.ListFunctionUrlConfigsInput) (*lambda.ListFunctionUrlConfigsOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListFunctionUrlConfigs", arg0)
+	ret0, _ := ret[0].(*lambda.ListFunctionUrlConfigsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListFunctionUrlConfigs indicates an expected call of ListFunctionUrlConfigs.
+func (mr *MockLambdaAPIMockRecorder) ListFunctionUrlConfigs(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFunctionUrlConfigs", reflect.TypeOf((*MockLambdaAPI)(nil).ListFunctionUrlConfigs), arg0)
+}
+
+// ListFunctionUrlConfigsPages mocks base method.
+func (m *MockLambdaAPI) ListFunctionUrlConfigsPages(arg0 *lambda.ListFunctionUrlConfigsInput, arg1 func(*lambda.ListFunctionUrlConfigsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListFunctionUrlConfigsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ListFunctionUrlConfigsPages indicates an expected call of ListFunctionUrlConfigsPages.
+func (mr *MockLambdaAPIMockRecorder) ListFunctionUrlConfigsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFunctionUrlConfigsPages", reflect.TypeOf((*MockLambdaAPI)(nil).ListFunctionUrlConfigsPages), arg0, arg1)
+}
+
+// ListFunctionUrlConfigsPagesWithContext mocks base method.
+func (m *MockLambdaAPI) ListFunctionUrlConfigsPagesWithContext(arg0 context.Context, arg1 *lambda.ListFunctionUrlConfigsInput, arg2 func(*lambda.ListFunctionUrlConfigsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ListFunctionUrlConfigsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ListFunctionUrlConfigsPagesWithContext indicates an expected call of ListFunctionUrlConfigsPagesWithContext.
+func (mr *MockLambdaAPIMockRecorder) ListFunctionUrlConfigsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFunctionUrlConfigsPagesWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).ListFunctionUrlConfigsPagesWithContext), varargs...)
+}
+
+// ListFunctionUrlConfigsRequest mocks base method.
+func (m *MockLambdaAPI) ListFunctionUrlConfigsRequest(arg0 *lambda.ListFunctionUrlConfigsInput) (*request.Request, *lambda.ListFunctionUrlConfigsOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListFunctionUrlConfigsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*lambda.ListFunctionUrlConfigsOutput)
+	return ret0, ret1
+}
+
+// ListFunctionUrlConfigsRequest indicates an expected call of ListFunctionUrlConfigsRequest.
+func (mr *MockLambdaAPIMockRecorder) ListFunctionUrlConfigsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFunctionUrlConfigsRequest", reflect.TypeOf((*MockLambdaAPI)(nil).ListFunctionUrlConfigsRequest), arg0)
+}
+
+// ListFunctionUrlConfigsWithContext mocks base method.
+func (m *MockLambdaAPI) ListFunctionUrlConfigsWithContext(arg0 context.Context, arg1 *lambda.ListFunctionUrlConfigsInput, arg2 ...request.Option) (*lambda.ListFunctionUrlConfigsOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ListFunctionUrlConfigsWithContext", varargs...)
+	ret0, _ := ret[0].(*lambda.ListFunctionUrlConfigsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListFunctionUrlConfigsWithContext indicates an expected call of ListFunctionUrlConfigsWithContext.
+func (mr *MockLambdaAPIMockRecorder) ListFunctionUrlConfigsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListFunctionUrlConfigsWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).ListFunctionUrlConfigsWithContext), varargs...)
 }
 
 // ListFunctions mocks base method.
@@ -3264,6 +3497,56 @@ func (mr *MockLambdaAPIMockRecorder) UpdateFunctionEventInvokeConfigWithContext(
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFunctionEventInvokeConfigWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).UpdateFunctionEventInvokeConfigWithContext), varargs...)
+}
+
+// UpdateFunctionUrlConfig mocks base method.
+func (m *MockLambdaAPI) UpdateFunctionUrlConfig(arg0 *lambda.UpdateFunctionUrlConfigInput) (*lambda.UpdateFunctionUrlConfigOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateFunctionUrlConfig", arg0)
+	ret0, _ := ret[0].(*lambda.UpdateFunctionUrlConfigOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateFunctionUrlConfig indicates an expected call of UpdateFunctionUrlConfig.
+func (mr *MockLambdaAPIMockRecorder) UpdateFunctionUrlConfig(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFunctionUrlConfig", reflect.TypeOf((*MockLambdaAPI)(nil).UpdateFunctionUrlConfig), arg0)
+}
+
+// UpdateFunctionUrlConfigRequest mocks base method.
+func (m *MockLambdaAPI) UpdateFunctionUrlConfigRequest(arg0 *lambda.UpdateFunctionUrlConfigInput) (*request.Request, *lambda.UpdateFunctionUrlConfigOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateFunctionUrlConfigRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*lambda.UpdateFunctionUrlConfigOutput)
+	return ret0, ret1
+}
+
+// UpdateFunctionUrlConfigRequest indicates an expected call of UpdateFunctionUrlConfigRequest.
+func (mr *MockLambdaAPIMockRecorder) UpdateFunctionUrlConfigRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFunctionUrlConfigRequest", reflect.TypeOf((*MockLambdaAPI)(nil).UpdateFunctionUrlConfigRequest), arg0)
+}
+
+// UpdateFunctionUrlConfigWithContext mocks base method.
+func (m *MockLambdaAPI) UpdateFunctionUrlConfigWithContext(arg0 context.Context, arg1 *lambda.UpdateFunctionUrlConfigInput, arg2 ...request.Option) (*lambda.UpdateFunctionUrlConfigOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UpdateFunctionUrlConfigWithContext", varargs...)
+	ret0, _ := ret[0].(*lambda.UpdateFunctionUrlConfigOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateFunctionUrlConfigWithContext indicates an expected call of UpdateFunctionUrlConfigWithContext.
+func (mr *MockLambdaAPIMockRecorder) UpdateFunctionUrlConfigWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateFunctionUrlConfigWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).UpdateFunctionUrlConfigWithContext), varargs...)
 }
 
 // WaitUntilFunctionActive mocks base method.
