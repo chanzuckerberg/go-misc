@@ -1136,6 +1136,56 @@ func (mr *MockKMSAPIMockRecorder) GenerateDataKeyWithoutPlaintextWithContext(arg
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateDataKeyWithoutPlaintextWithContext", reflect.TypeOf((*MockKMSAPI)(nil).GenerateDataKeyWithoutPlaintextWithContext), varargs...)
 }
 
+// GenerateMac mocks base method.
+func (m *MockKMSAPI) GenerateMac(arg0 *kms.GenerateMacInput) (*kms.GenerateMacOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateMac", arg0)
+	ret0, _ := ret[0].(*kms.GenerateMacOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateMac indicates an expected call of GenerateMac.
+func (mr *MockKMSAPIMockRecorder) GenerateMac(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateMac", reflect.TypeOf((*MockKMSAPI)(nil).GenerateMac), arg0)
+}
+
+// GenerateMacRequest mocks base method.
+func (m *MockKMSAPI) GenerateMacRequest(arg0 *kms.GenerateMacInput) (*request.Request, *kms.GenerateMacOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GenerateMacRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*kms.GenerateMacOutput)
+	return ret0, ret1
+}
+
+// GenerateMacRequest indicates an expected call of GenerateMacRequest.
+func (mr *MockKMSAPIMockRecorder) GenerateMacRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateMacRequest", reflect.TypeOf((*MockKMSAPI)(nil).GenerateMacRequest), arg0)
+}
+
+// GenerateMacWithContext mocks base method.
+func (m *MockKMSAPI) GenerateMacWithContext(arg0 context.Context, arg1 *kms.GenerateMacInput, arg2 ...request.Option) (*kms.GenerateMacOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GenerateMacWithContext", varargs...)
+	ret0, _ := ret[0].(*kms.GenerateMacOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GenerateMacWithContext indicates an expected call of GenerateMacWithContext.
+func (mr *MockKMSAPIMockRecorder) GenerateMacWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GenerateMacWithContext", reflect.TypeOf((*MockKMSAPI)(nil).GenerateMacWithContext), varargs...)
+}
+
 // GenerateRandom mocks base method.
 func (m *MockKMSAPI) GenerateRandom(arg0 *kms.GenerateRandomInput) (*kms.GenerateRandomOutput, error) {
 	m.ctrl.T.Helper()
@@ -2531,6 +2581,56 @@ func (m *MockKMSAPI) Verify(arg0 *kms.VerifyInput) (*kms.VerifyOutput, error) {
 func (mr *MockKMSAPIMockRecorder) Verify(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Verify", reflect.TypeOf((*MockKMSAPI)(nil).Verify), arg0)
+}
+
+// VerifyMac mocks base method.
+func (m *MockKMSAPI) VerifyMac(arg0 *kms.VerifyMacInput) (*kms.VerifyMacOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VerifyMac", arg0)
+	ret0, _ := ret[0].(*kms.VerifyMacOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// VerifyMac indicates an expected call of VerifyMac.
+func (mr *MockKMSAPIMockRecorder) VerifyMac(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyMac", reflect.TypeOf((*MockKMSAPI)(nil).VerifyMac), arg0)
+}
+
+// VerifyMacRequest mocks base method.
+func (m *MockKMSAPI) VerifyMacRequest(arg0 *kms.VerifyMacInput) (*request.Request, *kms.VerifyMacOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "VerifyMacRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*kms.VerifyMacOutput)
+	return ret0, ret1
+}
+
+// VerifyMacRequest indicates an expected call of VerifyMacRequest.
+func (mr *MockKMSAPIMockRecorder) VerifyMacRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyMacRequest", reflect.TypeOf((*MockKMSAPI)(nil).VerifyMacRequest), arg0)
+}
+
+// VerifyMacWithContext mocks base method.
+func (m *MockKMSAPI) VerifyMacWithContext(arg0 context.Context, arg1 *kms.VerifyMacInput, arg2 ...request.Option) (*kms.VerifyMacOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "VerifyMacWithContext", varargs...)
+	ret0, _ := ret[0].(*kms.VerifyMacOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// VerifyMacWithContext indicates an expected call of VerifyMacWithContext.
+func (mr *MockKMSAPIMockRecorder) VerifyMacWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyMacWithContext", reflect.TypeOf((*MockKMSAPI)(nil).VerifyMacWithContext), varargs...)
 }
 
 // VerifyRequest mocks base method.
