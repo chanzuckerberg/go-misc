@@ -3,7 +3,7 @@ module github.com/chanzuckerberg/go-misc
 go 1.17
 
 require (
-	github.com/AlecAivazis/survey/v2 v2.3.2
+	github.com/AlecAivazis/survey/v2 v2.3.4
 	github.com/aws/aws-lambda-go v1.30.0
 	github.com/aws/aws-sdk-go v1.44.25
 	github.com/blang/semver v3.5.1+incompatible
