@@ -33,6 +33,11 @@ deps:
 	go mod tidy
 .PHONY: deps
 
+upgrade-deps:
+	go get -u ./...
+	go mod tidy
+.PHONY: upgrade-deps
+
 test: ## run the tests
 ifeq (, $(shell which gotest))
 	go test -failfast -cover ./...
