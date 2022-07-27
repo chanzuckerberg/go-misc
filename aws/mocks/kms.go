@@ -551,6 +551,39 @@ func (mr *MockKMSAPIMockRecorder) DescribeCustomKeyStores(arg0 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCustomKeyStores", reflect.TypeOf((*MockKMSAPI)(nil).DescribeCustomKeyStores), arg0)
 }
 
+// DescribeCustomKeyStoresPages mocks base method.
+func (m *MockKMSAPI) DescribeCustomKeyStoresPages(arg0 *kms.DescribeCustomKeyStoresInput, arg1 func(*kms.DescribeCustomKeyStoresOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeCustomKeyStoresPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeCustomKeyStoresPages indicates an expected call of DescribeCustomKeyStoresPages.
+func (mr *MockKMSAPIMockRecorder) DescribeCustomKeyStoresPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCustomKeyStoresPages", reflect.TypeOf((*MockKMSAPI)(nil).DescribeCustomKeyStoresPages), arg0, arg1)
+}
+
+// DescribeCustomKeyStoresPagesWithContext mocks base method.
+func (m *MockKMSAPI) DescribeCustomKeyStoresPagesWithContext(arg0 context.Context, arg1 *kms.DescribeCustomKeyStoresInput, arg2 func(*kms.DescribeCustomKeyStoresOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeCustomKeyStoresPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeCustomKeyStoresPagesWithContext indicates an expected call of DescribeCustomKeyStoresPagesWithContext.
+func (mr *MockKMSAPIMockRecorder) DescribeCustomKeyStoresPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCustomKeyStoresPagesWithContext", reflect.TypeOf((*MockKMSAPI)(nil).DescribeCustomKeyStoresPagesWithContext), varargs...)
+}
+
 // DescribeCustomKeyStoresRequest mocks base method.
 func (m *MockKMSAPI) DescribeCustomKeyStoresRequest(arg0 *kms.DescribeCustomKeyStoresInput) (*request.Request, *kms.DescribeCustomKeyStoresOutput) {
 	m.ctrl.T.Helper()
@@ -1833,6 +1866,39 @@ func (mr *MockKMSAPIMockRecorder) ListResourceTags(arg0 interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListResourceTags", reflect.TypeOf((*MockKMSAPI)(nil).ListResourceTags), arg0)
 }
 
+// ListResourceTagsPages mocks base method.
+func (m *MockKMSAPI) ListResourceTagsPages(arg0 *kms.ListResourceTagsInput, arg1 func(*kms.ListResourceTagsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListResourceTagsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ListResourceTagsPages indicates an expected call of ListResourceTagsPages.
+func (mr *MockKMSAPIMockRecorder) ListResourceTagsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListResourceTagsPages", reflect.TypeOf((*MockKMSAPI)(nil).ListResourceTagsPages), arg0, arg1)
+}
+
+// ListResourceTagsPagesWithContext mocks base method.
+func (m *MockKMSAPI) ListResourceTagsPagesWithContext(arg0 context.Context, arg1 *kms.ListResourceTagsInput, arg2 func(*kms.ListResourceTagsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ListResourceTagsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ListResourceTagsPagesWithContext indicates an expected call of ListResourceTagsPagesWithContext.
+func (mr *MockKMSAPIMockRecorder) ListResourceTagsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListResourceTagsPagesWithContext", reflect.TypeOf((*MockKMSAPI)(nil).ListResourceTagsPagesWithContext), varargs...)
+}
+
 // ListResourceTagsRequest mocks base method.
 func (m *MockKMSAPI) ListResourceTagsRequest(arg0 *kms.ListResourceTagsInput) (*request.Request, *kms.ListResourceTagsOutput) {
 	m.ctrl.T.Helper()
@@ -1881,6 +1947,39 @@ func (m *MockKMSAPI) ListRetirableGrants(arg0 *kms.ListRetirableGrantsInput) (*k
 func (mr *MockKMSAPIMockRecorder) ListRetirableGrants(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRetirableGrants", reflect.TypeOf((*MockKMSAPI)(nil).ListRetirableGrants), arg0)
+}
+
+// ListRetirableGrantsPages mocks base method.
+func (m *MockKMSAPI) ListRetirableGrantsPages(arg0 *kms.ListRetirableGrantsInput, arg1 func(*kms.ListGrantsResponse, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListRetirableGrantsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ListRetirableGrantsPages indicates an expected call of ListRetirableGrantsPages.
+func (mr *MockKMSAPIMockRecorder) ListRetirableGrantsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRetirableGrantsPages", reflect.TypeOf((*MockKMSAPI)(nil).ListRetirableGrantsPages), arg0, arg1)
+}
+
+// ListRetirableGrantsPagesWithContext mocks base method.
+func (m *MockKMSAPI) ListRetirableGrantsPagesWithContext(arg0 context.Context, arg1 *kms.ListRetirableGrantsInput, arg2 func(*kms.ListGrantsResponse, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "ListRetirableGrantsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// ListRetirableGrantsPagesWithContext indicates an expected call of ListRetirableGrantsPagesWithContext.
+func (mr *MockKMSAPIMockRecorder) ListRetirableGrantsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListRetirableGrantsPagesWithContext", reflect.TypeOf((*MockKMSAPI)(nil).ListRetirableGrantsPagesWithContext), varargs...)
 }
 
 // ListRetirableGrantsRequest mocks base method.

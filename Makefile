@@ -39,11 +39,7 @@ upgrade-deps:
 .PHONY: upgrade-deps
 
 test: ## run the tests
-ifeq (, $(shell which gotest))
-	go test -failfast -cover ./...
-else
-	gotest -failfast -cover ./...
-endif
+	CGO_ENABLED=1 go test -failfast -cover ./...
 .PHONY: test
 
 test-ci: ## run tests in ci (don't try to updated dependencies)
