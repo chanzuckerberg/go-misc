@@ -15,7 +15,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/google/go-github/v27 v27.0.6
 	github.com/google/uuid v1.3.0
-	github.com/gruntwork-io/terratest v0.40.17
+	github.com/gruntwork-io/terratest v0.40.18
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-tfe v0.20.0
 	github.com/hashicorp/go-version v1.3.0
@@ -31,7 +31,7 @@ require (
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/pkg/errors v0.9.1
 	github.com/segmentio/chamber v2.2.0+incompatible
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.9.0
 	github.com/snowflakedb/gosnowflake v1.6.9
 	github.com/spf13/cobra v1.2.1
 	github.com/stretchr/testify v1.8.0
