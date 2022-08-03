@@ -47,7 +47,7 @@ func (k *Keyring) Set(ctx context.Context, value string) error {
 	defer k.mu.Unlock()
 
 	err := keyring.Set(service, k.key, value)
-	if errors.Is(err, keyring.ErrNotFound) {
+	if err == keyring.ErrNotFound {
 		return nil
 	}
 	return errors.Wrap(err, "could not set value to keyring")
