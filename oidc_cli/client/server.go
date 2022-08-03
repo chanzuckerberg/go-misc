@@ -44,8 +44,8 @@ func newServer(c *ServerConfig) (*server, error) {
 	s := &server{
 		config: c,
 
-		result: make(chan *Token),
-		err:    make(chan error),
+		result: make(chan *Token, 1),
+		err:    make(chan error, 1),
 	}
 
 	err := c.Validate()
@@ -65,6 +65,7 @@ func newServer(c *ServerConfig) (*server, error) {
 // on a port in the range FromPort to ToPort
 func (s *server) bind(c *ServerConfig) error {
 	var result *multierror.Error
+
 	for port := c.FromPort; port <= c.ToPort; port++ {
 		l, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", port))
 		// If we manage to bind, then great use it
@@ -73,6 +74,7 @@ func (s *server) bind(c *ServerConfig) error {
 			s.port = port
 			return nil
 		}
+
 		result = multierror.Append(result, err)
 	}
 
