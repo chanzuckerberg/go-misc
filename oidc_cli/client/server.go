@@ -122,6 +122,7 @@ func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *o
 			return
 		}
 
+		logrus.Debug("server responded with success message; consuming token")
 		s.result <- &Token{
 			Expiry:       idToken.Expiry,
 			IDToken:      verifiedIDToken,
@@ -129,6 +130,7 @@ func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *o
 			RefreshToken: oauth2Token.RefreshToken,
 			Claims:       *claims,
 		}
+		logrus.Debug("token consumed")
 	})
 
 	s.server = &http.Server{
