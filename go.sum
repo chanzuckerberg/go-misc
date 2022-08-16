@@ -195,6 +195,7 @@ github.com/aws/aws-sdk-go v1.33.11/go.mod h1:5zCpMtNQVjRREroY7sYe8lOMRSxkhG6MZve
 github.com/aws/aws-sdk-go v1.38.0/go.mod h1:hcU610XS61/+aQV88ixoOzUoG7v3b31pl2zKMmprdro=
 github.com/aws/aws-sdk-go v1.40.56/go.mod h1:585smgzpB/KqRA+K3y/NL/oYRqQvpNJYvLm+LY1U59Q=
 github.com/aws/aws-sdk-go v1.44.67/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
+github.com/aws/aws-sdk-go v1.44.76/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
 github.com/aws/aws-sdk-go v1.44.77 h1:m5rTfdv04/swD+vTuS2zn4NEwKX3yEJPMhiVCFDL/mU=
 github.com/aws/aws-sdk-go v1.44.77/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
 github.com/aws/aws-sdk-go-v2 v1.3.2/go.mod h1:7OaACgj2SX3XGWnrIjGlJM22h6yD6MEWKvm7levnnM8=
@@ -279,8 +280,8 @@ github.com/certifi/gocertifi v0.0.0-20210507211836-431795d63e8d/go.mod h1:sGbDF6
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/chanzuckerberg/aws-oidc v0.23.1/go.mod h1:AbN6f7tGQ1aR8kJdr5Mpnyk3iabBONFFLlAVQG8UgqM=
-github.com/chanzuckerberg/aws-oidc v0.24.5 h1:mjjQVl3Im/DT9Htf0FdO5CSUim31j3LshMp0aw9wse4=
-github.com/chanzuckerberg/aws-oidc v0.24.5/go.mod h1:N/Ad4ESd5fop9XsBNwLp91IdyfTEkez7K1GhP+DWxlU=
+github.com/chanzuckerberg/aws-oidc v0.24.9 h1:Rzlw/NtgojPQw8vmwSVdHxXJV+s+ag+q/+sRk8dP5Dg=
+github.com/chanzuckerberg/aws-oidc v0.24.9/go.mod h1:bKvAeriWGlYvHXKOM14IXgn7GZAK7DpTFOGQtNEmV5o=
 github.com/chanzuckerberg/go-misc v0.0.0-20200814145037-61fd36eedee6/go.mod h1:5GljuH2+xw/T7ovs4sRj9WbNRrgePgom8sMzJJPlAAo=
 github.com/chanzuckerberg/go-misc v0.0.0-20220803194552-937686b8e897/go.mod h1:P0DdzYO/aO8eKLzdlvw/ihQChbxln/2H1gNLE4+r0x0=
 github.com/chanzuckerberg/go-tfe v0.9.1-0.20201023195027-6a99188f09d3 h1:IUvE9XEmLUJ4sKtTpkts9DELdUhFvFoAuy52+otdrB0=
