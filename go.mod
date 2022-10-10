@@ -5,10 +5,10 @@ go 1.17
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.6
 	github.com/aws/aws-lambda-go v1.34.1
-	github.com/aws/aws-sdk-go v1.44.111
+	github.com/aws/aws-sdk-go v1.44.114
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/chanzuckerberg/aws-oidc v0.25.1
+	github.com/chanzuckerberg/aws-oidc v0.25.2
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.14.0
 	github.com/go-errors/errors v1.4.2
