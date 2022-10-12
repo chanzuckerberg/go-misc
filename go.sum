@@ -230,7 +230,6 @@ github.com/aws/aws-sdk-go v1.44.48/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4
 github.com/aws/aws-sdk-go v1.44.67/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
 github.com/aws/aws-sdk-go v1.44.96/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
 github.com/aws/aws-sdk-go v1.44.101/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
-github.com/aws/aws-sdk-go v1.44.108/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
 github.com/aws/aws-sdk-go v1.44.114 h1:plIkWc/RsHr3DXBj4MEw9sEW4CcL/e2ryokc+CKyq1I=
 github.com/aws/aws-sdk-go v1.44.114/go.mod h1:y4AeaBuwd2Lk+GepC1E9v0qOiTws0MIWAX4oIKwKHZo=
 github.com/aws/aws-sdk-go-v2 v1.3.2/go.mod h1:7OaACgj2SX3XGWnrIjGlJM22h6yD6MEWKvm7levnnM8=
@@ -361,8 +360,8 @@ github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XL
 github.com/cespare/xxhash/v2 v2.1.2/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/chanzuckerberg/aws-oidc v0.23.1/go.mod h1:AbN6f7tGQ1aR8kJdr5Mpnyk3iabBONFFLlAVQG8UgqM=
 github.com/chanzuckerberg/aws-oidc v0.25.0/go.mod h1:j44kmlvVhS3EPbKNp8HNH90btnrPQjadzgYhMUI7X3s=
-github.com/chanzuckerberg/aws-oidc v0.25.1 h1:QCjIYTKUtN1+FFCryVDcK49lYOU83XH0mkTQG3m7w4Y=
-github.com/chanzuckerberg/aws-oidc v0.25.1/go.mod h1:Ea7kXmA5bUnQkOdtx0sJ8AmTDbRhsh8e00C5pQPacr0=
+github.com/chanzuckerberg/aws-oidc v0.25.3 h1:jWak1dn3QuWzUUTp+/YEZMI4hBaKdBLf2i5JPwMdrG0=
+github.com/chanzuckerberg/aws-oidc v0.25.3/go.mod h1:hu6JgXwwL4+4rWbhfqYvTKSoNVeHmJMZMeTuGQY/Hq4=
 github.com/chanzuckerberg/go-misc v0.0.0-20200814145037-61fd36eedee6/go.mod h1:5GljuH2+xw/T7ovs4sRj9WbNRrgePgom8sMzJJPlAAo=
 github.com/chanzuckerberg/go-misc v0.0.0-20220803194552-937686b8e897/go.mod h1:P0DdzYO/aO8eKLzdlvw/ihQChbxln/2H1gNLE4+r0x0=
 github.com/chanzuckerberg/go-misc v0.0.0-20220920142508-8a079bc8ebeb/go.mod h1:KeebvTE0CV+Wt4dbmwd30nU6LIQEOi2BicM+L9vrLuA=
