@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go v1.44.114
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/chanzuckerberg/aws-oidc v0.25.1
+	github.com/chanzuckerberg/aws-oidc v0.25.2
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.14.0
 	github.com/go-errors/errors v1.4.2
@@ -33,7 +33,7 @@ require (
 	github.com/segmentio/chamber v2.2.0+incompatible
 	github.com/sirupsen/logrus v1.9.0
 	github.com/snowflakedb/gosnowflake v1.6.13
-	github.com/spf13/cobra v1.5.0
+	github.com/spf13/cobra v1.6.0
 	github.com/stretchr/testify v1.8.0
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
 	github.com/zalando/go-keyring v0.2.1
