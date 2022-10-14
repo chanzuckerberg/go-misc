@@ -360,8 +360,8 @@ github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XL
 github.com/cespare/xxhash/v2 v2.1.2/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
 github.com/chanzuckerberg/aws-oidc v0.23.1/go.mod h1:AbN6f7tGQ1aR8kJdr5Mpnyk3iabBONFFLlAVQG8UgqM=
 github.com/chanzuckerberg/aws-oidc v0.25.0/go.mod h1:j44kmlvVhS3EPbKNp8HNH90btnrPQjadzgYhMUI7X3s=
-github.com/chanzuckerberg/aws-oidc v0.25.2 h1:5B8R5y4W4S+2QTxNrSWWBet0LwbSbYwE4GcJGboozGE=
-github.com/chanzuckerberg/aws-oidc v0.25.2/go.mod h1:PjLo5BZwaF/s5k8NPA3z2m9Pzkbax4ZRP7IJgkfK+HA=
+github.com/chanzuckerberg/aws-oidc v0.25.3 h1:jWak1dn3QuWzUUTp+/YEZMI4hBaKdBLf2i5JPwMdrG0=
+github.com/chanzuckerberg/aws-oidc v0.25.3/go.mod h1:hu6JgXwwL4+4rWbhfqYvTKSoNVeHmJMZMeTuGQY/Hq4=
 github.com/chanzuckerberg/go-misc v0.0.0-20200814145037-61fd36eedee6/go.mod h1:5GljuH2+xw/T7ovs4sRj9WbNRrgePgom8sMzJJPlAAo=
 github.com/chanzuckerberg/go-misc v0.0.0-20220803194552-937686b8e897/go.mod h1:P0DdzYO/aO8eKLzdlvw/ihQChbxln/2H1gNLE4+r0x0=
 github.com/chanzuckerberg/go-misc v0.0.0-20220920142508-8a079bc8ebeb/go.mod h1:KeebvTE0CV+Wt4dbmwd30nU6LIQEOi2BicM+L9vrLuA=
