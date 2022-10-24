@@ -34,7 +34,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/snowflakedb/gosnowflake v1.6.13
 	github.com/spf13/cobra v1.6.0
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
 	github.com/zalando/go-keyring v0.2.1
 	golang.org/x/crypto v0.0.0-20220926161630-eccd6366d1be
