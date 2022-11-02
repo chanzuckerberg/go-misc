@@ -27,7 +27,7 @@ require (
 	github.com/nightlyone/lockfile v1.0.0
 	github.com/nlopes/slack v0.6.0
 	github.com/okta/okta-sdk-golang v1.1.0
-	github.com/peterhellberg/link v1.1.0
+	github.com/peterhellberg/link v1.2.0
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/pkg/errors v0.9.1
 	github.com/segmentio/chamber v2.2.0+incompatible
