@@ -2086,6 +2086,56 @@ func (mr *MockEC2APIMockRecorder) CancelExportTaskWithContext(arg0, arg1 interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelExportTaskWithContext", reflect.TypeOf((*MockEC2API)(nil).CancelExportTaskWithContext), varargs...)
 }
 
+// CancelImageLaunchPermission mocks base method.
+func (m *MockEC2API) CancelImageLaunchPermission(arg0 *ec2.CancelImageLaunchPermissionInput) (*ec2.CancelImageLaunchPermissionOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CancelImageLaunchPermission", arg0)
+	ret0, _ := ret[0].(*ec2.CancelImageLaunchPermissionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CancelImageLaunchPermission indicates an expected call of CancelImageLaunchPermission.
+func (mr *MockEC2APIMockRecorder) CancelImageLaunchPermission(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelImageLaunchPermission", reflect.TypeOf((*MockEC2API)(nil).CancelImageLaunchPermission), arg0)
+}
+
+// CancelImageLaunchPermissionRequest mocks base method.
+func (m *MockEC2API) CancelImageLaunchPermissionRequest(arg0 *ec2.CancelImageLaunchPermissionInput) (*request.Request, *ec2.CancelImageLaunchPermissionOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CancelImageLaunchPermissionRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.CancelImageLaunchPermissionOutput)
+	return ret0, ret1
+}
+
+// CancelImageLaunchPermissionRequest indicates an expected call of CancelImageLaunchPermissionRequest.
+func (mr *MockEC2APIMockRecorder) CancelImageLaunchPermissionRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelImageLaunchPermissionRequest", reflect.TypeOf((*MockEC2API)(nil).CancelImageLaunchPermissionRequest), arg0)
+}
+
+// CancelImageLaunchPermissionWithContext mocks base method.
+func (m *MockEC2API) CancelImageLaunchPermissionWithContext(arg0 context.Context, arg1 *ec2.CancelImageLaunchPermissionInput, arg2 ...request.Option) (*ec2.CancelImageLaunchPermissionOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "CancelImageLaunchPermissionWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.CancelImageLaunchPermissionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// CancelImageLaunchPermissionWithContext indicates an expected call of CancelImageLaunchPermissionWithContext.
+func (mr *MockEC2APIMockRecorder) CancelImageLaunchPermissionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CancelImageLaunchPermissionWithContext", reflect.TypeOf((*MockEC2API)(nil).CancelImageLaunchPermissionWithContext), varargs...)
+}
+
 // CancelImportTask mocks base method.
 func (m *MockEC2API) CancelImportTask(arg0 *ec2.CancelImportTaskInput) (*ec2.CancelImportTaskOutput, error) {
 	m.ctrl.T.Helper()
