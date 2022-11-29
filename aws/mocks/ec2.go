@@ -10452,6 +10452,89 @@ func (mr *MockEC2APIMockRecorder) DescribeAvailabilityZonesWithContext(arg0, arg
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeAvailabilityZonesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeAvailabilityZonesWithContext), varargs...)
 }
 
+// DescribeAwsNetworkPerformanceMetricSubscriptions mocks base method.
+func (m *MockEC2API) DescribeAwsNetworkPerformanceMetricSubscriptions(arg0 *ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsInput) (*ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeAwsNetworkPerformanceMetricSubscriptions", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeAwsNetworkPerformanceMetricSubscriptions indicates an expected call of DescribeAwsNetworkPerformanceMetricSubscriptions.
+func (mr *MockEC2APIMockRecorder) DescribeAwsNetworkPerformanceMetricSubscriptions(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeAwsNetworkPerformanceMetricSubscriptions", reflect.TypeOf((*MockEC2API)(nil).DescribeAwsNetworkPerformanceMetricSubscriptions), arg0)
+}
+
+// DescribeAwsNetworkPerformanceMetricSubscriptionsPages mocks base method.
+func (m *MockEC2API) DescribeAwsNetworkPerformanceMetricSubscriptionsPages(arg0 *ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsInput, arg1 func(*ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeAwsNetworkPerformanceMetricSubscriptionsPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeAwsNetworkPerformanceMetricSubscriptionsPages indicates an expected call of DescribeAwsNetworkPerformanceMetricSubscriptionsPages.
+func (mr *MockEC2APIMockRecorder) DescribeAwsNetworkPerformanceMetricSubscriptionsPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeAwsNetworkPerformanceMetricSubscriptionsPages", reflect.TypeOf((*MockEC2API)(nil).DescribeAwsNetworkPerformanceMetricSubscriptionsPages), arg0, arg1)
+}
+
+// DescribeAwsNetworkPerformanceMetricSubscriptionsPagesWithContext mocks base method.
+func (m *MockEC2API) DescribeAwsNetworkPerformanceMetricSubscriptionsPagesWithContext(arg0 context.Context, arg1 *ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsInput, arg2 func(*ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeAwsNetworkPerformanceMetricSubscriptionsPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeAwsNetworkPerformanceMetricSubscriptionsPagesWithContext indicates an expected call of DescribeAwsNetworkPerformanceMetricSubscriptionsPagesWithContext.
+func (mr *MockEC2APIMockRecorder) DescribeAwsNetworkPerformanceMetricSubscriptionsPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeAwsNetworkPerformanceMetricSubscriptionsPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeAwsNetworkPerformanceMetricSubscriptionsPagesWithContext), varargs...)
+}
+
+// DescribeAwsNetworkPerformanceMetricSubscriptionsRequest mocks base method.
+func (m *MockEC2API) DescribeAwsNetworkPerformanceMetricSubscriptionsRequest(arg0 *ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsInput) (*request.Request, *ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeAwsNetworkPerformanceMetricSubscriptionsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsOutput)
+	return ret0, ret1
+}
+
+// DescribeAwsNetworkPerformanceMetricSubscriptionsRequest indicates an expected call of DescribeAwsNetworkPerformanceMetricSubscriptionsRequest.
+func (mr *MockEC2APIMockRecorder) DescribeAwsNetworkPerformanceMetricSubscriptionsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeAwsNetworkPerformanceMetricSubscriptionsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeAwsNetworkPerformanceMetricSubscriptionsRequest), arg0)
+}
+
+// DescribeAwsNetworkPerformanceMetricSubscriptionsWithContext mocks base method.
+func (m *MockEC2API) DescribeAwsNetworkPerformanceMetricSubscriptionsWithContext(arg0 context.Context, arg1 *ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsInput, arg2 ...request.Option) (*ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeAwsNetworkPerformanceMetricSubscriptionsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeAwsNetworkPerformanceMetricSubscriptionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeAwsNetworkPerformanceMetricSubscriptionsWithContext indicates an expected call of DescribeAwsNetworkPerformanceMetricSubscriptionsWithContext.
+func (mr *MockEC2APIMockRecorder) DescribeAwsNetworkPerformanceMetricSubscriptionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeAwsNetworkPerformanceMetricSubscriptionsWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeAwsNetworkPerformanceMetricSubscriptionsWithContext), varargs...)
+}
+
 // DescribeBundleTasks mocks base method.
 func (m *MockEC2API) DescribeBundleTasks(arg0 *ec2.DescribeBundleTasksInput) (*ec2.DescribeBundleTasksOutput, error) {
 	m.ctrl.T.Helper()
@@ -20519,6 +20602,56 @@ func (mr *MockEC2APIMockRecorder) DisableAddressTransferWithContext(arg0, arg1 i
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisableAddressTransferWithContext", reflect.TypeOf((*MockEC2API)(nil).DisableAddressTransferWithContext), varargs...)
 }
 
+// DisableAwsNetworkPerformanceMetricSubscription mocks base method.
+func (m *MockEC2API) DisableAwsNetworkPerformanceMetricSubscription(arg0 *ec2.DisableAwsNetworkPerformanceMetricSubscriptionInput) (*ec2.DisableAwsNetworkPerformanceMetricSubscriptionOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisableAwsNetworkPerformanceMetricSubscription", arg0)
+	ret0, _ := ret[0].(*ec2.DisableAwsNetworkPerformanceMetricSubscriptionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisableAwsNetworkPerformanceMetricSubscription indicates an expected call of DisableAwsNetworkPerformanceMetricSubscription.
+func (mr *MockEC2APIMockRecorder) DisableAwsNetworkPerformanceMetricSubscription(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisableAwsNetworkPerformanceMetricSubscription", reflect.TypeOf((*MockEC2API)(nil).DisableAwsNetworkPerformanceMetricSubscription), arg0)
+}
+
+// DisableAwsNetworkPerformanceMetricSubscriptionRequest mocks base method.
+func (m *MockEC2API) DisableAwsNetworkPerformanceMetricSubscriptionRequest(arg0 *ec2.DisableAwsNetworkPerformanceMetricSubscriptionInput) (*request.Request, *ec2.DisableAwsNetworkPerformanceMetricSubscriptionOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisableAwsNetworkPerformanceMetricSubscriptionRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DisableAwsNetworkPerformanceMetricSubscriptionOutput)
+	return ret0, ret1
+}
+
+// DisableAwsNetworkPerformanceMetricSubscriptionRequest indicates an expected call of DisableAwsNetworkPerformanceMetricSubscriptionRequest.
+func (mr *MockEC2APIMockRecorder) DisableAwsNetworkPerformanceMetricSubscriptionRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisableAwsNetworkPerformanceMetricSubscriptionRequest", reflect.TypeOf((*MockEC2API)(nil).DisableAwsNetworkPerformanceMetricSubscriptionRequest), arg0)
+}
+
+// DisableAwsNetworkPerformanceMetricSubscriptionWithContext mocks base method.
+func (m *MockEC2API) DisableAwsNetworkPerformanceMetricSubscriptionWithContext(arg0 context.Context, arg1 *ec2.DisableAwsNetworkPerformanceMetricSubscriptionInput, arg2 ...request.Option) (*ec2.DisableAwsNetworkPerformanceMetricSubscriptionOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DisableAwsNetworkPerformanceMetricSubscriptionWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DisableAwsNetworkPerformanceMetricSubscriptionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DisableAwsNetworkPerformanceMetricSubscriptionWithContext indicates an expected call of DisableAwsNetworkPerformanceMetricSubscriptionWithContext.
+func (mr *MockEC2APIMockRecorder) DisableAwsNetworkPerformanceMetricSubscriptionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisableAwsNetworkPerformanceMetricSubscriptionWithContext", reflect.TypeOf((*MockEC2API)(nil).DisableAwsNetworkPerformanceMetricSubscriptionWithContext), varargs...)
+}
+
 // DisableEbsEncryptionByDefault mocks base method.
 func (m *MockEC2API) DisableEbsEncryptionByDefault(arg0 *ec2.DisableEbsEncryptionByDefaultInput) (*ec2.DisableEbsEncryptionByDefaultOutput, error) {
 	m.ctrl.T.Helper()
@@ -21669,6 +21802,56 @@ func (mr *MockEC2APIMockRecorder) EnableAddressTransferWithContext(arg0, arg1 in
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableAddressTransferWithContext", reflect.TypeOf((*MockEC2API)(nil).EnableAddressTransferWithContext), varargs...)
 }
 
+// EnableAwsNetworkPerformanceMetricSubscription mocks base method.
+func (m *MockEC2API) EnableAwsNetworkPerformanceMetricSubscription(arg0 *ec2.EnableAwsNetworkPerformanceMetricSubscriptionInput) (*ec2.EnableAwsNetworkPerformanceMetricSubscriptionOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnableAwsNetworkPerformanceMetricSubscription", arg0)
+	ret0, _ := ret[0].(*ec2.EnableAwsNetworkPerformanceMetricSubscriptionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// EnableAwsNetworkPerformanceMetricSubscription indicates an expected call of EnableAwsNetworkPerformanceMetricSubscription.
+func (mr *MockEC2APIMockRecorder) EnableAwsNetworkPerformanceMetricSubscription(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableAwsNetworkPerformanceMetricSubscription", reflect.TypeOf((*MockEC2API)(nil).EnableAwsNetworkPerformanceMetricSubscription), arg0)
+}
+
+// EnableAwsNetworkPerformanceMetricSubscriptionRequest mocks base method.
+func (m *MockEC2API) EnableAwsNetworkPerformanceMetricSubscriptionRequest(arg0 *ec2.EnableAwsNetworkPerformanceMetricSubscriptionInput) (*request.Request, *ec2.EnableAwsNetworkPerformanceMetricSubscriptionOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnableAwsNetworkPerformanceMetricSubscriptionRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.EnableAwsNetworkPerformanceMetricSubscriptionOutput)
+	return ret0, ret1
+}
+
+// EnableAwsNetworkPerformanceMetricSubscriptionRequest indicates an expected call of EnableAwsNetworkPerformanceMetricSubscriptionRequest.
+func (mr *MockEC2APIMockRecorder) EnableAwsNetworkPerformanceMetricSubscriptionRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableAwsNetworkPerformanceMetricSubscriptionRequest", reflect.TypeOf((*MockEC2API)(nil).EnableAwsNetworkPerformanceMetricSubscriptionRequest), arg0)
+}
+
+// EnableAwsNetworkPerformanceMetricSubscriptionWithContext mocks base method.
+func (m *MockEC2API) EnableAwsNetworkPerformanceMetricSubscriptionWithContext(arg0 context.Context, arg1 *ec2.EnableAwsNetworkPerformanceMetricSubscriptionInput, arg2 ...request.Option) (*ec2.EnableAwsNetworkPerformanceMetricSubscriptionOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "EnableAwsNetworkPerformanceMetricSubscriptionWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.EnableAwsNetworkPerformanceMetricSubscriptionOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// EnableAwsNetworkPerformanceMetricSubscriptionWithContext indicates an expected call of EnableAwsNetworkPerformanceMetricSubscriptionWithContext.
+func (mr *MockEC2APIMockRecorder) EnableAwsNetworkPerformanceMetricSubscriptionWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableAwsNetworkPerformanceMetricSubscriptionWithContext", reflect.TypeOf((*MockEC2API)(nil).EnableAwsNetworkPerformanceMetricSubscriptionWithContext), varargs...)
+}
+
 // EnableEbsEncryptionByDefault mocks base method.
 func (m *MockEC2API) EnableEbsEncryptionByDefault(arg0 *ec2.EnableEbsEncryptionByDefaultInput) (*ec2.EnableEbsEncryptionByDefaultOutput, error) {
 	m.ctrl.T.Helper()
@@ -21917,6 +22100,56 @@ func (mr *MockEC2APIMockRecorder) EnableIpamOrganizationAdminAccountWithContext(
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableIpamOrganizationAdminAccountWithContext", reflect.TypeOf((*MockEC2API)(nil).EnableIpamOrganizationAdminAccountWithContext), varargs...)
+}
+
+// EnableReachabilityAnalyzerOrganizationSharing mocks base method.
+func (m *MockEC2API) EnableReachabilityAnalyzerOrganizationSharing(arg0 *ec2.EnableReachabilityAnalyzerOrganizationSharingInput) (*ec2.EnableReachabilityAnalyzerOrganizationSharingOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnableReachabilityAnalyzerOrganizationSharing", arg0)
+	ret0, _ := ret[0].(*ec2.EnableReachabilityAnalyzerOrganizationSharingOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// EnableReachabilityAnalyzerOrganizationSharing indicates an expected call of EnableReachabilityAnalyzerOrganizationSharing.
+func (mr *MockEC2APIMockRecorder) EnableReachabilityAnalyzerOrganizationSharing(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableReachabilityAnalyzerOrganizationSharing", reflect.TypeOf((*MockEC2API)(nil).EnableReachabilityAnalyzerOrganizationSharing), arg0)
+}
+
+// EnableReachabilityAnalyzerOrganizationSharingRequest mocks base method.
+func (m *MockEC2API) EnableReachabilityAnalyzerOrganizationSharingRequest(arg0 *ec2.EnableReachabilityAnalyzerOrganizationSharingInput) (*request.Request, *ec2.EnableReachabilityAnalyzerOrganizationSharingOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnableReachabilityAnalyzerOrganizationSharingRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.EnableReachabilityAnalyzerOrganizationSharingOutput)
+	return ret0, ret1
+}
+
+// EnableReachabilityAnalyzerOrganizationSharingRequest indicates an expected call of EnableReachabilityAnalyzerOrganizationSharingRequest.
+func (mr *MockEC2APIMockRecorder) EnableReachabilityAnalyzerOrganizationSharingRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableReachabilityAnalyzerOrganizationSharingRequest", reflect.TypeOf((*MockEC2API)(nil).EnableReachabilityAnalyzerOrganizationSharingRequest), arg0)
+}
+
+// EnableReachabilityAnalyzerOrganizationSharingWithContext mocks base method.
+func (m *MockEC2API) EnableReachabilityAnalyzerOrganizationSharingWithContext(arg0 context.Context, arg1 *ec2.EnableReachabilityAnalyzerOrganizationSharingInput, arg2 ...request.Option) (*ec2.EnableReachabilityAnalyzerOrganizationSharingOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "EnableReachabilityAnalyzerOrganizationSharingWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.EnableReachabilityAnalyzerOrganizationSharingOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// EnableReachabilityAnalyzerOrganizationSharingWithContext indicates an expected call of EnableReachabilityAnalyzerOrganizationSharingWithContext.
+func (mr *MockEC2APIMockRecorder) EnableReachabilityAnalyzerOrganizationSharingWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableReachabilityAnalyzerOrganizationSharingWithContext", reflect.TypeOf((*MockEC2API)(nil).EnableReachabilityAnalyzerOrganizationSharingWithContext), varargs...)
 }
 
 // EnableSerialConsoleAccess mocks base method.
@@ -22550,6 +22783,89 @@ func (mr *MockEC2APIMockRecorder) GetAssociatedIpv6PoolCidrsWithContext(arg0, ar
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAssociatedIpv6PoolCidrsWithContext", reflect.TypeOf((*MockEC2API)(nil).GetAssociatedIpv6PoolCidrsWithContext), varargs...)
+}
+
+// GetAwsNetworkPerformanceData mocks base method.
+func (m *MockEC2API) GetAwsNetworkPerformanceData(arg0 *ec2.GetAwsNetworkPerformanceDataInput) (*ec2.GetAwsNetworkPerformanceDataOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAwsNetworkPerformanceData", arg0)
+	ret0, _ := ret[0].(*ec2.GetAwsNetworkPerformanceDataOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAwsNetworkPerformanceData indicates an expected call of GetAwsNetworkPerformanceData.
+func (mr *MockEC2APIMockRecorder) GetAwsNetworkPerformanceData(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAwsNetworkPerformanceData", reflect.TypeOf((*MockEC2API)(nil).GetAwsNetworkPerformanceData), arg0)
+}
+
+// GetAwsNetworkPerformanceDataPages mocks base method.
+func (m *MockEC2API) GetAwsNetworkPerformanceDataPages(arg0 *ec2.GetAwsNetworkPerformanceDataInput, arg1 func(*ec2.GetAwsNetworkPerformanceDataOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAwsNetworkPerformanceDataPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetAwsNetworkPerformanceDataPages indicates an expected call of GetAwsNetworkPerformanceDataPages.
+func (mr *MockEC2APIMockRecorder) GetAwsNetworkPerformanceDataPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAwsNetworkPerformanceDataPages", reflect.TypeOf((*MockEC2API)(nil).GetAwsNetworkPerformanceDataPages), arg0, arg1)
+}
+
+// GetAwsNetworkPerformanceDataPagesWithContext mocks base method.
+func (m *MockEC2API) GetAwsNetworkPerformanceDataPagesWithContext(arg0 context.Context, arg1 *ec2.GetAwsNetworkPerformanceDataInput, arg2 func(*ec2.GetAwsNetworkPerformanceDataOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetAwsNetworkPerformanceDataPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetAwsNetworkPerformanceDataPagesWithContext indicates an expected call of GetAwsNetworkPerformanceDataPagesWithContext.
+func (mr *MockEC2APIMockRecorder) GetAwsNetworkPerformanceDataPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAwsNetworkPerformanceDataPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).GetAwsNetworkPerformanceDataPagesWithContext), varargs...)
+}
+
+// GetAwsNetworkPerformanceDataRequest mocks base method.
+func (m *MockEC2API) GetAwsNetworkPerformanceDataRequest(arg0 *ec2.GetAwsNetworkPerformanceDataInput) (*request.Request, *ec2.GetAwsNetworkPerformanceDataOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetAwsNetworkPerformanceDataRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.GetAwsNetworkPerformanceDataOutput)
+	return ret0, ret1
+}
+
+// GetAwsNetworkPerformanceDataRequest indicates an expected call of GetAwsNetworkPerformanceDataRequest.
+func (mr *MockEC2APIMockRecorder) GetAwsNetworkPerformanceDataRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAwsNetworkPerformanceDataRequest", reflect.TypeOf((*MockEC2API)(nil).GetAwsNetworkPerformanceDataRequest), arg0)
+}
+
+// GetAwsNetworkPerformanceDataWithContext mocks base method.
+func (m *MockEC2API) GetAwsNetworkPerformanceDataWithContext(arg0 context.Context, arg1 *ec2.GetAwsNetworkPerformanceDataInput, arg2 ...request.Option) (*ec2.GetAwsNetworkPerformanceDataOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetAwsNetworkPerformanceDataWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.GetAwsNetworkPerformanceDataOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetAwsNetworkPerformanceDataWithContext indicates an expected call of GetAwsNetworkPerformanceDataWithContext.
+func (mr *MockEC2APIMockRecorder) GetAwsNetworkPerformanceDataWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAwsNetworkPerformanceDataWithContext", reflect.TypeOf((*MockEC2API)(nil).GetAwsNetworkPerformanceDataWithContext), varargs...)
 }
 
 // GetCapacityReservationUsage mocks base method.
