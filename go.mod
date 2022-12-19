@@ -36,7 +36,7 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/stretchr/testify v1.8.1
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
-	github.com/zalando/go-keyring v0.2.1
+	github.com/zalando/go-keyring v0.1.1
 	golang.org/x/crypto v0.4.0
 	golang.org/x/oauth2 v0.3.0
 	gopkg.in/go-playground/validator.v9 v9.31.0
@@ -54,7 +54,6 @@ require (
 	github.com/Azure/azure-pipeline-go v0.2.3 // indirect
 	github.com/Azure/azure-storage-blob-go v0.15.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
-	github.com/alessio/shellescape v1.4.1 // indirect
 	github.com/apache/arrow/go/arrow v0.0.0-20211112161151-bc219186db40 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.17.3 // indirect
@@ -185,3 +184,8 @@ require (
 )
 
 replace github.com/hashicorp/go-tfe => github.com/chanzuckerberg/go-tfe v0.9.1-0.20201023195027-6a99188f09d3
+
+// breaking change for mac keychains
+exclude github.com/zalando/go-keyring v0.2.0
+
+exclude github.com/zalando/go-keyring v0.2.1
