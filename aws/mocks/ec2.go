@@ -13459,6 +13459,39 @@ func (mr *MockEC2APIMockRecorder) DescribeImages(arg0 interface{}) *gomock.Call 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeImages", reflect.TypeOf((*MockEC2API)(nil).DescribeImages), arg0)
 }
 
+// DescribeImagesPages mocks base method.
+func (m *MockEC2API) DescribeImagesPages(arg0 *ec2.DescribeImagesInput, arg1 func(*ec2.DescribeImagesOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeImagesPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeImagesPages indicates an expected call of DescribeImagesPages.
+func (mr *MockEC2APIMockRecorder) DescribeImagesPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeImagesPages", reflect.TypeOf((*MockEC2API)(nil).DescribeImagesPages), arg0, arg1)
+}
+
+// DescribeImagesPagesWithContext mocks base method.
+func (m *MockEC2API) DescribeImagesPagesWithContext(arg0 context.Context, arg1 *ec2.DescribeImagesInput, arg2 func(*ec2.DescribeImagesOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeImagesPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeImagesPagesWithContext indicates an expected call of DescribeImagesPagesWithContext.
+func (mr *MockEC2APIMockRecorder) DescribeImagesPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeImagesPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeImagesPagesWithContext), varargs...)
+}
+
 // DescribeImagesRequest mocks base method.
 func (m *MockEC2API) DescribeImagesRequest(arg0 *ec2.DescribeImagesInput) (*request.Request, *ec2.DescribeImagesOutput) {
 	m.ctrl.T.Helper()
