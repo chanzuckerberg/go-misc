@@ -155,7 +155,7 @@ require (
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	github.com/zclconf/go-cty v1.12.1 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/exp v0.0.0-20230113213754-f9f960f08ad4 // indirect
+	golang.org/x/exp v0.0.0-20230116083435-1de6713980de // indirect
 	golang.org/x/net v0.5.0 // indirect
 	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/term v0.4.0 // indirect
@@ -177,7 +177,7 @@ require (
 	k8s.io/client-go v0.26.0 // indirect
 	k8s.io/klog/v2 v2.80.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20230109183929-3758b55a6596 // indirect
-	k8s.io/utils v0.0.0-20221128185143-99ec85e7a448 // indirect
+	k8s.io/utils v0.0.0-20230115233650-391b47cb4029 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
