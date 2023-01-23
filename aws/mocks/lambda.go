@@ -1636,6 +1636,56 @@ func (mr *MockLambdaAPIMockRecorder) GetProvisionedConcurrencyConfigWithContext(
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetProvisionedConcurrencyConfigWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).GetProvisionedConcurrencyConfigWithContext), varargs...)
 }
 
+// GetRuntimeManagementConfig mocks base method.
+func (m *MockLambdaAPI) GetRuntimeManagementConfig(arg0 *lambda.GetRuntimeManagementConfigInput) (*lambda.GetRuntimeManagementConfigOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRuntimeManagementConfig", arg0)
+	ret0, _ := ret[0].(*lambda.GetRuntimeManagementConfigOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRuntimeManagementConfig indicates an expected call of GetRuntimeManagementConfig.
+func (mr *MockLambdaAPIMockRecorder) GetRuntimeManagementConfig(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRuntimeManagementConfig", reflect.TypeOf((*MockLambdaAPI)(nil).GetRuntimeManagementConfig), arg0)
+}
+
+// GetRuntimeManagementConfigRequest mocks base method.
+func (m *MockLambdaAPI) GetRuntimeManagementConfigRequest(arg0 *lambda.GetRuntimeManagementConfigInput) (*request.Request, *lambda.GetRuntimeManagementConfigOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetRuntimeManagementConfigRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*lambda.GetRuntimeManagementConfigOutput)
+	return ret0, ret1
+}
+
+// GetRuntimeManagementConfigRequest indicates an expected call of GetRuntimeManagementConfigRequest.
+func (mr *MockLambdaAPIMockRecorder) GetRuntimeManagementConfigRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRuntimeManagementConfigRequest", reflect.TypeOf((*MockLambdaAPI)(nil).GetRuntimeManagementConfigRequest), arg0)
+}
+
+// GetRuntimeManagementConfigWithContext mocks base method.
+func (m *MockLambdaAPI) GetRuntimeManagementConfigWithContext(arg0 context.Context, arg1 *lambda.GetRuntimeManagementConfigInput, arg2 ...request.Option) (*lambda.GetRuntimeManagementConfigOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetRuntimeManagementConfigWithContext", varargs...)
+	ret0, _ := ret[0].(*lambda.GetRuntimeManagementConfigOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetRuntimeManagementConfigWithContext indicates an expected call of GetRuntimeManagementConfigWithContext.
+func (mr *MockLambdaAPIMockRecorder) GetRuntimeManagementConfigWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetRuntimeManagementConfigWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).GetRuntimeManagementConfigWithContext), varargs...)
+}
+
 // Invoke mocks base method.
 func (m *MockLambdaAPI) Invoke(arg0 *lambda.InvokeInput) (*lambda.InvokeOutput, error) {
 	m.ctrl.T.Helper()
@@ -2997,6 +3047,56 @@ func (mr *MockLambdaAPIMockRecorder) PutProvisionedConcurrencyConfigWithContext(
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutProvisionedConcurrencyConfigWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).PutProvisionedConcurrencyConfigWithContext), varargs...)
+}
+
+// PutRuntimeManagementConfig mocks base method.
+func (m *MockLambdaAPI) PutRuntimeManagementConfig(arg0 *lambda.PutRuntimeManagementConfigInput) (*lambda.PutRuntimeManagementConfigOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PutRuntimeManagementConfig", arg0)
+	ret0, _ := ret[0].(*lambda.PutRuntimeManagementConfigOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PutRuntimeManagementConfig indicates an expected call of PutRuntimeManagementConfig.
+func (mr *MockLambdaAPIMockRecorder) PutRuntimeManagementConfig(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRuntimeManagementConfig", reflect.TypeOf((*MockLambdaAPI)(nil).PutRuntimeManagementConfig), arg0)
+}
+
+// PutRuntimeManagementConfigRequest mocks base method.
+func (m *MockLambdaAPI) PutRuntimeManagementConfigRequest(arg0 *lambda.PutRuntimeManagementConfigInput) (*request.Request, *lambda.PutRuntimeManagementConfigOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PutRuntimeManagementConfigRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*lambda.PutRuntimeManagementConfigOutput)
+	return ret0, ret1
+}
+
+// PutRuntimeManagementConfigRequest indicates an expected call of PutRuntimeManagementConfigRequest.
+func (mr *MockLambdaAPIMockRecorder) PutRuntimeManagementConfigRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRuntimeManagementConfigRequest", reflect.TypeOf((*MockLambdaAPI)(nil).PutRuntimeManagementConfigRequest), arg0)
+}
+
+// PutRuntimeManagementConfigWithContext mocks base method.
+func (m *MockLambdaAPI) PutRuntimeManagementConfigWithContext(arg0 context.Context, arg1 *lambda.PutRuntimeManagementConfigInput, arg2 ...request.Option) (*lambda.PutRuntimeManagementConfigOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "PutRuntimeManagementConfigWithContext", varargs...)
+	ret0, _ := ret[0].(*lambda.PutRuntimeManagementConfigOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PutRuntimeManagementConfigWithContext indicates an expected call of PutRuntimeManagementConfigWithContext.
+func (mr *MockLambdaAPIMockRecorder) PutRuntimeManagementConfigWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PutRuntimeManagementConfigWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).PutRuntimeManagementConfigWithContext), varargs...)
 }
 
 // RemoveLayerVersionPermission mocks base method.
