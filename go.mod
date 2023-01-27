@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.6
 	github.com/aws/aws-lambda-go v1.37.0
-	github.com/aws/aws-sdk-go v1.44.188
+	github.com/aws/aws-sdk-go v1.44.189
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/chanzuckerberg/aws-oidc v0.25.25
@@ -155,7 +155,7 @@ require (
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
 	github.com/zclconf/go-cty v1.12.1 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/exp v0.0.0-20230127140709-cafedaf64729 // indirect
+	golang.org/x/exp v0.0.0-20230127193734-31bee513bff7 // indirect
 	golang.org/x/net v0.5.0 // indirect
 	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/term v0.4.0 // indirect
@@ -164,7 +164,7 @@ require (
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/api v0.108.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20230125152338-dcaf20b6aeaa // indirect
+	google.golang.org/genproto v0.0.0-20230127162408-596548ed4efa // indirect
 	google.golang.org/grpc v1.52.3 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/alexcesaro/statsd.v2 v2.0.0 // indirect
