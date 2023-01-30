@@ -10,7 +10,7 @@ import (
 	"path"
 	"sync"
 
-	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
 	"github.com/pkg/errors"
 )
 
@@ -73,9 +73,10 @@ func (f *File) Delete(ctx context.Context) error {
 }
 
 // Note: We disable the refresh flow because we are storing
-//       credentials in plaintext.
-//			 We therefore ensure that any plaintext credentials that hit disk
-//       have a well-defined ttl.
+//
+//	      credentials in plaintext.
+//				 We therefore ensure that any plaintext credentials that hit disk
+//	      have a well-defined ttl.
 func (f *File) MarshalOpts() []client.MarshalOpts {
 	return []client.MarshalOpts{client.MarshalOptNoRefresh}
 }

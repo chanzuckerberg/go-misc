@@ -5,15 +5,16 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
 	"github.com/pkg/errors"
 	"github.com/zalando/go-keyring"
 )
 
 // Keyring implements the storage interface for the cache
 // Using zalango/go-keyring because it doesn't rely on CGO
-//  at the cost of less flexibility.
-//  We can re-evaluate as needed and update this struct
+//
+//	at the cost of less flexibility.
+//	We can re-evaluate as needed and update this struct
 type Keyring struct {
 	key string
 
