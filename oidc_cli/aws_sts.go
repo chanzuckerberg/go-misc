@@ -7,7 +7,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 	"github.com/aws/aws-sdk-go/service/sts/stsiface"
-	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
 )
 
 type AwsOIDCCredsProviderConfig struct {
@@ -70,7 +71,7 @@ func (tf *tokenFetcher) fetchFullToken(ctx context.Context) (*client.Token, erro
 	tf.mu.Lock()
 	defer tf.mu.Unlock()
 
-	return GetToken(ctx, tf.conf.OIDCClientID, tf.conf.OIDCIssuerURL)
+	return oidc_impl.GetToken(ctx, tf.conf.OIDCClientID, tf.conf.OIDCIssuerURL)
 }
 
 func (tf *tokenFetcher) FetchToken(ctx context.Context) ([]byte, error) {

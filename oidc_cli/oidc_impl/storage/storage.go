@@ -3,16 +3,16 @@ package storage
 import (
 	"context"
 
-	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
-	"github.com/mitchellh/go-homedir"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
 	"github.com/chanzuckerberg/go-misc/osutil"
+	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 )
 
 const (
-	service = "aws-oidc"
+	service               = "aws-oidc"
 	defaultFileStorageDir = "~/.cache/oidc-cli"
-	storageVersion = "v0"
+	storageVersion        = "v0"
 )
 
 // Storage represents a storage backend for a cache

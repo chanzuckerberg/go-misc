@@ -3,8 +3,8 @@ package cache
 import (
 	"context"
 
-	client "github.com/chanzuckerberg/go-misc/oidc_cli/client"
-	"github.com/chanzuckerberg/go-misc/oidc_cli/storage"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -32,7 +32,8 @@ func NewCache(
 }
 
 // Read will attempt to read a token from the cache
-//      if not present or expired, will refresh
+//
+//	if not present or expired, will refresh
 func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 	cachedToken, err := c.readFromStorage(ctx)
 	if err != nil {

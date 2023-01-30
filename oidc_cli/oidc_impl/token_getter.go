@@ -1,18 +1,18 @@
-package oidc
+package oidc_impl
 
 import (
 	"context"
 	"time"
 
-	"github.com/chanzuckerberg/go-misc/oidc_cli/cache"
-	"github.com/chanzuckerberg/go-misc/oidc_cli/client"
-	"github.com/chanzuckerberg/go-misc/oidc_cli/storage"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/cache"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/pkg/errors"
 )
 
 const (
-	lockFilePath          = "/tmp/aws-oidc.lock"
+	lockFilePath = "/tmp/aws-oidc.lock"
 )
 
 // GetToken gets an oidc token.
