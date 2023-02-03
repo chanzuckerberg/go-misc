@@ -116,8 +116,8 @@ github.com/cenkalti/backoff v2.2.1+incompatible h1:tNowT99t7UNflLxfYYSlKYsBpXdEe
 github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
-github.com/chanzuckerberg/aws-oidc v0.25.28 h1:KdJNQel95D90uCUS5dGqv0KT7HdTg0i6lefDbePXLpM=
-github.com/chanzuckerberg/aws-oidc v0.25.28/go.mod h1:Z6WCGdW9HbZ767vnZWSUbdyoraUqaIOL5gaskZqzUgw=
+github.com/chanzuckerberg/aws-oidc v0.25.29 h1:8S96IrntZBGcsIfREuVogBvW4EPdXwKwuh/8OF13yd4=
+github.com/chanzuckerberg/aws-oidc v0.25.29/go.mod h1:s/5OvNlSPsSJ/VdyfqoZk2n6CODc77O+rZwyME5O81g=
 github.com/chanzuckerberg/go-tfe v0.9.1-0.20201023195027-6a99188f09d3 h1:IUvE9XEmLUJ4sKtTpkts9DELdUhFvFoAuy52+otdrB0=
 github.com/chanzuckerberg/go-tfe v0.9.1-0.20201023195027-6a99188f09d3/go.mod h1:XAV72S4O1iP8BDaqiaPLmL2B4EE6almocnOn8E8stHc=
 github.com/cheggaaa/pb v1.0.27/go.mod h1:pQciLPpbU0oxA0h+VJYYLxO+XeDQb5pZijXscXHm81s=
