@@ -37,8 +37,8 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
 	github.com/zalando/go-keyring v0.2.2
-	golang.org/x/crypto v0.5.0
-	golang.org/x/oauth2 v0.4.0
+	golang.org/x/crypto v0.6.0
+	golang.org/x/oauth2 v0.5.0
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/square/go-jose.v2 v2.6.0
 )
@@ -99,7 +99,7 @@ require (
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
-	github.com/googleapis/enterprise-certificate-proxy v0.2.1 // indirect
+	github.com/googleapis/enterprise-certificate-proxy v0.2.2 // indirect
 	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/gruntwork-io/go-commons v0.14.0 // indirect
@@ -156,7 +156,7 @@ require (
 	github.com/zclconf/go-cty v1.12.1 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/exp v0.0.0-20230206171751-46f607a40771 // indirect
-	golang.org/x/net v0.5.0 // indirect
+	golang.org/x/net v0.6.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/term v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
