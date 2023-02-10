@@ -3150,6 +3150,56 @@ func (mr *MockAutoScalingAPIMockRecorder) ResumeProcessesWithContext(arg0, arg1 
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResumeProcessesWithContext", reflect.TypeOf((*MockAutoScalingAPI)(nil).ResumeProcessesWithContext), varargs...)
 }
 
+// RollbackInstanceRefresh mocks base method.
+func (m *MockAutoScalingAPI) RollbackInstanceRefresh(arg0 *autoscaling.RollbackInstanceRefreshInput) (*autoscaling.RollbackInstanceRefreshOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RollbackInstanceRefresh", arg0)
+	ret0, _ := ret[0].(*autoscaling.RollbackInstanceRefreshOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RollbackInstanceRefresh indicates an expected call of RollbackInstanceRefresh.
+func (mr *MockAutoScalingAPIMockRecorder) RollbackInstanceRefresh(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RollbackInstanceRefresh", reflect.TypeOf((*MockAutoScalingAPI)(nil).RollbackInstanceRefresh), arg0)
+}
+
+// RollbackInstanceRefreshRequest mocks base method.
+func (m *MockAutoScalingAPI) RollbackInstanceRefreshRequest(arg0 *autoscaling.RollbackInstanceRefreshInput) (*request.Request, *autoscaling.RollbackInstanceRefreshOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RollbackInstanceRefreshRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*autoscaling.RollbackInstanceRefreshOutput)
+	return ret0, ret1
+}
+
+// RollbackInstanceRefreshRequest indicates an expected call of RollbackInstanceRefreshRequest.
+func (mr *MockAutoScalingAPIMockRecorder) RollbackInstanceRefreshRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RollbackInstanceRefreshRequest", reflect.TypeOf((*MockAutoScalingAPI)(nil).RollbackInstanceRefreshRequest), arg0)
+}
+
+// RollbackInstanceRefreshWithContext mocks base method.
+func (m *MockAutoScalingAPI) RollbackInstanceRefreshWithContext(arg0 context.Context, arg1 *autoscaling.RollbackInstanceRefreshInput, arg2 ...request.Option) (*autoscaling.RollbackInstanceRefreshOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "RollbackInstanceRefreshWithContext", varargs...)
+	ret0, _ := ret[0].(*autoscaling.RollbackInstanceRefreshOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// RollbackInstanceRefreshWithContext indicates an expected call of RollbackInstanceRefreshWithContext.
+func (mr *MockAutoScalingAPIMockRecorder) RollbackInstanceRefreshWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RollbackInstanceRefreshWithContext", reflect.TypeOf((*MockAutoScalingAPI)(nil).RollbackInstanceRefreshWithContext), varargs...)
+}
+
 // SetDesiredCapacity mocks base method.
 func (m *MockAutoScalingAPI) SetDesiredCapacity(arg0 *autoscaling.SetDesiredCapacityInput) (*autoscaling.SetDesiredCapacityOutput, error) {
 	m.ctrl.T.Helper()
