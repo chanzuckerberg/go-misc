@@ -32,7 +32,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/segmentio/chamber v2.2.0+incompatible
 	github.com/sirupsen/logrus v1.9.0
-	github.com/snowflakedb/gosnowflake v1.6.17
+	github.com/snowflakedb/gosnowflake v1.6.18
 	github.com/spf13/cobra v1.6.1
 	github.com/stretchr/testify v1.8.1
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
@@ -147,15 +147,15 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/square/go-jose v2.6.0+incompatible // indirect
 	github.com/svanharmelen/jsonapi v0.0.0-20180618144545-0c0828c3f16d // indirect
-	github.com/tmccombs/hcl2json v0.3.6 // indirect
+	github.com/tmccombs/hcl2json v0.4.0 // indirect
 	github.com/ulikunitz/xz v0.5.11 // indirect
 	github.com/urfave/cli/v2 v2.24.4 // indirect
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
-	github.com/zclconf/go-cty v1.12.1 // indirect
+	github.com/zclconf/go-cty v1.13.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb // indirect
+	golang.org/x/exp v0.0.0-20230223210539-50820d90acfd // indirect
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/term v0.5.0 // indirect
@@ -164,7 +164,7 @@ require (
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/api v0.110.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20230222225845-10f96fb3dbec // indirect
+	google.golang.org/genproto v0.0.0-20230223222841-637eb2293923 // indirect
 	google.golang.org/grpc v1.53.0 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/alexcesaro/statsd.v2 v2.0.0 // indirect
