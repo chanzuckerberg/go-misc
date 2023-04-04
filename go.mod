@@ -33,7 +33,7 @@ require (
 	github.com/segmentio/chamber v2.2.0+incompatible
 	github.com/sirupsen/logrus v1.9.0
 	github.com/snowflakedb/gosnowflake v1.6.19
-	github.com/spf13/cobra v1.6.1
+	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.2
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
 	github.com/zalando/go-keyring v0.2.2
