@@ -498,8 +498,8 @@ github.com/gorilla/websocket v1.5.0/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/ad
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=
 github.com/gruntwork-io/go-commons v0.16.1 h1:EhrTKRg5XK/wDL/s99zisjL9+zhTaEcepEkJeyvj3s8=
 github.com/gruntwork-io/go-commons v0.16.1/go.mod h1:/nnLMhO4HpItt43K+8ACM66g67iMy3oo2nnwq59n3wg=
-github.com/gruntwork-io/terratest v0.41.16 h1:s3ZyyVLWwrZ3KD44VIVHidBZI0Kpr9RkdqY8VEYIEIU=
-github.com/gruntwork-io/terratest v0.41.16/go.mod h1:O6gajNBjO1wvc7Wl9WtbO+ORcdnhAV2GQiBE71ycwIk=
+github.com/gruntwork-io/terratest v0.41.17 h1:gzI8N+w2Bpxm27cmUygm6fJBo7CPrPwq/fy2BDgxy8I=
+github.com/gruntwork-io/terratest v0.41.17/go.mod h1:O6gajNBjO1wvc7Wl9WtbO+ORcdnhAV2GQiBE71ycwIk=
 github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c h1:6rhixN/i8ZofjG1Y75iExal34USq5p+wiN1tpie8IrU=
 github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c/go.mod h1:NMPJylDgVpX0MLRlPy15sqSwOFv/U1GZ2m21JhFfek0=
 github.com/hashicorp/errwrap v1.0.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
