@@ -1096,8 +1096,8 @@ google.golang.org/api v0.96.0/go.mod h1:w7wJQLTM+wvQpNf5JyEcBoxK0RH7EDrh/L4qfsuJ
 google.golang.org/api v0.97.0/go.mod h1:w7wJQLTM+wvQpNf5JyEcBoxK0RH7EDrh/L4qfsuJ13s=
 google.golang.org/api v0.98.0/go.mod h1:w7wJQLTM+wvQpNf5JyEcBoxK0RH7EDrh/L4qfsuJ13s=
 google.golang.org/api v0.100.0/go.mod h1:ZE3Z2+ZOr87Rx7dqFsdRQkRBk36kDtp/h+QpHbB7a70=
-google.golang.org/api v0.115.0 h1:6FFkVvStt4YqXSx3azKyzj7fXerGnVlLJ/eud01nBDE=
-google.golang.org/api v0.115.0/go.mod h1:9cD4/t6uvd9naoEJFA+M96d0IuB6BqFuyhpw68+mRGg=
+google.golang.org/api v0.116.0 h1:09tOPVufPwfm5W4aA8EizGHJ7BcoRDsIareM2a15gO4=
+google.golang.org/api v0.116.0/go.mod h1:9cD4/t6uvd9naoEJFA+M96d0IuB6BqFuyhpw68+mRGg=
 google.golang.org/appengine v1.1.0/go.mod h1:EbEs0AVv82hx2wNQdGPgUI5lhzA/G0D9YwlJXL52JkM=
 google.golang.org/appengine v1.4.0/go.mod h1:xpcJRLb0r/rnEns0DIKYYv+WjYCduHsrkT7/EB5XEv4=
 google.golang.org/appengine v1.5.0/go.mod h1:xpcJRLb0r/rnEns0DIKYYv+WjYCduHsrkT7/EB5XEv4=
