@@ -1786,6 +1786,56 @@ func (mr *MockLambdaAPIMockRecorder) InvokeWithContext(arg0, arg1 interface{}, a
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InvokeWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).InvokeWithContext), varargs...)
 }
 
+// InvokeWithResponseStream mocks base method.
+func (m *MockLambdaAPI) InvokeWithResponseStream(arg0 *lambda.InvokeWithResponseStreamInput) (*lambda.InvokeWithResponseStreamOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InvokeWithResponseStream", arg0)
+	ret0, _ := ret[0].(*lambda.InvokeWithResponseStreamOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// InvokeWithResponseStream indicates an expected call of InvokeWithResponseStream.
+func (mr *MockLambdaAPIMockRecorder) InvokeWithResponseStream(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InvokeWithResponseStream", reflect.TypeOf((*MockLambdaAPI)(nil).InvokeWithResponseStream), arg0)
+}
+
+// InvokeWithResponseStreamRequest mocks base method.
+func (m *MockLambdaAPI) InvokeWithResponseStreamRequest(arg0 *lambda.InvokeWithResponseStreamInput) (*request.Request, *lambda.InvokeWithResponseStreamOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "InvokeWithResponseStreamRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*lambda.InvokeWithResponseStreamOutput)
+	return ret0, ret1
+}
+
+// InvokeWithResponseStreamRequest indicates an expected call of InvokeWithResponseStreamRequest.
+func (mr *MockLambdaAPIMockRecorder) InvokeWithResponseStreamRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InvokeWithResponseStreamRequest", reflect.TypeOf((*MockLambdaAPI)(nil).InvokeWithResponseStreamRequest), arg0)
+}
+
+// InvokeWithResponseStreamWithContext mocks base method.
+func (m *MockLambdaAPI) InvokeWithResponseStreamWithContext(arg0 context.Context, arg1 *lambda.InvokeWithResponseStreamInput, arg2 ...request.Option) (*lambda.InvokeWithResponseStreamOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "InvokeWithResponseStreamWithContext", varargs...)
+	ret0, _ := ret[0].(*lambda.InvokeWithResponseStreamOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// InvokeWithResponseStreamWithContext indicates an expected call of InvokeWithResponseStreamWithContext.
+func (mr *MockLambdaAPIMockRecorder) InvokeWithResponseStreamWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "InvokeWithResponseStreamWithContext", reflect.TypeOf((*MockLambdaAPI)(nil).InvokeWithResponseStreamWithContext), varargs...)
+}
+
 // ListAliases mocks base method.
 func (m *MockLambdaAPI) ListAliases(arg0 *lambda.ListAliasesInput) (*lambda.ListAliasesOutput, error) {
 	m.ctrl.T.Helper()
