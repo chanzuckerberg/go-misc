@@ -115,7 +115,7 @@ require (
 	github.com/hashicorp/go-getter v1.7.1 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.2 // indirect
 	github.com/hashicorp/go-safetemp v1.0.0 // indirect
-	github.com/hashicorp/go-slug v0.11.0 // indirect
+	github.com/hashicorp/go-slug v0.11.1 // indirect
 	github.com/hashicorp/hcl/v2 v2.16.2 // indirect
 	github.com/hashicorp/terraform-json v0.16.0 // indirect
 	github.com/imdario/mergo v0.3.15 // indirect
