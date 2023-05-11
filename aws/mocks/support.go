@@ -402,6 +402,56 @@ func (mr *MockSupportAPIMockRecorder) DescribeCommunicationsWithContext(arg0, ar
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCommunicationsWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCommunicationsWithContext), varargs...)
 }
 
+// DescribeCreateCaseOptions mocks base method.
+func (m *MockSupportAPI) DescribeCreateCaseOptions(arg0 *support.DescribeCreateCaseOptionsInput) (*support.DescribeCreateCaseOptionsOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeCreateCaseOptions", arg0)
+	ret0, _ := ret[0].(*support.DescribeCreateCaseOptionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeCreateCaseOptions indicates an expected call of DescribeCreateCaseOptions.
+func (mr *MockSupportAPIMockRecorder) DescribeCreateCaseOptions(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCreateCaseOptions", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCreateCaseOptions), arg0)
+}
+
+// DescribeCreateCaseOptionsRequest mocks base method.
+func (m *MockSupportAPI) DescribeCreateCaseOptionsRequest(arg0 *support.DescribeCreateCaseOptionsInput) (*request.Request, *support.DescribeCreateCaseOptionsOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeCreateCaseOptionsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*support.DescribeCreateCaseOptionsOutput)
+	return ret0, ret1
+}
+
+// DescribeCreateCaseOptionsRequest indicates an expected call of DescribeCreateCaseOptionsRequest.
+func (mr *MockSupportAPIMockRecorder) DescribeCreateCaseOptionsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCreateCaseOptionsRequest", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCreateCaseOptionsRequest), arg0)
+}
+
+// DescribeCreateCaseOptionsWithContext mocks base method.
+func (m *MockSupportAPI) DescribeCreateCaseOptionsWithContext(arg0 context.Context, arg1 *support.DescribeCreateCaseOptionsInput, arg2 ...request.Option) (*support.DescribeCreateCaseOptionsOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeCreateCaseOptionsWithContext", varargs...)
+	ret0, _ := ret[0].(*support.DescribeCreateCaseOptionsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeCreateCaseOptionsWithContext indicates an expected call of DescribeCreateCaseOptionsWithContext.
+func (mr *MockSupportAPIMockRecorder) DescribeCreateCaseOptionsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeCreateCaseOptionsWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeCreateCaseOptionsWithContext), varargs...)
+}
+
 // DescribeServices mocks base method.
 func (m *MockSupportAPI) DescribeServices(arg0 *support.DescribeServicesInput) (*support.DescribeServicesOutput, error) {
 	m.ctrl.T.Helper()
@@ -500,6 +550,56 @@ func (mr *MockSupportAPIMockRecorder) DescribeSeverityLevelsWithContext(arg0, ar
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSeverityLevelsWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeSeverityLevelsWithContext), varargs...)
+}
+
+// DescribeSupportedLanguages mocks base method.
+func (m *MockSupportAPI) DescribeSupportedLanguages(arg0 *support.DescribeSupportedLanguagesInput) (*support.DescribeSupportedLanguagesOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeSupportedLanguages", arg0)
+	ret0, _ := ret[0].(*support.DescribeSupportedLanguagesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeSupportedLanguages indicates an expected call of DescribeSupportedLanguages.
+func (mr *MockSupportAPIMockRecorder) DescribeSupportedLanguages(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSupportedLanguages", reflect.TypeOf((*MockSupportAPI)(nil).DescribeSupportedLanguages), arg0)
+}
+
+// DescribeSupportedLanguagesRequest mocks base method.
+func (m *MockSupportAPI) DescribeSupportedLanguagesRequest(arg0 *support.DescribeSupportedLanguagesInput) (*request.Request, *support.DescribeSupportedLanguagesOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeSupportedLanguagesRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*support.DescribeSupportedLanguagesOutput)
+	return ret0, ret1
+}
+
+// DescribeSupportedLanguagesRequest indicates an expected call of DescribeSupportedLanguagesRequest.
+func (mr *MockSupportAPIMockRecorder) DescribeSupportedLanguagesRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSupportedLanguagesRequest", reflect.TypeOf((*MockSupportAPI)(nil).DescribeSupportedLanguagesRequest), arg0)
+}
+
+// DescribeSupportedLanguagesWithContext mocks base method.
+func (m *MockSupportAPI) DescribeSupportedLanguagesWithContext(arg0 context.Context, arg1 *support.DescribeSupportedLanguagesInput, arg2 ...request.Option) (*support.DescribeSupportedLanguagesOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeSupportedLanguagesWithContext", varargs...)
+	ret0, _ := ret[0].(*support.DescribeSupportedLanguagesOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeSupportedLanguagesWithContext indicates an expected call of DescribeSupportedLanguagesWithContext.
+func (mr *MockSupportAPIMockRecorder) DescribeSupportedLanguagesWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeSupportedLanguagesWithContext", reflect.TypeOf((*MockSupportAPI)(nil).DescribeSupportedLanguagesWithContext), varargs...)
 }
 
 // DescribeTrustedAdvisorCheckRefreshStatuses mocks base method.
