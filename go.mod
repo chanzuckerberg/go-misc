@@ -31,12 +31,12 @@ require (
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8
 	github.com/pkg/errors v0.9.1
 	github.com/segmentio/chamber v2.2.0+incompatible
-	github.com/sirupsen/logrus v1.9.0
+	github.com/sirupsen/logrus v1.9.2
 	github.com/snowflakedb/gosnowflake v1.6.20
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.2
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
-	github.com/zalando/go-keyring v0.2.2
+	github.com/zalando/go-keyring v0.2.3
 	golang.org/x/crypto v0.9.0
 	golang.org/x/oauth2 v0.8.0
 	gopkg.in/go-playground/validator.v9 v9.31.0
