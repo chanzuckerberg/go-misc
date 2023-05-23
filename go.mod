@@ -8,14 +8,14 @@ require (
 	github.com/aws/aws-sdk-go v1.44.267
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/chanzuckerberg/aws-oidc v0.25.68
+	github.com/chanzuckerberg/aws-oidc v0.25.70
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.21.0
 	github.com/go-errors/errors v1.4.2
 	github.com/golang/mock v1.6.0
 	github.com/google/go-github/v27 v27.0.6
 	github.com/google/uuid v1.3.0
-	github.com/gruntwork-io/terratest v0.41.25
+	github.com/gruntwork-io/terratest v0.41.26
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-tfe v1.25.0
 	github.com/hashicorp/go-version v1.6.0

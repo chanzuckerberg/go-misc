@@ -277,8 +277,8 @@ github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QH
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
-github.com/chanzuckerberg/aws-oidc v0.25.68 h1:jkRspdFd75XfXvhpjXXZRFMDh/EUm6M2DcelDTwGKl4=
-github.com/chanzuckerberg/aws-oidc v0.25.68/go.mod h1:NxoMxSDGsmAC3OE/25Cd9SuytK9rh7NGova4rUI3cTg=
+github.com/chanzuckerberg/aws-oidc v0.25.70 h1:7oYi6I4Ltb9vkGEPAi94l9uz8LR3DHCFOR81v8c9xU0=
+github.com/chanzuckerberg/aws-oidc v0.25.70/go.mod h1:usAgYWtc8CjCHQbPaGSasseDanVIyxkIuc0cEdvLnTU=
 github.com/chanzuckerberg/go-tfe v0.9.1-0.20201023195027-6a99188f09d3 h1:IUvE9XEmLUJ4sKtTpkts9DELdUhFvFoAuy52+otdrB0=
 github.com/chanzuckerberg/go-tfe v0.9.1-0.20201023195027-6a99188f09d3/go.mod h1:XAV72S4O1iP8BDaqiaPLmL2B4EE6almocnOn8E8stHc=
 github.com/cheggaaa/pb v1.0.27/go.mod h1:pQciLPpbU0oxA0h+VJYYLxO+XeDQb5pZijXscXHm81s=
@@ -501,8 +501,8 @@ github.com/gorilla/websocket v1.5.0/go.mod h1:YR8l580nyteQvAITg2hZ9XVh4b55+EU/ad
 github.com/grpc-ecosystem/grpc-gateway v1.16.0/go.mod h1:BDjrQk3hbvj6Nolgz8mAMFbcEtjT1g+wF4CSlocrBnw=
 github.com/gruntwork-io/go-commons v0.16.2 h1:EmkS8344ggtQopFq6YJ5Nh3ohBF03AB7cxrgDiJ7C3Q=
 github.com/gruntwork-io/go-commons v0.16.2/go.mod h1:/nnLMhO4HpItt43K+8ACM66g67iMy3oo2nnwq59n3wg=
-github.com/gruntwork-io/terratest v0.41.25 h1:VueNLhppdvkn+JvOowgVfvhBCjLvwTyqroOdz9cnmmA=
-github.com/gruntwork-io/terratest v0.41.25/go.mod h1:O6gajNBjO1wvc7Wl9WtbO+ORcdnhAV2GQiBE71ycwIk=
+github.com/gruntwork-io/terratest v0.41.26 h1:ttDXBBDBAYV4KgP1itGQ5O61F6KwgMMUFHy64bzvuYU=
+github.com/gruntwork-io/terratest v0.41.26/go.mod h1:O6gajNBjO1wvc7Wl9WtbO+ORcdnhAV2GQiBE71ycwIk=
 github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c h1:6rhixN/i8ZofjG1Y75iExal34USq5p+wiN1tpie8IrU=
 github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c/go.mod h1:NMPJylDgVpX0MLRlPy15sqSwOFv/U1GZ2m21JhFfek0=
 github.com/hashicorp/errwrap v1.0.0/go.mod h1:YH+1FKiLXxHSkmPseP+kNlulaMuP3n2brvKWEqk/Jc4=
