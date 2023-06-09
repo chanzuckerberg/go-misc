@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go v1.44.279
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/chanzuckerberg/aws-oidc v0.25.74
+	github.com/chanzuckerberg/aws-oidc v0.25.75
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.21.0
 	github.com/go-errors/errors v1.4.2
@@ -17,7 +17,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/gruntwork-io/terratest v0.43.0
 	github.com/hashicorp/go-multierror v1.1.1
-	github.com/hashicorp/go-tfe v1.26.0
+	github.com/hashicorp/go-tfe v1.27.0
 	github.com/hashicorp/go-version v1.6.0
 	github.com/honeycombio/libhoney-go v1.19.0
 	github.com/jmoiron/sqlx v1.3.5
@@ -172,7 +172,7 @@ require (
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.9.3 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
-	google.golang.org/api v0.125.0 // indirect
+	google.golang.org/api v0.126.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230530153820-e85fd2cbaebc // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20230530153820-e85fd2cbaebc // indirect

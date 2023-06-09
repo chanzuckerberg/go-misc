@@ -277,8 +277,8 @@ github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QH
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
-github.com/chanzuckerberg/aws-oidc v0.25.74 h1:t+K0We3jGLAefHE0tQn4p4msze0Z30V8f+WCToMBufU=
-github.com/chanzuckerberg/aws-oidc v0.25.74/go.mod h1:vWK0HR5LZRBZ9oBnKspvqzrrkNapuN+smYsVlojTxvU=
+github.com/chanzuckerberg/aws-oidc v0.25.75 h1:/tuqBBmVwIml8oYDVhA25A75rAz2wF/CPBcAWQyBLME=
+github.com/chanzuckerberg/aws-oidc v0.25.75/go.mod h1:PL0lTUGWCfPqFfquSGTkjIor45rTE+HJ6RrtQtb93RU=
 github.com/chanzuckerberg/go-tfe v0.9.1-0.20201023195027-6a99188f09d3 h1:IUvE9XEmLUJ4sKtTpkts9DELdUhFvFoAuy52+otdrB0=
 github.com/chanzuckerberg/go-tfe v0.9.1-0.20201023195027-6a99188f09d3/go.mod h1:XAV72S4O1iP8BDaqiaPLmL2B4EE6almocnOn8E8stHc=
 github.com/cheggaaa/pb v1.0.27/go.mod h1:pQciLPpbU0oxA0h+VJYYLxO+XeDQb5pZijXscXHm81s=
@@ -603,7 +603,6 @@ github.com/mattn/go-isatty v0.0.16/go.mod h1:kYGgaQfpe5nmfYZH+SKPsOc2e4SrIfOl2e/
 github.com/mattn/go-isatty v0.0.19 h1:JITubQf0MOLdlGRuRq+jtsDlekdYPia9ZFsB8h/APPA=
 github.com/mattn/go-isatty v0.0.19/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/mattn/go-runewidth v0.0.4/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
-github.com/mattn/go-sqlite3 v1.14.6 h1:dNPt6NO46WmLVt2DLNpwczCmdV5boIZ6g/tlDrlRUbg=
 github.com/mattn/go-sqlite3 v1.14.6/go.mod h1:NyWgC/yNuGj7Q9rpYnZvas74GogHl5/Z4A/KQRfk6bU=
 github.com/mattn/go-zglob v0.0.4 h1:LQi2iOm0/fGgu80AioIJ/1j9w9Oh+9DZ39J4VAGzHQM=
 github.com/mattn/go-zglob v0.0.4/go.mod h1:MxxjyoXXnMxfIpxTK2GAkw1w8glPsQILx3N5wrKakiY=
