@@ -16,7 +16,6 @@ jobs:
           go-version: 1.19
         id: go
       - run: |
-          go get -u ./...
           make generate-mocks
           go mod tidy
       - name: Create Pull Request
