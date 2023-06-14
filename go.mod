@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/aws/aws-lambda-go v1.41.0
-	github.com/aws/aws-sdk-go v1.44.281
+	github.com/aws/aws-sdk-go v1.44.282
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/chanzuckerberg/aws-oidc v0.25.76
@@ -204,3 +204,7 @@ exclude github.com/zalando/go-keyring v0.2.0
 exclude github.com/zalando/go-keyring v0.2.1
 
 replace github.com/zalando/go-keyring => github.com/zalando/go-keyring v0.1.1
+
+replace k8s.io/client-go => k8s.io/client-go v0.27.2
+
+replace k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f
