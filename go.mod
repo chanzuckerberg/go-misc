@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/aws/aws-lambda-go v1.41.0
-	github.com/aws/aws-sdk-go v1.44.313
+	github.com/aws/aws-sdk-go v1.44.314
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/chanzuckerberg/aws-oidc v0.25.89
@@ -62,8 +62,8 @@ require (
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.20.0 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.11 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.13.30 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.11.75 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.13.31 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.11.76 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.37 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.31 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.1.0 // indirect
@@ -71,7 +71,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.1.32 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.31 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.15.0 // indirect
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.38.0 // indirect
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.38.1 // indirect
 	github.com/aws/smithy-go v1.14.0 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/boombuler/barcode v1.0.1 // indirect
