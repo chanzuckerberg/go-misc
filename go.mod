@@ -11,7 +11,7 @@ require (
 	github.com/chanzuckerberg/aws-oidc v0.26.17
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.24.0
-	github.com/go-errors/errors v1.4.2
+	github.com/go-errors/errors v1.5.0
 	github.com/golang/mock v1.6.0
 	github.com/google/go-github/v27 v27.0.6
 	github.com/google/uuid v1.3.1
