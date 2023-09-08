@@ -1,6 +1,6 @@
 module github.com/chanzuckerberg/go-misc
 
-go 1.19
+go 1.21
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
@@ -8,10 +8,10 @@ require (
 	github.com/aws/aws-sdk-go v1.45.6
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/chanzuckerberg/aws-oidc v0.26.17
+	github.com/chanzuckerberg/aws-oidc v0.27.0
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.24.0
-	github.com/go-errors/errors v1.4.2
+	github.com/go-errors/errors v1.5.0
 	github.com/golang/mock v1.6.0
 	github.com/google/go-github/v27 v27.0.6
 	github.com/google/uuid v1.3.1
