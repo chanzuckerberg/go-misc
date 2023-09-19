@@ -10,7 +10,7 @@ require (
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/chanzuckerberg/aws-oidc v0.27.0
 	github.com/coreos/go-oidc v2.2.1+incompatible
-	github.com/getsentry/sentry-go v0.24.0
+	github.com/getsentry/sentry-go v0.24.1
 	github.com/go-errors/errors v1.5.0
 	github.com/golang/mock v1.6.0
 	github.com/google/go-github/v27 v27.0.6
