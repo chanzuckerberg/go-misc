@@ -18,10 +18,11 @@ import (
 
 // Client is an oauth client
 type Client struct {
-	provider    *oidc.Provider
-	oauthConfig *oauth2.Config
-	verifier    *oidc.IDTokenVerifier
-	server      *server
+	provider     *oidc.Provider
+	oauthConfig  *oauth2.Config
+	verifier     *oidc.IDTokenVerifier
+	server       *server
+	DisableCache bool
 
 	// Extra configuration options
 	customMessages map[oidcStatus]string

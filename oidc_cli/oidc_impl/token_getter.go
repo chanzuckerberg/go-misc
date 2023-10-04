@@ -36,23 +36,25 @@ func GetToken(ctx context.Context, clientID string, issuerURL string, clientOpti
 		return nil, errors.Wrap(err, "Unable to create client")
 	}
 
-	token, err := c.Authenticate(ctx)
-	if err != nil {
-		return nil, errors.Wrap(err, "Unable to authenticate with OAuth client")
-	}
-	// storage, err := storage.GetOIDC(clientID, issuerURL)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	if c.DisableCache:
+		token, err := c.Authenticate(ctx)
+		if err != nil {
+			return nil, errors.Wrap(err, "Unable to authenticate with OAuth client")
+		}
+	else:
+		storage, err := storage.GetOIDC(clientID, issuerURL)
+		if err != nil {
+			return nil, err
+		}
 
-	// cache := cache.NewCache(storage, c.RefreshToken, fileLock)
+		cache := cache.NewCache(storage, c.RefreshToken, fileLock)
 
-	// token, err := cache.Read(ctx)
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "Unable to extract token from client")
-	// }
-	// if token == nil {
-	// 	return nil, errors.New("nil token from OIDC-IDP")
-	// }
+		token, err := cache.Read(ctx)
+		if err != nil {
+			return nil, errors.Wrap(err, "Unable to extract token from client")
+		}
+		if token == nil {
+			return nil, errors.New("nil token from OIDC-IDP")
+		}
 	return token, nil
 }
