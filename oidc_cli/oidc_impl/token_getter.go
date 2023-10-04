@@ -4,7 +4,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/cache"
 	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/storage"
+	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/pkg/errors"
 )
 
@@ -15,10 +18,10 @@ const (
 // GetToken gets an oidc token.
 // It handles caching with a default cache and keyring storage.
 func GetToken(ctx context.Context, clientID string, issuerURL string, clientOptions ...client.Option) (*client.Token, error) {
-	// fileLock, err := pidlock.NewLock(lockFilePath)
-	// if err != nil {
-	// 	return nil, errors.Wrap(err, "unable to create lock")
-	// }
+	fileLock, err := pidlock.NewLock(lockFilePath)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to create lock")
+	}
 
 	conf := &client.Config{
 		ClientID:  clientID,
@@ -36,12 +39,14 @@ func GetToken(ctx context.Context, clientID string, issuerURL string, clientOpti
 		return nil, errors.Wrap(err, "Unable to create client")
 	}
 
-	if c.DisableCache:
-		token, err := c.Authenticate(ctx)
+	var token *client.Token
+
+	if c.DisableCache {
+		token, err = c.Authenticate(ctx)
 		if err != nil {
 			return nil, errors.Wrap(err, "Unable to authenticate with OAuth client")
 		}
-	else:
+	} else {
 		storage, err := storage.GetOIDC(clientID, issuerURL)
 		if err != nil {
 			return nil, err
@@ -56,5 +61,7 @@ func GetToken(ctx context.Context, clientID string, issuerURL string, clientOpti
 		if token == nil {
 			return nil, errors.New("nil token from OIDC-IDP")
 		}
+	}
+
 	return token, nil
 }
