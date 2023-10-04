@@ -223,7 +223,7 @@ func (c *Client) Authenticate(ctx context.Context) (*Token, error) {
 	}
 
 	c.server.Start(ctx, c, oauthMaterial)
-	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with Okta, hold on a brief second...\n")
+	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with your Identity Provider, hold on a brief second...\n")
 	time.Sleep(2 * time.Second)
 
 	// intercept these outputs, send them back on error
