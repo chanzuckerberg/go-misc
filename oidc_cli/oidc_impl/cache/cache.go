@@ -87,9 +87,9 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to marshall token")
 	}
-	fmt.Println("about to put strToken to storage: ", strToken)
+	fmt.Println("we should put this strToken to storage: ", strToken, " but putting an empty string instead")
 	// save token to storage
-	err = c.storage.Set(ctx, strToken)
+	err = c.storage.Set(ctx, "")
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to cache the strToken")
 	}
