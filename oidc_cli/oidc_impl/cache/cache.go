@@ -2,6 +2,7 @@ package cache
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
 	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/storage"
@@ -38,6 +39,9 @@ func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 	cachedToken, err := c.readFromStorage(ctx)
 	if err != nil {
 		return nil, err
+	}
+	if cachedToken == nil {
+		fmt.Println("no cached Token")
 	}
 	// if we have a valid token, use it
 	if cachedToken.IsFresh() {
@@ -83,6 +87,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to marshall token")
 	}
+	fmt.Println("about to put strToken to storage: ", strToken)
 	// save token to storage
 	err = c.storage.Set(ctx, strToken)
 	if err != nil {
