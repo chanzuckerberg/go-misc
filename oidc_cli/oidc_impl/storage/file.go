@@ -60,7 +60,7 @@ func (f *File) Set(ctx context.Context, value string) error {
 		return errors.Wrapf(err, "could not create cache dir %s", f.dir)
 	}
 
-	err = ioutil.WriteFile(f.key, []byte(value), 0600)
+	err = os.WriteFile(f.key, []byte(value), 0600)
 	return errors.Wrap(err, "could not set value to file")
 }
 
