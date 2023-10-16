@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go v1.45.26
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/chanzuckerberg/aws-oidc v0.28.5
+	github.com/chanzuckerberg/aws-oidc v0.28.6
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.25.0
 	github.com/go-errors/errors v1.5.1
