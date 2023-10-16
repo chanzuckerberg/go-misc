@@ -5,7 +5,7 @@ go 1.21.1
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/aws/aws-lambda-go v1.41.0
-	github.com/aws/aws-sdk-go v1.45.24
+	github.com/aws/aws-sdk-go v1.45.26
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/chanzuckerberg/aws-oidc v0.28.5
@@ -60,18 +60,18 @@ require (
 	github.com/apache/arrow/go/v12 v12.0.1 // indirect
 	github.com/apache/thrift v0.18.1 // indirect
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
-	github.com/aws/aws-sdk-go-v2 v1.21.1 // indirect
+	github.com/aws/aws-sdk-go-v2 v1.21.2 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.14 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.13.42 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.11.89 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.42 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.36 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/v4a v1.1.5 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.13.43 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.11.91 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.43 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.37 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/v4a v1.1.6 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.9.15 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.1.37 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.36 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.15.5 // indirect
-	github.com/aws/aws-sdk-go-v2/service/s3 v1.40.1 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/checksum v1.1.38 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.37 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/s3shared v1.15.6 // indirect
+	github.com/aws/aws-sdk-go-v2/service/s3 v1.40.2 // indirect
 	github.com/aws/smithy-go v1.15.0 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
 	github.com/boombuler/barcode v1.0.1 // indirect
@@ -165,7 +165,7 @@ require (
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1 // indirect
 	golang.org/x/mod v0.10.0 // indirect
-	golang.org/x/net v0.16.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/sync v0.2.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/term v0.13.0 // indirect
