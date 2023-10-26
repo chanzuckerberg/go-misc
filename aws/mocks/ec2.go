@@ -26378,6 +26378,89 @@ func (mr *MockEC2APIMockRecorder) GetReservedInstancesExchangeQuoteWithContext(a
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetReservedInstancesExchangeQuoteWithContext", reflect.TypeOf((*MockEC2API)(nil).GetReservedInstancesExchangeQuoteWithContext), varargs...)
 }
 
+// GetSecurityGroupsForVpc mocks base method.
+func (m *MockEC2API) GetSecurityGroupsForVpc(arg0 *ec2.GetSecurityGroupsForVpcInput) (*ec2.GetSecurityGroupsForVpcOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSecurityGroupsForVpc", arg0)
+	ret0, _ := ret[0].(*ec2.GetSecurityGroupsForVpcOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSecurityGroupsForVpc indicates an expected call of GetSecurityGroupsForVpc.
+func (mr *MockEC2APIMockRecorder) GetSecurityGroupsForVpc(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSecurityGroupsForVpc", reflect.TypeOf((*MockEC2API)(nil).GetSecurityGroupsForVpc), arg0)
+}
+
+// GetSecurityGroupsForVpcPages mocks base method.
+func (m *MockEC2API) GetSecurityGroupsForVpcPages(arg0 *ec2.GetSecurityGroupsForVpcInput, arg1 func(*ec2.GetSecurityGroupsForVpcOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSecurityGroupsForVpcPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetSecurityGroupsForVpcPages indicates an expected call of GetSecurityGroupsForVpcPages.
+func (mr *MockEC2APIMockRecorder) GetSecurityGroupsForVpcPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSecurityGroupsForVpcPages", reflect.TypeOf((*MockEC2API)(nil).GetSecurityGroupsForVpcPages), arg0, arg1)
+}
+
+// GetSecurityGroupsForVpcPagesWithContext mocks base method.
+func (m *MockEC2API) GetSecurityGroupsForVpcPagesWithContext(arg0 context.Context, arg1 *ec2.GetSecurityGroupsForVpcInput, arg2 func(*ec2.GetSecurityGroupsForVpcOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetSecurityGroupsForVpcPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// GetSecurityGroupsForVpcPagesWithContext indicates an expected call of GetSecurityGroupsForVpcPagesWithContext.
+func (mr *MockEC2APIMockRecorder) GetSecurityGroupsForVpcPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSecurityGroupsForVpcPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).GetSecurityGroupsForVpcPagesWithContext), varargs...)
+}
+
+// GetSecurityGroupsForVpcRequest mocks base method.
+func (m *MockEC2API) GetSecurityGroupsForVpcRequest(arg0 *ec2.GetSecurityGroupsForVpcInput) (*request.Request, *ec2.GetSecurityGroupsForVpcOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSecurityGroupsForVpcRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.GetSecurityGroupsForVpcOutput)
+	return ret0, ret1
+}
+
+// GetSecurityGroupsForVpcRequest indicates an expected call of GetSecurityGroupsForVpcRequest.
+func (mr *MockEC2APIMockRecorder) GetSecurityGroupsForVpcRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSecurityGroupsForVpcRequest", reflect.TypeOf((*MockEC2API)(nil).GetSecurityGroupsForVpcRequest), arg0)
+}
+
+// GetSecurityGroupsForVpcWithContext mocks base method.
+func (m *MockEC2API) GetSecurityGroupsForVpcWithContext(arg0 context.Context, arg1 *ec2.GetSecurityGroupsForVpcInput, arg2 ...request.Option) (*ec2.GetSecurityGroupsForVpcOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "GetSecurityGroupsForVpcWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.GetSecurityGroupsForVpcOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetSecurityGroupsForVpcWithContext indicates an expected call of GetSecurityGroupsForVpcWithContext.
+func (mr *MockEC2APIMockRecorder) GetSecurityGroupsForVpcWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSecurityGroupsForVpcWithContext", reflect.TypeOf((*MockEC2API)(nil).GetSecurityGroupsForVpcWithContext), varargs...)
+}
+
 // GetSerialConsoleAccessStatus mocks base method.
 func (m *MockEC2API) GetSerialConsoleAccessStatus(arg0 *ec2.GetSerialConsoleAccessStatusInput) (*ec2.GetSerialConsoleAccessStatusOutput, error) {
 	m.ctrl.T.Helper()
