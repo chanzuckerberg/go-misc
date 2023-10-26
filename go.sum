@@ -280,8 +280,8 @@ github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QH
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
-github.com/chanzuckerberg/aws-oidc v0.28.9 h1:FmSEAbq0F1Smk0N6s+8be2vbwtV7sYwv6V1boC8zvEw=
-github.com/chanzuckerberg/aws-oidc v0.28.9/go.mod h1:wnnvdizMW+R1ta46s5VwNsgxhsG5eirt4oM+MB4YFp4=
+github.com/chanzuckerberg/aws-oidc v0.28.11 h1:dTQrddf7zIJ2sMI2ZATvr3WvmtTRdcYrIuzn/xlJtdc=
+github.com/chanzuckerberg/aws-oidc v0.28.11/go.mod h1:Gex9LuWzT0dDBmsXIz+GE3hJ+edd5SLeAw4tDwmYBz8=
 github.com/chanzuckerberg/go-tfe v0.9.1-0.20201023195027-6a99188f09d3 h1:IUvE9XEmLUJ4sKtTpkts9DELdUhFvFoAuy52+otdrB0=
 github.com/chanzuckerberg/go-tfe v0.9.1-0.20201023195027-6a99188f09d3/go.mod h1:XAV72S4O1iP8BDaqiaPLmL2B4EE6almocnOn8E8stHc=
 github.com/cheggaaa/pb v1.0.27/go.mod h1:pQciLPpbU0oxA0h+VJYYLxO+XeDQb5pZijXscXHm81s=
@@ -1270,8 +1270,8 @@ google.golang.org/grpc v1.48.0/go.mod h1:vN9eftEi1UMyUsIF80+uQXhHjbXYbm0uXoFCACu
 google.golang.org/grpc v1.49.0/go.mod h1:ZgQEeidpAuNRZ8iRrlBKXZQP1ghovWIVhdJRyCDK+GI=
 google.golang.org/grpc v1.50.0/go.mod h1:ZgQEeidpAuNRZ8iRrlBKXZQP1ghovWIVhdJRyCDK+GI=
 google.golang.org/grpc v1.50.1/go.mod h1:ZgQEeidpAuNRZ8iRrlBKXZQP1ghovWIVhdJRyCDK+GI=
-google.golang.org/grpc v1.57.0 h1:kfzNeI/klCGD2YPMUlaGNT3pxvYfga7smW3Vth8Zsiw=
-google.golang.org/grpc v1.57.0/go.mod h1:Sd+9RMTACXwmub0zcNY2c4arhtrbBYD1AUHI/dt16Mo=
+google.golang.org/grpc v1.57.1 h1:upNTNqv0ES+2ZOOqACwVtS3Il8M12/+Hz41RCPzAjQg=
+google.golang.org/grpc v1.57.1/go.mod h1:Sd+9RMTACXwmub0zcNY2c4arhtrbBYD1AUHI/dt16Mo=
 google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0/go.mod h1:6Kw0yEErY5E/yWrBtf03jp27GLLJujG4z/JK95pnjjw=
 google.golang.org/protobuf v0.0.0-20200109180630-ec00e32a8dfd/go.mod h1:DFci5gLYBciE7Vtevhsrf46CRTquxDuWsQurQQe4oz8=
 google.golang.org/protobuf v0.0.0-20200221191635-4d8936d0db64/go.mod h1:kwYJMbMJ01Woi6D6+Kah6886xMZcty6N08ah7+eCXa0=
