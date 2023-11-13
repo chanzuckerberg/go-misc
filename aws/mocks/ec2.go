@@ -14558,6 +14558,89 @@ func (mr *MockEC2APIMockRecorder) DescribeInstanceStatusWithContext(arg0, arg1 i
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceStatusWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceStatusWithContext), varargs...)
 }
 
+// DescribeInstanceTopology mocks base method.
+func (m *MockEC2API) DescribeInstanceTopology(arg0 *ec2.DescribeInstanceTopologyInput) (*ec2.DescribeInstanceTopologyOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeInstanceTopology", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeInstanceTopologyOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeInstanceTopology indicates an expected call of DescribeInstanceTopology.
+func (mr *MockEC2APIMockRecorder) DescribeInstanceTopology(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceTopology", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceTopology), arg0)
+}
+
+// DescribeInstanceTopologyPages mocks base method.
+func (m *MockEC2API) DescribeInstanceTopologyPages(arg0 *ec2.DescribeInstanceTopologyInput, arg1 func(*ec2.DescribeInstanceTopologyOutput, bool) bool) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeInstanceTopologyPages", arg0, arg1)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeInstanceTopologyPages indicates an expected call of DescribeInstanceTopologyPages.
+func (mr *MockEC2APIMockRecorder) DescribeInstanceTopologyPages(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceTopologyPages", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceTopologyPages), arg0, arg1)
+}
+
+// DescribeInstanceTopologyPagesWithContext mocks base method.
+func (m *MockEC2API) DescribeInstanceTopologyPagesWithContext(arg0 context.Context, arg1 *ec2.DescribeInstanceTopologyInput, arg2 func(*ec2.DescribeInstanceTopologyOutput, bool) bool, arg3 ...request.Option) error {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1, arg2}
+	for _, a := range arg3 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeInstanceTopologyPagesWithContext", varargs...)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DescribeInstanceTopologyPagesWithContext indicates an expected call of DescribeInstanceTopologyPagesWithContext.
+func (mr *MockEC2APIMockRecorder) DescribeInstanceTopologyPagesWithContext(arg0, arg1, arg2 interface{}, arg3 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1, arg2}, arg3...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceTopologyPagesWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceTopologyPagesWithContext), varargs...)
+}
+
+// DescribeInstanceTopologyRequest mocks base method.
+func (m *MockEC2API) DescribeInstanceTopologyRequest(arg0 *ec2.DescribeInstanceTopologyInput) (*request.Request, *ec2.DescribeInstanceTopologyOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeInstanceTopologyRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeInstanceTopologyOutput)
+	return ret0, ret1
+}
+
+// DescribeInstanceTopologyRequest indicates an expected call of DescribeInstanceTopologyRequest.
+func (mr *MockEC2APIMockRecorder) DescribeInstanceTopologyRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceTopologyRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceTopologyRequest), arg0)
+}
+
+// DescribeInstanceTopologyWithContext mocks base method.
+func (m *MockEC2API) DescribeInstanceTopologyWithContext(arg0 context.Context, arg1 *ec2.DescribeInstanceTopologyInput, arg2 ...request.Option) (*ec2.DescribeInstanceTopologyOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeInstanceTopologyWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeInstanceTopologyOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeInstanceTopologyWithContext indicates an expected call of DescribeInstanceTopologyWithContext.
+func (mr *MockEC2APIMockRecorder) DescribeInstanceTopologyWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeInstanceTopologyWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeInstanceTopologyWithContext), varargs...)
+}
+
 // DescribeInstanceTypeOfferings mocks base method.
 func (m *MockEC2API) DescribeInstanceTypeOfferings(arg0 *ec2.DescribeInstanceTypeOfferingsInput) (*ec2.DescribeInstanceTypeOfferingsOutput, error) {
 	m.ctrl.T.Helper()
