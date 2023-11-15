@@ -16185,6 +16185,56 @@ func (mr *MockEC2APIMockRecorder) DescribeLocalGatewaysWithContext(arg0, arg1 in
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeLocalGatewaysWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeLocalGatewaysWithContext), varargs...)
 }
 
+// DescribeLockedSnapshots mocks base method.
+func (m *MockEC2API) DescribeLockedSnapshots(arg0 *ec2.DescribeLockedSnapshotsInput) (*ec2.DescribeLockedSnapshotsOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeLockedSnapshots", arg0)
+	ret0, _ := ret[0].(*ec2.DescribeLockedSnapshotsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeLockedSnapshots indicates an expected call of DescribeLockedSnapshots.
+func (mr *MockEC2APIMockRecorder) DescribeLockedSnapshots(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeLockedSnapshots", reflect.TypeOf((*MockEC2API)(nil).DescribeLockedSnapshots), arg0)
+}
+
+// DescribeLockedSnapshotsRequest mocks base method.
+func (m *MockEC2API) DescribeLockedSnapshotsRequest(arg0 *ec2.DescribeLockedSnapshotsInput) (*request.Request, *ec2.DescribeLockedSnapshotsOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DescribeLockedSnapshotsRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.DescribeLockedSnapshotsOutput)
+	return ret0, ret1
+}
+
+// DescribeLockedSnapshotsRequest indicates an expected call of DescribeLockedSnapshotsRequest.
+func (mr *MockEC2APIMockRecorder) DescribeLockedSnapshotsRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeLockedSnapshotsRequest", reflect.TypeOf((*MockEC2API)(nil).DescribeLockedSnapshotsRequest), arg0)
+}
+
+// DescribeLockedSnapshotsWithContext mocks base method.
+func (m *MockEC2API) DescribeLockedSnapshotsWithContext(arg0 context.Context, arg1 *ec2.DescribeLockedSnapshotsInput, arg2 ...request.Option) (*ec2.DescribeLockedSnapshotsOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DescribeLockedSnapshotsWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.DescribeLockedSnapshotsOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DescribeLockedSnapshotsWithContext indicates an expected call of DescribeLockedSnapshotsWithContext.
+func (mr *MockEC2APIMockRecorder) DescribeLockedSnapshotsWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeLockedSnapshotsWithContext", reflect.TypeOf((*MockEC2API)(nil).DescribeLockedSnapshotsWithContext), varargs...)
+}
+
 // DescribeManagedPrefixLists mocks base method.
 func (m *MockEC2API) DescribeManagedPrefixLists(arg0 *ec2.DescribeManagedPrefixListsInput) (*ec2.DescribeManagedPrefixListsOutput, error) {
 	m.ctrl.T.Helper()
@@ -28257,6 +28307,56 @@ func (mr *MockEC2APIMockRecorder) ListSnapshotsInRecycleBinWithContext(arg0, arg
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListSnapshotsInRecycleBinWithContext", reflect.TypeOf((*MockEC2API)(nil).ListSnapshotsInRecycleBinWithContext), varargs...)
 }
 
+// LockSnapshot mocks base method.
+func (m *MockEC2API) LockSnapshot(arg0 *ec2.LockSnapshotInput) (*ec2.LockSnapshotOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "LockSnapshot", arg0)
+	ret0, _ := ret[0].(*ec2.LockSnapshotOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// LockSnapshot indicates an expected call of LockSnapshot.
+func (mr *MockEC2APIMockRecorder) LockSnapshot(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LockSnapshot", reflect.TypeOf((*MockEC2API)(nil).LockSnapshot), arg0)
+}
+
+// LockSnapshotRequest mocks base method.
+func (m *MockEC2API) LockSnapshotRequest(arg0 *ec2.LockSnapshotInput) (*request.Request, *ec2.LockSnapshotOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "LockSnapshotRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.LockSnapshotOutput)
+	return ret0, ret1
+}
+
+// LockSnapshotRequest indicates an expected call of LockSnapshotRequest.
+func (mr *MockEC2APIMockRecorder) LockSnapshotRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LockSnapshotRequest", reflect.TypeOf((*MockEC2API)(nil).LockSnapshotRequest), arg0)
+}
+
+// LockSnapshotWithContext mocks base method.
+func (m *MockEC2API) LockSnapshotWithContext(arg0 context.Context, arg1 *ec2.LockSnapshotInput, arg2 ...request.Option) (*ec2.LockSnapshotOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "LockSnapshotWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.LockSnapshotOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// LockSnapshotWithContext indicates an expected call of LockSnapshotWithContext.
+func (mr *MockEC2APIMockRecorder) LockSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LockSnapshotWithContext", reflect.TypeOf((*MockEC2API)(nil).LockSnapshotWithContext), varargs...)
+}
+
 // ModifyAddressAttribute mocks base method.
 func (m *MockEC2API) ModifyAddressAttribute(arg0 *ec2.ModifyAddressAttributeInput) (*ec2.ModifyAddressAttributeOutput, error) {
 	m.ctrl.T.Helper()
@@ -34721,6 +34821,56 @@ func (mr *MockEC2APIMockRecorder) UnassignPrivateNatGatewayAddressWithContext(ar
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnassignPrivateNatGatewayAddressWithContext", reflect.TypeOf((*MockEC2API)(nil).UnassignPrivateNatGatewayAddressWithContext), varargs...)
+}
+
+// UnlockSnapshot mocks base method.
+func (m *MockEC2API) UnlockSnapshot(arg0 *ec2.UnlockSnapshotInput) (*ec2.UnlockSnapshotOutput, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UnlockSnapshot", arg0)
+	ret0, _ := ret[0].(*ec2.UnlockSnapshotOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UnlockSnapshot indicates an expected call of UnlockSnapshot.
+func (mr *MockEC2APIMockRecorder) UnlockSnapshot(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnlockSnapshot", reflect.TypeOf((*MockEC2API)(nil).UnlockSnapshot), arg0)
+}
+
+// UnlockSnapshotRequest mocks base method.
+func (m *MockEC2API) UnlockSnapshotRequest(arg0 *ec2.UnlockSnapshotInput) (*request.Request, *ec2.UnlockSnapshotOutput) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UnlockSnapshotRequest", arg0)
+	ret0, _ := ret[0].(*request.Request)
+	ret1, _ := ret[1].(*ec2.UnlockSnapshotOutput)
+	return ret0, ret1
+}
+
+// UnlockSnapshotRequest indicates an expected call of UnlockSnapshotRequest.
+func (mr *MockEC2APIMockRecorder) UnlockSnapshotRequest(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnlockSnapshotRequest", reflect.TypeOf((*MockEC2API)(nil).UnlockSnapshotRequest), arg0)
+}
+
+// UnlockSnapshotWithContext mocks base method.
+func (m *MockEC2API) UnlockSnapshotWithContext(arg0 context.Context, arg1 *ec2.UnlockSnapshotInput, arg2 ...request.Option) (*ec2.UnlockSnapshotOutput, error) {
+	m.ctrl.T.Helper()
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "UnlockSnapshotWithContext", varargs...)
+	ret0, _ := ret[0].(*ec2.UnlockSnapshotOutput)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UnlockSnapshotWithContext indicates an expected call of UnlockSnapshotWithContext.
+func (mr *MockEC2APIMockRecorder) UnlockSnapshotWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UnlockSnapshotWithContext", reflect.TypeOf((*MockEC2API)(nil).UnlockSnapshotWithContext), varargs...)
 }
 
 // UnmonitorInstances mocks base method.
