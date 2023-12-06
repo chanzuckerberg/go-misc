@@ -1,6 +1,8 @@
 module github.com/chanzuckerberg/go-misc
 
-go 1.20
+go 1.21
+
+toolchain go1.21.1
 
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
@@ -208,3 +210,5 @@ replace github.com/zalando/go-keyring => github.com/zalando/go-keyring v0.1.1
 replace k8s.io/client-go => k8s.io/client-go v0.27.2
 
 replace k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f
+
+replace github.com/snowflakedb/gosnowflake => github.com/snowflakedb/gosnowflake v1.7.1-0.20231128064355-f33dfc7eb567
