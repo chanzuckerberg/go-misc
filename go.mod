@@ -17,7 +17,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/google/go-github/v27 v27.0.6
 	github.com/google/uuid v1.4.0
-	github.com/gruntwork-io/terratest v0.46.7
+	github.com/gruntwork-io/terratest v0.46.8
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/hashicorp/go-tfe v1.26.0
 	github.com/hashicorp/go-version v1.6.0
@@ -187,11 +187,11 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/api v0.27.2 // indirect
-	k8s.io/apimachinery v0.27.2 // indirect
-	k8s.io/client-go v0.27.2 // indirect
+	k8s.io/api v0.28.4 // indirect
+	k8s.io/apimachinery v0.28.4 // indirect
+	k8s.io/client-go v0.28.4 // indirect
 	k8s.io/klog/v2 v2.100.1 // indirect
-	k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f // indirect
+	k8s.io/kube-openapi v0.0.0-20230717233707-2695361300d9 // indirect
 	k8s.io/utils v0.0.0-20230505201702-9f6742963106 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
