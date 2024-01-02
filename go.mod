@@ -10,7 +10,7 @@ require (
 	github.com/aws/aws-sdk-go v1.49.13
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
-	github.com/chanzuckerberg/aws-oidc v0.28.23
+	github.com/chanzuckerberg/aws-oidc v0.28.24
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/getsentry/sentry-go v0.25.0
 	github.com/go-errors/errors v1.5.1
@@ -39,7 +39,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/xinsnake/databricks-sdk-golang v0.1.3
 	github.com/zalando/go-keyring v0.2.3
-	golang.org/x/crypto v0.16.0
+	golang.org/x/crypto v0.17.0
 	golang.org/x/oauth2 v0.15.0
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/square/go-jose.v2 v2.6.0
