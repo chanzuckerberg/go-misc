@@ -7,7 +7,7 @@ toolchain go1.21.1
 require (
 	github.com/AlecAivazis/survey/v2 v2.3.7
 	github.com/aws/aws-lambda-go v1.44.0
-	github.com/aws/aws-sdk-go v1.49.23
+	github.com/aws/aws-sdk-go v1.49.24
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/cenkalti/backoff v2.2.1+incompatible
 	github.com/chanzuckerberg/aws-oidc v0.28.30
@@ -64,8 +64,8 @@ require (
 	github.com/apparentlymart/go-textseg/v13 v13.0.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.24.1 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.5.4 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.16.15 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.15.12 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.16.16 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/s3/manager v1.15.13 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.2.10 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.5.10 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/v4a v1.2.10 // indirect
