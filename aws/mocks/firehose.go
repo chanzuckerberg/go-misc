@@ -186,56 +186,6 @@ func (mr *MockFirehoseAPIMockRecorder) DescribeDeliveryStreamWithContext(arg0, a
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DescribeDeliveryStreamWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).DescribeDeliveryStreamWithContext), varargs...)
 }
 
-// GetKinesisStream mocks base method.
-func (m *MockFirehoseAPI) GetKinesisStream(arg0 *firehose.GetKinesisStreamInput) (*firehose.GetKinesisStreamOutput, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetKinesisStream", arg0)
-	ret0, _ := ret[0].(*firehose.GetKinesisStreamOutput)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetKinesisStream indicates an expected call of GetKinesisStream.
-func (mr *MockFirehoseAPIMockRecorder) GetKinesisStream(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetKinesisStream", reflect.TypeOf((*MockFirehoseAPI)(nil).GetKinesisStream), arg0)
-}
-
-// GetKinesisStreamRequest mocks base method.
-func (m *MockFirehoseAPI) GetKinesisStreamRequest(arg0 *firehose.GetKinesisStreamInput) (*request.Request, *firehose.GetKinesisStreamOutput) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetKinesisStreamRequest", arg0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*firehose.GetKinesisStreamOutput)
-	return ret0, ret1
-}
-
-// GetKinesisStreamRequest indicates an expected call of GetKinesisStreamRequest.
-func (mr *MockFirehoseAPIMockRecorder) GetKinesisStreamRequest(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetKinesisStreamRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).GetKinesisStreamRequest), arg0)
-}
-
-// GetKinesisStreamWithContext mocks base method.
-func (m *MockFirehoseAPI) GetKinesisStreamWithContext(arg0 context.Context, arg1 *firehose.GetKinesisStreamInput, arg2 ...request.Option) (*firehose.GetKinesisStreamOutput, error) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{arg0, arg1}
-	for _, a := range arg2 {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "GetKinesisStreamWithContext", varargs...)
-	ret0, _ := ret[0].(*firehose.GetKinesisStreamOutput)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// GetKinesisStreamWithContext indicates an expected call of GetKinesisStreamWithContext.
-func (mr *MockFirehoseAPIMockRecorder) GetKinesisStreamWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{arg0, arg1}, arg2...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetKinesisStreamWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).GetKinesisStreamWithContext), varargs...)
-}
-
 // ListDeliveryStreams mocks base method.
 func (m *MockFirehoseAPI) ListDeliveryStreams(arg0 *firehose.ListDeliveryStreamsInput) (*firehose.ListDeliveryStreamsOutput, error) {
 	m.ctrl.T.Helper()
@@ -684,54 +634,4 @@ func (mr *MockFirehoseAPIMockRecorder) UpdateDestinationWithContext(arg0, arg1 i
 	mr.mock.ctrl.T.Helper()
 	varargs := append([]interface{}{arg0, arg1}, arg2...)
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateDestinationWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).UpdateDestinationWithContext), varargs...)
-}
-
-// VerifyResourcesExistForTagris mocks base method.
-func (m *MockFirehoseAPI) VerifyResourcesExistForTagris(arg0 *firehose.VerifyResourcesExistForTagrisInput) (*firehose.VerifyResourcesExistForTagrisOutput, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "VerifyResourcesExistForTagris", arg0)
-	ret0, _ := ret[0].(*firehose.VerifyResourcesExistForTagrisOutput)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// VerifyResourcesExistForTagris indicates an expected call of VerifyResourcesExistForTagris.
-func (mr *MockFirehoseAPIMockRecorder) VerifyResourcesExistForTagris(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyResourcesExistForTagris", reflect.TypeOf((*MockFirehoseAPI)(nil).VerifyResourcesExistForTagris), arg0)
-}
-
-// VerifyResourcesExistForTagrisRequest mocks base method.
-func (m *MockFirehoseAPI) VerifyResourcesExistForTagrisRequest(arg0 *firehose.VerifyResourcesExistForTagrisInput) (*request.Request, *firehose.VerifyResourcesExistForTagrisOutput) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "VerifyResourcesExistForTagrisRequest", arg0)
-	ret0, _ := ret[0].(*request.Request)
-	ret1, _ := ret[1].(*firehose.VerifyResourcesExistForTagrisOutput)
-	return ret0, ret1
-}
-
-// VerifyResourcesExistForTagrisRequest indicates an expected call of VerifyResourcesExistForTagrisRequest.
-func (mr *MockFirehoseAPIMockRecorder) VerifyResourcesExistForTagrisRequest(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyResourcesExistForTagrisRequest", reflect.TypeOf((*MockFirehoseAPI)(nil).VerifyResourcesExistForTagrisRequest), arg0)
-}
-
-// VerifyResourcesExistForTagrisWithContext mocks base method.
-func (m *MockFirehoseAPI) VerifyResourcesExistForTagrisWithContext(arg0 context.Context, arg1 *firehose.VerifyResourcesExistForTagrisInput, arg2 ...request.Option) (*firehose.VerifyResourcesExistForTagrisOutput, error) {
-	m.ctrl.T.Helper()
-	varargs := []interface{}{arg0, arg1}
-	for _, a := range arg2 {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "VerifyResourcesExistForTagrisWithContext", varargs...)
-	ret0, _ := ret[0].(*firehose.VerifyResourcesExistForTagrisOutput)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// VerifyResourcesExistForTagrisWithContext indicates an expected call of VerifyResourcesExistForTagrisWithContext.
-func (mr *MockFirehoseAPIMockRecorder) VerifyResourcesExistForTagrisWithContext(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	varargs := append([]interface{}{arg0, arg1}, arg2...)
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "VerifyResourcesExistForTagrisWithContext", reflect.TypeOf((*MockFirehoseAPI)(nil).VerifyResourcesExistForTagrisWithContext), varargs...)
 }
