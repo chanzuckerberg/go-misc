@@ -11,38 +11,12 @@ jobs:
   find-changed-packages:
     runs-on: [ARM64, self-hosted, Linux]
     outputs:
-      allChanges: ${{ steps.changedGoPackages.outputs.allChanges }}
+      allChanges: ${{ steps.changedGoPackages.outputs.changedGoPackages }}
     steps:
-      - name: Generate token
-        id: generate_token
-        uses: chanzuckerberg/github-app-token@v1.1.4
-        with:
-          app_id: ${{ secrets.CZI_GITHUB_HELPER_APP_ID }}
-          private_key: ${{ secrets.CZI_GITHUB_HELPER_PK }}
-      - uses: actions/checkout@v3
-        with:
-          token: ${{ steps.generate_token.outputs.token }}
-      - uses: dorny/paths-filter@v2.10.2
-        id: filter
-        with:
-          initial-fetch-depth: '1'
-          list-files: json
-          filters: |
-            changed:
-              - added|modified: '**'
-      - uses: actions/github-script@v6
+      - uses: actions/checkout@v4
+      - name: Find Changed Go Packages
         id: changedGoPackages
-        with:
-          script: |
-            const path = require("path")
-            const fs = require("fs")
-            const changedFiles = ${{ steps.filter.outputs.changed_files }}
-            const changedDirs = changedFiles.map(f => path.dirname(f))
-            const changedGoPackages = changedDirs.filter(d => fs.existsSync(path.join(d, "go.mod")))
-            const uniqueChangedGoPackages = [...new Set(changedGoPackages)];
-
-            console.log(`Found the following changed Go packages: ${JSON.stringify(uniqueChangedGoPackages, null, 2)}\n OG: ${JSON.stringify(changedFiles, null, 2)} `)
-            core.setOutput("allChanges", uniqueChangedGoPackages)
+        uses: ./.github/actions/find-changed-packages
 
   update-go-mod:
     runs-on: [ARM64, self-hosted, Linux]
@@ -76,3 +50,10 @@ jobs:
         with:
           add: -A
           message: ci - update ${{ matrix.gopkg }} go.mod
+
+  # this job exists to give us something to make a required check on that will ensure all go.mod updates are complete
+  go-mod-updates-complete:
+    runs-on: [ARM64, self-hosted, Linux]
+    needs: update-go-mod
+    steps:
+      - run: echo "Go mod updates complete"
