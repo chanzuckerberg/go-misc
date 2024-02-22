@@ -21,6 +21,45 @@
 		}
 	],
 	"packages": {
-		".": {}
+		".": {},
+		"aws": {
+			"package-name": "aws"
+		},
+		"config": {
+			"package-name": "config"
+		},
+		"errors": {
+			"package-name": "errors"
+		},
+		"keypair": {
+			"package-name": "keypair"
+		},
+		"kmsauth": {
+			"package-name": "kmsauth"
+		},
+		"oidc_cli": {
+			"package-name": "oidc_cli"
+		},
+		"osutil": {
+			"package-name": "osutil"
+		},
+		"pidlock": {
+			"package-name": "pidlock"
+		},
+		"sets": {
+			"package-name": "sets"
+		},
+		"slack": {
+			"package-name": "slack"
+		},
+		"snowflake": {
+			"package-name": "snowflake"
+		},
+		"survey": {
+			"package-name": "survey"
+		},
+		"ver": {
+			"package-name": "ver"
+		}
 	}
 }
