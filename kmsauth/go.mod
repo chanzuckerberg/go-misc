@@ -13,7 +13,7 @@ require (
 )
 
 require (
-	github.com/aws/aws-sdk-go v1.50.21 // indirect
+	github.com/aws/aws-sdk-go v1.50.23 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
