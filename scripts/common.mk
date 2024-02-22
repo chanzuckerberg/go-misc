@@ -17,7 +17,7 @@ setup:
 .PHONY: setup
 
 lint: ## run lint on changes from main
-	./bin/reviewdog -conf .reviewdog.yml  -diff "git diff main"
+	./bin/reviewdog -conf ../.reviewdog.yml  -diff "git diff main"
 .PHONY: lint
 
 lint-ci: ## run lint in CI, posting to PRs

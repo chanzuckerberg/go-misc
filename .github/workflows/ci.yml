@@ -24,50 +24,53 @@ jobs:
     strategy:
       matrix:
         gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
+        target:
+          - test-ci
+          - lint-ci
 
     steps:
-      - name: Generate token
-        id: generate_token
-        uses: chanzuckerberg/github-app-token@v1.1.4
-        with:
-          app_id: ${{ secrets.CZI_GITHUB_HELPER_APP_ID }}
-          private_key: ${{ secrets.CZI_GITHUB_HELPER_PK }}
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ steps.generate_token.outputs.token }}
-          ref: ${{ github.event.pull_request.head.ref }}
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: ${{ matrix.gopkg }}/go.mod
-          cache: true
-      - name: Run tests
-        run: make test-ci
-        working-directory: ${{ matrix.gopkg }}
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
-        with:
-          version: v1.54.2
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          args: --timeout 10m0s --out-format=tab --fix --config=../.golangci.yml
-          working-directory: ${{ matrix.gopkg }}
-          skip-pkg-cache: true
-      - uses: EndBug/add-and-commit@v9
-        id: commit_linter_changes
-        with:
-          add: -A
-          message: ci - linter fixes for ${{ matrix.gopkg }} package
-
-
+      # - name: Generate token
+      #   id: generate_token
+      #   uses: chanzuckerberg/github-app-token@v1.1.4
+      #   with:
+      #     app_id: ${{ secrets.CZI_GITHUB_HELPER_APP_ID }}
+      #     private_key: ${{ secrets.CZI_GITHUB_HELPER_PK }}
       # - uses: actions/checkout@v4
+      #   with:
+      #     token: ${{ steps.generate_token.outputs.token }}
+      #     ref: ${{ github.event.pull_request.head.ref }}
       # - uses: actions/setup-go@v5
       #   with:
       #     go-version-file: ${{ matrix.gopkg }}/go.mod
-      # - name: Install dependencies
-      #   run: make setup
+      #     cache: true
+      # - name: Run tests
+      #   run: make test-ci
       #   working-directory: ${{ matrix.gopkg }}
+      # - name: golangci-lint
+      #   uses: golangci/golangci-lint-action@v3
+      #   with:
+      #     version: v1.54.2
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     args: --timeout 10m0s --out-format=tab --fix --config=../.golangci.yml
+      #     working-directory: ${{ matrix.gopkg }}
+      #     skip-pkg-cache: true
+      # - uses: EndBug/add-and-commit@v9
+      #   id: commit_linter_changes
+      #   with:
+      #     add: -A
+      #     message: ci - linter fixes for ${{ matrix.gopkg }} package
 
-      # - name: make ${{ matrix.target }}
-      #   env:
-      #     REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   run: make ${{ matrix.target }}
-      #   working-directory: ${{ matrix.gopkg }}
+
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ${{ matrix.gopkg }}/go.mod
+      - name: Install dependencies
+        run: make setup
+        working-directory: ${{ matrix.gopkg }}
+
+      - name: make ${{ matrix.target }}
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: make ${{ matrix.target }}
+        working-directory: ${{ matrix.gopkg }}
