@@ -12,6 +12,9 @@ This is a collection of Go libraries and projects used by other projects within 
 ### aws
 An AWS client that aims to standardize the way we mock and write aws tests
 
+### config
+A utility for loading configuration from environment variables and files. See the [config](config/README.md) package for more information.
+
 ### lambda
 A collection of lambda functions
 
