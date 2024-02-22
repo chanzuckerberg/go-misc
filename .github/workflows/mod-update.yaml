@@ -48,7 +48,6 @@ jobs:
     runs-on: [ARM64, self-hosted, Linux]
     needs: find-changed-packages
     strategy:
-      max-parallel: 1 # only one package at a time so we don't have to deal with conflicts
       matrix:
         gopkg: ${{ fromJson(needs.find-changed-packages.outputs.allChanges) }}
     if: ${{ needs.find-changed-packages.outputs.allChanges != '[]' }}
