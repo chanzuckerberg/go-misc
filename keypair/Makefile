@@ -1,2 +1,2 @@
 
-include ./scripts/common.mk
+include ../scripts/common.mk

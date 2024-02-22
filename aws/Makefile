@@ -1,5 +1,5 @@
 
-include ./scripts/common.mk
+include ../scripts/common.mk
 
 generate-mocks: ## will generate mocks
 	go install github.com/golang/mock/mockgen@v1.6.0
