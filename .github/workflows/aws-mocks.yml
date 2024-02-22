@@ -13,11 +13,12 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version-file: go.mod
+          go-version-file: aws/go.mod
         id: go
       - run: |
           make generate-mocks
           go mod tidy
+        working-directory: aws
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:

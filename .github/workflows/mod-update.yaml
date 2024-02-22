@@ -4,8 +4,48 @@ on:
 name: Update go.mod
 
 jobs:
+  find-changed-packages:
+    runs-on: [ARM64, self-hosted, Linux]
+    outputs:
+      allChanges: ${{ steps.changedGoPackages.outputs.allChanges }}
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: chanzuckerberg/github-app-token@v1.1.4
+        with:
+          app_id: ${{ secrets.CZI_GITHUB_HELPER_APP_ID }}
+          private_key: ${{ secrets.CZI_GITHUB_HELPER_PK }}
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+      - uses: dorny/paths-filter@v2.10.2
+        id: filter
+        with:
+          initial-fetch-depth: '1'
+          list-files: json
+          filters: |
+            changed:
+              - added|modified: '**'
+      - uses: actions/github-script@v6
+        id: changedGoPackages
+        with:
+          script: |
+            const path = require("path")
+            const fs = require("fs")
+            const changedFiles = ${{ steps.filter.outputs.changed_files }}
+            const changedDirs = changedFiles.map(f => path.dirname(f))
+            const changedGoPackages = changedDirs.filter(d => fs.existsSync(path.join(d, "go.mod")))
+            const uniqueChangedGoPackages = [...new Set(changedGoPackages)];
+
+            console.log(`Found the following changed Go packages: ${JSON.stringify(uniqueChangedGoPackages, null, 2)}\n OG: ${JSON.stringify(changedFiles, null, 2)} `)
+            core.setOutput("allChanges", uniqueChangedGoPackages)
+
   update_go_mod:
     runs-on: [ARM64, self-hosted, Linux]
+    # strategy:
+    #   matrix:
+    #     tfmodule: ${{ fromJson(needs.find-changed-packages.outputs.allChanges) }}
+    # if: ${{ needs.find-changed-packages.outputs.allChanges != '[]' }}
     outputs:
       updated_go_mod: ${{ steps.commit_go_mod.outputs.committed }}
     steps:
