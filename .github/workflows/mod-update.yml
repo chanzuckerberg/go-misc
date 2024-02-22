@@ -11,7 +11,7 @@ jobs:
   find-changed-packages:
     runs-on: [ARM64, self-hosted, Linux]
     outputs:
-      allChanges: ${{ steps.changedGoPackages.outputs.changedGoPackages }}
+      changedPackages: ${{ steps.changedGoPackages.outputs.changedGoPackages }}
     steps:
       - uses: actions/checkout@v4
       - name: Find Changed Go Packages
@@ -23,8 +23,8 @@ jobs:
     needs: find-changed-packages
     strategy:
       matrix:
-        gopkg: ${{ fromJson(needs.find-changed-packages.outputs.allChanges) }}
-    if: ${{ needs.find-changed-packages.outputs.allChanges != '[]' }}
+        gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
+    if: ${{ needs.find-changed-packages.outputs.changedPackages != '[]' }}
     outputs:
       updated_go_mod: ${{ steps.commit_go_mod.outputs.committed }}
     steps:

@@ -1,19 +1,33 @@
 on: push
 
 jobs:
+  find-changed-packages:
+    runs-on: [ARM64, self-hosted, Linux]
+    outputs:
+      changedPackages: ${{ steps.changedGoPackages.outputs.changedGoPackages }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find Changed Go Packages
+        id: changedGoPackages
+        uses: ./.github/actions/find-changed-packages
+
   run:
-    runs-on: ubuntu-latest
+    runs-on: [ARM64, self-hosted, Linux]
+    needs: find-changed-packages
+    if: ${{ needs.find-changed-packages.outputs.changedPackages != '[]' }}
     strategy:
       matrix:
+        gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
         target:
           - check-mod
           - lint-ci
           - test-ci
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: ${{ matrix.gopkg }}/go.mod
       - name: Install dependencies
         run: make setup
 
@@ -21,3 +35,4 @@ jobs:
         env:
           REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: make ${{ matrix.target }}
+        working-directory: ${{ matrix.gopkg }}
