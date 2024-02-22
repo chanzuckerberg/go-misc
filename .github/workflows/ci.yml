@@ -35,6 +35,7 @@ jobs:
           go-version-file: ${{ matrix.gopkg }}/go.mod
       - name: Install dependencies
         run: make setup
+        working-directory: ${{ matrix.gopkg }}
 
       - name: make ${{ matrix.target }}
         env:

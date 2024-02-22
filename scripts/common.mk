@@ -49,15 +49,6 @@ help: ## display help for this makefile
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 .PHONY: help
 
-generate-mocks: ## will generate mocks
-	go install github.com/golang/mock/mockgen@v1.6.0
-	go get -u github.com/aws/aws-sdk-go/...
-	go get -u github.com/aws/aws-sdk-go-v2/...
-	rm -rf aws/mocks/*
-	cd aws; go generate
-	go mod tidy
-.PHONY: generate-mocks
-
 check-mod:
 	go mod tidy
 	git diff --exit-code -- go.mod go.sum
