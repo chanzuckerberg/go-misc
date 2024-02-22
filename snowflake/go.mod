@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.21.1
 
 require (
-	github.com/chanzuckerberg/go-misc v1.11.1
+	github.com/chanzuckerberg/go-misc/keypair v0.0.0-00010101000000-000000000000
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/luna-duclos/instrumentedsql v1.1.3
 	github.com/pkg/errors v0.9.1
@@ -60,7 +60,6 @@ require (
 	github.com/pierrec/lz4/v4 v4.1.18 // indirect
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/rogpeppe/go-internal v1.10.0 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	golang.org/x/crypto v0.19.0 // indirect
 	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa // indirect
@@ -76,3 +75,5 @@ require (
 )
 
 replace github.com/snowflakedb/gosnowflake => github.com/snowflakedb/gosnowflake v1.7.1-0.20231128064355-f33dfc7eb567
+
+replace github.com/chanzuckerberg/go-misc/keypair => ../keypair
