@@ -1,4 +1,4 @@
-package kmsauth_test
+package kmsauth
 
 import (
 	"encoding/json"
@@ -6,21 +6,20 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chanzuckerberg/go-misc/kmsauth"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestAuthContextValidate(t *testing.T) {
 	a := assert.New(t)
-	ac := &kmsauth.AuthContextV1{From: "foo"}
+	ac := &AuthContextV1{From: "foo"}
 	a.NotNil(ac.Validate())
-	ac = &kmsauth.AuthContextV1{From: "foo", To: "bar"}
+	ac = &AuthContextV1{From: "foo", To: "bar"}
 	a.Nil(ac.Validate())
-	ac2 := &kmsauth.AuthContextV2{From: "foo"}
+	ac2 := &AuthContextV2{From: "foo"}
 	a.NotNil(ac2.Validate())
-	ac2 = &kmsauth.AuthContextV2{From: "foo", To: "bar"}
+	ac2 = &AuthContextV2{From: "foo", To: "bar"}
 	a.NotNil(ac2.Validate())
-	ac2 = &kmsauth.AuthContextV2{From: "foo", To: "bar", UserType: "foobar"}
+	ac2 = &AuthContextV2{From: "foo", To: "bar", UserType: "foobar"}
 	a.Nil(ac2.Validate())
 
 	ac = nil
@@ -31,15 +30,15 @@ func TestAuthContextValidate(t *testing.T) {
 
 func TestAuthContextGetUsername(t *testing.T) {
 	a := assert.New(t)
-	ac := kmsauth.AuthContextV1{To: "foo"}
+	ac := AuthContextV1{To: "foo"}
 	a.Equal(ac.GetUsername(), "")
-	ac = kmsauth.AuthContextV1{From: "foo", To: "bar"}
+	ac = AuthContextV1{From: "foo", To: "bar"}
 	a.Equal(ac.GetUsername(), "foo")
-	ac2 := kmsauth.AuthContextV2{To: "foo"}
+	ac2 := AuthContextV2{To: "foo"}
 	a.Equal(ac2.GetUsername(), "2//")
-	ac2 = kmsauth.AuthContextV2{From: "foo", To: "bar"}
+	ac2 = AuthContextV2{From: "foo", To: "bar"}
 	a.Equal(ac2.GetUsername(), "2//foo")
-	ac2 = kmsauth.AuthContextV2{From: "foo", To: "bar", UserType: "gas"}
+	ac2 = AuthContextV2{From: "foo", To: "bar", UserType: "gas"}
 	a.Equal(ac2.GetUsername(), "2/gas/foo")
 }
 
@@ -50,14 +49,14 @@ func TestAuthContextGetKSMContext(t *testing.T) {
 	bar := "bar"
 	baz := "baz"
 
-	ac := kmsauth.AuthContextV1{From: foo, To: bar}
+	ac := AuthContextV1{From: foo, To: bar}
 	expected := map[string]*string{
 		"from": &foo,
 		"to":   &bar,
 	}
 	a.True(reflect.DeepEqual(ac.GetKMSContext(), expected))
 
-	ac2 := kmsauth.AuthContextV2{From: foo, To: bar, UserType: baz}
+	ac2 := AuthContextV2{From: foo, To: bar, UserType: baz}
 	expected = map[string]*string{
 		"from":      &foo,
 		"to":        &bar,
@@ -72,9 +71,9 @@ func TestTokenTimeMarshal(t *testing.T) {
 	tiempo := time.Time{}
 	tiempo = tiempo.Add(1 * time.Minute)
 
-	tc := kmsauth.TokenCache{
-		Token: kmsauth.Token{
-			NotBefore: kmsauth.TokenTime{Time: tiempo},
+	tc := TokenCache{
+		Token: Token{
+			NotBefore: TokenTime{Time: tiempo},
 		},
 	}
 
@@ -87,12 +86,12 @@ func TestNewToken(t *testing.T) {
 	a := assert.New(t)
 
 	// Correctly accounts for skew
-	token := kmsauth.NewToken(0 * time.Minute)
+	token := NewToken(0 * time.Minute)
 	a.NotNil(token)
 	a.Equal(token.NotAfter, token.NotBefore)
 
 	// Goes to the future
-	token = kmsauth.NewToken(100 * time.Minute)
+	token = NewToken(100 * time.Minute)
 	a.NotNil(token)
 	a.True(token.NotAfter.After(time.Now().UTC()))
 
