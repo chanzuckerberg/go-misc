@@ -21,11 +21,11 @@ lint: ## run lint on changes from main
 .PHONY: lint
 
 lint-ci: ## run lint in CI, posting to PRs
-	./bin/reviewdog -conf .reviewdog.yml  -reporter=github-pr-review -tee -level=info
+	./bin/reviewdog -conf ../.reviewdog.yml  -reporter=github-pr-review -tee -level=info
 .PHONY: lint-ci
 
 lint-all: ## run linters across all code
-	./bin/reviewdog -conf .reviewdog.yml  -filter-mode nofilter
+	./bin/reviewdog -conf ../.reviewdog.yml  -filter-mode nofilter
 .PHONY: lint-all
 
 deps:
