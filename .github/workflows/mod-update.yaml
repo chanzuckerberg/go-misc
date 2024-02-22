@@ -42,6 +42,7 @@ jobs:
 
   update-go-mod:
     runs-on: [ARM64, self-hosted, Linux]
+    needs: find-changed-packages
     strategy:
       matrix:
         gopkg: ${{ fromJson(needs.find-changed-packages.outputs.allChanges) }}
