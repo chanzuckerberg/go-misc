@@ -40,12 +40,12 @@ jobs:
             console.log(`Found the following changed Go packages: ${JSON.stringify(uniqueChangedGoPackages, null, 2)}\n OG: ${JSON.stringify(changedFiles, null, 2)} `)
             core.setOutput("allChanges", uniqueChangedGoPackages)
 
-  update_go_mod:
+  update-go-mod:
     runs-on: [ARM64, self-hosted, Linux]
-    # strategy:
-    #   matrix:
-    #     tfmodule: ${{ fromJson(needs.find-changed-packages.outputs.allChanges) }}
-    # if: ${{ needs.find-changed-packages.outputs.allChanges != '[]' }}
+    strategy:
+      matrix:
+        gopkg: ${{ fromJson(needs.find-changed-packages.outputs.allChanges) }}
+    if: ${{ needs.find-changed-packages.outputs.allChanges != '[]' }}
     outputs:
       updated_go_mod: ${{ steps.commit_go_mod.outputs.committed }}
     steps:
@@ -61,12 +61,13 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: ${{ matrix.gopkg }}/go.mod
           cache: true
       - name: Update go.mod
         run: go mod tidy
+        working-directory: ${{ matrix.gopkg }}
       - uses: EndBug/add-and-commit@v9
         id: commit_go_mod
         with:
           add: -A
-          message: ci - update go.mod
+          message: ci - update ${{ matrix.gopkg }} go.mod
