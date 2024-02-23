@@ -1,0 +1,32 @@
+name: Find Changed Go Packages
+description: Finds the changed Go packages in a PR
+
+outputs:
+  changedGoPackages:
+    description: 'The changed Go packages'
+    value: ${{ steps.changedGoPackages.outputs.changedGoPackages }}
+
+runs:
+  using: composite
+  steps:
+    - uses: dorny/paths-filter@v2.10.2
+      id: filter
+      with:
+        initial-fetch-depth: '1'
+        list-files: json
+        filters: |
+          changed:
+            - added|modified: '**'
+    - uses: actions/github-script@v6
+      id: changedGoPackages
+      with:
+        script: |
+          const path = require("path")
+          const fs = require("fs")
+          const changedFiles = ${{ steps.filter.outputs.changed_files }}
+          const changedDirs = changedFiles.map(f => path.dirname(f))
+          const changedGoPackages = changedDirs.filter(d => fs.existsSync(path.join(d, "go.mod")))
+          const uniqueChangedGoPackages = [...new Set(changedGoPackages)];
+
+          console.log(`Found the following changed Go packages: ${JSON.stringify(uniqueChangedGoPackages, null, 2)}\n OG: ${JSON.stringify(changedFiles, null, 2)} `)
+          core.setOutput("changedGoPackages", uniqueChangedGoPackages)

@@ -9,15 +9,16 @@ jobs:
   upgrade-aws-mocks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version-file: aws/go.mod
         id: go
       - run: |
           make generate-mocks
           go mod tidy
+        working-directory: aws
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:

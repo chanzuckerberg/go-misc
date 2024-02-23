@@ -1,23 +1,68 @@
-on: push
+on:
+  - pull_request
+
+name: CI
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  run:
-    runs-on: ubuntu-latest
+  find-changed-packages:
+    runs-on: [ARM64, self-hosted, Linux]
+    outputs:
+      changedPackages: ${{ steps.changedGoPackages.outputs.changedGoPackages }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find Changed Go Packages
+        id: changedGoPackages
+        uses: ./.github/actions/find-changed-packages
+
+  run-lint:
+    runs-on: [ARM64, self-hosted, Linux]
+    needs: find-changed-packages
+    if: ${{ needs.find-changed-packages.outputs.changedPackages != '[]' }}
     strategy:
       matrix:
-        target:
-          - check-mod
-          - lint-ci
-          - test-ci
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v3
-        with:
-          go-version-file: go.mod
-      - name: Install dependencies
-        run: make setup
+        gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
 
-      - name: make ${{ matrix.target }}
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: make ${{ matrix.target }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ${{ matrix.gopkg }}/go.mod
+      - name: Run golangci-lint
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          go_version_file: ${{ matrix.gopkg }}/go.mod
+          level: info
+          reporter: github-pr-review
+          golangci_lint_flags: "--config=../.golangci.yml --out-format=line-number -v --timeout 5m"
+          workdir: ${{ matrix.gopkg }}
+
+  run-tests:
+    runs-on: [ARM64, self-hosted, Linux]
+    needs: find-changed-packages
+    if: ${{ needs.find-changed-packages.outputs.changedPackages != '[]' }}
+    strategy:
+      matrix:
+        gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ${{ matrix.gopkg }}/go.mod
+      - name: Run tests
+        run: make test-ci
+        working-directory: ${{ matrix.gopkg }}
+
+  # this job exists to give us something to make a required check on that will ensure all CI runs are complete
+  run-ci-complete:
+    runs-on: [ARM64, self-hosted, Linux]
+    needs:
+      - run-tests
+      - run-lint
+    steps:
+      - run: echo "CI runs complete"

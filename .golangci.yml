@@ -1,28 +1,44 @@
 linters:
   enable:
-    - asciicheck
-    - bodyclose
-    - deadcode
-    - dupl
+    - depguard
     - errcheck
-    - exportloopref
-    - goconst
-    - gocyclo
+    - errorlint
+    - forbidigo
+    - gci
     - gofmt
     - goimports
-    - golint
-    - gosec
-    - interfacer
-    - megacheck
-    - misspell
-    - nlreturn
-    - nolintlint
-    - rowserrcheck
-    - scopelint
-    - sqlclosecheck
-    - structcheck
-    - unconvert
-    - unparam
-    - varcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
     - whitespace
-    - wsl
+
+linters-settings:
+  forbidigo:
+    # These are forbidden in non-test files
+    # If you have mock functions,etc that are meant to be used in tests please add them here
+    forbid:
+      - ^fmt\.Print.*$
+      - ^spew\.Dump$
+      - ^println$
+  depguard:
+    rules:
+      main:
+        deny:
+          - pkg: gopkg.in/yaml.v2
+            desc: please use gopkg.in/yaml.v3 instead
+          - pkg: github.com/pkg/errors
+            desc: please use errors from the standard library instead
+          - pkg: golang.org/x/xerrors
+            desc: please use errors from the standard library instead
+          - pkg: github.com/sirupsen/logrus
+            desc: please use log/slog from the standard library instead
+
+issues:
+  exclude-rules:
+    # Exclude some linters from running on tests files.
+    - path: _test\.go
+      linters:
+        - forbidigo

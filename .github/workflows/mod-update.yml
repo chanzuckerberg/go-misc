@@ -1,0 +1,59 @@
+on:
+  - pull_request
+
+name: Update go.mod
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  find-changed-packages:
+    runs-on: [ARM64, self-hosted, Linux]
+    outputs:
+      changedPackages: ${{ steps.changedGoPackages.outputs.changedGoPackages }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find Changed Go Packages
+        id: changedGoPackages
+        uses: ./.github/actions/find-changed-packages
+
+  update-go-mod:
+    runs-on: [ARM64, self-hosted, Linux]
+    needs: find-changed-packages
+    strategy:
+      matrix:
+        gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
+    if: ${{ needs.find-changed-packages.outputs.changedPackages != '[]' }}
+    outputs:
+      updated_go_mod: ${{ steps.commit_go_mod.outputs.committed }}
+    steps:
+      - name: Generate token
+        id: generate_token
+        uses: chanzuckerberg/github-app-token@v1.1.4
+        with:
+          app_id: ${{ secrets.CZI_GITHUB_HELPER_APP_ID }}
+          private_key: ${{ secrets.CZI_GITHUB_HELPER_PK }}
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          ref: ${{ github.event.pull_request.head.ref }}
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ${{ matrix.gopkg }}/go.mod
+          cache: true
+      - name: Update go.mod
+        run: go mod tidy
+        working-directory: ${{ matrix.gopkg }}
+      - uses: EndBug/add-and-commit@v9
+        id: commit_go_mod
+        with:
+          add: -A
+          message: ci - update ${{ matrix.gopkg }}/go.mod
+
+  # this job exists to give us something to make a required check on that will ensure all go.mod updates are complete
+  go-mod-updates-complete:
+    runs-on: [ARM64, self-hosted, Linux]
+    needs: update-go-mod
+    steps:
+      - run: echo "Go mod updates complete"
