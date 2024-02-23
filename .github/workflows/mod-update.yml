@@ -49,7 +49,7 @@ jobs:
         id: commit_go_mod
         with:
           add: -A
-          message: ci - update ${{ matrix.gopkg }} go.mod
+          message: ci - update ${{ matrix.gopkg }}/go.mod
 
   # this job exists to give us something to make a required check on that will ensure all go.mod updates are complete
   go-mod-updates-complete:
