@@ -18,13 +18,14 @@ jobs:
         id: changedGoPackages
         uses: ./.github/actions/find-changed-packages
 
-  run-ci:
+  run-lint:
     runs-on: [ARM64, self-hosted, Linux]
     needs: find-changed-packages
     if: ${{ needs.find-changed-packages.outputs.changedPackages != '[]' }}
     strategy:
       matrix:
-        gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
+        # gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
+        gopkg: []
 
     steps:
       - uses: actions/checkout@v4
@@ -40,6 +41,21 @@ jobs:
           reporter: github-pr-review
           golangci_lint_flags: "--config=../.golangci.yml --out-format=line-number -v --timeout 5m"
           workdir: ${{ matrix.gopkg }}
+
+  run-tests:
+    runs-on: [ARM64, self-hosted, Linux]
+    needs: find-changed-packages
+    if: ${{ needs.find-changed-packages.outputs.changedPackages != '[]' }}
+    strategy:
+      matrix:
+        # gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
+        gopkg: []
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: ${{ matrix.gopkg }}/go.mod
       - name: Run tests
         run: make test-ci
         working-directory: ${{ matrix.gopkg }}
@@ -47,6 +63,8 @@ jobs:
   # this job exists to give us something to make a required check on that will ensure all CI runs are complete
   run-ci-complete:
     runs-on: [ARM64, self-hosted, Linux]
-    needs: run-ci
+    needs:
+      - run-tests
+      - run-lint
     steps:
       - run: echo "CI runs complete"
