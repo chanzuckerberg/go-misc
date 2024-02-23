@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/chanzuckerberg/go-misc/compare/v2.0.0...v2.0.1) (2024-02-23)
+
+
+### Bug Fixes
+
+* config v2 ([#1003](https://github.com/chanzuckerberg/go-misc/issues/1003)) ([31efa25](https://github.com/chanzuckerberg/go-misc/commit/31efa2598cea38456b86b47652bf47d3cac9464f))
+
 ## [2.0.0](https://github.com/chanzuckerberg/go-misc/compare/v1.12.0...v2.0.0) (2024-02-23)
 
 
