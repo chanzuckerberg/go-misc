@@ -12,20 +12,18 @@ clean: ## clean the repo
 .PHONY: clean
 
 setup:
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh
-	curl -sfL https://raw.githubusercontent.com/reviewdog/reviewdog/master/install.sh| sh
+	brew install golangci-lint
+	brew upgrade golangci-lint
+	brew install reviewdog/tap/reviewdog
+	brew upgrade reviewdog/tap/reviewdog
 .PHONY: setup
 
 lint: ## run lint on changes from main
-	./bin/reviewdog -conf ../.reviewdog.yml  -diff "git diff main"
+	reviewdog -conf ../.reviewdog.yml  -diff "git diff main"
 .PHONY: lint
 
-lint-ci: ## run lint in CI, posting to PRs
-	./bin/reviewdog -conf ../.reviewdog.yml  -reporter=github-pr-review -tee -level=info
-.PHONY: lint-ci
-
 lint-all: ## run linters across all code
-	./bin/reviewdog -conf ../.reviewdog.yml  -filter-mode nofilter
+	reviewdog -conf ../.reviewdog.yml  -filter-mode nofilter
 .PHONY: lint-all
 
 deps:

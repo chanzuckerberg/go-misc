@@ -25,20 +25,13 @@ jobs:
     strategy:
       matrix:
         gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
-        # target:
-        #   - test-ci
-        #   - lint-ci
 
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
           go-version-file: ${{ matrix.gopkg }}/go.mod
-      # - name: Install dependencies
-      #   run: make setup
-      #   working-directory: ${{ matrix.gopkg }}
-
-      - name: golangci-lint
+      - name: Run golangci-lint
         uses: reviewdog/action-golangci-lint@v2
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -47,10 +40,8 @@ jobs:
           reporter: github-pr-review
           golangci_lint_flags: "--config=../.golangci.yml --out-format=line-number -v --timeout 5m"
           workdir: ${{ matrix.gopkg }}
-      - run: make test-ci
-        # env:
-        #   REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # run: make ${{ matrix.target }}
+      - name: Run tests
+        run: make test-ci
         working-directory: ${{ matrix.gopkg }}
 
   # this job exists to give us something to make a required check on that will ensure all CI runs are complete
