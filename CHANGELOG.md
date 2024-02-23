@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/chanzuckerberg/go-misc/compare/v1.12.0...v2.0.0) (2024-02-23)
+
+
+### ⚠ BREAKING CHANGES
+
+* break mono-package into individual packages ([#1000](https://github.com/chanzuckerberg/go-misc/issues/1000))
+
+### Features
+
+* break mono-package into individual packages ([#1000](https://github.com/chanzuckerberg/go-misc/issues/1000)) ([5151c5e](https://github.com/chanzuckerberg/go-misc/commit/5151c5e6a03d706156ac0a5b437875ab1600af6c))
+
 ## [1.12.0](https://github.com/chanzuckerberg/go-misc/compare/v1.11.1...v1.12.0) (2024-02-21)
 
 
