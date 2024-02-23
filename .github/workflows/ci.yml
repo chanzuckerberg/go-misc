@@ -24,8 +24,7 @@ jobs:
     if: ${{ needs.find-changed-packages.outputs.changedPackages != '[]' }}
     strategy:
       matrix:
-        # gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
-        gopkg: []
+        gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
 
     steps:
       - uses: actions/checkout@v4
@@ -48,8 +47,7 @@ jobs:
     if: ${{ needs.find-changed-packages.outputs.changedPackages != '[]' }}
     strategy:
       matrix:
-        # gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
-        gopkg: []
+        gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
 
     steps:
       - uses: actions/checkout@v4

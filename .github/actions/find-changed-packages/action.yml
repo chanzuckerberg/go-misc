@@ -29,4 +29,4 @@ runs:
           const uniqueChangedGoPackages = [...new Set(changedGoPackages)];
 
           console.log(`Found the following changed Go packages: ${JSON.stringify(uniqueChangedGoPackages, null, 2)}\n OG: ${JSON.stringify(changedFiles, null, 2)} `)
-          core.setOutput("changedGoPackages", uniqueChangedGoPackages)
+          core.setOutput("changedGoPackages", [])
