@@ -25,5 +25,5 @@ jobs:
           token: ${{ secrets.CZIBUILDBOT_GITHUB_TOKEN }}
           branch: actionsbot/upgrade-aws-mocks
           commit-message: "Auto upgrade AWS Mocks"
-          title: "[bot] Upgrade AWS Mocks"
+          title: "chore: [bot] Upgrade AWS Mocks"
           labels: "bot/merge"
