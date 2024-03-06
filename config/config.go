@@ -210,8 +210,6 @@ func getAppEnv() string {
 func validateConfiguration[T any](cfg *T) error {
 	validate := validator.New()
 	err := validate.Struct(*cfg)
-	fmt.Println("...validateConfiguration, cfg:", cfg)
-	fmt.Println("...validateConfiguration, err:", err)
 	if err != nil {
 		errSlice := &validator.ValidationErrors{}
 		errors.As(err, errSlice)
