@@ -1,10 +1,8 @@
 module github.com/chanzuckerberg/go-misc/config/v2
 
-go 1.21.1
+go 1.21
 
 require (
-	github.com/go-playground/locales v0.14.1
-	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.19.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/viper v1.18.2
@@ -15,6 +13,8 @@ require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
+	github.com/go-playground/locales v0.14.1 // indirect
+	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
