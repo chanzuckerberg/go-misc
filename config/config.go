@@ -2,6 +2,7 @@ package config
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -9,6 +10,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 )
@@ -181,8 +183,7 @@ func evaluateConfigWithEnv(configFile io.Reader, writers ...io.Writer) (io.Reade
 		return nil, fmt.Errorf("unable to read the config file: %w", err)
 	}
 
-	// t := template.New("appConfigTemplate").Option("missingkey=zero")
-	t := template.New("appConfigTemplate")
+	t := template.New("appConfigTemplate").Option("missingkey=zero")
 	tmpl, err := t.Parse(string(b))
 	if err != nil {
 		return nil, fmt.Errorf("unable to parse template from: \n%s: %w", string(b), err)
@@ -204,4 +205,18 @@ func getAppEnv() string {
 		env = os.Getenv("DEPLOYMENT_STAGE")
 	}
 	return env
+}
+
+func validateConfiguration[T any](cfg *T) error {
+	validate := validator.New()
+	err := validate.Struct(*cfg)
+	fmt.Println("...validateConfiguration, cfg:", cfg)
+	fmt.Println("...validateConfiguration, err:", err)
+	if err != nil {
+		errSlice := &validator.ValidationErrors{}
+		errors.As(err, errSlice)
+		return errSlice
+	}
+
+	return nil
 }

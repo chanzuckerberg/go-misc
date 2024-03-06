@@ -38,7 +38,6 @@ blah2=test2`
 	b, err := io.ReadAll(eval)
 	r.NoError(err)
 	r.Equal(expected, string(b))
-	r.Equal(true, false)
 }
 
 func TesEvaluateConfigWithMissingEnv(t *testing.T) {
