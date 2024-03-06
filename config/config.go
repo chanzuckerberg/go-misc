@@ -89,36 +89,6 @@ func LoadConfiguration[T any](cfg *T, opts ...ConfigOption[T]) error {
 	return validateConfiguration(cfg)
 }
 
-func validateConfiguration[T any](cfg *T) []ValidationError {
-	var errs []*model.ValidationError
-
-	err := validate.Struct(cfg)
-	if err != nil {
-		errSlice := &validator.ValidationErrors{}
-		errors.As(err, errSlice)
-		for _, err := range *errSlice {
-			var element model.ValidationError
-			field, _ := reflect.ValueOf(cfg).Type().FieldByName(err.Field())
-			element.FailedField = field.Tag.Get("json")
-			if element.FailedField == "" {
-				element.FailedField = field.Tag.Get("query")
-			}
-			element.Tag = err.Tag()
-			element.Value = err.Param()
-			element.Type = err.Kind().String()
-
-			if _, ok := translatorMessages[element.Tag]; ok {
-				element.Message = err.Translate(translator)
-			} else {
-				element.Message = fmt.Sprintf("Field validation for '%s' failed on the '%s' tag", element.FailedField, element.Tag)
-			}
-
-			errs = append(errs, &element)
-		}
-	}
-	return errs
-}
-
 func (c *ConfigLoader[T]) populateConfiguration(cfg *T) error {
 	configYamlDir := c.ConfigYamlDir
 	path, err := filepath.Abs(configYamlDir)
