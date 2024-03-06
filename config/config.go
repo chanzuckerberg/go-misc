@@ -59,7 +59,6 @@ func (e ValidationError) Error() string {
 func LoadConfiguration[T any](cfg *T, opts ...ConfigOption[T]) error {
 	configYamlDir := defaultConfigYamlDir
 	if len(os.Getenv("CONFIG_YAML_DIRECTORY")) > 0 {
-		fmt.Println("CONFIG_YAML_DIRECTORY", os.Getenv("CONFIG_YAML_DIRECTORY"))
 		configYamlDir = os.Getenv("CONFIG_YAML_DIRECTORY")
 	}
 
@@ -74,8 +73,6 @@ func LoadConfiguration[T any](cfg *T, opts ...ConfigOption[T]) error {
 			return fmt.Errorf("ConfigOption failed: %w", err)
 		}
 	}
-
-	// TODO: apply defaults?
 
 	loader.populateConfiguration(cfg)
 
@@ -184,6 +181,7 @@ func evaluateConfigWithEnv(configFile io.Reader, writers ...io.Writer) (io.Reade
 		return nil, fmt.Errorf("unable to read the config file: %w", err)
 	}
 
+	// t := template.New("appConfigTemplate").Option("missingkey=zero")
 	t := template.New("appConfigTemplate")
 	tmpl, err := t.Parse(string(b))
 	if err != nil {

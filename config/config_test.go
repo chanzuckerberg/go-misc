@@ -38,4 +38,21 @@ blah2=test2`
 	b, err := io.ReadAll(eval)
 	r.NoError(err)
 	r.Equal(expected, string(b))
+	r.Equal(true, false)
+}
+
+func TesEvaluateConfigWithMissingEnv(t *testing.T) {
+	r := require.New(t)
+	test := `blah={{.ENV1}}
+blah2={{.ENV2}}`
+	os.Setenv("ENV1", "test1")
+	defer os.Unsetenv("ENV1")
+
+	eval, err := evaluateConfigWithEnv(strings.NewReader(test))
+	r.NoError(err)
+	expected := `blah=test1
+blah2=`
+	b, err := io.ReadAll(eval)
+	r.NoError(err)
+	r.Equal(expected, string(b))
 }
