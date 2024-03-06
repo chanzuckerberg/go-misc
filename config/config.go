@@ -45,18 +45,6 @@ func WithConfigYamlDir[T any](dir string) ConfigOption[T] {
 	}
 }
 
-type ValidationError struct {
-	FailedField string `json:"failed_field"` // the field that failed to be validated
-	Tag         string `json:"tag"`
-	Value       string `json:"value"`
-	Type        string `json:"type"`
-	Message     string `json:"message"` // a description of the error that occured
-}
-
-func (e ValidationError) Error() string {
-	return e.Message
-}
-
 // LoadConfiguration loads the configuration from the app-config.yaml and app-config.<env>.yaml files
 func LoadConfiguration[T any](cfg *T, opts ...ConfigOption[T]) error {
 	configYamlDir := defaultConfigYamlDir
