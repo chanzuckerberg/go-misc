@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/chanzuckerberg/go-misc/compare/config-v3.0.0...config-v3.1.0) (2024-03-07)
+
+
+### Features
+
+* add support for config struct validate tags ([#1015](https://github.com/chanzuckerberg/go-misc/issues/1015)) ([e13bc83](https://github.com/chanzuckerberg/go-misc/commit/e13bc836bf68839700f75736a0c2f9fd6c0b3462))
+
 ## [3.0.0](https://github.com/chanzuckerberg/go-misc/compare/config-v2.0.1...config-v3.0.0) (2024-02-23)
 
 
