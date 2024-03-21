@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/chanzuckerberg/go-misc/compare/v2.2.0...v2.2.1) (2024-03-21)
+
+
+### Bug Fixes
+
+* Fix oidc-cli dependencies (osutil and pidlock reference invalid version numbers) ([#1027](https://github.com/chanzuckerberg/go-misc/issues/1027)) ([2389146](https://github.com/chanzuckerberg/go-misc/commit/238914650ee40f9ef103e384749be7857255d674))
+
 ## [2.2.0](https://github.com/chanzuckerberg/go-misc/compare/v2.1.0...v2.2.0) (2024-03-07)
 
 
