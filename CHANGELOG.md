@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.3](https://github.com/chanzuckerberg/go-misc/compare/v2.2.2...v2.2.3) (2024-03-21)
+
+
+### Bug Fixes
+
+* Update invalid dependency versions in osutils and snowflake packages ([#1030](https://github.com/chanzuckerberg/go-misc/issues/1030)) ([864e76a](https://github.com/chanzuckerberg/go-misc/commit/864e76a776c639fd67ea114fc7e1b9f34a9f28d7))
+
 ## [2.2.2](https://github.com/chanzuckerberg/go-misc/compare/v2.2.1...v2.2.2) (2024-03-21)
 
 
