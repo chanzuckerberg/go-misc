@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.21.1
 
 require (
-	github.com/chanzuckerberg/go-misc/errors v0.0.0-00010101000000-000000000000
+	github.com/chanzuckerberg/go-misc/errors v0.0.0-20240321155940-238914650ee4
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.4
 )
