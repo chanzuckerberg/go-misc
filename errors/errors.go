@@ -1,9 +1,8 @@
 package errors
 
 import (
+	"errors"
 	"fmt"
-
-	"github.com/pkg/errors"
 )
 
 /*
@@ -12,38 +11,25 @@ import (
 / Only the public parts of errors will be returned to the caller, the rest can be logged server side.
 */
 
-// hoist some error functions for convenience
-var (
-	Wrap   = errors.Wrap
-	Wrapf  = errors.Wrapf
-	New    = errors.New
-	Errorf = errors.Errorf
-)
-
-type public interface {
-	GetPublicMessage() string
-}
-
-type internal interface {
-	GetInternalError() error
-}
-
 func optionalString(s string) *string {
 	return &s
 }
 
 func GetPublicMessage(err error) *string {
-	pu, ok := errors.Cause(err).(public)
+	pubErr := &publicError{}
+	ok := errors.As(err, &pubErr)
+
 	if ok {
-		return optionalString(pu.GetPublicMessage())
+		return optionalString(pubErr.GetPublicMessage())
 	}
 	return nil
 }
 
 func GetInternalError(err error) error {
-	in, ok := errors.Cause(err).(internal)
+	pubErr := &publicError{}
+	ok := errors.As(err, &pubErr)
 	if ok {
-		return in.GetInternalError()
+		return pubErr.GetInternalError()
 	}
 	return nil
 }

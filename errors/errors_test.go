@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 )
 
@@ -26,7 +25,6 @@ func TestPublicErrors(t *testing.T) {
 	baseErr := GetInternalError(err)
 	r.NotNil(baseErr)
 	r.Equal("base error", baseErr.Error())
-	r.Equal("base error", errors.Cause(baseErr).Error())
 
 	// not a publicError
 	err = fmt.Errorf("scary error")
@@ -62,4 +60,26 @@ func TestGetInternalErrorNilError(t *testing.T) {
 	var nilError *publicError
 
 	r.NoError(nilError.GetInternalError())
+}
+
+func TestChainOfErrors(t *testing.T) {
+	r := require.New(t)
+
+	pubErr1 := PublicWrap(fmt.Errorf("error1"), "public message1")
+	err2 := fmt.Errorf("error2")
+	err3 := fmt.Errorf("error3")
+	pubErr2 := PublicWrap(fmt.Errorf("error4"), "public message2")
+	err5 := fmt.Errorf("error5")
+
+	//err5 -> pubErr2 -> err3 -> err2 -> pubErr1
+	err := fmt.Errorf("%w: %w: %w: %w: %w", err5, pubErr2, err3, err2, pubErr1)
+	msg := GetPublicMessage(err)
+	r.NotNil(msg)
+	// gets the first public message off the chain
+	r.Equal("public message2", *msg)
+
+	// gets the first internal error off the chain
+	intErr := GetInternalError(err)
+	r.NotNil(intErr)
+	r.Equal("error4", intErr.Error())
 }
