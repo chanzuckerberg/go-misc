@@ -1,5 +1,40 @@
 # Changelog
 
+## [2.2.3](https://github.com/chanzuckerberg/go-misc/compare/v2.2.2...v2.2.3) (2024-03-21)
+
+
+### Bug Fixes
+
+* Update invalid dependency versions in osutils and snowflake packages ([#1030](https://github.com/chanzuckerberg/go-misc/issues/1030)) ([864e76a](https://github.com/chanzuckerberg/go-misc/commit/864e76a776c639fd67ea114fc7e1b9f34a9f28d7))
+
+## [2.2.2](https://github.com/chanzuckerberg/go-misc/compare/v2.2.1...v2.2.2) (2024-03-21)
+
+
+### Bug Fixes
+
+* Fix oidc-cli dependencies (osutil and pidlock reference invalid version numbers) ([#1027](https://github.com/chanzuckerberg/go-misc/issues/1027)) ([2389146](https://github.com/chanzuckerberg/go-misc/commit/238914650ee40f9ef103e384749be7857255d674))
+
+## [2.2.1](https://github.com/chanzuckerberg/go-misc/compare/v2.2.0...v2.2.1) (2024-03-21)
+
+
+### Bug Fixes
+
+* Fix oidc-cli dependencies (osutil and pidlock reference invalid version numbers) ([#1027](https://github.com/chanzuckerberg/go-misc/issues/1027)) ([2389146](https://github.com/chanzuckerberg/go-misc/commit/238914650ee40f9ef103e384749be7857255d674))
+
+## [2.2.0](https://github.com/chanzuckerberg/go-misc/compare/v2.1.0...v2.2.0) (2024-03-07)
+
+
+### Features
+
+* add support for config struct validate tags ([#1015](https://github.com/chanzuckerberg/go-misc/issues/1015)) ([e13bc83](https://github.com/chanzuckerberg/go-misc/commit/e13bc836bf68839700f75736a0c2f9fd6c0b3462))
+
+## [2.1.0](https://github.com/chanzuckerberg/go-misc/compare/v2.0.1...v2.1.0) (2024-02-23)
+
+
+### Features
+
+* Upgrade AWS Mocks ([#1005](https://github.com/chanzuckerberg/go-misc/issues/1005)) ([543e56f](https://github.com/chanzuckerberg/go-misc/commit/543e56f1c67c9bebdb790327c7b3d5b2bbf7f752))
+
 ## [2.0.1](https://github.com/chanzuckerberg/go-misc/compare/v2.0.0...v2.0.1) (2024-02-23)
 
 

@@ -1,0 +1,4 @@
+value1: foo
+value2: bar
+nested:
+  value1: zap
