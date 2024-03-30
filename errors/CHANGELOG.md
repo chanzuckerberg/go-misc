@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/chanzuckerberg/go-misc/compare/errors-v2.0.0...errors-v2.1.0) (2024-03-30)
+
+
+### Features
+
+* remove pkg/errors for stdlib errors ([2595678](https://github.com/chanzuckerberg/go-misc/commit/2595678e85b64b6eb394fa97aeba90ffa7e638d3))
+
 ## [2.0.0](https://github.com/chanzuckerberg/go-misc/compare/errors-v1.12.0...errors-v2.0.0) (2024-02-23)
 
 
