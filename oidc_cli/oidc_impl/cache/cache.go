@@ -1,10 +1,10 @@
 package cache
 
 import (
-	"archive/tar"
 	"bytes"
 	"compress/gzip"
 	"context"
+	"fmt"
 
 	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
 	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/storage"
@@ -93,11 +93,13 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	logrus.Info("strToken", strToken)
 	logrus.Info(len(strToken))
 	var buf bytes.Buffer
-	gzw := gzip.NewWriter(&buf)
-	tw := tar.NewWriter(gzw)
-	tw.Write([]byte(strToken))
-	gzw.Close()
-	tw.Close()
+	gz := gzip.NewWriter(&buf)
+	if _, err := gz.Write([]byte(strToken)); err != nil {
+		return nil, fmt.Errorf("failed to write to gzip: %w", err)
+	}
+	if err := gz.Close(); err != nil {
+		return nil, fmt.Errorf("failed to close gzip: %w", err)
+	}
 
 	compressedToken := buf.String()
 	logrus.Info("compressedToken", compressedToken)
