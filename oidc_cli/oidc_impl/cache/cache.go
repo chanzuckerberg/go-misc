@@ -88,7 +88,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	}
 	// save token to storage
 
-	logrus.Info(strToken)
+	logrus.Info("strToken", strToken)
 	logrus.Info(len(strToken))
 	var buf bytes.Buffer
 	gzw := gzip.NewWriter(&buf)
@@ -98,13 +98,16 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	tw.Close()
 
 	compressedToken := buf.String()
-	logrus.Info(compressedToken)
+	logrus.Info("compressedToken", compressedToken)
 	logrus.Info(len(compressedToken))
 
 	err = c.storage.Set(ctx, compressedToken)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to cache the strToken")
 	}
+
+	logrus.Info("token", token)
+	// logrus.Info(len(token.))
 
 	return token, nil
 }
