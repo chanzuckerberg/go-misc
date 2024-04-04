@@ -6,7 +6,7 @@ toolchain go1.21.1
 
 require (
 	github.com/aws/aws-sdk-go v1.51.4
-	github.com/chanzuckerberg/go-misc/osutil v0.0.0-00010101000000-000000000000
+	github.com/chanzuckerberg/go-misc/osutil v0.0.0-20240404182313-43e397411f6e
 	github.com/chanzuckerberg/go-misc/pidlock v0.0.0-20240320212149-709d6d5c338b
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/google/uuid v1.6.0
