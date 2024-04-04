@@ -94,6 +94,8 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	gzw := gzip.NewWriter(&buf)
 	tw := tar.NewWriter(gzw)
 	tw.Write([]byte(strToken))
+	gzw.Close()
+	tw.Close()
 
 	compressedToken := buf.String()
 	logrus.Info(compressedToken)
