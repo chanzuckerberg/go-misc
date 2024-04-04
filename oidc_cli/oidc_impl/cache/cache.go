@@ -95,7 +95,11 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	tw := tar.NewWriter(gzw)
 	tw.Write([]byte(strToken))
 
-	err = c.storage.Set(ctx, string(buf.Bytes()))
+	compressedToken := buf.String()
+	logrus.Info(compressedToken)
+	logrus.Info(len(compressedToken))
+
+	err = c.storage.Set(ctx, compressedToken)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to cache the strToken")
 	}
