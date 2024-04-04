@@ -115,6 +115,15 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 		return nil, err
 	}
 	logrus.Info("...storage.Read ", cached)
+	if cached != nil {
+		logrus.Info("...storage.Read ", *cached)
+	}
+
+	cachedToken2, err := c.readFromStorage(ctx)
+	if err != nil {
+		return nil, err
+	}
+	logrus.Info("...got cachedToken2 ", cachedToken2)
 
 	return token, nil
 }
