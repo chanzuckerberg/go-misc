@@ -1,6 +1,9 @@
 package cache
 
 import (
+	"archive/tar"
+	"bytes"
+	"compress/gzip"
 	"context"
 
 	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
@@ -84,7 +87,15 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 		return nil, errors.Wrap(err, "unable to marshall token")
 	}
 	// save token to storage
-	err = c.storage.Set(ctx, strToken)
+
+	logrus.Info(strToken)
+	logrus.Info(len(strToken))
+	var buf bytes.Buffer
+	gzw := gzip.NewWriter(&buf)
+	tw := tar.NewWriter(gzw)
+	tw.Write([]byte(strToken))
+
+	err = c.storage.Set(ctx, string(buf.Bytes()))
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to cache the strToken")
 	}
