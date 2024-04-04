@@ -110,6 +110,12 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 		return nil, errors.Wrap(err, "Unable to cache the strToken")
 	}
 
+	cached, err := c.storage.Read(ctx)
+	if err != nil {
+		return nil, err
+	}
+	logrus.Info("...storage.Read ", cached)
+
 	return token, nil
 }
 
