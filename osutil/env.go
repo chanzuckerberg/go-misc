@@ -13,7 +13,7 @@ func ResetEnv(origEnv []string) error {
 		// https://blogs.msdn.com/b/oldnewthing/archive/2010/05/06/10008132.aspx
 		i := strings.Index(pair[1:], "=") + 1
 		if err := os.Setenv(pair[:i], pair[i+1:]); err != nil {
-			return fmt.Errorf("Setenv(%q, %q) failed during reset: %v", pair[:i], pair[i+1:], err)
+			return fmt.Errorf("Setenv(%q, %q) failed during reset: %w", pair[:i], pair[i+1:], err)
 		}
 	}
 	return nil
