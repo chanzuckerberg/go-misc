@@ -64,8 +64,10 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	if err != nil {
 		return nil, err
 	}
+	logrus.Info("...got cachedToken ", cachedToken)
 	// if we have a valid token, use it
 	if cachedToken.IsFresh() {
+		logrus.Info("...cachedToken is fresh")
 		return cachedToken, nil
 	}
 
@@ -105,9 +107,6 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to cache the strToken")
 	}
-
-	logrus.Info("token", token)
-	// logrus.Info(len(token.))
 
 	return token, nil
 }
