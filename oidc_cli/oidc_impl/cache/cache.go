@@ -65,10 +65,9 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-	logrus.Info("...got cachedToken ", cachedToken)
+
 	// if we have a valid token, use it
 	if cachedToken.IsFresh() {
-		logrus.Info("...cachedToken is fresh")
 		return cachedToken, nil
 	}
 
@@ -89,10 +88,8 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to marshall token")
 	}
-	// save token to storage
 
-	logrus.Info("strToken", strToken)
-	logrus.Info(len(strToken))
+	// compress and save token to storage
 	var buf bytes.Buffer
 	gz := gzip.NewWriter(&buf)
 	if _, err := gz.Write([]byte(strToken)); err != nil {
@@ -102,32 +99,12 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 		return nil, fmt.Errorf("failed to close gzip: %w", err)
 	}
 
-	compressedToken := buf.String()
-	logrus.Info("compressedToken", compressedToken)
-	logrus.Info(len(compressedToken))
-
-	err = c.storage.Set(ctx, compressedToken)
+	err = c.storage.Set(ctx, buf.String())
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to cache the strToken")
 	}
 
-	cached, err := c.storage.Read(ctx)
-	if err != nil {
-		return nil, err
-	}
-	logrus.Info("...storage.Read ", cached)
-	if cached != nil {
-		logrus.Info("...storage.Read ", *cached)
-	}
-
-	cachedToken2, err := c.readFromStorage(ctx)
-	if err != nil {
-		return nil, err
-	}
-	logrus.Info("...got cachedToken2 ", cachedToken2)
-
-	logrus.Info("...returning cached token")
-	return cachedToken2, nil
+	return token, nil
 }
 
 // reads token from storage, potentially returning a nil/expired token
@@ -142,18 +119,16 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 		return nil, nil
 	}
 
-	// decode gzip data here
+	// decode gzip data
 	reader := bytes.NewReader([]byte(*cached))
 	gzreader, err := gzip.NewReader(reader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create gzip reader: %w", err)
 	}
-
 	decompressed, err := io.ReadAll(gzreader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read gzip data: %w", err)
 	}
-
 	decompressedStr := string(decompressed)
 
 	cachedToken, err := client.TokenFromString(&decompressedStr)
