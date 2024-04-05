@@ -126,7 +126,8 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	}
 	logrus.Info("...got cachedToken2 ", cachedToken2)
 
-	return token, nil
+	logrus.Info("...returning cached token")
+	return cachedToken2, nil
 }
 
 // reads token from storage, potentially returning a nil/expired token
