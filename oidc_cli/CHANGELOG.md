@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.1.0](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.0.1...oidc_cli-v2.1.0) (2024-04-05)
+
+
+### Features
+
+* compress token before storing in cache to allow for larger tokens to be cached ([#1047](https://github.com/chanzuckerberg/go-misc/issues/1047)) ([2cce231](https://github.com/chanzuckerberg/go-misc/commit/2cce2310ce46834e73599e569c5b02dfe5e015c7))
+
+
+### Bug Fixes
+
+* oidc-cli dependencies ([#1043](https://github.com/chanzuckerberg/go-misc/issues/1043)) ([43e3974](https://github.com/chanzuckerberg/go-misc/commit/43e397411f6e377d97be1e2e1e4d57ae19181e79))
+* oidc-cli deps ([#1045](https://github.com/chanzuckerberg/go-misc/issues/1045)) ([ed196ca](https://github.com/chanzuckerberg/go-misc/commit/ed196ca9c1368a5981c9e4b3cc9f9bd46932b055))
+
 ## [2.0.1](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.0.0...oidc_cli-v2.0.1) (2024-03-21)
 
 

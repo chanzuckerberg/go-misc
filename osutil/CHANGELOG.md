@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.2](https://github.com/chanzuckerberg/go-misc/compare/osutil-v2.0.1...osutil-v2.0.2) (2024-04-05)
+
+
+### Bug Fixes
+
+* oidc-cli dependencies ([#1043](https://github.com/chanzuckerberg/go-misc/issues/1043)) ([43e3974](https://github.com/chanzuckerberg/go-misc/commit/43e397411f6e377d97be1e2e1e4d57ae19181e79))
+
 ## [2.0.1](https://github.com/chanzuckerberg/go-misc/compare/osutil-v2.0.0...osutil-v2.0.1) (2024-03-21)
 
 
