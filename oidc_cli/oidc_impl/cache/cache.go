@@ -5,6 +5,7 @@ import (
 	"compress/gzip"
 	"context"
 	"fmt"
+	"io"
 
 	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
 	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/storage"
@@ -135,7 +136,26 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-	cachedToken, err := client.TokenFromString(cached)
+
+	if cached == nil {
+		return nil, nil
+	}
+
+	// decode gzip data here
+	reader := bytes.NewReader([]byte(*cached))
+	gzreader, err := gzip.NewReader(reader)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create gzip reader: %w", err)
+	}
+
+	decompressed, err := io.ReadAll(gzreader)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read gzip data: %w", err)
+	}
+
+	decompressedStr := string(decompressed)
+
+	cachedToken, err := client.TokenFromString(&decompressedStr)
 	if err != nil {
 		logrus.WithError(err).Debug("error fetching stored token")
 		err = c.storage.Delete(ctx) // can't read it, so attempt to purge it
