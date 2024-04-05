@@ -65,7 +65,6 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	// if we have a valid token, use it
 	if cachedToken.IsFresh() {
 		return cachedToken, nil
@@ -89,17 +88,13 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 		return nil, errors.Wrap(err, "unable to marshall token")
 	}
 
-	// compress and save token to storage
-	var buf bytes.Buffer
-	gz := gzip.NewWriter(&buf)
-	if _, err := gz.Write([]byte(strToken)); err != nil {
-		return nil, fmt.Errorf("failed to write to gzip: %w", err)
-	}
-	if err := gz.Close(); err != nil {
-		return nil, fmt.Errorf("failed to close gzip: %w", err)
+	// gzip encode and save token to storage
+	compressedToken, err := compressToken(strToken)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to compress token")
 	}
 
-	err = c.storage.Set(ctx, buf.String())
+	err = c.storage.Set(ctx, compressedToken)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to cache the strToken")
 	}
@@ -114,22 +109,15 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	if cached == nil {
 		return nil, nil
 	}
 
 	// decode gzip data
-	reader := bytes.NewReader([]byte(*cached))
-	gzreader, err := gzip.NewReader(reader)
+	decompressedStr, err := decompressToken(*cached)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create gzip reader: %w", err)
+		return nil, fmt.Errorf("failed to decompress token: %w", err)
 	}
-	decompressed, err := io.ReadAll(gzreader)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read gzip data: %w", err)
-	}
-	decompressedStr := string(decompressed)
 
 	cachedToken, err := client.TokenFromString(&decompressedStr)
 	if err != nil {
@@ -140,4 +128,32 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 		}
 	}
 	return cachedToken, nil
+}
+
+func compressToken(token string) (string, error) {
+	var buf bytes.Buffer
+	gz := gzip.NewWriter(&buf)
+	if _, err := gz.Write([]byte(token)); err != nil {
+		return "", fmt.Errorf("failed to write to gzip: %w", err)
+	}
+	if err := gz.Close(); err != nil {
+		return "", fmt.Errorf("failed to close gzip: %w", err)
+	}
+	return buf.String(), nil
+}
+
+func decompressToken(token string) (string, error) {
+	reader := bytes.NewReader([]byte(token))
+	gzreader, err := gzip.NewReader(reader)
+	if err != nil {
+		return "", fmt.Errorf("failed to create gzip reader: %w", err)
+	}
+	decompressed, err := io.ReadAll(gzreader)
+	if err != nil {
+		return "", fmt.Errorf("failed to read gzip data: %w", err)
+	}
+	if err := gzreader.Close(); err != nil {
+		return "", fmt.Errorf("failed to close gzip: %w", err)
+	}
+	return string(decompressed), nil
 }

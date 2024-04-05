@@ -57,7 +57,9 @@ func TestCorruptedCache(t *testing.T) {
 	r := require.New(t)
 	s := genStorage()
 	ctx := context.Background()
-	err := s.Set(ctx, "garbage token")
+	compressed, err := compressToken("garbage token")
+	r.NoError(err)
+	err = s.Set(ctx, compressed)
 	r.NoError(err)
 
 	u := uuid.New()
@@ -83,7 +85,10 @@ func TestCorruptedCache(t *testing.T) {
 	r.NoError(err)
 	r.NotNil(cachedToken)
 
-	tok, err := client.TokenFromString(cachedToken)
+	decompressedToken, err := decompressToken(*cachedToken)
+	r.NoError(err)
+
+	tok, err := client.TokenFromString(&decompressedToken)
 	r.NoError(err)
 	r.NotNil(t)
 
@@ -110,7 +115,10 @@ func TestCachedToken(t *testing.T) {
 	marshalled, err := freshToken.Marshal()
 	r.NoError(err)
 
-	err = s.Set(ctx, marshalled)
+	compressed, err := compressToken(marshalled)
+	r.NoError(err)
+
+	err = s.Set(ctx, compressed)
 	r.NoError(err)
 
 	refresh := func(ctx context.Context, c *client.Token) (*client.Token, error) {
