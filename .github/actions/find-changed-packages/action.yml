@@ -24,7 +24,7 @@ runs:
           const path = require("path")
           const fs = require("fs")
           const changedFiles = ${{ steps.filter.outputs.changed_files }}
-          const changedDirs = changedFiles.map(f => path.dirname(f))
+          const changedDirs = changedFiles.map(f => path.dirname(f).split('/')[0])
           const changedGoPackages = changedDirs.filter(d => fs.existsSync(path.join(d, "go.mod")))
           const uniqueChangedGoPackages = [...new Set(changedGoPackages)];
 

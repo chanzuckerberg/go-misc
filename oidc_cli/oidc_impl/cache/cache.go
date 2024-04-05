@@ -1,7 +1,11 @@
 package cache
 
 import (
+	"bytes"
+	"compress/gzip"
 	"context"
+	"fmt"
+	"io"
 
 	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
 	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/storage"
@@ -83,8 +87,14 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to marshall token")
 	}
-	// save token to storage
-	err = c.storage.Set(ctx, strToken)
+
+	// gzip encode and save token to storage
+	compressedToken, err := compressToken(strToken)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to compress token")
+	}
+
+	err = c.storage.Set(ctx, compressedToken)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to cache the strToken")
 	}
@@ -99,7 +109,17 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	if err != nil {
 		return nil, err
 	}
-	cachedToken, err := client.TokenFromString(cached)
+	if cached == nil {
+		return nil, nil
+	}
+
+	// decode gzip data
+	decompressedStr, err := decompressToken(*cached)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decompress token: %w", err)
+	}
+
+	cachedToken, err := client.TokenFromString(&decompressedStr)
 	if err != nil {
 		logrus.WithError(err).Debug("error fetching stored token")
 		err = c.storage.Delete(ctx) // can't read it, so attempt to purge it
@@ -108,4 +128,32 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 		}
 	}
 	return cachedToken, nil
+}
+
+func compressToken(token string) (string, error) {
+	var buf bytes.Buffer
+	gz := gzip.NewWriter(&buf)
+	if _, err := gz.Write([]byte(token)); err != nil {
+		return "", fmt.Errorf("failed to write to gzip: %w", err)
+	}
+	if err := gz.Close(); err != nil {
+		return "", fmt.Errorf("failed to close gzip: %w", err)
+	}
+	return buf.String(), nil
+}
+
+func decompressToken(token string) (string, error) {
+	reader := bytes.NewReader([]byte(token))
+	gzreader, err := gzip.NewReader(reader)
+	if err != nil {
+		return "", fmt.Errorf("failed to create gzip reader: %w", err)
+	}
+	decompressed, err := io.ReadAll(gzreader)
+	if err != nil {
+		return "", fmt.Errorf("failed to read gzip data: %w", err)
+	}
+	if err := gzreader.Close(); err != nil {
+		return "", fmt.Errorf("failed to close gzip: %w", err)
+	}
+	return string(decompressed), nil
 }
