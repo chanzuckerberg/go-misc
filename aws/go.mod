@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.21.1
 
 require (
-	github.com/aws/aws-sdk-go v1.51.18
+	github.com/aws/aws-sdk-go v1.51.20
 	github.com/golang/mock v1.6.0
 	github.com/pkg/errors v0.9.1
 )
