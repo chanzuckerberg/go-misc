@@ -200,7 +200,7 @@ func (c *Client) Exchange(ctx context.Context, code string, codeVerifier string)
 	if len(c.oauthConfig.Scopes) != 0 {
 		scope_str := format_scopes(ctx, c.oauthConfig.Scopes)
 		params = append(params, oauth2.SetAuthURLParam("scopes", scope_str))
-		logrus.Debugf("scopes: %s", scope_str)
+		logrus.Debugf("scopes: %s", "offline_access")
 	} else {
 		logrus.Debug("no scopes set")
 	}
