@@ -197,9 +197,12 @@ func (c *Client) Exchange(ctx context.Context, code string, codeVerifier string)
 		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
 		oauth2.SetAuthURLParam("client_id", c.oauthConfig.ClientID)}
 	if len(c.oauthConfig.Scopes) != 0 {
-		params = append(params, oauth2.SetAuthURLParam("scopes", format_scopes(ctx, c.oauthConfig.Scopes)))
+		scope_str := format_scopes(ctx, c.oauthConfig.Scopes)
+		params = append(params, oauth2.SetAuthURLParam("scopes", scope_str))
+		logrus.Debugf("scopes: %s", scope_str)
+	} else {
+		logrus.Debug("no scopes set")
 	}
-
 	token, err := c.oauthConfig.Exchange(
 		ctx,
 		code,
