@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/coreos/go-oidc"
@@ -184,15 +185,25 @@ func (c *Client) ValidateState(ourState []byte, otherState []byte) error {
 	}
 	return nil
 }
+func format_scopes(ctx context.Context, scopes []string) string {
+	// space-separated string: https://www.oauth.com/oauth2-servers/server-side-apps/authorization-code/#:~:text=Include%20one%20or%20more%20scope%20values%20(space%2Dseparated)%20to%20request%20additional%20levels%20of%20access.
+
+	return strings.Join(scopes, "+")
+}
 
 // Exchange will exchange a token
 func (c *Client) Exchange(ctx context.Context, code string, codeVerifier string) (*oauth2.Token, error) {
+	params := []oauth2.AuthCodeOption{oauth2.SetAuthURLParam("grant_type", "authorization_code"),
+		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
+		oauth2.SetAuthURLParam("client_id", c.oauthConfig.ClientID)}
+	if len(c.oauthConfig.Scopes) != 0 {
+		params = append(params, oauth2.SetAuthURLParam("scopes", format_scopes(ctx, c.oauthConfig.Scopes)))
+	}
+
 	token, err := c.oauthConfig.Exchange(
 		ctx,
 		code,
-		oauth2.SetAuthURLParam("grant_type", "authorization_code"),
-		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
-		oauth2.SetAuthURLParam("client_id", c.oauthConfig.ClientID),
+		params...,
 	)
 	return token, errors.Wrap(err, "failed to exchange oauth token")
 }
