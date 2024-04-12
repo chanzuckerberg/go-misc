@@ -112,7 +112,7 @@ func (c *Client) idTokenFromOauth2Token(
 // RefreshToken will fetch a new token
 func (c *Client) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
 	logrus.Debugf("refresh scopes: %#v", c.oauthConfig.Scopes)
-
+	logrus.Debugf("oldToken: %#v", oldToken)
 	newToken, err := c.refreshToken(ctx, oldToken)
 	// if we could refresh successfully, do so.
 	// otherwise try a new token
@@ -199,7 +199,7 @@ func (c *Client) Exchange(ctx context.Context, code string, codeVerifier string)
 
 	if len(c.oauthConfig.Scopes) != 0 {
 		scope_str := format_scopes(ctx, c.oauthConfig.Scopes)
-		params = append(params, oauth2.SetAuthURLParam("scopes", "openid"))
+		params = append(params, oauth2.SetAuthURLParam("scopes", scope_str))
 		logrus.Debugf("scopes: %s", scope_str)
 	} else {
 		logrus.Debug("no scopes set")
@@ -236,7 +236,7 @@ func (c *Client) Authenticate(ctx context.Context) (*Token, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	logrus.Debugf(" re-auth scopes: %+v", c.oauthConfig.Scopes)
 	c.server.Start(ctx, c, oauthMaterial)
 	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with Okta, hold on a brief second...\n")
 	time.Sleep(2 * time.Second)

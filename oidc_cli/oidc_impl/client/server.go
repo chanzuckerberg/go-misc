@@ -102,7 +102,6 @@ func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *o
 			s.err <- errors.Wrap(err, "state did not match")
 			return
 		}
-
 		oauth2Token, err := oidcClient.Exchange(ctx, req.URL.Query().Get("code"), oauthMaterial.CodeVerifier)
 		if err != nil {
 			errMsg := "failed to exchange token"
