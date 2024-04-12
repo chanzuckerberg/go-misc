@@ -188,7 +188,7 @@ func (c *Client) ValidateState(ourState []byte, otherState []byte) error {
 func format_scopes(ctx context.Context, scopes []string) string {
 	// space-separated string: https://www.oauth.com/oauth2-servers/server-side-apps/authorization-code/#:~:text=Include%20one%20or%20more%20scope%20values%20(space%2Dseparated)%20to%20request%20additional%20levels%20of%20access.
 
-	return strings.Join(scopes, "+")
+	return strings.Join(scopes, "%20")
 }
 
 // Exchange will exchange a token
