@@ -55,8 +55,8 @@ func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*C
 		Scopes: []string{
 			oidc.ScopeOpenID,
 			oidc.ScopeOfflineAccess,
-			"email",
-			"groups",
+			// "email",
+			// "groups",
 		},
 	}
 
