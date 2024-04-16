@@ -92,7 +92,6 @@ func (s *server) GetBoundPort() int {
 // Start will start a webserver to capture oidc response
 func (s *server) Start(ctx context.Context, oidcClient *Client, oauthMaterial *oauthMaterial) {
 	mux := http.NewServeMux()
-	logrus.Debugf("server scopes now: %+v", oidcClient.oauthConfig.Scopes)
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		err := oidcClient.ValidateState(
 			oauthMaterial.StateBytes,
