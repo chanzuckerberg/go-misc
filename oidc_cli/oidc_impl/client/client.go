@@ -233,7 +233,7 @@ func (c *Client) Authenticate(ctx context.Context) (*Token, error) {
 	if err != nil {
 		return nil, err
 	}
-	logrus.Debugf(" re-auth scopes: %+v", c.oauthConfig.Scopes)
+	logrus.Debugf("authenticate scopes: %+v", c.oauthConfig.Scopes)
 	c.server.Start(ctx, c, oauthMaterial)
 	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with Okta, hold on a brief second...\n")
 	time.Sleep(2 * time.Second)
