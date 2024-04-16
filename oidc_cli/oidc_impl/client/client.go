@@ -107,6 +107,7 @@ func (c *Client) idTokenFromOauth2Token(
 // RefreshToken will fetch a new token
 func (c *Client) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
 	logrus.Debugf("refresh scopes: %#v", c.oauthConfig.Scopes)
+
 	newToken, err := c.refreshToken(ctx, oldToken)
 	// if we could refresh successfully, do so.
 	// otherwise try a new token
