@@ -181,7 +181,8 @@ func (c *Client) ValidateState(ourState []byte, otherState []byte) error {
 	return nil
 }
 func format_scopes(ctx context.Context, scopes []string) string {
-	// space-separated string: https://www.oauth.com/oauth2-servers/server-side-apps/authorization-code/#:~:text=Include%20one%20or%20more%20scope%20values%20(space%2Dseparated)%20to%20request%20additional%20levels%20of%20access.
+	// space-separated string:
+	// 	https://www.oauth.com/oauth2-servers/server-side-apps/authorization-code/#:~:text=with%20the%20service.-,scope,(optional),-Include%20one%20or
 
 	return strings.Join(scopes, "+")
 }
@@ -196,7 +197,7 @@ func (c *Client) Exchange(ctx context.Context, code string, codeVerifier string)
 	if len(c.oauthConfig.Scopes) != 0 {
 		scope_str := format_scopes(ctx, c.oauthConfig.Scopes)
 		params = append(params, oauth2.SetAuthURLParam("scopes", scope_str))
-		logrus.Debugf("scopes: %s", scope_str)
+		logrus.Debugf("oauth scopes: %s", scope_str)
 	} else {
 		logrus.Debug("no scopes set")
 	}

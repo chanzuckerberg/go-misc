@@ -24,6 +24,9 @@ var SetOauth2AuthStyle = func(authStyle oauth2.AuthStyle) Option {
 	}
 }
 
+// This Helper helps you customize the scopes you're sending. It will format the list of strings
+//
+//	example: https://www.oauth.com/oauth2-servers/server-side-apps/authorization-code/#:~:text=The%20authorization%20URL%20is%20usually%20in%20a%20format%20such%20as%3A
 var AddScope = func(scope string) Option {
 	return func(c *Client) {
 		c.oauthConfig.Scopes = append(c.oauthConfig.Scopes, scope)
