@@ -88,7 +88,7 @@ func TestCorruptedCache(t *testing.T) {
 	decompressedToken, err := decompressToken(*cachedToken)
 	r.NoError(err)
 
-	tok, err := client.TokenFromString(&decompressedToken)
+	tok, err := client.TokenFromString(decompressedToken)
 	r.NoError(err)
 	r.NotNil(t)
 
