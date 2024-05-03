@@ -116,10 +116,11 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	// decode gzip data
 	decompressedStr, err := decompressToken(*cached)
 	if err != nil {
-		return nil, fmt.Errorf("failed to decompress token: %w", err)
+		// if we fail to decompress the token we should treat it as a cache miss instead of returning an error
+		logrus.Debug(fmt.Errorf("failed to decompress token: %w", err).Error())
 	}
 
-	cachedToken, err := client.TokenFromString(&decompressedStr)
+	cachedToken, err := client.TokenFromString(decompressedStr)
 	if err != nil {
 		logrus.WithError(err).Debug("error fetching stored token")
 		err = c.storage.Delete(ctx) // can't read it, so attempt to purge it
@@ -142,18 +143,19 @@ func compressToken(token string) (string, error) {
 	return buf.String(), nil
 }
 
-func decompressToken(token string) (string, error) {
+func decompressToken(token string) (*string, error) {
 	reader := bytes.NewReader([]byte(token))
 	gzreader, err := gzip.NewReader(reader)
 	if err != nil {
-		return "", fmt.Errorf("failed to create gzip reader: %w", err)
+		return nil, fmt.Errorf("failed to create gzip reader: %w", err)
 	}
 	decompressed, err := io.ReadAll(gzreader)
 	if err != nil {
-		return "", fmt.Errorf("failed to read gzip data: %w", err)
+		return nil, fmt.Errorf("failed to read gzip data: %w", err)
 	}
 	if err := gzreader.Close(); err != nil {
-		return "", fmt.Errorf("failed to close gzip: %w", err)
+		return nil, fmt.Errorf("failed to close gzip: %w", err)
 	}
-	return string(decompressed), nil
+	decompressedStr := string(decompressed)
+	return &decompressedStr, nil
 }
