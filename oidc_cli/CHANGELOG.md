@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.1.0...oidc_cli-v2.1.1) (2024-05-03)
+
+
+### Bug Fixes
+
+* suppress decompression error and treat uncompressed token in cache as cache miss ([#1058](https://github.com/chanzuckerberg/go-misc/issues/1058)) ([da1316d](https://github.com/chanzuckerberg/go-misc/commit/da1316d146ad857f601dd32b1709935be1b11a8c))
+
 ## [2.1.0](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.0.1...oidc_cli-v2.1.0) (2024-04-05)
 
 
