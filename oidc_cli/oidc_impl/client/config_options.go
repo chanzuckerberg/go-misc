@@ -23,3 +23,9 @@ var SetOauth2AuthStyle = func(authStyle oauth2.AuthStyle) Option {
 		c.oauthConfig.Endpoint.AuthStyle = authStyle
 	}
 }
+
+var DisableTokenCache = func() Option {
+	return func(c *Client) {
+		c.DisableCache = true
+	}
+}
