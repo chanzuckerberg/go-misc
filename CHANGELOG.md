@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.2](https://github.com/chanzuckerberg/go-misc/compare/v2.4.1...v2.4.2) (2024-08-01)
+
+
+### Bug Fixes
+
+* make the aws mock-generation script work again ([#1079](https://github.com/chanzuckerberg/go-misc/issues/1079)) ([10bce11](https://github.com/chanzuckerberg/go-misc/commit/10bce115fd2a92aaa5468e28b60e878123351ec8))
+
 ## [2.4.1](https://github.com/chanzuckerberg/go-misc/compare/v2.4.0...v2.4.1) (2024-05-03)
 
 
