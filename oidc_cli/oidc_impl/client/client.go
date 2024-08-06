@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/coreos/go-oidc"
@@ -51,12 +52,7 @@ func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*C
 		ClientID:    config.ClientID,
 		RedirectURL: fmt.Sprintf("http://localhost:%d", server.GetBoundPort()),
 		Endpoint:    provider.Endpoint(),
-		Scopes: []string{
-			oidc.ScopeOpenID,
-			oidc.ScopeOfflineAccess,
-			"email",
-			"groups",
-		},
+		Scopes:      []string{}, // add through the AddScope clientOption
 	}
 
 	oidcConfig := &oidc.Config{
@@ -184,15 +180,31 @@ func (c *Client) ValidateState(ourState []byte, otherState []byte) error {
 	}
 	return nil
 }
+func format_scopes(ctx context.Context, scopes []string) string {
+	// space-separated string:
+	// 	https://www.oauth.com/oauth2-servers/server-side-apps/authorization-code/#:~:text=with%20the%20service.-,scope,(optional),-Include%20one%20or
+
+	return strings.Join(scopes, "+")
+}
 
 // Exchange will exchange a token
 func (c *Client) Exchange(ctx context.Context, code string, codeVerifier string) (*oauth2.Token, error) {
+	params := []oauth2.AuthCodeOption{oauth2.SetAuthURLParam("grant_type", "authorization_code"),
+		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
+		oauth2.SetAuthURLParam("client_id", c.oauthConfig.ClientID),
+	}
+
+	if len(c.oauthConfig.Scopes) != 0 {
+		scope_str := format_scopes(ctx, c.oauthConfig.Scopes)
+		params = append(params, oauth2.SetAuthURLParam("scopes", scope_str))
+		logrus.Debugf("oauth scopes: %s", scope_str)
+	} else {
+		logrus.Debug("no scopes set")
+	}
 	token, err := c.oauthConfig.Exchange(
 		ctx,
 		code,
-		oauth2.SetAuthURLParam("grant_type", "authorization_code"),
-		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
-		oauth2.SetAuthURLParam("client_id", c.oauthConfig.ClientID),
+		params...,
 	)
 	return token, errors.Wrap(err, "failed to exchange oauth token")
 }
@@ -221,7 +233,7 @@ func (c *Client) Authenticate(ctx context.Context) (*Token, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	logrus.Debugf("authenticate scopes: %+v", c.oauthConfig.Scopes)
 	c.server.Start(ctx, c, oauthMaterial)
 	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with Okta, hold on a brief second...\n")
 	time.Sleep(2 * time.Second)
