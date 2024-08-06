@@ -18,10 +18,11 @@ import (
 
 // Client is an oauth client
 type Client struct {
-	provider    *oidc.Provider
-	oauthConfig *oauth2.Config
-	verifier    *oidc.IDTokenVerifier
-	server      *server
+	provider     *oidc.Provider
+	oauthConfig  *oauth2.Config
+	verifier     *oidc.IDTokenVerifier
+	server       *server
+	DisableCache bool
 
 	// Extra configuration options
 	customMessages map[oidcStatus]string
@@ -53,9 +54,7 @@ func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*C
 		Endpoint:    provider.Endpoint(),
 		Scopes: []string{
 			oidc.ScopeOpenID,
-			oidc.ScopeOfflineAccess,
 			"email",
-			"groups",
 		},
 	}
 
@@ -223,7 +222,7 @@ func (c *Client) Authenticate(ctx context.Context) (*Token, error) {
 	}
 
 	c.server.Start(ctx, c, oauthMaterial)
-	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with Okta, hold on a brief second...\n")
+	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with your Identity Provider, hold on a brief second...\n")
 	time.Sleep(2 * time.Second)
 
 	// intercept these outputs, send them back on error
