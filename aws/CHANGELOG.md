@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/chanzuckerberg/go-misc/compare/aws-v2.1.0...aws-v2.1.1) (2024-08-01)
+
+
+### Bug Fixes
+
+* make the aws mock-generation script work again ([#1079](https://github.com/chanzuckerberg/go-misc/issues/1079)) ([10bce11](https://github.com/chanzuckerberg/go-misc/commit/10bce115fd2a92aaa5468e28b60e878123351ec8))
+
 ## [2.1.0](https://github.com/chanzuckerberg/go-misc/compare/aws-v2.0.0...aws-v2.1.0) (2024-02-23)
 
 
