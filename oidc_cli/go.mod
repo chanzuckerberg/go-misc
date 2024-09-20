@@ -5,9 +5,9 @@ go 1.21
 toolchain go1.21.1
 
 require (
-	github.com/aws/aws-sdk-go v1.51.4
-	github.com/chanzuckerberg/go-misc/osutil v0.0.0-20240404182313-43e397411f6e
-	github.com/chanzuckerberg/go-misc/pidlock v0.0.0-20240320212149-709d6d5c338b
+	github.com/aws/aws-sdk-go v1.55.5
+	github.com/chanzuckerberg/go-misc/osutil v0.0.0-20240806150949-03a70fa641f9
+	github.com/chanzuckerberg/go-misc/pidlock v0.0.0-20240806150949-03a70fa641f9
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/go-jose/go-jose/v4 v4.0.4
 	github.com/google/uuid v1.6.0
@@ -17,26 +17,23 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
-	github.com/zalando/go-keyring v0.2.4
-	golang.org/x/crypto v0.25.0
-	golang.org/x/oauth2 v0.18.0
+	github.com/zalando/go-keyring v0.2.5
+	golang.org/x/crypto v0.27.0
+	golang.org/x/oauth2 v0.23.0
 )
 
 require (
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
-	github.com/danieljoos/wincred v1.2.1 // indirect
+	github.com/danieljoos/wincred v1.2.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
-	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/nightlyone/lockfile v1.0.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/pquerna/cachecontrol v0.2.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
-	google.golang.org/appengine v1.6.8 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
+	golang.org/x/sys v0.25.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
