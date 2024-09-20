@@ -7,8 +7,8 @@ import (
 	"encoding/pem"
 	"os"
 
+	jose "github.com/go-jose/go-jose/v4"
 	"golang.org/x/crypto/ssh"
-	"gopkg.in/square/go-jose.v2"
 )
 
 // Generate new RSA keys.
