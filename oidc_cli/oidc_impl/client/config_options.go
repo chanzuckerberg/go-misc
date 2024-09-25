@@ -10,16 +10,16 @@ type oidcStatus string
 
 var oidcStatusSuccess oidcStatus = "success"
 
-type Option func(*Client)
+type Option func(*Client, *oauth2.Config)
 
 var SetSuccessMessage = func(successMessage string) Option {
-	return func(c *Client) {
+	return func(c *Client, _ *oauth2.Config) {
 		c.customMessages[oidcStatusSuccess] = successMessage
 	}
 }
 
 var SetOauth2AuthStyle = func(authStyle oauth2.AuthStyle) Option {
-	return func(c *Client) {
+	return func(c *Client, _ *oauth2.Config) {
 		c.oauthConfig.Endpoint.AuthStyle = authStyle
 	}
 }

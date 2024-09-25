@@ -77,7 +77,7 @@ func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*C
 	}
 
 	for _, clientOption := range clientOptions {
-		clientOption(clientConfig)
+		clientOption(clientConfig, oauthConfig)
 	}
 
 	return clientConfig, nil
