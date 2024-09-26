@@ -44,6 +44,7 @@ func (k *Keyring) Read(ctx context.Context) (*string, error) {
 
 // Set sets a value to the keyring
 func (k *Keyring) Set(ctx context.Context, value string) error {
+	fmt.Printf("token: %s\n", value)
 	k.mu.Lock()
 	defer k.mu.Unlock()
 
