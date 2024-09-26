@@ -32,3 +32,9 @@ var AddScope = func(scope string) Option {
 		c.oauthConfig.Scopes = append(c.oauthConfig.Scopes, scope)
 	}
 }
+
+var AddClientSecret = func(secret string) Option {
+	return func(c *Client) {
+		c.oauthConfig.ClientSecret = secret
+	}
+}
