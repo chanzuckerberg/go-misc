@@ -79,15 +79,15 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	}
 
 	// marshal token with options
-	strToken, err := token.Marshal(c.storage.MarshalOpts()...)
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to marshall token")
-	}
+	// strToken, err := token.Marshal(c.storage.MarshalOpts()...)
+	// if err != nil {
+	// 	return nil, errors.Wrap(err, "unable to marshall token")
+	// }
 	// save token to storage
-	err = c.storage.Set(ctx, strToken)
-	if err != nil {
-		return nil, errors.Wrap(err, "Unable to cache the strToken")
-	}
+	// err = c.storage.Set(ctx, strToken)
+	// if err != nil {
+	// 	return nil, errors.Wrap(err, "Unable to cache the strToken")
+	// }
 
 	return token, nil
 }
