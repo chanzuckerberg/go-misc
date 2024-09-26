@@ -192,7 +192,7 @@ func (c *Client) Exchange(ctx context.Context, code string, codeVerifier string)
 		ctx,
 		code,
 		oauth2.SetAuthURLParam("grant_type", "authorization_code"),
-		// oauth2.SetAuthURLParam("code_verifier", codeVerifier),
+		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
 		oauth2.SetAuthURLParam("redirect_uri", c.oauthConfig.RedirectURL),
 		oauth2.SetAuthURLParam("client_id", c.oauthConfig.ClientID),
 		oauth2.SetAuthURLParam("client_secret", c.oauthConfig.ClientSecret),
