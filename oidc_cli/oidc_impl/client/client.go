@@ -191,7 +191,7 @@ func (c *Client) Exchange(ctx context.Context, code string, codeVerifier string)
 		ctx,
 		code,
 		oauth2.SetAuthURLParam("grant_type", "authorization_code"),
-		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
+		// oauth2.SetAuthURLParam("code_verifier", codeVerifier),
 		oauth2.SetAuthURLParam("client_id", c.oauthConfig.ClientID),
 	)
 	return token, errors.Wrap(err, "failed to exchange oauth token")
