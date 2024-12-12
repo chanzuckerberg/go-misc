@@ -36,7 +36,7 @@ type Config struct {
 }
 
 // NewClient returns a new client
-func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*Client, error) {
+func NewClient(ctx context.Context, config *Config, scopes []string, clientOptions ...Option) (*Client, error) {
 	provider, err := oidc.NewProvider(ctx, config.IssuerURL)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create oidc provider")
@@ -47,16 +47,20 @@ func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*C
 		return nil, err
 	}
 
-	oauthConfig := &oauth2.Config{
-		ClientID:    config.ClientID,
-		RedirectURL: fmt.Sprintf("http://localhost:%d", server.GetBoundPort()),
-		Endpoint:    provider.Endpoint(),
-		Scopes: []string{
+	if len(scopes) == 0 {
+		scopes = []string{
 			oidc.ScopeOpenID,
 			oidc.ScopeOfflineAccess,
 			"email",
 			"groups",
-		},
+		}
+	}
+
+	oauthConfig := &oauth2.Config{
+		ClientID:    config.ClientID,
+		RedirectURL: fmt.Sprintf("http://localhost:%d", server.GetBoundPort()),
+		Endpoint:    provider.Endpoint(),
+		Scopes:      scopes,
 	}
 
 	oidcConfig := &oidc.Config{
