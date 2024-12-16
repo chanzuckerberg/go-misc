@@ -47,20 +47,22 @@ func NewClient(ctx context.Context, config *Config, scopes []string, clientOptio
 		return nil, err
 	}
 
-	if len(scopes) == 0 {
-		scopes = []string{
-			oidc.ScopeOpenID,
-			oidc.ScopeOfflineAccess,
-			"email",
-			"groups",
-		}
+	oauth_scopes := []string{
+		oidc.ScopeOpenID,
+		oidc.ScopeOfflineAccess,
+		"email",
+		"groups",
+	}
+
+	if len(scopes) > 0 {
+		oauth_scopes = scopes
 	}
 
 	oauthConfig := &oauth2.Config{
 		ClientID:    config.ClientID,
 		RedirectURL: fmt.Sprintf("http://localhost:%d", server.GetBoundPort()),
 		Endpoint:    provider.Endpoint(),
-		Scopes:      scopes,
+		Scopes:      oauth_scopes,
 	}
 
 	oidcConfig := &oidc.Config{
