@@ -19,7 +19,7 @@ import (
 // Client is an oauth client
 type Client struct {
 	provider    *oidc.Provider
-	oauthConfig *oauth2.Config
+	OauthConfig *oauth2.Config
 	verifier    *oidc.IDTokenVerifier
 	server      *server
 
@@ -36,7 +36,7 @@ type Config struct {
 }
 
 // NewClient returns a new client
-func NewClient(ctx context.Context, config *Config, scopes []string, clientOptions ...Option) (*Client, error) {
+func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*Client, error) {
 	provider, err := oidc.NewProvider(ctx, config.IssuerURL)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create oidc provider")
@@ -47,22 +47,11 @@ func NewClient(ctx context.Context, config *Config, scopes []string, clientOptio
 		return nil, err
 	}
 
-	oauth_scopes := []string{
-		oidc.ScopeOpenID,
-		oidc.ScopeOfflineAccess,
-		"email",
-		"groups",
-	}
-
-	if len(scopes) > 0 {
-		oauth_scopes = scopes
-	}
-
 	oauthConfig := &oauth2.Config{
 		ClientID:    config.ClientID,
 		RedirectURL: fmt.Sprintf("http://localhost:%d", server.GetBoundPort()),
 		Endpoint:    provider.Endpoint(),
-		Scopes:      oauth_scopes,
+		Scopes:      []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess, "email", "groups"},
 	}
 
 	oidcConfig := &oidc.Config{
@@ -74,7 +63,7 @@ func NewClient(ctx context.Context, config *Config, scopes []string, clientOptio
 	clientConfig := &Client{
 		provider:    provider,
 		verifier:    verifier,
-		oauthConfig: oauthConfig,
+		OauthConfig: oauthConfig,
 
 		server: server,
 		customMessages: map[oidcStatus]string{

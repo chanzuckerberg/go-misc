@@ -71,7 +71,7 @@ func (tf *tokenFetcher) fetchFullToken(ctx context.Context) (*client.Token, erro
 	tf.mu.Lock()
 	defer tf.mu.Unlock()
 
-	return oidc_impl.GetToken(ctx, tf.conf.OIDCClientID, tf.conf.OIDCIssuerURL, []string{})
+	return oidc_impl.GetToken(ctx, tf.conf.OIDCClientID, tf.conf.OIDCIssuerURL)
 }
 
 func (tf *tokenFetcher) FetchToken(ctx context.Context) ([]byte, error) {
