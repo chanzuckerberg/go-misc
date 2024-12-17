@@ -51,7 +51,12 @@ func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*C
 		ClientID:    config.ClientID,
 		RedirectURL: fmt.Sprintf("http://localhost:%d", server.GetBoundPort()),
 		Endpoint:    provider.Endpoint(),
-		Scopes:      []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess, "email", "groups"},
+		Scopes: []string{
+			oidc.ScopeOpenID,
+			oidc.ScopeOfflineAccess,
+			"email",
+			"groups",
+		},
 	}
 
 	oidcConfig := &oidc.Config{
