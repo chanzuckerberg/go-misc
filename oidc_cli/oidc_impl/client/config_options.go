@@ -20,6 +20,6 @@ var SetSuccessMessage = func(successMessage string) Option {
 
 var SetOauth2AuthStyle = func(authStyle oauth2.AuthStyle) Option {
 	return func(c *Client) {
-		c.oauthConfig.Endpoint.AuthStyle = authStyle
+		c.OauthConfig.Endpoint.AuthStyle = authStyle
 	}
 }
