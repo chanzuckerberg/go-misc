@@ -6,7 +6,6 @@ toolchain go1.21.1
 
 require (
 	github.com/aws/aws-sdk-go v1.51.4
-	github.com/chanzuckerberg/go-misc/oidc_cli v0.0.0-20241218181938-e245ce8d3ba5
 	github.com/chanzuckerberg/go-misc/osutil v0.0.0-20240404182313-43e397411f6e
 	github.com/chanzuckerberg/go-misc/pidlock v0.0.0-20240320212149-709d6d5c338b
 	github.com/coreos/go-oidc v2.2.1+incompatible
@@ -31,6 +30,7 @@ require (
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/kr/text v0.2.0 // indirect
 	github.com/nightlyone/lockfile v1.0.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/pquerna/cachecontrol v0.2.0 // indirect
