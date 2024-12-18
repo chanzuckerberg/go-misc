@@ -23,3 +23,9 @@ var SetOauth2AuthStyle = func(authStyle oauth2.AuthStyle) Option {
 		c.OauthConfig.Endpoint.AuthStyle = authStyle
 	}
 }
+
+var SetScopeOptions = func(scopes []string) Option {
+	return func(c *Client) {
+		c.OauthConfig.Scopes = scopes
+	}
+}
