@@ -7,8 +7,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 	"github.com/aws/aws-sdk-go/service/sts/stsiface"
-	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl"
-	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/v2/oidc_impl"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/v2/oidc_impl/client"
 )
 
 type AwsOIDCCredsProviderConfig struct {

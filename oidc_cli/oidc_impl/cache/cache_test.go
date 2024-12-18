@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/client"
-	"github.com/chanzuckerberg/go-misc/oidc_cli/oidc_impl/storage"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/v2/oidc_impl/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/v2/oidc_impl/storage"
 
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/google/uuid"
