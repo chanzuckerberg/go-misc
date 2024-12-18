@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/chanzuckerberg/go-misc/compare/v2.4.2...v2.5.0) (2024-12-18)
+
+
+### Features
+
+* Add scopes option to client ([#1082](https://github.com/chanzuckerberg/go-misc/issues/1082)) ([4125bab](https://github.com/chanzuckerberg/go-misc/commit/4125bab37eeef65bab06656da4dc5aafe4edcdf8))
+
 ## [2.4.2](https://github.com/chanzuckerberg/go-misc/compare/v2.4.1...v2.4.2) (2024-08-01)
 
 
