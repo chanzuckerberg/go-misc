@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.1](https://github.com/chanzuckerberg/go-misc/compare/v2.5.0...v2.5.1) (2024-12-18)
+
+
+### Bug Fixes
+
+* v2 go.mod ([#1084](https://github.com/chanzuckerberg/go-misc/issues/1084)) ([a7a82ab](https://github.com/chanzuckerberg/go-misc/commit/a7a82ab59d09d3cf4a4b8c6cd751d909041daf47))
+
 ## [2.5.0](https://github.com/chanzuckerberg/go-misc/compare/v2.4.2...v2.5.0) (2024-12-18)
 
 
