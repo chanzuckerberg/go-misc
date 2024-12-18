@@ -19,7 +19,7 @@ import (
 // Client is an oauth client
 type Client struct {
 	provider    *oidc.Provider
-	oauthConfig *oauth2.Config
+	OauthConfig *oauth2.Config
 	verifier    *oidc.IDTokenVerifier
 	server      *server
 
@@ -68,7 +68,7 @@ func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*C
 	clientConfig := &Client{
 		provider:    provider,
 		verifier:    verifier,
-		oauthConfig: oauthConfig,
+		OauthConfig: oauthConfig,
 
 		server: server,
 		customMessages: map[oidcStatus]string{
@@ -110,7 +110,7 @@ func (c *Client) idTokenFromOauth2Token(
 
 // RefreshToken will fetch a new token
 func (c *Client) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
-	logrus.Debugf("refresh scopes: %#v", c.oauthConfig.Scopes)
+	logrus.Debugf("refresh scopes: %#v", c.OauthConfig.Scopes)
 
 	newToken, err := c.refreshToken(ctx, oldToken)
 	// if we could refresh successfully, do so.
@@ -135,7 +135,7 @@ func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error)
 		Expiry:       token.Expiry,
 	}
 
-	tokenSource := c.oauthConfig.TokenSource(ctx, oauthToken)
+	tokenSource := c.OauthConfig.TokenSource(ctx, oauthToken)
 
 	newOauth2Token, err := tokenSource.Token()
 	if err != nil {
@@ -168,7 +168,7 @@ func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error)
 
 // GetAuthCodeURL gets the url to the oauth2 consent page
 func (c *Client) GetAuthCodeURL(oauthMaterial *oauthMaterial) string {
-	return c.oauthConfig.AuthCodeURL(
+	return c.OauthConfig.AuthCodeURL(
 		oauthMaterial.State,
 		oauth2.SetAuthURLParam("grant_type", "refresh_token"),
 		oauth2.SetAuthURLParam("code_challenge", oauthMaterial.CodeChallenge),
@@ -187,12 +187,12 @@ func (c *Client) ValidateState(ourState []byte, otherState []byte) error {
 
 // Exchange will exchange a token
 func (c *Client) Exchange(ctx context.Context, code string, codeVerifier string) (*oauth2.Token, error) {
-	token, err := c.oauthConfig.Exchange(
+	token, err := c.OauthConfig.Exchange(
 		ctx,
 		code,
 		oauth2.SetAuthURLParam("grant_type", "authorization_code"),
 		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
-		oauth2.SetAuthURLParam("client_id", c.oauthConfig.ClientID),
+		oauth2.SetAuthURLParam("client_id", c.OauthConfig.ClientID),
 	)
 	return token, errors.Wrap(err, "failed to exchange oauth token")
 }
