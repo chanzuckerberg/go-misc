@@ -1,16 +1,16 @@
 {
-  ".": "2.5.1",
+  ".": "2.6.0",
   "aws": "2.1.1",
-  "config": "3.1.0",
+  "config": "3.2.0",
   "errors": "2.1.0",
   "keypair": "2.0.0",
-  "kmsauth": "2.0.0",
-  "oidc_cli": "2.2.1",
+  "kmsauth": "2.1.0",
+  "oidc_cli": "2.3.0",
   "osutil": "2.0.2",
   "pidlock": "2.0.0",
   "sets": "2.0.0",
   "slack": "2.0.0",
-  "snowflake": "2.0.1",
-  "survey": "2.0.0",
+  "snowflake": "2.1.0",
+  "survey": "2.1.0",
   "ver": "2.0.0"
 }
