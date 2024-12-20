@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/chanzuckerberg/go-misc/compare/survey-v2.0.0...survey-v2.1.0) (2024-12-20)
+
+
+### Features
+
+* Update golang.org/x/net/html ([#1086](https://github.com/chanzuckerberg/go-misc/issues/1086)) ([96a6253](https://github.com/chanzuckerberg/go-misc/commit/96a62530abd701abcfa79ea0740ef6ef1980fa08))
+
 ## [2.0.0](https://github.com/chanzuckerberg/go-misc/compare/survey-v1.12.0...survey-v2.0.0) (2024-02-23)
 
 

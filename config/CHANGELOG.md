@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.0](https://github.com/chanzuckerberg/go-misc/compare/config-v3.1.0...config-v3.2.0) (2024-12-20)
+
+
+### Features
+
+* Update golang.org/x/net/html ([#1086](https://github.com/chanzuckerberg/go-misc/issues/1086)) ([96a6253](https://github.com/chanzuckerberg/go-misc/commit/96a62530abd701abcfa79ea0740ef6ef1980fa08))
+
 ## [3.1.0](https://github.com/chanzuckerberg/go-misc/compare/config-v3.0.0...config-v3.1.0) (2024-03-07)
 
 
