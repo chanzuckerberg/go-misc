@@ -17,7 +17,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
 	github.com/zalando/go-keyring v0.2.4
-	golang.org/x/crypto v0.21.0
+	golang.org/x/crypto v0.31.0
 	golang.org/x/oauth2 v0.18.0
 	gopkg.in/square/go-jose.v2 v2.6.0
 )
@@ -34,7 +34,7 @@ require (
 	github.com/nightlyone/lockfile v1.0.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/pquerna/cachecontrol v0.2.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
