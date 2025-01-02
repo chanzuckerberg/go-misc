@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.6.0](https://github.com/chanzuckerberg/go-misc/compare/v2.5.1...v2.6.0) (2024-12-20)
+
+
+### Features
+
+* Update golang.org/x/net/html ([#1086](https://github.com/chanzuckerberg/go-misc/issues/1086)) ([96a6253](https://github.com/chanzuckerberg/go-misc/commit/96a62530abd701abcfa79ea0740ef6ef1980fa08))
+
 ## [2.5.1](https://github.com/chanzuckerberg/go-misc/compare/v2.5.0...v2.5.1) (2024-12-18)
 
 
