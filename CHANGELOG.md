@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.7.0](https://github.com/chanzuckerberg/go-misc/compare/v2.6.0...v2.7.0) (2025-01-02)
+
+
+### Features
+
+* Upgrade golang.org/x/crypto ([#1088](https://github.com/chanzuckerberg/go-misc/issues/1088)) ([999f7a2](https://github.com/chanzuckerberg/go-misc/commit/999f7a23627f5aa5d338fb813431d09cc144ae57))
+
+
+### Bug Fixes
+
+* Go JOSE vulnerable to Improper Handling of Highly Compressed Data (Data Amplification) ([#1090](https://github.com/chanzuckerberg/go-misc/issues/1090)) ([1b28605](https://github.com/chanzuckerberg/go-misc/commit/1b28605532373fa7688fcab875b45503ae393563))
+
 ## [2.6.0](https://github.com/chanzuckerberg/go-misc/compare/v2.5.1...v2.6.0) (2024-12-20)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.3.0...oidc_cli-v2.3.1) (2025-01-02)
+
+
+### Bug Fixes
+
+* Go JOSE vulnerable to Improper Handling of Highly Compressed Data (Data Amplification) ([#1090](https://github.com/chanzuckerberg/go-misc/issues/1090)) ([1b28605](https://github.com/chanzuckerberg/go-misc/commit/1b28605532373fa7688fcab875b45503ae393563))
+
 ## [2.3.0](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.2.1...oidc_cli-v2.3.0) (2024-12-20)
 
 
