@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"golang.org/x/crypto/ssh"
-	"gopkg.in/square/go-jose.v2"
+	"gopkg.in/go-jose/go-jose.v2"
 )
 
 // Generate new RSA keys.
