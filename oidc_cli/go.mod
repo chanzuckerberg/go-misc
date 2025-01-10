@@ -23,6 +23,7 @@ require (
 )
 
 require (
+	github.com/alessio/shellescape v1.4.1 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/danieljoos/wincred v1.2.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -45,8 +46,6 @@ require (
 exclude github.com/zalando/go-keyring v0.2.0
 
 exclude github.com/zalando/go-keyring v0.2.1
-
-replace github.com/zalando/go-keyring => github.com/zalando/go-keyring v0.1.1
 
 replace github.com/chanzuckerberg/go-misc/errors => ../errors
 
