@@ -96,7 +96,26 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 
 	err = c.storage.Set(ctx, compressedToken)
 	if err != nil {
-		return nil, errors.Wrap(err, "Unable to cache the strToken")
+		if err.Error() == "could not set value to keyring: data passed to Set was too big" {
+			// TODO: Upgrade keyring library to v0.2.2 to use ErrSetDataTooBig
+			// if errors.Is(err, keyring.ErrSetDataTooBig) {
+			logrus.Debug("Token too big, removing refresh token")
+			strToken, err := token.Marshal(append(c.storage.MarshalOpts(), client.MarshalOptNoRefresh)...)
+			if err != nil {
+				return nil, errors.Wrap(err, "unable to marshall token")
+			}
+			// gzip encode and save token to storage
+			compressedToken, err = compressToken(strToken)
+			if err != nil {
+				return nil, errors.Wrap(err, "unable to compress token")
+			}
+			err = c.storage.Set(ctx, compressedToken)
+			if err != nil {
+				return nil, errors.Wrap(err, "Unable to cache the strToken")
+			}
+		} else {
+			return nil, errors.Wrap(err, "Unable to cache the strToken")
+		}
 	}
 
 	return token, nil
