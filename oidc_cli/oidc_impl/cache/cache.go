@@ -12,7 +12,6 @@ import (
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
-	"github.com/zalando/go-keyring"
 )
 
 // Cache to cache credentials
@@ -97,7 +96,9 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 
 	err = c.storage.Set(ctx, compressedToken)
 	if err != nil {
-		if errors.Is(err, keyring.ErrSetDataTooBig) {
+		if err.Error() == "could not set value to keyring: data passed to Set was too big" {
+			// TODO: Upgrade keyring library to v0.2.2 to use ErrSetDataTooBig
+			// if errors.Is(err, keyring.ErrSetDataTooBig) {
 			logrus.Debug("Token too big, removing refresh token")
 			strToken, err := token.Marshal(append(c.storage.MarshalOpts(), client.MarshalOptNoRefresh)...)
 			if err != nil {
