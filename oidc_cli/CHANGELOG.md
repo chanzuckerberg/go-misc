@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.4.0](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.3.0...oidc_cli-v2.4.0) (2025-01-10)
+
+
+### Features
+
+* Remove refresh token if token is too big ([#1092](https://github.com/chanzuckerberg/go-misc/issues/1092)) ([23d4604](https://github.com/chanzuckerberg/go-misc/commit/23d4604bb218629b26f4fc2cf97a9b418c865146))
+* Upgrade keyring package to latest ([#1093](https://github.com/chanzuckerberg/go-misc/issues/1093)) ([3eda425](https://github.com/chanzuckerberg/go-misc/commit/3eda425a903a4464730ab294806aa8f5ba7169e2))
+
+
+### Bug Fixes
+
+* Go JOSE vulnerable to Improper Handling of Highly Compressed Data (Data Amplification) ([#1090](https://github.com/chanzuckerberg/go-misc/issues/1090)) ([1b28605](https://github.com/chanzuckerberg/go-misc/commit/1b28605532373fa7688fcab875b45503ae393563))
+
 ## [2.3.0](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.2.1...oidc_cli-v2.3.0) (2024-12-20)
 
 
