@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.1](https://github.com/chanzuckerberg/go-misc/compare/v2.7.0...v2.7.1) (2025-01-30)
+
+
+### Bug Fixes
+
+* Go JOSE vulnerable to Improper Handling of Highly Compressed Data (Data Amplification) ([#1094](https://github.com/chanzuckerberg/go-misc/issues/1094)) ([836b377](https://github.com/chanzuckerberg/go-misc/commit/836b37716c58f6d70888db6e7b28af984a487a09))
+
 ## [2.7.0](https://github.com/chanzuckerberg/go-misc/compare/v2.6.0...v2.7.0) (2025-01-10)
 
 
