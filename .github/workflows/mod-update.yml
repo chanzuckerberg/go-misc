@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   find-changed-packages:
-    runs-on: [ARM64, self-hosted, Linux]
+    runs-on: ARM64
     outputs:
       changedPackages: ${{ steps.changedGoPackages.outputs.changedGoPackages }}
     steps:
@@ -19,7 +19,7 @@ jobs:
         uses: ./.github/actions/find-changed-packages
 
   update-go-mod:
-    runs-on: [ARM64, self-hosted, Linux]
+    runs-on: ARM64
     needs: find-changed-packages
     strategy:
       matrix:
@@ -53,7 +53,7 @@ jobs:
 
   # this job exists to give us something to make a required check on that will ensure all go.mod updates are complete
   go-mod-updates-complete:
-    runs-on: [ARM64, self-hosted, Linux]
+    runs-on: ARM64
     needs: update-go-mod
     steps:
       - run: echo "Go mod updates complete"

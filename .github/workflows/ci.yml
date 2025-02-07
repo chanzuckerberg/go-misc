@@ -9,7 +9,7 @@ concurrency:
 
 jobs:
   find-changed-packages:
-    runs-on: [ARM64, self-hosted, Linux]
+    runs-on: ARM64
     outputs:
       changedPackages: ${{ steps.changedGoPackages.outputs.changedGoPackages }}
     steps:
@@ -19,7 +19,7 @@ jobs:
         uses: ./.github/actions/find-changed-packages
 
   run-lint:
-    runs-on: [ARM64, self-hosted, Linux]
+    runs-on: ARM64
     needs: find-changed-packages
     if: ${{ needs.find-changed-packages.outputs.changedPackages != '[]' }}
     strategy:
@@ -42,7 +42,7 @@ jobs:
           workdir: ${{ matrix.gopkg }}
 
   run-tests:
-    runs-on: [ARM64, self-hosted, Linux]
+    runs-on: ARM64
     needs: find-changed-packages
     if: ${{ needs.find-changed-packages.outputs.changedPackages != '[]' }}
     strategy:
@@ -60,7 +60,7 @@ jobs:
 
   # this job exists to give us something to make a required check on that will ensure all CI runs are complete
   run-ci-complete:
-    runs-on: [ARM64, self-hosted, Linux]
+    runs-on: ARM64
     needs:
       - run-tests
       - run-lint
