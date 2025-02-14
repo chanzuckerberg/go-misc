@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.7.2](https://github.com/chanzuckerberg/go-misc/compare/v2.7.1...v2.7.2) (2025-02-07)
+
+
+### Bug Fixes
+
+* Update runs-on labels in GitHub Actions workflows ([#1096](https://github.com/chanzuckerberg/go-misc/issues/1096)) ([7744123](https://github.com/chanzuckerberg/go-misc/commit/7744123f98e7dcc4dc3787a162cc696d991abf6e))
+
 ## [2.7.1](https://github.com/chanzuckerberg/go-misc/compare/v2.7.0...v2.7.1) (2025-01-30)
 
 
