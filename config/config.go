@@ -16,13 +16,16 @@ import (
 )
 
 const defaultConfigYamlDir = "./"
+const defaultConfigFileBaseName = "app-config"
 
 // ConfigEditorFn is a function that can be used to modify the configuration values after they have been loaded
 type ConfigEditorFn[T any] func(cfg *T) error
 
 type ConfigLoader[T any] struct {
-	ConfigEditors []ConfigEditorFn[T]
-	ConfigYamlDir string
+	ConfigEditors             []ConfigEditorFn[T]
+	ConfigYamlDir             string
+	ConfigFileBaseName        string
+	AdditionalConfigFileNames []string
 }
 
 // ConfigOption is a function that can be used to modify the configuration loader
@@ -38,9 +41,29 @@ func WithConfigEditorFn[T any](fn ConfigEditorFn[T]) ConfigOption[T] {
 	}
 }
 
+// WithConfigYamlDir allows changing the directory where the config files are located.
+// The default is "./", meaning the same as where your main.go is located.
 func WithConfigYamlDir[T any](dir string) ConfigOption[T] {
 	return func(c *ConfigLoader[T]) error {
 		c.ConfigYamlDir = dir
+		return nil
+	}
+}
+
+// WithConfigFileBaseName allows changing the base name of the config file to be loaded.
+// The default is "app-config", so the main config file is app-config.yaml and the env config file is app-config.<env>.yaml
+func WithConfigFileBaseName[T any](fileNamePrefix string) ConfigOption[T] {
+	return func(c *ConfigLoader[T]) error {
+		c.ConfigFileBaseName = fileNamePrefix
+		return nil
+	}
+}
+
+// WithAdditionalConfigFile allows adding additional config files to be loaded AFTER the main config file and the env config file,
+// meaning it will override any values set in the main config file and the env config file.
+func WithAdditionalConfigFile[T any](fileName string) ConfigOption[T] {
+	return func(c *ConfigLoader[T]) error {
+		c.AdditionalConfigFileNames = append(c.AdditionalConfigFileNames, fileName)
 		return nil
 	}
 }
@@ -53,8 +76,9 @@ func LoadConfiguration[T any](cfg *T, opts ...ConfigOption[T]) error {
 	}
 
 	loader := &ConfigLoader[T]{
-		ConfigEditors: []ConfigEditorFn[T]{},
-		ConfigYamlDir: configYamlDir,
+		ConfigEditors:      []ConfigEditorFn[T]{},
+		ConfigYamlDir:      configYamlDir,
+		ConfigFileBaseName: defaultConfigFileBaseName,
 	}
 
 	for _, opt := range opts {
@@ -84,38 +108,47 @@ func (c *ConfigLoader[T]) populateConfiguration(cfg *T) error {
 	}
 
 	vpr := viper.New()
-	appConfigFile := filepath.Join(path, "app-config.yaml")
-	if _, err := os.Stat(appConfigFile); err == nil {
-		tmp, err := evaluateConfigWithEnvToTmp(appConfigFile)
-		if len(tmp) != 0 {
-			defer os.Remove(tmp)
-		}
-		if err != nil {
-			return err
-		}
 
-		vpr.SetConfigFile(tmp)
-		err = vpr.ReadInConfig()
-		if err != nil {
-			return fmt.Errorf("failed to read config file: %w", err)
-		}
+	appConfigFile := fmt.Sprintf("%s.yaml", c.ConfigFileBaseName)
+	appConfigFiles := []string{appConfigFile}
+
+	// add the env specific config file if appEnv is set
+	appEnv := getAppEnv()
+	if len(appEnv) > 0 {
+		appEnvConfigFile := fmt.Sprintf("%s.%s.yaml", c.ConfigFileBaseName, appEnv)
+		appConfigFiles = append(appConfigFiles, appEnvConfigFile)
 	}
 
-	envConfigFilename := fmt.Sprintf("app-config.%s.yaml", getAppEnv())
-	appEnvConfigFile := filepath.Join(path, envConfigFilename)
-	if _, err := os.Stat(appEnvConfigFile); err == nil {
-		tmp, err := evaluateConfigWithEnvToTmp(appEnvConfigFile)
-		if len(tmp) != 0 {
-			defer os.Remove(tmp)
-		}
-		if err != nil {
-			return err
-		}
+	// add additional config files
+	appConfigFiles = append(appConfigFiles, c.AdditionalConfigFileNames...)
 
-		vpr.SetConfigFile(tmp)
-		err = vpr.MergeInConfig()
-		if err != nil {
-			return fmt.Errorf("failed to merge env config: %w", err)
+	firstFile := true
+	// iterate the appConfig files to be used, read the first one and merge the rest
+	for _, configFile := range appConfigFiles {
+		absoluteConfigFilePath := filepath.Join(path, configFile)
+		fmt.Println("...> loading file:", absoluteConfigFilePath)
+		if _, err := os.Stat(absoluteConfigFilePath); err == nil {
+			tmp, err := evaluateConfigWithEnvToTmp(absoluteConfigFilePath)
+			if len(tmp) != 0 {
+				defer os.Remove(tmp)
+			}
+			if err != nil {
+				return err
+			}
+
+			vpr.SetConfigFile(tmp)
+			if firstFile {
+				err = vpr.ReadInConfig()
+				if err != nil {
+					return fmt.Errorf("failed to read config file: %w", err)
+				}
+				firstFile = false
+			} else {
+				err = vpr.MergeInConfig()
+				if err != nil {
+					return fmt.Errorf("failed to merge env config: %w", err)
+				}
+			}
 		}
 	}
 

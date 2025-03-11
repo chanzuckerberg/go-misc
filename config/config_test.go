@@ -78,6 +78,38 @@ func TestLoadConfigurationBasic(t *testing.T) {
 	r.Equal("zap", cfg.Nested.Value1)
 }
 
+func TestLoadConfigurationWithAdditionalFile(t *testing.T) {
+	r := require.New(t)
+
+	cfg := &testConfig{}
+	err := LoadConfiguration(
+		cfg,
+		WithConfigYamlDir[testConfig]("./testData/basic"),
+		WithAdditionalConfigFile[testConfig]("anotherconfig.yaml"),
+	)
+	r.NoError(err)
+
+	r.Equal("foo", cfg.Value1)
+	r.Equal("anotherconfig-value-override", cfg.Value2)
+	r.Equal("zap", cfg.Nested.Value1)
+}
+
+func TestLoadConfigurationWithAlternateBaseFileName(t *testing.T) {
+	r := require.New(t)
+
+	cfg := &testConfig{}
+	err := LoadConfiguration(
+		cfg,
+		WithConfigYamlDir[testConfig]("./testData/alternate_base_name"),
+		WithConfigFileBaseName[testConfig]("something"),
+	)
+	r.NoError(err)
+
+	r.Equal("somevalue1", cfg.Value1)
+	r.Equal("somevalue2", cfg.Value2)
+	r.Equal("some-nested-value1", cfg.Nested.Value1)
+}
+
 func TestLoadConfigurationOverlay(t *testing.T) {
 	r := require.New(t)
 
