@@ -126,7 +126,6 @@ func (c *ConfigLoader[T]) populateConfiguration(cfg *T) error {
 	// iterate the appConfig files to be used, read the first one and merge the rest
 	for _, configFile := range appConfigFiles {
 		absoluteConfigFilePath := filepath.Join(path, configFile)
-		fmt.Println("...> loading file:", absoluteConfigFilePath)
 		if _, err := os.Stat(absoluteConfigFilePath); err == nil {
 			tmp, err := evaluateConfigWithEnvToTmp(absoluteConfigFilePath)
 			if len(tmp) != 0 {
