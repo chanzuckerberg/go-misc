@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/chanzuckerberg/go-misc/compare/snowflake-v2.1.0...snowflake-v2.1.1) (2025-03-12)
+
+
+### Misc
+
+* **deps:** bump github.com/dvsekhvalnov/jose2go from 1.5.0 to 1.6.0 in /snowflake ([#1091](https://github.com/chanzuckerberg/go-misc/issues/1091)) ([9e957ff](https://github.com/chanzuckerberg/go-misc/commit/9e957ffec5376489c4e5ab56e0617717c9518509))
+
 ## [2.1.0](https://github.com/chanzuckerberg/go-misc/compare/snowflake-v2.0.1...snowflake-v2.1.0) (2024-12-20)
 
 
