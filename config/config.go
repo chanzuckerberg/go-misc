@@ -59,9 +59,9 @@ func WithConfigFileBaseName[T any](fileNamePrefix string) ConfigOption[T] {
 	}
 }
 
-// WithAdditionalConfigFile allows adding additional config files to be loaded AFTER the main config file and the env config file,
+// WithOverrideConfigFile allows adding additional config files to be loaded AFTER the main config file and the env config file,
 // meaning it will override any values set in the main config file and the env config file.
-func WithAdditionalConfigFile[T any](fileName string) ConfigOption[T] {
+func WithOverrideConfigFile[T any](fileName string) ConfigOption[T] {
 	return func(c *ConfigLoader[T]) error {
 		c.AdditionalConfigFileNames = append(c.AdditionalConfigFileNames, fileName)
 		return nil

@@ -85,7 +85,7 @@ func TestLoadConfigurationWithAdditionalFile(t *testing.T) {
 	err := LoadConfiguration(
 		cfg,
 		WithConfigYamlDir[testConfig]("./testData/basic"),
-		WithAdditionalConfigFile[testConfig]("anotherconfig.yaml"),
+		WithOverrideConfigFile[testConfig]("anotherconfig.yaml"),
 	)
 	r.NoError(err)
 
