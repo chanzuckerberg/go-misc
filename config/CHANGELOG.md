@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.3.0](https://github.com/chanzuckerberg/go-misc/compare/config-v3.2.0...config-v3.3.0) (2025-03-12)
+
+
+### Features
+
+* allow adding arbitrary yaml config files ([#1098](https://github.com/chanzuckerberg/go-misc/issues/1098)) ([ad78e5b](https://github.com/chanzuckerberg/go-misc/commit/ad78e5b859c94517e0b72b342b64448070816f65))
+
+
+### Bug Fixes
+
+* config should be v3 ([#1100](https://github.com/chanzuckerberg/go-misc/issues/1100)) ([3c45195](https://github.com/chanzuckerberg/go-misc/commit/3c45195af918e31bc39d58f165d0a9a6777a62d2))
+
 ## [3.2.0](https://github.com/chanzuckerberg/go-misc/compare/config-v3.1.0...config-v3.2.0) (2024-12-20)
 
 
