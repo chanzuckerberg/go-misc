@@ -1,4 +1,4 @@
-module github.com/chanzuckerberg/go-misc/config/v2
+module github.com/chanzuckerberg/go-misc/config/v3
 
 go 1.21
 
