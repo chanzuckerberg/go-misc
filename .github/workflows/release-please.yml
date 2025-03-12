@@ -8,21 +8,15 @@ jobs:
     release-please:
       runs-on: ARM64
       steps:
-        # See https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow
-        # For why we need to generate a token and not use the default
         - name: Generate token
+          uses: actions/create-github-app-token@v1
           id: generate_token
-          uses: tibdex/github-app-token@v2
           with:
-            app_id: ${{ secrets.CZI_RELEASE_PLEASE_APP_ID }}
-            private_key: ${{ secrets.CZI_RELEASE_PLEASE_PK }}
-
-        - name: release please
-          uses: google-github-actions/release-please-action@v3
+            app-id: ${{ secrets.GH_ACTIONS_HELPER_APP_ID }}
+            private-key: ${{ secrets.GH_ACTIONS_HELPER_PK }}
+        - name: Run release-please
+          uses: chanzuckerberg/github-actions/.github/actions/release-please-semvar@release-please-semvar-v0
           id: release
           with:
-            release-type: simple
-            command: manifest
-            bump-minor-pre-major: true
-            token: ${{ steps.generate_token.outputs.token }}
-            monorepo-tags: true
+              app_token: ${{ steps.generate_token.outputs.token }}
+              include_component_in_tag: true
