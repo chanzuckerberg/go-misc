@@ -88,7 +88,10 @@ func LoadConfiguration[T any](cfg *T, opts ...ConfigOption[T]) error {
 		}
 	}
 
-	loader.populateConfiguration(cfg)
+	err := loader.populateConfiguration(cfg)
+	if err != nil {
+		return fmt.Errorf("Populating configuration failed: %w", err)
+	}
 
 	for _, fn := range loader.ConfigEditors {
 		err := fn(cfg)
@@ -122,32 +125,29 @@ func (c *ConfigLoader[T]) populateConfiguration(cfg *T) error {
 	// add additional config files
 	appConfigFiles = append(appConfigFiles, c.AdditionalConfigFileNames...)
 
-	firstFile := true
 	// iterate the appConfig files to be used, read the first one and merge the rest
 	for _, configFile := range appConfigFiles {
 		absoluteConfigFilePath := filepath.Join(path, configFile)
-		if _, err := os.Stat(absoluteConfigFilePath); err == nil {
-			tmp, err := evaluateConfigWithEnvToTmp(absoluteConfigFilePath)
-			if len(tmp) != 0 {
-				defer os.Remove(tmp)
+		_, err := os.Stat(absoluteConfigFilePath)
+		if err != nil {
+			if errors.Is(err, os.ErrNotExist) {
+				continue // if the file does not exist, skip it
 			}
-			if err != nil {
-				return err
-			}
+			return fmt.Errorf("failed to get file info for %s: %w", absoluteConfigFilePath, err)
+		}
 
-			vpr.SetConfigFile(tmp)
-			if firstFile {
-				err = vpr.ReadInConfig()
-				if err != nil {
-					return fmt.Errorf("failed to read config file: %w", err)
-				}
-				firstFile = false
-			} else {
-				err = vpr.MergeInConfig()
-				if err != nil {
-					return fmt.Errorf("failed to merge env config: %w", err)
-				}
-			}
+		tmp, err := evaluateConfigWithEnvToTmp(absoluteConfigFilePath)
+		if len(tmp) != 0 {
+			defer os.Remove(tmp)
+		}
+		if err != nil {
+			return err
+		}
+
+		vpr.SetConfigFile(tmp)
+		err = vpr.MergeInConfig()
+		if err != nil {
+			return fmt.Errorf("failed to merge env config: %w", err)
 		}
 	}
 
