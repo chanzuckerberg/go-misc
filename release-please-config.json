@@ -2,6 +2,7 @@
 	"release-type": "simple",
 	"pull-request-title-pattern": "chore${scope}: release${component} ${version}",
 	"bump-minor-pre-major": true,
+	"separate-pull-requests": true,
 	"prerelease": false,
 	"changelog-types": [
 		{
@@ -21,7 +22,6 @@
 		}
 	],
 	"packages": {
-		".": {},
 		"aws": {
 			"package-name": "aws"
 		},
