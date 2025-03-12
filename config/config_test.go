@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 )
 
@@ -78,6 +79,54 @@ func TestLoadConfigurationBasic(t *testing.T) {
 	r.Equal("zap", cfg.Nested.Value1)
 }
 
+func TestLoadConfigurationBasicDoesntErrorOnMissingFile(t *testing.T) {
+	r := require.New(t)
+
+	// Set the deployment stage to test so it overlays some app-config.<uuid>.yaml file (which doesn't exist and should not error)
+	os.Setenv("DEPLOYMENT_STAGE", uuid.New().String())
+	defer os.Unsetenv("DEPLOYMENT_STAGE")
+
+	cfg := &testConfig{}
+	err := LoadConfiguration(cfg, WithConfigYamlDir[testConfig]("./testData/basic"))
+	r.NoError(err)
+
+	r.Equal("foo", cfg.Value1)
+	r.Equal("bar", cfg.Value2)
+	r.Equal("zap", cfg.Nested.Value1)
+}
+
+func TestLoadConfigurationWithAdditionalFile(t *testing.T) {
+	r := require.New(t)
+
+	cfg := &testConfig{}
+	err := LoadConfiguration(
+		cfg,
+		WithConfigYamlDir[testConfig]("./testData/basic"),
+		WithOverrideConfigFile[testConfig]("anotherconfig.yaml"),
+	)
+	r.NoError(err)
+
+	r.Equal("foo", cfg.Value1)
+	r.Equal("anotherconfig-value-override", cfg.Value2)
+	r.Equal("zap", cfg.Nested.Value1)
+}
+
+func TestLoadConfigurationWithAlternateBaseFileName(t *testing.T) {
+	r := require.New(t)
+
+	cfg := &testConfig{}
+	err := LoadConfiguration(
+		cfg,
+		WithConfigYamlDir[testConfig]("./testData/alternate_base_name"),
+		WithConfigFileBaseName[testConfig]("something"),
+	)
+	r.NoError(err)
+
+	r.Equal("somevalue1", cfg.Value1)
+	r.Equal("somevalue2", cfg.Value2)
+	r.Equal("some-nested-value1", cfg.Nested.Value1)
+}
+
 func TestLoadConfigurationOverlay(t *testing.T) {
 	r := require.New(t)
 
@@ -138,7 +187,7 @@ func TestLoadConfigurationValidatedSucceedWithConfigEditor(t *testing.T) {
 func TestLoadConfigurationValidatedSucceedWithOverlay(t *testing.T) {
 	r := require.New(t)
 
-	// Set the deployment stage to test so it overlays the app-config.test.yaml file
+	// Set the deployment stage to "withvalues" so it overlays the app-config.withvalues.yaml file
 	os.Setenv("DEPLOYMENT_STAGE", "withvalues")
 	defer os.Unsetenv("DEPLOYMENT_STAGE")
 

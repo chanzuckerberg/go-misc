@@ -1,0 +1,4 @@
+value1: somevalue1
+value2: somevalue2
+nested:
+  value1: some-nested-value1

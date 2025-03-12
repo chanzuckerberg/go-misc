@@ -4,6 +4,7 @@ go 1.21
 
 require (
 	github.com/go-playground/validator/v10 v10.19.0
+	github.com/google/uuid v1.4.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
