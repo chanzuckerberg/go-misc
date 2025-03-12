@@ -1,65 +1,64 @@
 {
-	"release-type": "simple",
-	"pull-request-title-pattern": "chore${scope}: release${component} ${version}",
-	"bump-minor-pre-major": true,
-	"separate-pull-requests": true,
-	"prerelease": false,
-	"changelog-types": [
-		{
-			"type": "feat",
-			"section": "Features",
-			"hidden": false
-		},
-		{
-			"type": "chore",
-			"section": "Misc",
-			"hidden": false
-		},
-		{
-			"type": "fix",
-			"section": "BugFixes",
-			"hidden": false
-		}
-	],
-	"packages": {
-		"aws": {
-			"package-name": "aws"
-		},
-		"config": {
-			"package-name": "config"
-		},
-		"errors": {
-			"package-name": "errors"
-		},
-		"keypair": {
-			"package-name": "keypair"
-		},
-		"kmsauth": {
-			"package-name": "kmsauth"
-		},
-		"oidc_cli": {
-			"package-name": "oidc_cli"
-		},
-		"osutil": {
-			"package-name": "osutil"
-		},
-		"pidlock": {
-			"package-name": "pidlock"
-		},
-		"sets": {
-			"package-name": "sets"
-		},
-		"slack": {
-			"package-name": "slack"
-		},
-		"snowflake": {
-			"package-name": "snowflake"
-		},
-		"survey": {
-			"package-name": "survey"
-		},
-		"ver": {
-			"package-name": "ver"
-		}
-	}
+  "release-type": "simple",
+  "pull-request-title-pattern": "chore${scope}: release${component} ${version}",
+  "bump-minor-pre-major": true,
+  "prerelease": false,
+  "changelog-sections": [
+    {
+      "type": "feat",
+      "section": "Features",
+      "hidden": false
+    },
+    {
+      "type": "fix",
+      "section": "Bug Fixes",
+      "hidden": false
+    },
+    {
+      "type": "chore",
+      "section": "Misc",
+      "hidden": false
+    }
+  ],
+  "packages": {
+    "aws": {
+      "package-name": "aws"
+    },
+    "config": {
+      "package-name": "config"
+    },
+    "errors": {
+      "package-name": "errors"
+    },
+    "keypair": {
+      "package-name": "keypair"
+    },
+    "kmsauth": {
+      "package-name": "kmsauth"
+    },
+    "oidc_cli": {
+      "package-name": "oidc_cli"
+    },
+    "osutil": {
+      "package-name": "osutil"
+    },
+    "pidlock": {
+      "package-name": "pidlock"
+    },
+    "sets": {
+      "package-name": "sets"
+    },
+    "slack": {
+      "package-name": "slack"
+    },
+    "snowflake": {
+      "package-name": "snowflake"
+    },
+    "survey": {
+      "package-name": "survey"
+    },
+    "ver": {
+      "package-name": "ver"
+    }
+  }
 }
