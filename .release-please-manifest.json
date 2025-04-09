@@ -9,7 +9,7 @@
   "pidlock": "2.0.0",
   "sets": "2.0.0",
   "slack": "2.0.0",
-  "snowflake": "2.1.1",
+  "snowflake": "3.0.0",
   "survey": "2.1.0",
   "ver": "2.0.0"
 }
