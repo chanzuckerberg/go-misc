@@ -83,3 +83,19 @@ func TestChainOfErrors(t *testing.T) {
 	r.NotNil(intErr)
 	r.Equal("error4", intErr.Error())
 }
+
+func TestIsPublicError(t *testing.T) {
+	r := require.New(t)
+
+	pubErr := PublicWrap(fmt.Errorf("error"), "public message")
+
+	// any error wrapping a publicError is a public error
+	r.True(IsPublicError(pubErr))
+	r.True(IsPublicError(fmt.Errorf("error: %w", pubErr)))
+	r.True(IsPublicError(fmt.Errorf("error: %w", fmt.Errorf("error: %w", pubErr))))
+
+	// errors without a publicError in the chain are not public errors
+	r.False(IsPublicError(nil))
+	r.False(IsPublicError(fmt.Errorf("error")))
+	r.False(IsPublicError(fmt.Errorf("error: %w", fmt.Errorf("error"))))
+}

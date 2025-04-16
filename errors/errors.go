@@ -63,6 +63,11 @@ func NewPublicf(format string, args ...interface{}) error {
 	return NewPublic(fmt.Sprintf(format, args...))
 }
 
+func IsPublicError(err error) bool {
+	pubErr := &publicError{}
+	return errors.As(err, &pubErr)
+}
+
 // Error returns the public part of this error
 func (e *publicError) Error() string {
 	return e.GetPublicMessage()
