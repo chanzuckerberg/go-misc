@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/chanzuckerberg/go-misc/compare/errors-v2.1.0...errors-v2.2.0) (2025-04-16)
+
+
+### Features
+
+* add method to test for public error ([#1109](https://github.com/chanzuckerberg/go-misc/issues/1109)) ([024b348](https://github.com/chanzuckerberg/go-misc/commit/024b3484b01cd284024c545d36457453cc34f939))
+
 ## [2.1.0](https://github.com/chanzuckerberg/go-misc/compare/errors-v2.0.0...errors-v2.1.0) (2024-03-30)
 
 

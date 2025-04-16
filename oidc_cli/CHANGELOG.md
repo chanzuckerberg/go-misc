@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.2](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.4.1...oidc_cli-v2.4.2) (2025-04-16)
+
+
+### Misc
+
+* bump golang.org/x/crypto to 0.35.0 ([#1107](https://github.com/chanzuckerberg/go-misc/issues/1107)) ([9956e3b](https://github.com/chanzuckerberg/go-misc/commit/9956e3b2797acf329133cacbe33bab2a7df82ee8))
+
 ## [2.4.1](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.4.0...oidc_cli-v2.4.1) (2025-01-30)
 
 
