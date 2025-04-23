@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.2](https://github.com/chanzuckerberg/go-misc/compare/config-v3.3.1...config-v3.3.2) (2025-04-23)
+
+
+### Misc
+
+* **deps:** bump golang.org/x/net from 0.33.0 to 0.38.0 in /config ([#1112](https://github.com/chanzuckerberg/go-misc/issues/1112)) ([0dc5b69](https://github.com/chanzuckerberg/go-misc/commit/0dc5b698c7d3ba351199b4b0f2ed3f1e794a27e4))
+
 ## [3.3.1](https://github.com/chanzuckerberg/go-misc/compare/config-v3.3.0...config-v3.3.1) (2025-04-15)
 
 
