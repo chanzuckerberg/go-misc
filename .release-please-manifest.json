@@ -1,6 +1,6 @@
 {
   "aws": "2.1.1",
-  "config": "3.3.1",
+  "config": "3.3.2",
   "errors": "2.2.0",
   "keypair": "2.1.1",
   "kmsauth": "2.1.0",
@@ -9,7 +9,7 @@
   "pidlock": "2.0.0",
   "sets": "2.0.0",
   "slack": "2.0.0",
-  "snowflake": "3.0.1",
+  "snowflake": "3.0.2",
   "survey": "2.1.0",
   "ver": "2.0.0"
 }
