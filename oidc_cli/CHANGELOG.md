@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.3](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.4.2...oidc_cli-v2.4.3) (2025-07-21)
+
+
+### Misc
+
+* **deps:** bump golang.org/x/oauth2 from 0.25.0 to 0.27.0 in /oidc_cli ([#1115](https://github.com/chanzuckerberg/go-misc/issues/1115)) ([e397641](https://github.com/chanzuckerberg/go-misc/commit/e397641da8e395950c5670958abb3e060fb02435))
+
 ## [2.4.2](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.4.1...oidc_cli-v2.4.2) (2025-04-16)
 
 
