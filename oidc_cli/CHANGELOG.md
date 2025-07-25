@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.1](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v3.0.0...oidc_cli-v3.0.1) (2025-07-25)
+
+
+### Misc
+
+* **deps:** bump github.com/go-jose/go-jose/v4 from 4.0.0 to 4.0.5 in /oidc_cli ([#1119](https://github.com/chanzuckerberg/go-misc/issues/1119)) ([7ecd3fb](https://github.com/chanzuckerberg/go-misc/commit/7ecd3fb4d37438fcdf57a370e38655171ab3334c))
+
 ## [3.0.0](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v2.4.3...oidc_cli-v3.0.0) (2025-07-25)
 
 
