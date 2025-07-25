@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.2](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v3.0.1...oidc_cli-v3.0.2) (2025-07-25)
+
+
+### Misc
+
+* Upgrade go-oidc to v3 ([#1121](https://github.com/chanzuckerberg/go-misc/issues/1121)) ([fdcca18](https://github.com/chanzuckerberg/go-misc/commit/fdcca18bb4d19ea5c9e8bd16d4d8bfbeb4a535a8))
+
 ## [3.0.1](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v3.0.0...oidc_cli-v3.0.1) (2025-07-25)
 
 
