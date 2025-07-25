@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v3.0.2...oidc_cli-v3.1.0) (2025-07-25)
+
+
+### Features
+
+* Update go-jose v4 and other dependencies ([#1124](https://github.com/chanzuckerberg/go-misc/issues/1124)) ([a8bee75](https://github.com/chanzuckerberg/go-misc/commit/a8bee751b630dabef14caa0620640195e9c5f2d7))
+
 ## [3.0.2](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v3.0.1...oidc_cli-v3.0.2) (2025-07-25)
 
 
