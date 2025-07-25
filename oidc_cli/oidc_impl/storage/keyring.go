@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/chanzuckerberg/go-misc/oidc_cli/v2/oidc_impl/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/v3/oidc_impl/client"
 	"github.com/pkg/errors"
 	"github.com/zalando/go-keyring"
 )

@@ -1,4 +1,4 @@
-module github.com/chanzuckerberg/go-misc/oidc_cli/v2
+module github.com/chanzuckerberg/go-misc/oidc_cli/v3
 
 go 1.23.0
 
