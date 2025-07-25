@@ -5,11 +5,11 @@ go 1.23.0
 toolchain go1.23.8
 
 require (
-	github.com/aws/aws-sdk-go v1.51.4
-	github.com/chanzuckerberg/go-misc/osutil v0.0.0-20240404182313-43e397411f6e
-	github.com/chanzuckerberg/go-misc/pidlock v0.0.0-20240320212149-709d6d5c338b
+	github.com/aws/aws-sdk-go v1.55.7
+	github.com/chanzuckerberg/go-misc/osutil v0.0.0-20250725153648-47b0707ca4b9
+	github.com/chanzuckerberg/go-misc/pidlock v0.0.0-20250725155314-6a5b915d3532
 	github.com/coreos/go-oidc/v3 v3.14.1
-	github.com/go-jose/go-jose/v4 v4.0.5
+	github.com/go-jose/go-jose/v4 v4.1.1
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/mitchellh/go-homedir v1.1.0
@@ -17,15 +17,15 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0
-	github.com/zalando/go-keyring v0.2.4
-	golang.org/x/crypto v0.36.0
-	golang.org/x/oauth2 v0.28.0
+	github.com/zalando/go-keyring v0.2.6
+	golang.org/x/crypto v0.40.0
+	golang.org/x/oauth2 v0.30.0
 )
 
 require (
-	github.com/alessio/shellescape v1.4.1 // indirect
+	al.essio.dev/pkg/shellescape v1.6.0 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
-	github.com/danieljoos/wincred v1.2.1 // indirect
+	github.com/danieljoos/wincred v1.2.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -33,7 +33,7 @@ require (
 	github.com/kr/text v0.2.0 // indirect
 	github.com/nightlyone/lockfile v1.0.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/sys v0.34.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
