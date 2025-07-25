@@ -1,4 +1,4 @@
-module github.com/chanzuckerberg/go-misc/oidc_cli/v2
+module github.com/chanzuckerberg/go-misc/oidc_cli/v3
 
 go 1.23.0
 
@@ -9,6 +9,7 @@ require (
 	github.com/chanzuckerberg/go-misc/osutil v0.0.0-20240404182313-43e397411f6e
 	github.com/chanzuckerberg/go-misc/pidlock v0.0.0-20240320212149-709d6d5c338b
 	github.com/coreos/go-oidc v2.3.0+incompatible
+	github.com/go-jose/go-jose/v4 v4.0.0
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/mitchellh/go-homedir v1.1.0
@@ -19,7 +20,6 @@ require (
 	github.com/zalando/go-keyring v0.2.4
 	golang.org/x/crypto v0.35.0
 	golang.org/x/oauth2 v0.27.0
-	gopkg.in/go-jose/go-jose.v2 v2.6.3
 )
 
 require (
@@ -35,6 +35,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/pquerna/cachecontrol v0.2.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
+	gopkg.in/go-jose/go-jose.v2 v2.6.3 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 

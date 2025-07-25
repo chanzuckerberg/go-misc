@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/chanzuckerberg/go-misc/oidc_cli/v2/oidc_impl/cache"
-	"github.com/chanzuckerberg/go-misc/oidc_cli/v2/oidc_impl/client"
-	"github.com/chanzuckerberg/go-misc/oidc_cli/v2/oidc_impl/storage"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/v3/oidc_impl/cache"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/v3/oidc_impl/client"
+	"github.com/chanzuckerberg/go-misc/oidc_cli/v3/oidc_impl/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/pkg/errors"
 )
