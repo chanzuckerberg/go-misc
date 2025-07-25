@@ -9,14 +9,14 @@ require (
 	github.com/chanzuckerberg/go-misc/osutil v0.0.0-20240404182313-43e397411f6e
 	github.com/chanzuckerberg/go-misc/pidlock v0.0.0-20240320212149-709d6d5c338b
 	github.com/coreos/go-oidc v2.3.0+incompatible
-	github.com/go-jose/go-jose/v4 v4.0.0
+	github.com/go-jose/go-jose/v4 v4.0.5
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.10.0
 	github.com/zalando/go-keyring v0.2.4
 	golang.org/x/crypto v0.35.0
 	golang.org/x/oauth2 v0.27.0
