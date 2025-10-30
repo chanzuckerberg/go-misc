@@ -36,11 +36,8 @@
     "kmsauth": {
       "package-name": "kmsauth"
     },
-    "kms_jwt": {
-      "package-name": "kms_jwt"
-    },
-    "oidc_cli": {
-      "package-name": "oidc_cli"
+    "oidc": {
+      "package-name": "oidc"
     },
     "osutil": {
       "package-name": "osutil"
