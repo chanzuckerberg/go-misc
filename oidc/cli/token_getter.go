@@ -1,12 +1,12 @@
-package oidc_impl
+package cli
 
 import (
 	"context"
 	"time"
 
-	"github.com/chanzuckerberg/go-misc/oidc_cli/v3/oidc_impl/cache"
-	"github.com/chanzuckerberg/go-misc/oidc_cli/v3/oidc_impl/client"
-	"github.com/chanzuckerberg/go-misc/oidc_cli/v3/oidc_impl/storage"
+	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/cache"
+	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/pkg/errors"
 )
