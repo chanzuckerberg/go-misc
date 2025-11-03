@@ -21,29 +21,32 @@ import (
 type ClaimsValues interface {
 	GetClaims() jwt.RegisteredClaims
 	GetScope() string
-	GetAudience() string
+	GetIssuerURL() string
 }
 
 type DefaultClaimsValues struct {
-	issuer, audience, scope string
+	clientID, issuerURL, scope string
 }
 
 var _ ClaimsValues = DefaultClaimsValues{}
 var _ ClaimsValues = &DefaultClaimsValues{}
 
-func NewDefaultClaimsValues(issuer, audience, scopes string) DefaultClaimsValues {
+func NewDefaultClaimsValues(clientID, issuerURL, scopes string) DefaultClaimsValues {
 	return DefaultClaimsValues{
-		issuer:   issuer,
-		audience: audience,
-		scope:    scopes,
+		clientID:  clientID,
+		issuerURL: issuerURL,
+		scope:     scopes,
 	}
 }
 
 func (d DefaultClaimsValues) GetClaims() jwt.RegisteredClaims {
+	// client id is the issuer and subject
+	// issuer url is the audience
+	// https://developer.okta.com/docs/guides/implement-oauth-for-okta-serviceapp/main/#create-and-sign-the-jwt
 	return jwt.RegisteredClaims{
-		Issuer:    d.issuer,
-		Subject:   d.issuer,
-		Audience:  []string{d.audience},
+		Issuer:    d.clientID,
+		Subject:   d.clientID,
+		Audience:  []string{d.issuerURL},
 		IssuedAt:  jwt.NewNumericDate(time.Now()),
 		ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),
 	}
@@ -53,8 +56,8 @@ func (d DefaultClaimsValues) GetScope() string {
 	return d.scope
 }
 
-func (d DefaultClaimsValues) GetAudience() string {
-	return d.audience
+func (d DefaultClaimsValues) GetIssuerURL() string {
+	return d.issuerURL
 }
 
 type KMSKeyTokenProvider struct {
@@ -129,7 +132,7 @@ func (k *KMSKeyTokenProvider) fetchToken(ctx context.Context) (string, time.Time
 		return "", time.Time{}, fmt.Errorf("unable to sign JWT with KMS key %s: %w", k.keyID, err)
 	}
 
-	accessTokenResp, err := requestAccessToken(k.claims.GetScope(), k.claims.GetAudience(), fmt.Sprintf("%s.%s", signingStr, base64.RawStdEncoding.EncodeToString(signResponse.Signature)))
+	accessTokenResp, err := requestAccessToken(k.claims.GetScope(), k.claims.GetIssuerURL(), fmt.Sprintf("%s.%s", signingStr, base64.RawStdEncoding.EncodeToString(signResponse.Signature)))
 	if err != nil {
 		return "", time.Time{}, fmt.Errorf("unable to request access token: %w", err)
 	}
@@ -141,7 +144,7 @@ func (k *KMSKeyTokenProvider) fetchToken(ctx context.Context) (string, time.Time
 	return accessTokenResp.AccessToken, expiration, nil
 }
 
-func requestAccessToken(scope, audience, signedToken string) (*AccessTokenResponse, error) {
+func requestAccessToken(scope, issuerURL, signedToken string) (*AccessTokenResponse, error) {
 	values := url.Values{}
 	values.Add("grant_type", "client_credentials")
 	values.Add("scope", scope)
@@ -150,9 +153,9 @@ func requestAccessToken(scope, audience, signedToken string) (*AccessTokenRespon
 
 	params := values.Encode()
 
-	req, err := http.NewRequest(http.MethodPost, audience, strings.NewReader(params))
+	req, err := http.NewRequest(http.MethodPost, issuerURL, strings.NewReader(params))
 	if err != nil {
-		return nil, fmt.Errorf("error talking to %s: %w", audience, err)
+		return nil, fmt.Errorf("error talking to %s: %w", issuerURL, err)
 	}
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Add("Accept", "application/json")
@@ -161,7 +164,7 @@ func requestAccessToken(scope, audience, signedToken string) (*AccessTokenRespon
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("error talking to %s: %w", audience, err)
+		return nil, fmt.Errorf("error talking to %s: %w", issuerURL, err)
 	}
 	if resp.StatusCode >= 300 {
 		respOut, err := httputil.DumpResponse(resp, true)
