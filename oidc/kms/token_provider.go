@@ -46,6 +46,14 @@ func (d *DefaultClaimsValues) GetClaims() jwt.RegisteredClaims {
 	}
 }
 
+func (d *DefaultClaimsValues) GetScope() string {
+	return d.scope
+}
+
+func (d *DefaultClaimsValues) GetAudience() string {
+	return d.audience
+}
+
 type KMSKeyTokenProvider struct {
 	logger *slog.Logger
 	client *kms.Client
