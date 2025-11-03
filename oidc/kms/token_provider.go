@@ -28,6 +28,9 @@ type DefaultClaimsValues struct {
 	issuer, audience, scope string
 }
 
+var _ ClaimsValues = DefaultClaimsValues{}
+var _ ClaimsValues = &DefaultClaimsValues{}
+
 func NewDefaultClaimsValues(issuer, audience, scopes string) DefaultClaimsValues {
 	return DefaultClaimsValues{
 		issuer:   issuer,
@@ -36,7 +39,7 @@ func NewDefaultClaimsValues(issuer, audience, scopes string) DefaultClaimsValues
 	}
 }
 
-func (d *DefaultClaimsValues) GetClaims() jwt.RegisteredClaims {
+func (d DefaultClaimsValues) GetClaims() jwt.RegisteredClaims {
 	return jwt.RegisteredClaims{
 		Issuer:    d.issuer,
 		Subject:   d.issuer,
@@ -46,11 +49,11 @@ func (d *DefaultClaimsValues) GetClaims() jwt.RegisteredClaims {
 	}
 }
 
-func (d *DefaultClaimsValues) GetScope() string {
+func (d DefaultClaimsValues) GetScope() string {
 	return d.scope
 }
 
-func (d *DefaultClaimsValues) GetAudience() string {
+func (d DefaultClaimsValues) GetAudience() string {
 	return d.audience
 }
 
