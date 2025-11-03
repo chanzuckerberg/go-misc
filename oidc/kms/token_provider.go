@@ -107,6 +107,7 @@ func NewKMSKeyTokenProvider(logger *slog.Logger, client *kms.Client, keyID strin
 	}
 }
 
+// TODO: it might be nice to haver an in-memory cache for  the token so we don't have to fetch it every time
 func (k *KMSKeyTokenProvider) GetExecToken(ctx context.Context, apiVersion string) (*ExecCredential, error) {
 	token, expiry, err := k.fetchToken(ctx)
 	if err != nil {
