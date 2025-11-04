@@ -3,7 +3,7 @@ package storage
 import (
 	"context"
 
-	"github.com/chanzuckerberg/go-misc/oidc_cli/v3/oidc_impl/client"
+	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
 	"github.com/chanzuckerberg/go-misc/osutil"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"

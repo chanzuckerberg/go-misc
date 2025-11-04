@@ -1,4 +1,4 @@
-package oidc_impl
+package cli
 
 import (
 	"crypto/rand"

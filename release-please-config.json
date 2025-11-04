@@ -36,8 +36,8 @@
     "kmsauth": {
       "package-name": "kmsauth"
     },
-    "oidc_cli": {
-      "package-name": "oidc_cli"
+    "oidc": {
+      "package-name": "oidc"
     },
     "osutil": {
       "package-name": "osutil"
