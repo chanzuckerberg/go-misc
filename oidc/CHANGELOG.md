@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/chanzuckerberg/go-misc/compare/oidc-v3.1.0...oidc-v4.0.0) (2025-11-04)
+
+
+### ⚠ BREAKING CHANGES
+
+* add kms-signed jwt functionality and rename 'oidc_cli' package to 'oidc' ([#1127](https://github.com/chanzuckerberg/go-misc/issues/1127))
+
+### Features
+
+* add kms-signed jwt functionality and rename 'oidc_cli' package to 'oidc' ([#1127](https://github.com/chanzuckerberg/go-misc/issues/1127)) ([0060076](https://github.com/chanzuckerberg/go-misc/commit/0060076e47b35ee3eb6102c54419915ea2b42482))
+
 ## [3.1.0](https://github.com/chanzuckerberg/go-misc/compare/oidc_cli-v3.0.2...oidc_cli-v3.1.0) (2025-07-25)
 
 
