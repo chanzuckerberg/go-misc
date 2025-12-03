@@ -17,7 +17,12 @@ const (
 
 // GetToken gets an oidc token.
 // It handles caching with a default cache and keyring storage.
-func GetToken(ctx context.Context, clientID string, issuerURL string, clientOptions ...client.Option) (*client.Token, error) {
+func GetToken(
+	ctx context.Context,
+	clientID string,
+	issuerURL string,
+	clientOptions ...client.Option,
+) (*client.Token, error) {
 	fileLock, err := pidlock.NewLock(lockFilePath)
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to create lock")
@@ -34,7 +39,44 @@ func GetToken(ctx context.Context, clientID string, issuerURL string, clientOpti
 		},
 	}
 
-	c, err := client.NewClient(ctx, conf, clientOptions...)
+	c, err := client.NewAuthorizationGrantClient(ctx, conf, clientOptions...)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to create client")
+	}
+
+	storage, err := storage.GetOIDC(clientID, issuerURL)
+	if err != nil {
+		return nil, err
+	}
+
+	cache := cache.NewCache(storage, c.RefreshToken, fileLock)
+
+	token, err := cache.Read(ctx)
+	if err != nil {
+		return nil, errors.Wrap(err, "Unable to extract token from client")
+	}
+	if token == nil {
+		return nil, errors.New("nil token from OIDC-IDP")
+	}
+	return token, nil
+}
+
+func GetDeviceGrantToken(
+	ctx context.Context,
+	clientID string,
+	issuerURL string,
+) (*client.Token, error) {
+	fileLock, err := pidlock.NewLock(lockFilePath)
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to create lock")
+	}
+
+	conf := &client.DeviceGrantConfig{
+		ClientID:  clientID,
+		IssuerURL: issuerURL,
+	}
+
+	c, err := client.NewDeviceGrantClient(ctx, conf)
 	if err != nil {
 		return nil, errors.Wrap(err, "Unable to create client")
 	}

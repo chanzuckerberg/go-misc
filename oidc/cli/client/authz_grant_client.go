@@ -35,8 +35,8 @@ type Config struct {
 	ServerConfig *ServerConfig
 }
 
-// NewClient returns a new client
-func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*AuthorizationGrantClient, error) {
+// NewAuthorizationGrantClient returns a new client
+func NewAuthorizationGrantClient(ctx context.Context, config *Config, clientOptions ...Option) (*AuthorizationGrantClient, error) {
 	provider, err := oidc.NewProvider(ctx, config.IssuerURL)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create oidc provider")
