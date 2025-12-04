@@ -309,16 +309,6 @@ func (c *DeviceGrantClient) requestToken(ctx context.Context, deviceCode string)
 
 // RefreshToken will fetch a new token using the refresh token
 func (c *DeviceGrantClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
-	if oldToken == nil {
-		logrus.Debug("nil refresh token, skipping refresh flow")
-		return nil, fmt.Errorf("cannot refresh nil token")
-	}
-	if oldToken.RefreshToken == "" {
-		return nil, fmt.Errorf("no refresh token available")
-	}
-
-	logrus.Debug("refresh token found, attempting refresh flow")
-
 	newToken, err := c.doRefreshToken(ctx, oldToken)
 	if err == nil {
 		return newToken, nil
@@ -330,6 +320,11 @@ func (c *DeviceGrantClient) RefreshToken(ctx context.Context, oldToken *Token) (
 
 // doRefreshToken performs the actual token refresh
 func (c *DeviceGrantClient) doRefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
+	if oldToken == nil {
+		logrus.Debug("nil refresh token, skipping refresh flow")
+		return nil, errors.New("cannot refresh nil token")
+	}
+	logrus.Debug("refresh token found, attempting refresh flow")
 	data := url.Values{}
 	data.Set("client_id", c.clientID)
 	data.Set("grant_type", "refresh_token")
