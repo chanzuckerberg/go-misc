@@ -65,6 +65,7 @@ func GetDeviceGrantToken(
 	ctx context.Context,
 	clientID string,
 	issuerURL string,
+	scopes []string,
 ) (*client.Token, error) {
 	fileLock, err := pidlock.NewLock(lockFilePath)
 	if err != nil {
@@ -74,6 +75,7 @@ func GetDeviceGrantToken(
 	conf := &client.DeviceGrantConfig{
 		ClientID:  clientID,
 		IssuerURL: issuerURL,
+		Scopes:    scopes,
 	}
 
 	c, err := client.NewDeviceGrantClient(ctx, conf)
