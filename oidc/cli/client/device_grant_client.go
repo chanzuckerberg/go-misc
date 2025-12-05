@@ -126,17 +126,31 @@ func (c *DeviceGrantClient) displayUserCode(deviceAuth *oauth2.DeviceAuthRespons
 	return nil
 }
 
-func oath2TokenToToken(oauth2Token *oauth2.Token) *Token {
-	if oauth2Token == nil {
-		return nil
+func (c *DeviceGrantClient) oath2TokenToToken(ctx context.Context, oauth2Token *oauth2.Token) (*Token, error) {
+	idTokenStr, ok := oauth2Token.Extra("id_token").(string)
+	if !ok {
+		return nil, fmt.Errorf("no id_token found in oauth2 token")
+	}
+
+	idToken, err := c.verifier.Verify(ctx, idTokenStr)
+	if err != nil {
+		return nil, fmt.Errorf("verifying id token: %w", err)
+	}
+
+	claims := Claims{}
+	err = idToken.Claims(&claims)
+	if err != nil {
+		return nil, fmt.Errorf("verifying claims: %w", err)
 	}
 
 	return &Token{
+		Version:      tokenVersion,
+		Expiry:       oauth2Token.Expiry,
+		IDToken:      idTokenStr,
 		AccessToken:  oauth2Token.AccessToken,
 		RefreshToken: oauth2Token.RefreshToken,
-		Expiry:       oauth2Token.Expiry,
-		IDToken:      oauth2Token.Extra("id_token").(string),
-	}
+		Claims:       claims,
+	}, nil
 }
 
 // RefreshToken will fetch a new token using the refresh token
@@ -151,7 +165,8 @@ func (c *DeviceGrantClient) RefreshToken(ctx context.Context, oldToken *Token) (
 	if err != nil {
 		return nil, err
 	}
-	return oath2TokenToToken(token), nil
+
+	return c.oath2TokenToToken(ctx, token)
 }
 
 // doRefreshToken performs the actual token refresh
