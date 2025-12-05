@@ -117,16 +117,16 @@ func NewDeviceGrantClient(ctx context.Context, config *DeviceGrantConfig) (*Devi
 
 // Authenticate initiates the device authorization flow and waits for user authentication
 func (c *DeviceGrantClient) Authenticate(ctx context.Context) (*Token, error) {
-	// Step 1: Request device code
 	deviceAuth, err := c.requestDeviceCode(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("requesting device code: %w", err)
 	}
 
-	// Step 2: Display the code to the user
-	c.displayUserCode(deviceAuth)
+	err = c.displayUserCode(deviceAuth)
+	if err != nil {
+		return nil, err
+	}
 
-	// Step 3: Poll for token
 	token, err := c.pollForToken(ctx, deviceAuth)
 	if err != nil {
 		return nil, fmt.Errorf("polling for token: %w", err)
@@ -173,13 +173,18 @@ func (c *DeviceGrantClient) requestDeviceCode(ctx context.Context) (*deviceAuthR
 }
 
 // displayUserCode displays the user code and verification URL to the user
-func (c *DeviceGrantClient) displayUserCode(deviceAuth *deviceAuthResponse) {
+func (c *DeviceGrantClient) displayUserCode(deviceAuth *deviceAuthResponse) error {
 	data := &deviceAuthTemplateData{
 		VerificationURI:  deviceAuth.VerificationURI,
 		UserCode:         deviceAuth.UserCode,
 		ExpiresInMinutes: deviceAuth.ExpiresIn / 60,
 	}
-	_ = renderDeviceAuthTemplate(os.Stderr, data)
+	err := renderDeviceAuthTemplate(os.Stderr, data)
+	if err != nil {
+		return fmt.Errorf("rendering device auth template: %w", err)
+	}
+
+	return nil
 }
 
 // pollForToken polls the token endpoint until the user completes authentication
@@ -208,11 +213,9 @@ func (c *DeviceGrantClient) pollForToken(ctx context.Context, deviceAuth *device
 				if errors.As(err, &pollErr) {
 					switch pollErr.errorCode {
 					case "authorization_pending":
-						// User hasn't completed auth yet, keep polling
 						fmt.Fprintf(os.Stderr, ".")
 						continue
 					case "slow_down":
-						// Increase polling interval
 						interval += 5 * time.Second
 						ticker.Reset(interval)
 						logrus.Debug("slowing down polling interval")
