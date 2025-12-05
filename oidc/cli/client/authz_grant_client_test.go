@@ -12,7 +12,7 @@ func TestValidateState(t *testing.T) {
 	material, err := newOauthMaterial()
 	r.NoError(err)
 
-	c := &Client{}
+	c := &AuthorizationGrantClient{}
 
 	err = c.ValidateState(material.StateBytes, []byte("definitely doesn't match"))
 	r.Error(err)

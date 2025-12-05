@@ -1,6 +1,7 @@
 package pidlock
 
 import (
+	"log/slog"
 	"os"
 	"path"
 	"time"
@@ -8,7 +9,6 @@ import (
 	"github.com/cenkalti/backoff"
 	"github.com/nightlyone/lockfile"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 )
 
 // lockPath returns the lock path given a path to the configPath
@@ -46,7 +46,7 @@ func NewLock(lockFilePath string) (*Lock, error) {
 		return nil, errors.Wrapf(err, "Could not create %s", path.Dir(lockPath))
 	}
 
-	logrus.WithField("lock_path", lockPath).Debug("Creating pid lock")
+	slog.Debug("Creating pid lock", "lock_path", lockPath)
 	lock, err := lockfile.New(lockPath)
 	if err != nil {
 		return nil, errors.Wrapf(err, "Could not get lock from path %s", lockPath)
