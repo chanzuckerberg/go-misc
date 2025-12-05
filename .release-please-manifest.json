@@ -4,12 +4,12 @@
   "errors": "2.2.0",
   "keypair": "2.1.1",
   "kmsauth": "2.1.0",
-  "oidc": "4.0.0",
-  "osutil": "2.0.2",
-  "pidlock": "2.0.0",
+  "oidc": "4.1.0",
+  "osutil": "2.1.0",
+  "pidlock": "2.1.0",
   "sets": "2.0.0",
   "slack": "2.0.0",
-  "snowflake": "3.0.2",
+  "snowflake": "3.0.3",
   "survey": "2.1.0",
   "ver": "2.0.0"
 }

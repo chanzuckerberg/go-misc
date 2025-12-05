@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/chanzuckerberg/go-misc/compare/oidc-v4.0.0...oidc-v4.1.0) (2025-12-05)
+
+
+### Features
+
+* add device auth flow ([#1135](https://github.com/chanzuckerberg/go-misc/issues/1135)) ([288dc61](https://github.com/chanzuckerberg/go-misc/commit/288dc615b55cf8e29277be3f8da375bd164d579d))
+
 ## [4.0.0](https://github.com/chanzuckerberg/go-misc/compare/oidc-v3.1.0...oidc-v4.0.0) (2025-11-04)
 
 
