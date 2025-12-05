@@ -7,6 +7,7 @@ import (
 	"runtime"
 
 	"github.com/pkg/errors"
+
 )
 
 var reWSL = regexp.MustCompile("microsoft|Microsoft|WSL")
