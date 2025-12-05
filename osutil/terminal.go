@@ -5,7 +5,7 @@ import (
 	"runtime"
 )
 
-func hasDesktopEnvironment() bool {
+func IsDesktopEnvironment() bool {
     switch runtime.GOOS {
     case "darwin":
         // macOS always has a desktop environment if it's running

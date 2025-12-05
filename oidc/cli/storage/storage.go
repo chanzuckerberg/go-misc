@@ -29,7 +29,7 @@ func GetOIDC(clientID string, issuerURL string) (Storage, error) {
 	if err != nil {
 		return nil, err
 	}
-	isDesktop := osutil.HasDesktopEnvironment()
+	isDesktop := osutil.IsDesktopEnvironment()
 
 	// If WSL we use a file storage which does not cache refreshTokens
 	//    we do this because WSL doesn't have a graphical interface
