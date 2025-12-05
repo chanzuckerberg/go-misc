@@ -23,6 +23,7 @@ type Claims struct {
 	Name                  string   `json:"name"`
 	AuthenticationMethods []string `json:"amr"`
 	Email                 string   `json:"email"`
+	PreferredUsername     string   `json:"preferred_username"`
 }
 
 // Token wraps the extracted claims, auth token, id token, refresh token
