@@ -29,6 +29,7 @@ func GetOIDC(clientID string, issuerURL string) (Storage, error) {
 	if err != nil {
 		return nil, err
 	}
+	isDesktop := osutil.HasDesktopEnvironment()
 
 	// If WSL we use a file storage which does not cache refreshTokens
 	//    we do this because WSL doesn't have a graphical interface
@@ -36,7 +37,7 @@ func GetOIDC(clientID string, issuerURL string) (Storage, error) {
 	// To limit the risks of having a long-lived refresh token around,
 	//    we disable this part of the flow for WSL. This could change in the future
 	//    when we find a better way to work with a WSL secure storage.
-	if isWSL {
+	if isWSL || !isDesktop {
 		return getFileStorage(clientID, issuerURL)
 	}
 
