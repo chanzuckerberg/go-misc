@@ -30,7 +30,7 @@ var deviceAuthTemplate = template.Must(template.New("deviceAuth").Parse(deviceAu
 type deviceAuthTemplateData struct {
 	VerificationURI  string
 	UserCode         string
-	ExpiresInMinutes float64
+	ExpiresInMinutes int
 }
 
 // renderDeviceAuthTemplate renders the device authentication template to the given writer

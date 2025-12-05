@@ -116,7 +116,7 @@ func (c *DeviceGrantClient) displayUserCode(deviceAuth *oauth2.DeviceAuthRespons
 	data := &deviceAuthTemplateData{
 		VerificationURI:  deviceAuth.VerificationURI,
 		UserCode:         deviceAuth.UserCode,
-		ExpiresInMinutes: time.Until(deviceAuth.Expiry).Minutes(),
+		ExpiresInMinutes: int(time.Until(deviceAuth.Expiry).Minutes()),
 	}
 	err := renderDeviceAuthTemplate(os.Stderr, data)
 	if err != nil {
