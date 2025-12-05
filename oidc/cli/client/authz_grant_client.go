@@ -16,8 +16,8 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// Client is an oauth client
-type Client struct {
+// AuthorizationGrantClient is an oauth client
+type AuthorizationGrantClient struct {
 	provider    *oidc.Provider
 	OauthConfig *oauth2.Config
 	verifier    *oidc.IDTokenVerifier
@@ -35,8 +35,8 @@ type Config struct {
 	ServerConfig *ServerConfig
 }
 
-// NewClient returns a new client
-func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*Client, error) {
+// NewAuthorizationGrantClient returns a new client
+func NewAuthorizationGrantClient(ctx context.Context, config *Config, clientOptions ...Option) (*AuthorizationGrantClient, error) {
 	provider, err := oidc.NewProvider(ctx, config.IssuerURL)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create oidc provider")
@@ -65,7 +65,7 @@ func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*C
 	}
 	verifier := provider.Verifier(oidcConfig)
 
-	clientConfig := &Client{
+	clientConfig := &AuthorizationGrantClient{
 		provider:    provider,
 		verifier:    verifier,
 		OauthConfig: oauthConfig,
@@ -83,7 +83,7 @@ func NewClient(ctx context.Context, config *Config, clientOptions ...Option) (*C
 	return clientConfig, nil
 }
 
-func (c *Client) idTokenFromOauth2Token(
+func (c *AuthorizationGrantClient) idTokenFromOauth2Token(
 	ctx context.Context,
 	oauth2Token *oauth2.Token,
 	ourNonce []byte,
@@ -109,7 +109,7 @@ func (c *Client) idTokenFromOauth2Token(
 }
 
 // RefreshToken will fetch a new token
-func (c *Client) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
+func (c *AuthorizationGrantClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
 	logrus.Debugf("refresh scopes: %#v", c.OauthConfig.Scopes)
 
 	newToken, err := c.refreshToken(ctx, oldToken)
@@ -123,7 +123,7 @@ func (c *Client) RefreshToken(ctx context.Context, oldToken *Token) (*Token, err
 	return c.Authenticate(ctx)
 }
 
-func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error) {
+func (c *AuthorizationGrantClient) refreshToken(ctx context.Context, token *Token) (*Token, error) {
 	if token == nil {
 		logrus.Debug("nil refresh token, skipping refresh flow")
 		return nil, errors.New("cannot refresh nil token")
@@ -167,7 +167,7 @@ func (c *Client) refreshToken(ctx context.Context, token *Token) (*Token, error)
 }
 
 // GetAuthCodeURL gets the url to the oauth2 consent page
-func (c *Client) GetAuthCodeURL(oauthMaterial *oauthMaterial) string {
+func (c *AuthorizationGrantClient) GetAuthCodeURL(oauthMaterial *oauthMaterial) string {
 	return c.OauthConfig.AuthCodeURL(
 		oauthMaterial.State,
 		oauth2.SetAuthURLParam("grant_type", "refresh_token"),
@@ -178,7 +178,7 @@ func (c *Client) GetAuthCodeURL(oauthMaterial *oauthMaterial) string {
 }
 
 // ValidateState validates the state from the authorize request
-func (c *Client) ValidateState(ourState []byte, otherState []byte) error {
+func (c *AuthorizationGrantClient) ValidateState(ourState []byte, otherState []byte) error {
 	if !c.bytesAreEqual(ourState, otherState) {
 		return errors.New("invalid state")
 	}
@@ -186,7 +186,7 @@ func (c *Client) ValidateState(ourState []byte, otherState []byte) error {
 }
 
 // Exchange will exchange a token
-func (c *Client) Exchange(ctx context.Context, code string, codeVerifier string) (*oauth2.Token, error) {
+func (c *AuthorizationGrantClient) Exchange(ctx context.Context, code string, codeVerifier string) (*oauth2.Token, error) {
 	token, err := c.OauthConfig.Exchange(
 		ctx,
 		code,
@@ -197,12 +197,12 @@ func (c *Client) Exchange(ctx context.Context, code string, codeVerifier string)
 	return token, errors.Wrap(err, "failed to exchange oauth token")
 }
 
-func (c *Client) bytesAreEqual(this []byte, that []byte) bool {
+func (c *AuthorizationGrantClient) bytesAreEqual(this []byte, that []byte) bool {
 	return 1 == subtle.ConstantTimeCompare(this, that)
 }
 
 // Verify verifies an oidc id token
-func (c *Client) Verify(ctx context.Context, ourNonce []byte, rawIDToken string) (*oidc.IDToken, error) {
+func (c *AuthorizationGrantClient) Verify(ctx context.Context, ourNonce []byte, rawIDToken string) (*oidc.IDToken, error) {
 	idToken, err := c.verifier.Verify(ctx, rawIDToken)
 	if err != nil {
 		return nil, errors.Wrap(err, "could not verify id token")
@@ -216,7 +216,7 @@ func (c *Client) Verify(ctx context.Context, ourNonce []byte, rawIDToken string)
 }
 
 // Authenticate will authenticate authenticate with the idp
-func (c *Client) Authenticate(ctx context.Context) (*Token, error) {
+func (c *AuthorizationGrantClient) Authenticate(ctx context.Context) (*Token, error) {
 	oauthMaterial, err := newOauthMaterial()
 	if err != nil {
 		return nil, err
