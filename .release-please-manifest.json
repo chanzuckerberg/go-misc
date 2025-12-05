@@ -4,7 +4,7 @@
   "errors": "2.2.0",
   "keypair": "2.1.1",
   "kmsauth": "2.1.0",
-  "oidc": "4.1.0",
+  "oidc": "4.1.1",
   "osutil": "2.1.0",
   "pidlock": "2.1.0",
   "sets": "2.0.0",
