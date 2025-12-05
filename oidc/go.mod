@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go v1.55.7
 	github.com/aws/aws-sdk-go-v2 v1.39.5
 	github.com/aws/aws-sdk-go-v2/service/kms v1.47.0
-	github.com/chanzuckerberg/go-misc/osutil v0.0.0-20250725153648-47b0707ca4b9
+	github.com/chanzuckerberg/go-misc/osutil v0.0.0-20251205003006-0acabbc1617e
 	github.com/chanzuckerberg/go-misc/pidlock v0.0.0-20250725155314-6a5b915d3532
 	github.com/coreos/go-oidc/v3 v3.14.1
 	github.com/go-jose/go-jose/v4 v4.1.1
