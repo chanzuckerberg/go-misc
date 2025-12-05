@@ -6,12 +6,12 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
 	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"github.com/zalando/go-keyring"
 )
 
@@ -98,7 +98,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	err = c.storage.Set(ctx, compressedToken)
 	if err != nil {
 		if errors.Is(err, keyring.ErrSetDataTooBig) {
-			logrus.Debug("Token too big, removing refresh token")
+			slog.Debug("Token too big, removing refresh token")
 			strToken, err := token.Marshal(append(c.storage.MarshalOpts(), client.MarshalOptNoRefresh)...)
 			if err != nil {
 				return nil, errors.Wrap(err, "unable to marshall token")
@@ -135,15 +135,15 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	decompressedStr, err := decompressToken(*cached)
 	if err != nil {
 		// if we fail to decompress the token we should treat it as a cache miss instead of returning an error
-		logrus.Debug(fmt.Errorf("failed to decompress token: %w", err).Error())
+		slog.Debug(fmt.Errorf("failed to decompress token: %w", err).Error())
 	}
 
 	cachedToken, err := client.TokenFromString(decompressedStr)
 	if err != nil {
-		logrus.WithError(err).Debug("error fetching stored token")
+		slog.Debug("fetching stored token", "error", err)
 		err = c.storage.Delete(ctx) // can't read it, so attempt to purge it
 		if err != nil {
-			logrus.WithError(err).Debug("error clearing token from storage")
+			slog.Debug("clearing token from storage", "error", err)
 		}
 	}
 	return cachedToken, nil

@@ -3,13 +3,13 @@ package client
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net"
 	"net/http"
 	"time"
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 )
 
 // ServerConfig is a server config
@@ -124,7 +124,7 @@ func (s *server) Start(ctx context.Context, oidcClient *AuthorizationGrantClient
 			return
 		}
 
-		logrus.Debug("server responded with success message; consuming token")
+		slog.Debug("server responded with success message; consuming token")
 		s.result <- &Token{
 			Expiry:       idToken.Expiry,
 			IDToken:      verifiedIDToken,
@@ -132,7 +132,7 @@ func (s *server) Start(ctx context.Context, oidcClient *AuthorizationGrantClient
 			RefreshToken: oauth2Token.RefreshToken,
 			Claims:       *claims,
 		}
-		logrus.Debug("token consumed")
+		slog.Debug("token consumed")
 	})
 
 	s.server = &http.Server{
@@ -142,7 +142,8 @@ func (s *server) Start(ctx context.Context, oidcClient *AuthorizationGrantClient
 	go func() {
 		err := s.server.Serve(*s.listener)
 		if err != nil && err != http.ErrServerClosed {
-			logrus.Fatalf("server error: %s", err.Error())
+			slog.Error("server error", "error", err)
+			panic(err)
 		}
 	}()
 }

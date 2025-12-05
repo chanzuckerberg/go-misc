@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"os"
@@ -13,7 +14,6 @@ import (
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
@@ -146,7 +146,7 @@ func (c *DeviceGrantClient) RefreshToken(ctx context.Context, oldToken *Token) (
 		return newToken, nil
 	}
 
-	logrus.WithError(err).Debug("failed to refresh token, requesting new one")
+	slog.Debug("failed to refresh token, requesting new one", "error", err)
 	token, err := c.Authenticate(ctx)
 	if err != nil {
 		return nil, err
@@ -157,10 +157,10 @@ func (c *DeviceGrantClient) RefreshToken(ctx context.Context, oldToken *Token) (
 // doRefreshToken performs the actual token refresh
 func (c *DeviceGrantClient) doRefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
 	if oldToken == nil {
-		logrus.Debug("nil refresh token, skipping refresh flow")
+		slog.Debug("nil refresh token, skipping refresh flow")
 		return nil, errors.New("cannot refresh nil token")
 	}
-	logrus.Debug("refresh token found, attempting refresh flow")
+	slog.Debug("refresh token found, attempting refresh flow")
 	data := url.Values{}
 	data.Set("client_id", c.clientID)
 	data.Set("grant_type", "refresh_token")
@@ -205,7 +205,7 @@ func (c *DeviceGrantClient) doRefreshToken(ctx context.Context, oldToken *Token)
 		return nil, fmt.Errorf("parsing claims: %w", err)
 	}
 
-	logrus.Debug("refresh successful")
+	slog.Debug("refresh successful")
 
 	return &Token{
 		Version:      oldToken.Version,

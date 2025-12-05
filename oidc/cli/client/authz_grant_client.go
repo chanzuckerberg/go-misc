@@ -6,13 +6,13 @@ import (
 	"crypto/subtle"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/pkg/browser"
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 )
 
@@ -110,7 +110,7 @@ func (c *AuthorizationGrantClient) idTokenFromOauth2Token(
 
 // RefreshToken will fetch a new token
 func (c *AuthorizationGrantClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
-	logrus.Debugf("refresh scopes: %#v", c.OauthConfig.Scopes)
+	slog.Debug(fmt.Sprintf("refresh scopes: %#v", c.OauthConfig.Scopes))
 
 	newToken, err := c.refreshToken(ctx, oldToken)
 	// if we could refresh successfully, do so.
@@ -118,17 +118,17 @@ func (c *AuthorizationGrantClient) RefreshToken(ctx context.Context, oldToken *T
 	if err == nil {
 		return newToken, nil
 	}
-	logrus.WithError(err).Debug("failed to refresh token, requesting new one")
+	slog.Debug("failed to refresh token, requesting new one", "error", err)
 
 	return c.Authenticate(ctx)
 }
 
 func (c *AuthorizationGrantClient) refreshToken(ctx context.Context, token *Token) (*Token, error) {
 	if token == nil {
-		logrus.Debug("nil refresh token, skipping refresh flow")
+		slog.Debug("nil refresh token, skipping refresh flow")
 		return nil, errors.New("cannot refresh nil token")
 	}
-	logrus.Debug("refresh token found, attempting refresh flow")
+	slog.Debug("refresh token found, attempting refresh flow")
 
 	oauthToken := &oauth2.Token{
 		RefreshToken: token.RefreshToken,
@@ -152,7 +152,7 @@ func (c *AuthorizationGrantClient) refreshToken(ctx context.Context, token *Toke
 	if err != nil {
 		return nil, err
 	}
-	logrus.Debug("refresh successful")
+	slog.Debug("refresh successful")
 
 	return &Token{
 		Version: token.Version,

@@ -3,10 +3,10 @@ package client
 import (
 	"encoding/base64"
 	"encoding/json"
+	"log/slog"
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -47,7 +47,7 @@ func (vt *Token) IsFresh() bool {
 
 func TokenFromString(tokenString *string, opts ...MarshalOpts) (*Token, error) {
 	if tokenString == nil {
-		logrus.Debug("nil token string")
+		slog.Debug("nil token string")
 		return nil, nil
 	}
 	tokenBytes, err := base64.StdEncoding.DecodeString(*tokenString)
