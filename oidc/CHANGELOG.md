@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.1](https://github.com/chanzuckerberg/go-misc/compare/oidc-v4.1.0...oidc-v4.1.1) (2025-12-05)
+
+
+### Bug Fixes
+
+* forgot to parse the extra claims from the ID / oauth2 token ([#1137](https://github.com/chanzuckerberg/go-misc/issues/1137)) ([3b79155](https://github.com/chanzuckerberg/go-misc/commit/3b7915552cac20bbeac7a4c159c6353895b3ce8f))
+
 ## [4.1.0](https://github.com/chanzuckerberg/go-misc/compare/oidc-v4.0.0...oidc-v4.1.0) (2025-12-05)
 
 
