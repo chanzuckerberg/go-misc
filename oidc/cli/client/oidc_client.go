@@ -76,7 +76,7 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 	if oidcClient.authenticator == nil {
 		// this binds to a port, so only do it at the end once we know they didn't set up an
 		// authenticator already
-		defaultAuthenticator, err := NewAuthorizationGrantAuthenticator(ctx, defaultAuthorizationGrantConfig)
+		defaultAuthenticator, err := NewAuthorizationGrantAuthenticator(ctx, DefaultAuthorizationGrantConfig)
 		if err != nil {
 			return nil, fmt.Errorf("creating default authenticator: %w", err)
 		}

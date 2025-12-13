@@ -19,7 +19,7 @@ const (
 	oidcStatusSuccess     oidcStatus = "success"
 )
 
-var defaultAuthorizationGrantConfig *AuthorizationGrantConfig = &AuthorizationGrantConfig{
+var DefaultAuthorizationGrantConfig *AuthorizationGrantConfig = &AuthorizationGrantConfig{
 	ServerConfig: &ServerConfig{
 		FromPort: 49152,
 		ToPort:   49152 + 63,
