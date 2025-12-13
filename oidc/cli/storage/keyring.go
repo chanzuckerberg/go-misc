@@ -36,7 +36,7 @@ func (k *Keyring) Read(ctx context.Context) (*string, error) {
 		return nil, nil
 	}
 	if err != nil {
-		return nil, fmt.Errorf("could not read from keyring: %w", err)
+		return nil, fmt.Errorf("reading from keyring: %w", err)
 	}
 	return &val, nil
 }
@@ -51,7 +51,7 @@ func (k *Keyring) Set(ctx context.Context, value string) error {
 		return nil
 	}
 	if err != nil {
-		return fmt.Errorf("could not set value to keyring: %w", err)
+		return fmt.Errorf("setting value to keyring: %w", err)
 	}
 	return nil
 }
