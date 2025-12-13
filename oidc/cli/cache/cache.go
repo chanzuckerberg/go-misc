@@ -86,13 +86,13 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	// marshal token with options
 	strToken, err := token.Marshal(c.storage.MarshalOpts()...)
 	if err != nil {
-		return nil, fmt.Errorf("unable to marshall token: %w", err)
+		return nil, fmt.Errorf("marshalling token: %w", err)
 	}
 
 	// gzip encode and save token to storage
 	compressedToken, err := compressToken(strToken)
 	if err != nil {
-		return nil, fmt.Errorf("unable to compress token: %w", err)
+		return nil, fmt.Errorf("compressing token: %w", err)
 	}
 
 	err = c.storage.Set(ctx, compressedToken)
