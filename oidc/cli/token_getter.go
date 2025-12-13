@@ -2,13 +2,13 @@ package cli
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/cache"
 	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
 	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -25,7 +25,7 @@ func GetToken(
 ) (*client.Token, error) {
 	fileLock, err := pidlock.NewLock(lockFilePath)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to create lock")
+		return nil, fmt.Errorf("creating lock: %w", err)
 	}
 
 	conf := &client.Config{
@@ -41,7 +41,7 @@ func GetToken(
 
 	c, err := client.NewAuthorizationGrantClient(ctx, conf, clientOptions...)
 	if err != nil {
-		return nil, errors.Wrap(err, "Unable to create client")
+		return nil, fmt.Errorf("creating client: %w", err)
 	}
 
 	storage, err := storage.GetOIDC(clientID, issuerURL)
@@ -53,10 +53,10 @@ func GetToken(
 
 	token, err := cache.Read(ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "Unable to extract token from client")
+		return nil, fmt.Errorf("extracting token from client: %w", err)
 	}
 	if token == nil {
-		return nil, errors.New("nil token from OIDC-IDP")
+		return nil, fmt.Errorf("nil token from OIDC-IDP")
 	}
 	return token, nil
 }
@@ -69,7 +69,7 @@ func GetDeviceGrantToken(
 ) (*client.Token, error) {
 	fileLock, err := pidlock.NewLock(lockFilePath)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to create lock")
+		return nil, fmt.Errorf("creating lock: %w", err)
 	}
 
 	conf := &client.DeviceGrantConfig{
@@ -80,7 +80,7 @@ func GetDeviceGrantToken(
 
 	c, err := client.NewDeviceGrantClient(ctx, conf)
 	if err != nil {
-		return nil, errors.Wrap(err, "Unable to create client")
+		return nil, fmt.Errorf("creating client: %w", err)
 	}
 
 	storage, err := storage.GetOIDC(clientID, issuerURL)
@@ -92,10 +92,10 @@ func GetDeviceGrantToken(
 
 	token, err := cache.Read(ctx)
 	if err != nil {
-		return nil, errors.Wrap(err, "Unable to extract token from client")
+		return nil, fmt.Errorf("extracting token from client: %w", err)
 	}
 	if token == nil {
-		return nil, errors.New("nil token from OIDC-IDP")
+		return nil, fmt.Errorf("nil token from OIDC-IDP")
 	}
 	return token, nil
 }

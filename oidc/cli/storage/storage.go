@@ -2,11 +2,11 @@ package storage
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
 	"github.com/chanzuckerberg/go-misc/osutil"
 	"github.com/mitchellh/go-homedir"
-	"github.com/pkg/errors"
 )
 
 const (
@@ -47,7 +47,7 @@ func GetOIDC(clientID string, issuerURL string) (Storage, error) {
 func getFileStorage(clientID string, issuerURL string) (Storage, error) {
 	dir, err := homedir.Expand(defaultFileStorageDir)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not expand path")
+		return nil, fmt.Errorf("could not expand path: %w", err)
 	}
 
 	return NewFile(dir, clientID, issuerURL), nil

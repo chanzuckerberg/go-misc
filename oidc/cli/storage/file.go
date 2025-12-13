@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"sync"
@@ -39,7 +38,7 @@ func (f *File) Read(ctx context.Context) (*string, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 
-	contents, err := ioutil.ReadFile(f.key)
+	contents, err := os.ReadFile(f.key)
 	if os.IsNotExist(err) {
 		return nil, nil
 	}
@@ -57,26 +56,32 @@ func (f *File) Set(ctx context.Context, value string) error {
 
 	err := os.MkdirAll(f.dir, 0700)
 	if err != nil {
-		return errors.Wrapf(err, "could not create cache dir %s", f.dir)
+		return fmt.Errorf("could not create cache dir %s: %w", f.dir, err)
 	}
 
-	err = ioutil.WriteFile(f.key, []byte(value), 0600)
-	return errors.Wrap(err, "could not set value to file")
+	err = os.WriteFile(f.key, []byte(value), 0600)
+	if err != nil {
+		return fmt.Errorf("could not set value to file: %w", err)
+	}
+	return nil
 }
 
 func (f *File) Delete(ctx context.Context) error {
 	f.mu.Lock()
 	defer f.mu.Unlock()
+	// check if the key exists first
+	_, err := os.Stat(f.key)
+	if os.IsNotExist(err) {
+		return nil
+	}
 
-	err := os.Remove(f.key)
-	return errors.Wrap(err, "could not delete from file")
+	err = os.Remove(f.key)
+	if err != nil {
+		return fmt.Errorf("could not delete from file: %w", err)
+	}
+	return nil
 }
 
-// Note: We disable the refresh flow because we are storing
-//
-//	      credentials in plaintext.
-//				 We therefore ensure that any plaintext credentials that hit disk
-//	      have a well-defined ttl.
 func (f *File) MarshalOpts() []client.MarshalOpts {
-	return []client.MarshalOpts{client.MarshalOptNoRefresh}
+	return []client.MarshalOpts{}
 }
