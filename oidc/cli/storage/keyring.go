@@ -50,8 +50,10 @@ func (k *Keyring) Set(ctx context.Context, value string) error {
 	if err == keyring.ErrNotFound {
 		return nil
 	}
-
-	return fmt.Errorf("could not set value to keyring: %w", err)
+	if err != nil {
+		return fmt.Errorf("could not set value to keyring: %w", err)
+	}
+	return nil
 }
 
 // Delete will delete a value from the keyring
