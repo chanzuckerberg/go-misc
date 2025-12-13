@@ -52,6 +52,7 @@ func WithSuccessMessage(successMsg string) AuthorizationGrantAuthenticatorOption
 func NewAuthorizationGrantAuthenticator(
 	ctx context.Context,
 	config *AuthorizationGrantConfig,
+	oauth2Config *oauth2.Config,
 	authenticatorOptions ...AuthorizationGrantAuthenticatorOption,
 ) (*AuthorizationGrantAuthenticator, error) {
 	server, err := newServer(config.ServerConfig)
@@ -67,7 +68,14 @@ func NewAuthorizationGrantAuthenticator(
 		clientOption(authenticator)
 	}
 
+	oauth2Config.RedirectURL = fmt.Sprintf("http://localhost:%d", authenticator.GetBoundPort())
+
 	return authenticator, nil
+}
+
+// GetBoundPort returns the port we bound to
+func (c *AuthorizationGrantAuthenticator) GetBoundPort() int {
+	return c.server.port
 }
 
 // GetAuthCodeURL gets the url to the oauth2 consent page

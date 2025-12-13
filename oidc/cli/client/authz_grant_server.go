@@ -83,11 +83,6 @@ func (s *server) bind(c *ServerConfig) error {
 	return fmt.Errorf("binding to any port in range %d-%d: %w", c.FromPort, c.ToPort, result)
 }
 
-// GetBoundPort returns the port we bound to
-func (s *server) GetBoundPort() int {
-	return s.port
-}
-
 func (s *server) Exchange(ctx context.Context, client *OIDCClient, code, codeVerifier string) (*oauth2.Token, error) {
 	token, err := client.Exchange(
 		ctx,
