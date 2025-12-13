@@ -28,23 +28,30 @@ type OIDCClient struct {
 	Scopes []string
 }
 
-type OIDCClientOption func(*OIDCClient)
+type OIDCClientOption func(context.Context, *OIDCClient) error
 
 func WithDeviceGrantAuthenticator(a *DeviceGrantAuthenticator) OIDCClientOption {
-	return func(c *OIDCClient) {
+	return func(ctx context.Context, c *OIDCClient) error {
 		c.authenticator = a
+		return nil
 	}
 }
 
-func WithAuthzGrantAuthenticator(a *AuthorizationGrantAuthenticator) OIDCClientOption {
-	return func(c *OIDCClient) {
-		c.authenticator = a
+func WithAuthzGrantAuthenticator(a *AuthorizationGrantConfig, authenticatorOptions ...AuthorizationGrantAuthenticatorOption) OIDCClientOption {
+	return func(ctx context.Context, c *OIDCClient) error {
+		authenticator, err := NewAuthorizationGrantAuthenticator(ctx, a, c.Config, authenticatorOptions...)
+		if err != nil {
+			return fmt.Errorf("creating default authenticator: %w", err)
+		}
+		c.authenticator = authenticator
+		return nil
 	}
 }
 
 func WithScopes(scopes []string) OIDCClientOption {
-	return func(c *OIDCClient) {
+	return func(ctx context.Context, c *OIDCClient) error {
 		c.Scopes = scopes
+		return nil
 	}
 }
 
@@ -58,7 +65,10 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 		Scopes: DefaultScopes,
 	}
 	for _, clientOption := range clientOptions {
-		clientOption(oidcClient)
+		err = clientOption(ctx, oidcClient)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	oidcClient.Config = &oauth2.Config{
@@ -76,11 +86,10 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 	if oidcClient.authenticator == nil {
 		// this binds to a port, so only do it at the end once we know they didn't set up an
 		// authenticator already
-		defaultAuthenticator, err := NewAuthorizationGrantAuthenticator(ctx, DefaultAuthorizationGrantConfig, oidcClient.Config)
+		err = WithAuthzGrantAuthenticator(DefaultAuthorizationGrantConfig)(ctx, oidcClient)
 		if err != nil {
-			return nil, fmt.Errorf("creating default authenticator: %w", err)
+			return nil, err
 		}
-		oidcClient.authenticator = defaultAuthenticator
 	}
 
 	return oidcClient, nil
