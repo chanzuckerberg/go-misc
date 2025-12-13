@@ -63,6 +63,7 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 
 	oidcClient := &OIDCClient{
 		Scopes: DefaultScopes,
+		Config: &oauth2.Config{},
 	}
 	for _, clientOption := range clientOptions {
 		err = clientOption(ctx, oidcClient)

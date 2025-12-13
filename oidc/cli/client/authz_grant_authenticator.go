@@ -64,8 +64,8 @@ func NewAuthorizationGrantAuthenticator(
 		server: server,
 	}
 
-	for _, clientOption := range authenticatorOptions {
-		clientOption(authenticator)
+	for _, opt := range authenticatorOptions {
+		opt(authenticator)
 	}
 
 	oauth2Config.RedirectURL = fmt.Sprintf("http://localhost:%d", authenticator.GetBoundPort())
