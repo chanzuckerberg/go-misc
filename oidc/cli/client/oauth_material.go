@@ -4,9 +4,8 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/base64"
+	"fmt"
 	"strings"
-
-	"github.com/pkg/errors"
 )
 
 type oauthMaterial struct {
@@ -25,7 +24,7 @@ func newOauthMaterial() (*oauthMaterial, error) {
 		b := make([]byte, numBytes)
 		_, err := rand.Read(b)
 		if err != nil {
-			return "", errors.Wrap(err, "could not read random bytes")
+			return "", fmt.Errorf("could not read random bytes: %w", err)
 		}
 		return pkceBase64URLEncode(b), nil
 	}

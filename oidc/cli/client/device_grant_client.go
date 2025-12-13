@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -173,7 +172,7 @@ func (c *DeviceGrantClient) RefreshToken(ctx context.Context, oldToken *Token) (
 func (c *DeviceGrantClient) doRefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
 	if oldToken == nil {
 		slog.Debug("nil refresh token, skipping refresh flow")
-		return nil, errors.New("cannot refresh nil token")
+		return nil, fmt.Errorf("cannot refresh nil token")
 	}
 	slog.Debug("refresh token found, attempting refresh flow")
 	data := url.Values{}

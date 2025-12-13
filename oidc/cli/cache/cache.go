@@ -80,40 +80,42 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 
 	// check the new token is good to use
 	if !token.IsFresh() {
-		return nil, errors.New("invalid token fetched")
+		return nil, fmt.Errorf("invalid token fetched")
 	}
 
 	// marshal token with options
 	strToken, err := token.Marshal(c.storage.MarshalOpts()...)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to marshall token")
+		return nil, fmt.Errorf("unable to marshall token: %w", err)
 	}
 
 	// gzip encode and save token to storage
 	compressedToken, err := compressToken(strToken)
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to compress token")
+		return nil, fmt.Errorf("unable to compress token: %w", err)
 	}
 
 	err = c.storage.Set(ctx, compressedToken)
 	if err != nil {
 		if errors.Is(err, keyring.ErrSetDataTooBig) {
 			slog.Debug("Token too big, removing refresh token")
+
 			strToken, err := token.Marshal(append(c.storage.MarshalOpts(), client.MarshalOptNoRefresh)...)
 			if err != nil {
-				return nil, errors.Wrap(err, "unable to marshall token")
+				return nil, fmt.Errorf("marshalling token: %w", err)
 			}
-			// gzip encode and save token to storage
+
 			compressedToken, err = compressToken(strToken)
 			if err != nil {
-				return nil, errors.Wrap(err, "unable to compress token")
+				return nil, fmt.Errorf("compressing token: %w", err)
 			}
+
 			err = c.storage.Set(ctx, compressedToken)
 			if err != nil {
-				return nil, errors.Wrap(err, "Unable to cache the strToken")
+				return nil, fmt.Errorf("caching without the refresh token: %w", err)
 			}
 		} else {
-			return nil, errors.Wrap(err, "Unable to cache the strToken")
+			return nil, fmt.Errorf("caching the strToken: %w", err)
 		}
 	}
 

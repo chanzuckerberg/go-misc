@@ -3,10 +3,9 @@ package client
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"log/slog"
 	"time"
-
-	"github.com/pkg/errors"
 )
 
 const (
@@ -53,14 +52,14 @@ func TokenFromString(tokenString *string, opts ...MarshalOpts) (*Token, error) {
 	}
 	tokenBytes, err := base64.StdEncoding.DecodeString(*tokenString)
 	if err != nil {
-		return nil, errors.Wrap(err, "error b64 decoding token")
+		return nil, fmt.Errorf("error b64 decoding token: %w", err)
 	}
 	token := &Token{
 		Version: tokenVersion,
 	}
 	err = json.Unmarshal(tokenBytes, token)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not json unmarshal token")
+		return nil, fmt.Errorf("could not json unmarshal token: %w", err)
 	}
 
 	for _, opt := range opts {
@@ -71,7 +70,7 @@ func TokenFromString(tokenString *string, opts ...MarshalOpts) (*Token, error) {
 
 func (vt *Token) Marshal(opts ...MarshalOpts) (string, error) {
 	if vt == nil {
-		return "", errors.New("error Marshalling nil token")
+		return "", fmt.Errorf("error Marshalling nil token")
 	}
 
 	// apply any processing to the token
@@ -81,7 +80,7 @@ func (vt *Token) Marshal(opts ...MarshalOpts) (string, error) {
 
 	tokenBytes, err := json.Marshal(vt)
 	if err != nil {
-		return "", errors.Wrap(err, "could not marshal token")
+		return "", fmt.Errorf("could not marshal token: %w", err)
 	}
 
 	b64 := base64.StdEncoding.EncodeToString(tokenBytes)

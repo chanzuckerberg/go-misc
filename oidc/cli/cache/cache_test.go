@@ -3,7 +3,6 @@ package cache
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
@@ -13,7 +12,6 @@ import (
 
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"github.com/zalando/go-keyring"
 )
@@ -122,7 +120,7 @@ func TestCachedToken(t *testing.T) {
 	r.NoError(err)
 
 	refresh := func(ctx context.Context, c *client.Token) (*client.Token, error) {
-		return nil, errors.New("always error")
+		return nil, fmt.Errorf("always error")
 	}
 
 	c := NewCache(s, refresh, fileLock)
@@ -147,7 +145,7 @@ func TestFileCache(t *testing.T) {
 		}, nil
 	}
 
-	dir, err := ioutil.TempDir("", "")
+	dir, err := os.MkdirTemp("", "")
 	r.NoError(err)
 	defer os.Remove(dir)
 

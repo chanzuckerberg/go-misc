@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-multierror"
-	"github.com/pkg/errors"
 )
 
 // ServerConfig is a server config
@@ -22,7 +21,7 @@ type ServerConfig struct {
 // Validate validates the config
 func (c *ServerConfig) Validate() error {
 	if c.ToPort < c.FromPort {
-		return errors.Errorf("toPort %d must be >= fromPort %d", c.ToPort, c.FromPort)
+		return fmt.Errorf("toPort %d must be >= fromPort %d", c.ToPort, c.FromPort)
 	}
 	return nil
 }
@@ -50,12 +49,12 @@ func newServer(c *ServerConfig) (*server, error) {
 
 	err := c.Validate()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not validate new server")
+		return nil, fmt.Errorf("could not validate new server: %w", err)
 	}
 
 	err = s.bind(c)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not open a port")
+		return nil, fmt.Errorf("could not open a port: %w", err)
 	}
 
 	return s, nil
@@ -79,9 +78,7 @@ func (s *server) bind(c *ServerConfig) error {
 	}
 
 	// at this point we failed to bind to all ports, error out
-	return errors.Wrapf(
-		result,
-		"failed to bind to any port in range %d-%d", c.FromPort, c.ToPort)
+	return fmt.Errorf("failed to bind to any port in range %d-%d: %w", c.FromPort, c.ToPort, result)
 }
 
 // GetBoundPort returns the port we bound to
@@ -99,7 +96,7 @@ func (s *server) Start(ctx context.Context, oidcClient *AuthorizationGrantClient
 			[]byte(req.URL.Query().Get("state")))
 		if err != nil {
 			http.Error(w, "state did not match", http.StatusBadRequest)
-			s.err <- errors.Wrap(err, "state did not match")
+			s.err <- fmt.Errorf("state did not match: %w", err)
 			return
 		}
 
@@ -107,14 +104,14 @@ func (s *server) Start(ctx context.Context, oidcClient *AuthorizationGrantClient
 		if err != nil {
 			errMsg := "failed to exchange token"
 			http.Error(w, errMsg, http.StatusInternalServerError)
-			s.err <- errors.Wrap(err, errMsg)
+			s.err <- fmt.Errorf("%s: %w", errMsg, err)
 			return
 		}
 
 		claims, idToken, verifiedIDToken, err := oidcClient.idTokenFromOauth2Token(ctx, oauth2Token, oauthMaterial.NonceBytes)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
-			s.err <- errors.Wrap(err, "could not verify ID token")
+			s.err <- fmt.Errorf("could not verify ID token: %w", err)
 			return
 		}
 
@@ -155,10 +152,10 @@ func (s *server) Wait(ctx context.Context) (*Token, error) {
 
 	select {
 	case err := <-s.err:
-		return nil, errors.Wrap(err, "server.Wait failed")
+		return nil, fmt.Errorf("server.Wait failed: %w", err)
 	case token := <-s.result:
 		return token, nil
 	case <-time.After(s.config.Timeout):
-		return nil, errors.New("timed out waiting for oauth callback")
+		return nil, fmt.Errorf("timed out waiting for oauth callback")
 	}
 }

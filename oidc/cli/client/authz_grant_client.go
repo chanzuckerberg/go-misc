@@ -12,7 +12,6 @@ import (
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/pkg/browser"
-	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 )
 
@@ -39,7 +38,7 @@ type Config struct {
 func NewAuthorizationGrantClient(ctx context.Context, config *Config, clientOptions ...Option) (*AuthorizationGrantClient, error) {
 	provider, err := oidc.NewProvider(ctx, config.IssuerURL)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not create oidc provider")
+		return nil, fmt.Errorf("could not create oidc provider: %w", err)
 	}
 
 	server, err := newServer(config.ServerConfig)
@@ -90,12 +89,12 @@ func (c *AuthorizationGrantClient) idTokenFromOauth2Token(
 ) (*Claims, *oidc.IDToken, string, error) {
 	unverifiedIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
-		return nil, nil, "", errors.New("no id_token found in oauth2 token")
+		return nil, nil, "", fmt.Errorf("no id_token found in oauth2 token")
 	}
 
 	idToken, err := c.Verify(ctx, ourNonce, unverifiedIDToken)
 	if err != nil {
-		return nil, nil, "", errors.Wrap(err, "could not verify id token")
+		return nil, nil, "", fmt.Errorf("could not verify id token: %w", err)
 	}
 
 	verifiedIDToken := unverifiedIDToken // now is verified
@@ -103,7 +102,7 @@ func (c *AuthorizationGrantClient) idTokenFromOauth2Token(
 
 	err = idToken.Claims(claims)
 	if err != nil {
-		return nil, nil, "", errors.Wrap(err, "could not verify claims")
+		return nil, nil, "", fmt.Errorf("could not verify claims: %w", err)
 	}
 	return claims, idToken, verifiedIDToken, nil
 }
@@ -126,7 +125,7 @@ func (c *AuthorizationGrantClient) RefreshToken(ctx context.Context, oldToken *T
 func (c *AuthorizationGrantClient) refreshToken(ctx context.Context, token *Token) (*Token, error) {
 	if token == nil {
 		slog.Debug("nil refresh token, skipping refresh flow")
-		return nil, errors.New("cannot refresh nil token")
+		return nil, fmt.Errorf("cannot refresh nil token")
 	}
 	slog.Debug("refresh token found, attempting refresh flow")
 
@@ -139,7 +138,7 @@ func (c *AuthorizationGrantClient) refreshToken(ctx context.Context, token *Toke
 
 	newOauth2Token, err := tokenSource.Token()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not refresh token")
+		return nil, fmt.Errorf("could not refresh token: %w", err)
 	}
 
 	// We don't have a nonce in this flow since we're refreshing
@@ -180,7 +179,7 @@ func (c *AuthorizationGrantClient) GetAuthCodeURL(oauthMaterial *oauthMaterial) 
 // ValidateState validates the state from the authorize request
 func (c *AuthorizationGrantClient) ValidateState(ourState []byte, otherState []byte) error {
 	if !c.bytesAreEqual(ourState, otherState) {
-		return errors.New("invalid state")
+		return fmt.Errorf("invalid state")
 	}
 	return nil
 }
@@ -194,22 +193,22 @@ func (c *AuthorizationGrantClient) Exchange(ctx context.Context, code string, co
 		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
 		oauth2.SetAuthURLParam("client_id", c.OauthConfig.ClientID),
 	)
-	return token, errors.Wrap(err, "failed to exchange oauth token")
+	return token, fmt.Errorf("failed to exchange oauth token: %w", err)
 }
 
 func (c *AuthorizationGrantClient) bytesAreEqual(this []byte, that []byte) bool {
-	return 1 == subtle.ConstantTimeCompare(this, that)
+	return subtle.ConstantTimeCompare(this, that) == 1
 }
 
 // Verify verifies an oidc id token
 func (c *AuthorizationGrantClient) Verify(ctx context.Context, ourNonce []byte, rawIDToken string) (*oidc.IDToken, error) {
 	idToken, err := c.verifier.Verify(ctx, rawIDToken)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not verify id token")
+		return nil, fmt.Errorf("could not verify id token: %w", err)
 	}
 
 	if !c.bytesAreEqual([]byte(idToken.Nonce), ourNonce) {
-		return nil, errors.Errorf("nonce does not match")
+		return nil, fmt.Errorf("nonce does not match")
 	}
 
 	return idToken, nil
@@ -237,7 +236,7 @@ func (c *AuthorizationGrantClient) Authenticate(ctx context.Context) (*Token, er
 		// if we error out, send back stdout, stderr
 		io.Copy(os.Stdout, browserStdOut) //nolint:errcheck
 		io.Copy(os.Stderr, browserStdErr) //nolint:errcheck
-		return nil, errors.Wrap(err, "could not open browser")
+		return nil, fmt.Errorf("could not open browser: %w", err)
 	}
 
 	token, err := c.server.Wait(ctx)
