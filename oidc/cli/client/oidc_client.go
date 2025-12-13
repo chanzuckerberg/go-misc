@@ -25,7 +25,6 @@ type OIDCClient struct {
 	authenticator
 	*oauth2.Config
 	*oidc.IDTokenVerifier
-	Scopes []string
 }
 
 type OIDCClientOption func(context.Context, *OIDCClient) error
@@ -50,7 +49,7 @@ func WithAuthzGrantAuthenticator(a *AuthorizationGrantConfig, authenticatorOptio
 
 func WithScopes(scopes []string) OIDCClientOption {
 	return func(ctx context.Context, c *OIDCClient) error {
-		c.Scopes = scopes
+		c.Config.Scopes = scopes
 		return nil
 	}
 }
@@ -61,9 +60,17 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 		return nil, fmt.Errorf("creating oidc provider: %w", err)
 	}
 
+	oidcConfig := &oidc.Config{
+		ClientID:             clientID,
+		SupportedSigningAlgs: []string{"RS256"},
+	}
 	oidcClient := &OIDCClient{
-		Scopes: DefaultScopes,
-		Config: &oauth2.Config{},
+		Config: &oauth2.Config{
+			ClientID: clientID,
+			Endpoint: provider.Endpoint(),
+			Scopes:   DefaultScopes,
+		},
+		IDTokenVerifier: provider.Verifier(oidcConfig),
 	}
 	for _, clientOption := range clientOptions {
 		err = clientOption(ctx, oidcClient)
@@ -71,18 +78,6 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 			return nil, err
 		}
 	}
-
-	oidcClient.Config = &oauth2.Config{
-		ClientID: clientID,
-		Endpoint: provider.Endpoint(),
-		Scopes:   oidcClient.Scopes,
-	}
-
-	oidcConfig := &oidc.Config{
-		ClientID:             clientID,
-		SupportedSigningAlgs: []string{"RS256"},
-	}
-	oidcClient.IDTokenVerifier = provider.Verifier(oidcConfig)
 
 	if oidcClient.authenticator == nil {
 		// this binds to a port, so only do it at the end once we know they didn't set up an
