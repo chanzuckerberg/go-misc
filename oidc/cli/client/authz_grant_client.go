@@ -38,7 +38,7 @@ type Config struct {
 func NewAuthorizationGrantClient(ctx context.Context, config *Config, clientOptions ...Option) (*AuthorizationGrantClient, error) {
 	provider, err := oidc.NewProvider(ctx, config.IssuerURL)
 	if err != nil {
-		return nil, fmt.Errorf("could not create oidc provider: %w", err)
+		return nil, fmt.Errorf("creating oidc provider: %w", err)
 	}
 
 	server, err := newServer(config.ServerConfig)
@@ -94,7 +94,7 @@ func (c *AuthorizationGrantClient) idTokenFromOauth2Token(
 
 	idToken, err := c.Verify(ctx, ourNonce, unverifiedIDToken)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("could not verify id token: %w", err)
+		return nil, nil, "", fmt.Errorf("verifying id token: %w", err)
 	}
 
 	verifiedIDToken := unverifiedIDToken // now is verified
@@ -102,7 +102,7 @@ func (c *AuthorizationGrantClient) idTokenFromOauth2Token(
 
 	err = idToken.Claims(claims)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("could not verify claims: %w", err)
+		return nil, nil, "", fmt.Errorf("verifying claims: %w", err)
 	}
 	return claims, idToken, verifiedIDToken, nil
 }
@@ -138,7 +138,7 @@ func (c *AuthorizationGrantClient) refreshToken(ctx context.Context, token *Toke
 
 	newOauth2Token, err := tokenSource.Token()
 	if err != nil {
-		return nil, fmt.Errorf("could not refresh token: %w", err)
+		return nil, fmt.Errorf("refreshing token: %w", err)
 	}
 
 	// We don't have a nonce in this flow since we're refreshing
@@ -193,7 +193,7 @@ func (c *AuthorizationGrantClient) Exchange(ctx context.Context, code string, co
 		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
 		oauth2.SetAuthURLParam("client_id", c.OauthConfig.ClientID),
 	)
-	return token, fmt.Errorf("failed to exchange oauth token: %w", err)
+	return token, fmt.Errorf("exchanging oauth token: %w", err)
 }
 
 func (c *AuthorizationGrantClient) bytesAreEqual(this []byte, that []byte) bool {
