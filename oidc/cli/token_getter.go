@@ -20,18 +20,13 @@ func GetToken(
 	ctx context.Context,
 	clientID string,
 	issuerURL string,
-	scopes []string,
 	clientOptions ...client.OIDCClientOption,
 ) (*client.Token, error) {
 	fileLock, err := pidlock.NewLock(lockFilePath)
 	if err != nil {
 		return nil, fmt.Errorf("creating lock: %w", err)
 	}
-	oidcClient, err := client.NewOIDCClient(ctx, &client.OIDCClientConfig{
-		ClientID:  clientID,
-		IssuerURL: issuerURL,
-		Scopes:    scopes,
-	}, clientOptions...)
+	oidcClient, err := client.NewOIDCClient(ctx, clientID, issuerURL, clientOptions...)
 	if err != nil {
 		return nil, fmt.Errorf("creating oidc client: %w", err)
 	}

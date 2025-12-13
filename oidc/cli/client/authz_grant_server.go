@@ -14,9 +14,10 @@ import (
 
 // ServerConfig is a server config
 type ServerConfig struct {
-	FromPort int
-	ToPort   int
-	Timeout  time.Duration
+	FromPort       int
+	ToPort         int
+	Timeout        time.Duration
+	CustomMessages map[oidcStatus]string
 }
 
 // Validate validates the config
@@ -79,7 +80,7 @@ func (s *server) bind(c *ServerConfig) error {
 	}
 
 	// at this point we failed to bind to all ports, error out
-	return fmt.Errorf("failed to bind to any port in range %d-%d: %w", c.FromPort, c.ToPort, result)
+	return fmt.Errorf("binding to any port in range %d-%d: %w", c.FromPort, c.ToPort, result)
 }
 
 // GetBoundPort returns the port we bound to
@@ -87,13 +88,13 @@ func (s *server) GetBoundPort() int {
 	return s.port
 }
 
-func (s *server) Exchange(ctx context.Context, config *oauth2.Config, code, codeVerifier string) (*oauth2.Token, error) {
-	token, err := config.Exchange(
+func (s *server) Exchange(ctx context.Context, client *OIDCClient, code, codeVerifier string) (*oauth2.Token, error) {
+	token, err := client.Exchange(
 		ctx,
 		code,
 		oauth2.SetAuthURLParam("grant_type", "authorization_code"),
 		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
-		oauth2.SetAuthURLParam("client_id", config.ClientID),
+		oauth2.SetAuthURLParam("client_id", client.ClientID),
 	)
 	if err != nil {
 		return nil, fmt.Errorf("exchanging oauth token: %w", err)
@@ -103,7 +104,11 @@ func (s *server) Exchange(ctx context.Context, config *oauth2.Config, code, code
 }
 
 // Start will start a webserver to capture oidc response
-func (s *server) Start(ctx context.Context, authenticator *AuthorizationGrantAuthenticator, config *oauth2.Config, oauthMaterial *oauthMaterial) {
+func (s *server) Start(
+	ctx context.Context,
+	client *OIDCClient,
+	oauthMaterial *oauthMaterial,
+) {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
@@ -113,7 +118,7 @@ func (s *server) Start(ctx context.Context, authenticator *AuthorizationGrantAut
 			return
 		}
 
-		oauth2Token, err := s.Exchange(ctx, config, req.URL.Query().Get("code"), oauthMaterial.CodeVerifier)
+		oauth2Token, err := s.Exchange(ctx, client, req.URL.Query().Get("code"), oauthMaterial.CodeVerifier)
 		if err != nil {
 			errMsg := "failed to exchange token"
 			http.Error(w, errMsg, http.StatusInternalServerError)
@@ -121,7 +126,7 @@ func (s *server) Start(ctx context.Context, authenticator *AuthorizationGrantAut
 			return
 		}
 
-		claims, idToken, verifiedIDToken, err := idTokenFromOauth2Token(ctx, oauth2Token, authenticator.verifier)
+		claims, idToken, verifiedIDToken, err := client.ParseAsIDToken(ctx, oauth2Token)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			s.err <- fmt.Errorf("could not verify ID token: %w", err)
@@ -133,7 +138,7 @@ func (s *server) Start(ctx context.Context, authenticator *AuthorizationGrantAut
 			return
 		}
 
-		_, err = w.Write([]byte(authenticator.customMessages[oidcStatusSuccess]))
+		_, err = w.Write([]byte(s.config.CustomMessages[oidcStatusSuccess]))
 		if err != nil {
 			s.err <- err
 			return

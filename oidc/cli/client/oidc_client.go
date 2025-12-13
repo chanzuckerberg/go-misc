@@ -5,7 +5,6 @@ import (
 	"crypto/subtle"
 	"fmt"
 	"log/slog"
-	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
@@ -19,118 +18,98 @@ var DefaultScopes = []string{
 }
 
 type authenticator interface {
-	Authenticate(context.Context, *oauth2.Config) (*Token, error)
+	Authenticate(context.Context, *OIDCClient) (*Token, error)
 }
 
-type OIDClient struct {
-	provider      *oidc.Provider
-	authenticator authenticator
-	oauthConfig   *oauth2.Config
-	verifier      *oidc.IDTokenVerifier
+type OIDCClient struct {
+	authenticator
+	*oauth2.Config
+	*oidc.IDTokenVerifier
+	Scopes []string
 }
 
-type OIDCClientConfig struct {
-	ClientID  string
-	IssuerURL string
-	Scopes    []string
-}
-
-type OIDCClientOption func(*OIDClient)
+type OIDCClientOption func(*OIDCClient)
 
 func WithDeviceGrantAuthenticator(a *DeviceGrantAuthenticator) OIDCClientOption {
-	return func(c *OIDClient) {
+	return func(c *OIDCClient) {
 		c.authenticator = a
 	}
 }
 
 func WithAuthzGrantAuthenticator(a *AuthorizationGrantAuthenticator) OIDCClientOption {
-	return func(c *OIDClient) {
+	return func(c *OIDCClient) {
 		c.authenticator = a
 	}
 }
 
-func NewOIDCClient(ctx context.Context, config *OIDCClientConfig, clientOptions ...OIDCClientOption) (*OIDClient, error) {
-	provider, err := oidc.NewProvider(ctx, config.IssuerURL)
+func WithScopes(scopes []string) OIDCClientOption {
+	return func(c *OIDCClient) {
+		c.Scopes = scopes
+	}
+}
+
+func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOptions ...OIDCClientOption) (*OIDCClient, error) {
+	provider, err := oidc.NewProvider(ctx, issuerURL)
 	if err != nil {
 		return nil, fmt.Errorf("creating oidc provider: %w", err)
 	}
 
-	scopes := DefaultScopes
-	if len(config.Scopes) != 0 {
-		scopes = config.Scopes
+	oidcClient := &OIDCClient{
+		Scopes: DefaultScopes,
 	}
-	oauthConfig := &oauth2.Config{
-		ClientID: config.ClientID,
+	for _, clientOption := range clientOptions {
+		clientOption(oidcClient)
+	}
+
+	oidcClient.Config = &oauth2.Config{
+		ClientID: clientID,
 		Endpoint: provider.Endpoint(),
-		Scopes:   scopes,
+		Scopes:   oidcClient.Scopes,
 	}
 
 	oidcConfig := &oidc.Config{
-		ClientID:             config.ClientID,
+		ClientID:             clientID,
 		SupportedSigningAlgs: []string{"RS256"},
 	}
-	verifier := provider.Verifier(oidcConfig)
+	oidcClient.IDTokenVerifier = provider.Verifier(oidcConfig)
 
-	defaultAuthenticator, err := NewAuthorizationGrantAuthenticator(
-		ctx,
-		&AuthorizationGrantConfig{
-			ClientID: config.ClientID,
-			Provider: provider,
-			Verifier: verifier,
-			Scopes:   scopes,
-			ServerConfig: &ServerConfig{
-				// TODO (el): Make these configurable?
-				FromPort: 49152,
-				ToPort:   49152 + 63,
-				Timeout:  30 * time.Second,
-			},
-		},
-	)
-	if err != nil {
-		return nil, fmt.Errorf("creating default authenticator: %w", err)
-	}
-
-	oidcClient := &OIDClient{
-		provider:      provider,
-		verifier:      verifier,
-		oauthConfig:   oauthConfig,
-		authenticator: defaultAuthenticator,
-	}
-
-	for _, clientOption := range clientOptions {
-		clientOption(oidcClient)
+	if oidcClient.authenticator == nil {
+		// this binds to a port, so only do it at the end once we know they didn't set up an
+		// authenticator already
+		defaultAuthenticator, err := NewAuthorizationGrantAuthenticator(ctx, defaultAuthorizationGrantConfig)
+		if err != nil {
+			return nil, fmt.Errorf("creating default authenticator: %w", err)
+		}
+		oidcClient.authenticator = defaultAuthenticator
 	}
 
 	return oidcClient, nil
 }
 
-func idTokenFromOauth2Token(
-	ctx context.Context,
-	oauth2Token *oauth2.Token,
-	verifier *oidc.IDTokenVerifier,
-) (*Claims, *oidc.IDToken, string, error) {
+func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Token) (*Claims, *oidc.IDToken, string, error) {
 	unverifiedIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
 		return nil, nil, "", fmt.Errorf("no id_token found in oauth2 token")
 	}
 
-	idToken, err := verifier.Verify(ctx, unverifiedIDToken)
+	idToken, err := c.Verify(ctx, unverifiedIDToken)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("could not verify id token: %w", err)
+		return nil, nil, "", fmt.Errorf("verifying ID token: %w", err)
 	}
 	verifiedIDToken := unverifiedIDToken // now is verified
-	claims := &Claims{}
 
+	claims := &Claims{}
 	err = idToken.Claims(claims)
 	if err != nil {
-		return nil, nil, "", fmt.Errorf("verifying claims: %w", err)
+		return nil, nil, "", fmt.Errorf("unmarshalling claims: %w", err)
 	}
+
 	return claims, idToken, verifiedIDToken, nil
 }
 
 // RefreshToken will fetch a new token
-func (c *OIDClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
-	slog.Debug(fmt.Sprintf("refresh scopes: %#v", c.oauthConfig.Scopes))
+func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
+	slog.Debug("refreshing token", "scopes", c.Scopes, "expiry", oldToken.Expiry)
 
 	newToken, err := c.refreshToken(ctx, oldToken)
 	// if we could refresh successfully, do so.
@@ -138,29 +117,29 @@ func (c *OIDClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token, 
 	if err == nil {
 		return newToken, nil
 	}
-	slog.Debug("failed to refresh token, requesting new one", "error", err)
 
-	return c.authenticator.Authenticate(ctx, c.oauthConfig)
+	slog.Debug("failed to refresh token, requesting new one", "error", err)
+	return c.authenticator.Authenticate(ctx, c)
 }
 
-func (c *OIDClient) refreshToken(ctx context.Context, token *Token) (*Token, error) {
+func (c *OIDCClient) refreshToken(ctx context.Context, token *Token) (*Token, error) {
 	if token == nil {
 		slog.Debug("nil refresh token, skipping refresh flow")
 		return nil, fmt.Errorf("cannot refresh nil token")
 	}
 
 	slog.Debug("refresh token found, attempting refresh flow")
-	newOauth2Token, err := c.oauthConfig.TokenSource(ctx, token.Token).Token()
+	newOauth2Token, err := c.TokenSource(ctx, token.Token).Token()
 	if err != nil {
 		return nil, fmt.Errorf("refreshing token: %w", err)
 	}
 
-	claims, _, verifiedIDToken, err := idTokenFromOauth2Token(ctx, newOauth2Token, c.verifier)
+	claims, _, verifiedIDToken, err := c.ParseAsIDToken(ctx, newOauth2Token)
 	if err != nil {
 		return nil, err
 	}
-	slog.Debug("refresh successful")
 
+	slog.Debug("successfully refreshed token", "expiry", newOauth2Token.Expiry)
 	return &Token{
 		Version: token.Version,
 		IDToken: verifiedIDToken,
@@ -168,20 +147,6 @@ func (c *OIDClient) refreshToken(ctx context.Context, token *Token) (*Token, err
 		Token:   newOauth2Token,
 	}, nil
 
-}
-
-// Verify verifies an oidc id token
-func (c *OIDClient) Verify(ctx context.Context, ourNonce []byte, rawIDToken string) (*oidc.IDToken, error) {
-	idToken, err := c.verifier.Verify(ctx, rawIDToken)
-	if err != nil {
-		return nil, fmt.Errorf("could not verify id token: %w", err)
-	}
-
-	if !bytesAreEqual([]byte(idToken.Nonce), ourNonce) {
-		return nil, fmt.Errorf("nonce does not match")
-	}
-
-	return idToken, nil
 }
 
 func bytesAreEqual(this []byte, that []byte) bool {

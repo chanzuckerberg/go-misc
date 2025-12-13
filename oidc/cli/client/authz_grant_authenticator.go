@@ -8,7 +8,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/pkg/browser"
 	"golang.org/x/oauth2"
 )
@@ -20,31 +19,28 @@ const (
 	oidcStatusSuccess     oidcStatus = "success"
 )
 
+var defaultAuthorizationGrantConfig *AuthorizationGrantConfig = &AuthorizationGrantConfig{
+	ServerConfig: &ServerConfig{
+		FromPort: 49152,
+		ToPort:   49152 + 63,
+		Timeout:  30 * time.Second,
+		CustomMessages: map[oidcStatus]string{
+			oidcStatusSuccess: defaultSuccessMessage,
+		},
+	},
+}
+
 // AuthorizationGrantConfig is required to config a client
 type AuthorizationGrantConfig struct {
-	ClientID     string
-	Verifier     *oidc.IDTokenVerifier
-	Provider     *oidc.Provider
-	Scopes       []string
 	ServerConfig *ServerConfig
 }
 
 // AuthorizationGrantAuthenticator is an oauth client
 type AuthorizationGrantAuthenticator struct {
-	verifier *oidc.IDTokenVerifier
-	server   *server
-
-	// Extra configuration options
-	customMessages map[oidcStatus]string
+	server *server
 }
 
 type AuthorizationGrantAuthenticatorOption func(*AuthorizationGrantAuthenticator)
-
-var SetSuccessMessage = func(successMessage string) AuthorizationGrantAuthenticatorOption {
-	return func(c *AuthorizationGrantAuthenticator) {
-		c.customMessages[oidcStatusSuccess] = successMessage
-	}
-}
 
 // NewAuthorizationGrantAuthenticator returns a new client
 func NewAuthorizationGrantAuthenticator(
@@ -59,10 +55,6 @@ func NewAuthorizationGrantAuthenticator(
 
 	authenticator := &AuthorizationGrantAuthenticator{
 		server: server,
-		customMessages: map[oidcStatus]string{
-			oidcStatusSuccess: defaultSuccessMessage,
-		},
-		verifier: config.Verifier,
 	}
 
 	for _, clientOption := range authenticatorOptions {
@@ -73,8 +65,8 @@ func NewAuthorizationGrantAuthenticator(
 }
 
 // GetAuthCodeURL gets the url to the oauth2 consent page
-func (c *AuthorizationGrantAuthenticator) GetAuthCodeURL(oauthMaterial *oauthMaterial, config *oauth2.Config) string {
-	return config.AuthCodeURL(
+func (c *AuthorizationGrantAuthenticator) GetAuthCodeURL(oauthMaterial *oauthMaterial, client *OIDCClient) string {
+	return client.AuthCodeURL(
 		oauthMaterial.State,
 		oauth2.SetAuthURLParam("grant_type", "refresh_token"),
 		oauth2.SetAuthURLParam("code_challenge", oauthMaterial.CodeChallenge),
@@ -83,28 +75,14 @@ func (c *AuthorizationGrantAuthenticator) GetAuthCodeURL(oauthMaterial *oauthMat
 	)
 }
 
-// Verify verifies an oidc id token
-func (c *AuthorizationGrantAuthenticator) Verify(ctx context.Context, ourNonce []byte, rawIDToken string) (*oidc.IDToken, error) {
-	idToken, err := c.verifier.Verify(ctx, rawIDToken)
-	if err != nil {
-		return nil, fmt.Errorf("could not verify id token: %w", err)
-	}
-
-	if !bytesAreEqual([]byte(idToken.Nonce), ourNonce) {
-		return nil, fmt.Errorf("nonce does not match")
-	}
-
-	return idToken, nil
-}
-
 // Authenticate will authenticate authenticate with the idp
-func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, config *oauth2.Config) (*Token, error) {
+func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, client *OIDCClient) (*Token, error) {
 	oauthMaterial, err := newOauthMaterial()
 	if err != nil {
 		return nil, err
 	}
 
-	c.server.Start(ctx, c, config, oauthMaterial)
+	c.server.Start(ctx, client, oauthMaterial)
 	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with Okta, hold on a brief second...\n")
 	time.Sleep(2 * time.Second)
 
@@ -114,12 +92,12 @@ func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, conf
 	browser.Stdout = browserStdOut
 	browser.Stderr = browserStdErr
 
-	err = browser.OpenURL(c.GetAuthCodeURL(oauthMaterial, config))
+	err = browser.OpenURL(c.GetAuthCodeURL(oauthMaterial, client))
 	if err != nil {
 		// if we error out, send back stdout, stderr
 		io.Copy(os.Stdout, browserStdOut) //nolint:errcheck
 		io.Copy(os.Stderr, browserStdErr) //nolint:errcheck
-		return nil, fmt.Errorf("could not open browser: %w", err)
+		return nil, fmt.Errorf("opening browser: %w", err)
 	}
 
 	token, err := c.server.Wait(ctx)
