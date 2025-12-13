@@ -109,7 +109,7 @@ func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Tok
 
 // RefreshToken will fetch a new token
 func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
-	slog.Debug("refreshing token", "scopes", c.Scopes, "expiry", oldToken.Expiry)
+	slog.Debug("refreshing token", "scopes", c.Scopes, "oldToken", oldToken)
 
 	newToken, err := c.refreshToken(ctx, oldToken)
 	// if we could refresh successfully, do so.
