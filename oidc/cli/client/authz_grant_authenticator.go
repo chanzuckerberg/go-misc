@@ -42,6 +42,14 @@ type AuthorizationGrantAuthenticator struct {
 
 type AuthorizationGrantAuthenticatorOption func(*AuthorizationGrantAuthenticator)
 
+func WithCustomMessages(messages map[oidcStatus]string) AuthorizationGrantAuthenticatorOption {
+	return func(a *AuthorizationGrantAuthenticator) {
+		for key, message := range messages {
+			a.server.config.CustomMessages[key] = message
+		}
+	}
+}
+
 // NewAuthorizationGrantAuthenticator returns a new client
 func NewAuthorizationGrantAuthenticator(
 	ctx context.Context,
