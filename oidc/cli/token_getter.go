@@ -9,7 +9,6 @@ import (
 	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
 	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
-	"golang.org/x/oauth2"
 )
 
 const (
@@ -52,7 +51,6 @@ func GetToken(
 
 	cache := cache.NewCache(storage, c.RefreshToken, fileLock)
 
-	oauth2.ReuseTokenSource()
 	token, err := cache.Read(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("extracting token from client: %w", err)
