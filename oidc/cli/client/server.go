@@ -108,7 +108,7 @@ func (s *server) Start(ctx context.Context, oidcClient *AuthorizationGrantClient
 			return
 		}
 
-		claims, idToken, verifiedIDToken, err := oidcClient.idTokenFromOauth2Token(ctx, oauth2Token, oauthMaterial.NonceBytes)
+		claims, _, verifiedIDToken, err := oidcClient.idTokenFromOauth2Token(ctx, oauth2Token, oauthMaterial.NonceBytes)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			s.err <- fmt.Errorf("could not verify ID token: %w", err)
@@ -123,11 +123,9 @@ func (s *server) Start(ctx context.Context, oidcClient *AuthorizationGrantClient
 
 		slog.Debug("server responded with success message; consuming token")
 		s.result <- &Token{
-			Expiry:       idToken.Expiry,
-			IDToken:      verifiedIDToken,
-			AccessToken:  oauth2Token.AccessToken,
-			RefreshToken: oauth2Token.RefreshToken,
-			Claims:       *claims,
+			IDToken: verifiedIDToken,
+			Claims:  *claims,
+			Token:   oauth2Token,
 		}
 		slog.Debug("token consumed")
 	})

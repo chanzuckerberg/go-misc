@@ -144,7 +144,7 @@ func (c *AuthorizationGrantClient) refreshToken(ctx context.Context, token *Toke
 	// We don't have a nonce in this flow since we're refreshing
 	//    our refresh token -- auth already happened
 	zeroNonce := []byte{}
-	claims, idToken, verifiedIDToken, err := c.idTokenFromOauth2Token(
+	claims, _, verifiedIDToken, err := c.idTokenFromOauth2Token(
 		ctx,
 		newOauth2Token,
 		zeroNonce)
@@ -155,12 +155,9 @@ func (c *AuthorizationGrantClient) refreshToken(ctx context.Context, token *Toke
 
 	return &Token{
 		Version: token.Version,
-		Expiry:  idToken.Expiry,
-
-		IDToken:      verifiedIDToken,
-		AccessToken:  newOauth2Token.AccessToken,
-		RefreshToken: newOauth2Token.RefreshToken,
-		Claims:       *claims,
+		IDToken: verifiedIDToken,
+		Claims:  *claims,
+		Token:   newOauth2Token,
 	}, nil
 
 }

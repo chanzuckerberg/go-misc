@@ -143,12 +143,10 @@ func (c *DeviceGrantClient) oath2TokenToToken(ctx context.Context, oauth2Token *
 	}
 
 	return &Token{
-		Version:      tokenVersion,
-		Expiry:       oauth2Token.Expiry,
-		IDToken:      idTokenStr,
-		AccessToken:  oauth2Token.AccessToken,
-		RefreshToken: oauth2Token.RefreshToken,
-		Claims:       claims,
+		Version: tokenVersion,
+		IDToken: idTokenStr,
+		Claims:  claims,
+		Token:   oauth2Token,
 	}, nil
 }
 
@@ -222,11 +220,13 @@ func (c *DeviceGrantClient) doRefreshToken(ctx context.Context, oldToken *Token)
 	slog.Debug("refresh successful")
 
 	return &Token{
-		Version:      oldToken.Version,
-		Expiry:       idToken.Expiry,
-		IDToken:      tokenResp.IDToken,
-		AccessToken:  tokenResp.AccessToken,
-		RefreshToken: tokenResp.RefreshToken,
-		Claims:       *claims,
+		Version: oldToken.Version,
+		Claims:  *claims,
+		IDToken: tokenResp.IDToken,
+		Token: &oauth2.Token{
+			Expiry:       idToken.Expiry,
+			AccessToken:  tokenResp.AccessToken,
+			RefreshToken: tokenResp.RefreshToken,
+		},
 	}, nil
 }

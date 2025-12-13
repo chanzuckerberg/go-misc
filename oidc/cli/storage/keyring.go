@@ -65,7 +65,11 @@ func (k *Keyring) Delete(ctx context.Context) error {
 	if err == keyring.ErrNotFound {
 		return nil
 	}
-	return fmt.Errorf("could not delete from keyring: %w", err)
+
+	if err != nil {
+		return fmt.Errorf("could not delete from keyring: %w", err)
+	}
+	return nil
 }
 
 func (k *Keyring) MarshalOpts() []client.MarshalOpts {

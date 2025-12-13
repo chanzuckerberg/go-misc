@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log/slog"
 	"time"
+
+	"golang.org/x/oauth2"
 )
 
 const (
@@ -29,13 +31,9 @@ type Claims struct {
 // so we can easily use it throughout our application
 type Token struct {
 	Version int
-
-	Expiry time.Time `json:"expires,omitempty"`
-
-	IDToken      string `json:"token,omitempty"`
-	AccessToken  string `json:"access_token,omitempty"`
-	RefreshToken string `json:"refresh_token,omitempty"`
-	Claims       Claims `json:"claims,omitempty"`
+	*oauth2.Token
+	IDToken string `json:"token,omitempty"`
+	Claims  Claims `json:"claims,omitempty"`
 }
 
 func (vt *Token) IsFresh() bool {

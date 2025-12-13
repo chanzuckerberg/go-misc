@@ -60,7 +60,10 @@ func (f *File) Set(ctx context.Context, value string) error {
 	}
 
 	err = os.WriteFile(f.key, []byte(value), 0600)
-	return fmt.Errorf("could not set value to file: %w", err)
+	if err != nil {
+		return fmt.Errorf("could not set value to file: %w", err)
+	}
+	return nil
 }
 
 func (f *File) Delete(ctx context.Context) error {
@@ -73,7 +76,10 @@ func (f *File) Delete(ctx context.Context) error {
 	}
 
 	err = os.Remove(f.key)
-	return fmt.Errorf("could not delete from file: %w", err)
+	if err != nil {
+		return fmt.Errorf("could not delete from file: %w", err)
+	}
+	return nil
 }
 
 func (f *File) MarshalOpts() []client.MarshalOpts {
