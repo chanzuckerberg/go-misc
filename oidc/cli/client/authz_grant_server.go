@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-multierror"
+	"golang.org/x/oauth2"
 )
 
 // ServerConfig is a server config
@@ -86,21 +87,33 @@ func (s *server) GetBoundPort() int {
 	return s.port
 }
 
+func (s *server) Exchange(ctx context.Context, config *oauth2.Config, code, codeVerifier string) (*oauth2.Token, error) {
+	token, err := config.Exchange(
+		ctx,
+		code,
+		oauth2.SetAuthURLParam("grant_type", "authorization_code"),
+		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
+		oauth2.SetAuthURLParam("client_id", config.ClientID),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("exchanging oauth token: %w", err)
+	}
+
+	return token, nil
+}
+
 // Start will start a webserver to capture oidc response
-func (s *server) Start(ctx context.Context, oidcClient *AuthorizationGrantClient, oauthMaterial *oauthMaterial) {
+func (s *server) Start(ctx context.Context, authenticator *AuthorizationGrantAuthenticator, config *oauth2.Config, oauthMaterial *oauthMaterial) {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		err := oidcClient.ValidateState(
-			oauthMaterial.StateBytes,
-			[]byte(req.URL.Query().Get("state")))
-		if err != nil {
+		if !bytesAreEqual(oauthMaterial.StateBytes, []byte(req.URL.Query().Get("state"))) {
 			http.Error(w, "state did not match", http.StatusBadRequest)
-			s.err <- fmt.Errorf("state did not match: %w", err)
+			s.err <- fmt.Errorf("state did not match")
 			return
 		}
 
-		oauth2Token, err := oidcClient.Exchange(ctx, req.URL.Query().Get("code"), oauthMaterial.CodeVerifier)
+		oauth2Token, err := s.Exchange(ctx, config, req.URL.Query().Get("code"), oauthMaterial.CodeVerifier)
 		if err != nil {
 			errMsg := "failed to exchange token"
 			http.Error(w, errMsg, http.StatusInternalServerError)
@@ -108,14 +121,19 @@ func (s *server) Start(ctx context.Context, oidcClient *AuthorizationGrantClient
 			return
 		}
 
-		claims, _, verifiedIDToken, err := oidcClient.idTokenFromOauth2Token(ctx, oauth2Token, oauthMaterial.NonceBytes)
+		claims, idToken, verifiedIDToken, err := idTokenFromOauth2Token(ctx, oauth2Token, authenticator.verifier)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			s.err <- fmt.Errorf("could not verify ID token: %w", err)
 			return
 		}
 
-		_, err = w.Write([]byte(oidcClient.customMessages[oidcStatusSuccess]))
+		if !bytesAreEqual([]byte(idToken.Nonce), oauthMaterial.NonceBytes) {
+			s.err <- fmt.Errorf("nonce does not match")
+			return
+		}
+
+		_, err = w.Write([]byte(authenticator.customMessages[oidcStatusSuccess]))
 		if err != nil {
 			s.err <- err
 			return
