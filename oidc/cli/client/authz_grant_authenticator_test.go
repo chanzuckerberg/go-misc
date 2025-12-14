@@ -12,12 +12,10 @@ func TestValidateState(t *testing.T) {
 	material, err := newOauthMaterial()
 	r.NoError(err)
 
-	c := &AuthorizationGrantClient{}
-
-	err = c.ValidateState(material.StateBytes, []byte("definitely doesn't match"))
-	r.Error(err)
+	areEqual := bytesAreEqual(material.StateBytes, []byte("definitely doesn't match"))
+	r.False(areEqual)
 
 	// matches, send the same value
-	err = c.ValidateState(material.StateBytes, material.StateBytes)
-	r.NoError(err)
+	areEqual = bytesAreEqual(material.StateBytes, material.StateBytes)
+	r.True(areEqual)
 }

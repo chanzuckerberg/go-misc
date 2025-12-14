@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
-	"github.com/pkg/errors"
 	"github.com/zalando/go-keyring"
 )
 
@@ -37,7 +36,7 @@ func (k *Keyring) Read(ctx context.Context) (*string, error) {
 		return nil, nil
 	}
 	if err != nil {
-		return nil, errors.Wrap(err, "could not read from keyring")
+		return nil, fmt.Errorf("reading from keyring: %w", err)
 	}
 	return &val, nil
 }
@@ -51,7 +50,10 @@ func (k *Keyring) Set(ctx context.Context, value string) error {
 	if err == keyring.ErrNotFound {
 		return nil
 	}
-	return errors.Wrap(err, "could not set value to keyring")
+	if err != nil {
+		return fmt.Errorf("setting value to keyring: %w", err)
+	}
+	return nil
 }
 
 // Delete will delete a value from the keyring
@@ -63,7 +65,11 @@ func (k *Keyring) Delete(ctx context.Context) error {
 	if err == keyring.ErrNotFound {
 		return nil
 	}
-	return errors.Wrap(err, "could not delete from keyring")
+
+	if err != nil {
+		return fmt.Errorf("could not delete from keyring: %w", err)
+	}
+	return nil
 }
 
 func (k *Keyring) MarshalOpts() []client.MarshalOpts {

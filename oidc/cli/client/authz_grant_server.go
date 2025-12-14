@@ -9,20 +9,21 @@ import (
 	"time"
 
 	"github.com/hashicorp/go-multierror"
-	"github.com/pkg/errors"
+	"golang.org/x/oauth2"
 )
 
 // ServerConfig is a server config
 type ServerConfig struct {
-	FromPort int
-	ToPort   int
-	Timeout  time.Duration
+	FromPort       int
+	ToPort         int
+	Timeout        time.Duration
+	CustomMessages map[oidcStatus]string
 }
 
 // Validate validates the config
 func (c *ServerConfig) Validate() error {
 	if c.ToPort < c.FromPort {
-		return errors.Errorf("toPort %d must be >= fromPort %d", c.ToPort, c.FromPort)
+		return fmt.Errorf("toPort %d must be >= fromPort %d", c.ToPort, c.FromPort)
 	}
 	return nil
 }
@@ -50,12 +51,12 @@ func newServer(c *ServerConfig) (*server, error) {
 
 	err := c.Validate()
 	if err != nil {
-		return nil, errors.Wrap(err, "could not validate new server")
+		return nil, fmt.Errorf("could not validate new server: %w", err)
 	}
 
 	err = s.bind(c)
 	if err != nil {
-		return nil, errors.Wrap(err, "could not open a port")
+		return nil, fmt.Errorf("could not open a port: %w", err)
 	}
 
 	return s, nil
@@ -79,46 +80,60 @@ func (s *server) bind(c *ServerConfig) error {
 	}
 
 	// at this point we failed to bind to all ports, error out
-	return errors.Wrapf(
-		result,
-		"failed to bind to any port in range %d-%d", c.FromPort, c.ToPort)
+	return fmt.Errorf("binding to any port in range %d-%d: %w", c.FromPort, c.ToPort, result)
 }
 
-// GetBoundPort returns the port we bound to
-func (s *server) GetBoundPort() int {
-	return s.port
+func (s *server) Exchange(ctx context.Context, client *OIDCClient, code, codeVerifier string) (*oauth2.Token, error) {
+	token, err := client.Exchange(
+		ctx,
+		code,
+		oauth2.SetAuthURLParam("grant_type", "authorization_code"),
+		oauth2.SetAuthURLParam("code_verifier", codeVerifier),
+		oauth2.SetAuthURLParam("client_id", client.ClientID),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("exchanging oauth token: %w", err)
+	}
+
+	return token, nil
 }
 
 // Start will start a webserver to capture oidc response
-func (s *server) Start(ctx context.Context, oidcClient *AuthorizationGrantClient, oauthMaterial *oauthMaterial) {
+func (s *server) Start(
+	ctx context.Context,
+	client *OIDCClient,
+	oauthMaterial *oauthMaterial,
+) {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		err := oidcClient.ValidateState(
-			oauthMaterial.StateBytes,
-			[]byte(req.URL.Query().Get("state")))
-		if err != nil {
+		if !bytesAreEqual(oauthMaterial.StateBytes, []byte(req.URL.Query().Get("state"))) {
 			http.Error(w, "state did not match", http.StatusBadRequest)
-			s.err <- errors.Wrap(err, "state did not match")
+			s.err <- fmt.Errorf("state did not match")
 			return
 		}
 
-		oauth2Token, err := oidcClient.Exchange(ctx, req.URL.Query().Get("code"), oauthMaterial.CodeVerifier)
+		oauth2Token, err := s.Exchange(ctx, client, req.URL.Query().Get("code"), oauthMaterial.CodeVerifier)
 		if err != nil {
 			errMsg := "failed to exchange token"
 			http.Error(w, errMsg, http.StatusInternalServerError)
-			s.err <- errors.Wrap(err, errMsg)
+			s.err <- fmt.Errorf("%s: %w", errMsg, err)
 			return
 		}
 
-		claims, idToken, verifiedIDToken, err := oidcClient.idTokenFromOauth2Token(ctx, oauth2Token, oauthMaterial.NonceBytes)
+		claims, idToken, verifiedIDToken, err := client.ParseAsIDToken(ctx, oauth2Token)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
-			s.err <- errors.Wrap(err, "could not verify ID token")
+			s.err <- fmt.Errorf("could not verify ID token: %w", err)
 			return
 		}
 
-		_, err = w.Write([]byte(oidcClient.customMessages[oidcStatusSuccess]))
+		if !bytesAreEqual([]byte(idToken.Nonce), oauthMaterial.NonceBytes) {
+			s.err <- fmt.Errorf("nonce does not match")
+			return
+		}
+
+		_, err = w.Write([]byte(s.config.CustomMessages[oidcStatusSuccess]))
 		if err != nil {
 			s.err <- err
 			return
@@ -126,11 +141,9 @@ func (s *server) Start(ctx context.Context, oidcClient *AuthorizationGrantClient
 
 		slog.Debug("server responded with success message; consuming token")
 		s.result <- &Token{
-			Expiry:       idToken.Expiry,
-			IDToken:      verifiedIDToken,
-			AccessToken:  oauth2Token.AccessToken,
-			RefreshToken: oauth2Token.RefreshToken,
-			Claims:       *claims,
+			IDToken: verifiedIDToken,
+			Claims:  *claims,
+			Token:   oauth2Token,
 		}
 		slog.Debug("token consumed")
 	})
@@ -155,10 +168,10 @@ func (s *server) Wait(ctx context.Context) (*Token, error) {
 
 	select {
 	case err := <-s.err:
-		return nil, errors.Wrap(err, "server.Wait failed")
+		return nil, fmt.Errorf("server.Wait failed: %w", err)
 	case token := <-s.result:
 		return token, nil
 	case <-time.After(s.config.Timeout):
-		return nil, errors.New("timed out waiting for oauth callback")
+		return nil, fmt.Errorf("timed out waiting for oauth callback")
 	}
 }

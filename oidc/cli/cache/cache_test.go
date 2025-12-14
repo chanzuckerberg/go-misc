@@ -3,17 +3,16 @@ package cache
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"testing"
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
 	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/storage"
+	"golang.org/x/oauth2"
 
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
 	"github.com/stretchr/testify/require"
 	"github.com/zalando/go-keyring"
 )
@@ -42,7 +41,7 @@ func TestNewCache(t *testing.T) {
 
 	refresh := func(ctx context.Context, c *client.Token) (*client.Token, error) {
 		// returns a "valid" token
-		return &client.Token{IDToken: u.String(), Expiry: time.Now().Add(time.Hour)}, nil
+		return &client.Token{IDToken: u.String(), Token: &oauth2.Token{Expiry: time.Now().Add(time.Hour)}}, nil
 	}
 
 	c := NewCache(s, refresh, fileLock)
@@ -71,7 +70,7 @@ func TestCorruptedCache(t *testing.T) {
 
 	refresh := func(ctx context.Context, c *client.Token) (*client.Token, error) {
 		// returns a "fresh" token
-		return &client.Token{IDToken: u.String(), Expiry: time.Now().Add(time.Hour)}, nil
+		return &client.Token{IDToken: u.String(), Token: &oauth2.Token{Expiry: time.Now().Add(time.Hour)}}, nil
 	}
 
 	c := NewCache(s, refresh, fileLock)
@@ -109,7 +108,9 @@ func TestCachedToken(t *testing.T) {
 
 	freshToken := &client.Token{
 		IDToken: u.String(),
-		Expiry:  time.Now().Add(time.Hour), // should always be fresh in this context... unless the tests are so slow
+		Token: &oauth2.Token{
+			Expiry: time.Now().Add(time.Hour), // should always be fresh in this context... unless the tests are so slow
+		},
 	}
 
 	marshalled, err := freshToken.Marshal()
@@ -122,7 +123,7 @@ func TestCachedToken(t *testing.T) {
 	r.NoError(err)
 
 	refresh := func(ctx context.Context, c *client.Token) (*client.Token, error) {
-		return nil, errors.New("always error")
+		return nil, fmt.Errorf("always error")
 	}
 
 	c := NewCache(s, refresh, fileLock)
@@ -141,13 +142,15 @@ func TestFileCache(t *testing.T) {
 	refresh := func(ctx context.Context, c *client.Token) (*client.Token, error) {
 		// returns a "fresh" token
 		return &client.Token{
-			IDToken:      u.String(),
-			Expiry:       time.Now().Add(time.Hour),
-			RefreshToken: "some refresh token",
+			IDToken: u.String(),
+			Token: &oauth2.Token{
+				Expiry:       time.Now().Add(time.Hour),
+				RefreshToken: "some refresh token",
+			},
 		}, nil
 	}
 
-	dir, err := ioutil.TempDir("", "")
+	dir, err := os.MkdirTemp("", "")
 	r.NoError(err)
 	defer os.Remove(dir)
 
@@ -164,11 +167,11 @@ func TestFileCache(t *testing.T) {
 	r.NoError(err)
 
 	r.NotNil(token)
-	r.Empty(token.RefreshToken)
+	r.NotEmpty(token.RefreshToken)
 
 	token, err = c.Read(ctx)
 	r.NoError(err)
 
 	r.NotNil(token)
-	r.Empty(token.RefreshToken)
+	r.NotEmpty(token.RefreshToken)
 }
