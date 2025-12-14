@@ -41,7 +41,7 @@ func GetOIDC(clientID string, issuerURL string) (Storage, error) {
 		return getFileStorage(clientID, issuerURL)
 	}
 
-	return getFileStorage(clientID, issuerURL)
+	return NewKeyring(clientID, issuerURL), nil
 }
 
 func getFileStorage(clientID string, issuerURL string) (Storage, error) {
