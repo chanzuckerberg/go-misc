@@ -8,8 +8,8 @@ import (
 	"io"
 	"log/slog"
 
-	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
-	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/storage"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/pkg/errors"
 	"github.com/zalando/go-keyring"

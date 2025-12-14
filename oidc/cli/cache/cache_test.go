@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
-	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/storage"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/storage"
 	"golang.org/x/oauth2"
 
 	"github.com/chanzuckerberg/go-misc/pidlock"

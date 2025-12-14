@@ -9,7 +9,7 @@ import (
 	"path"
 	"sync"
 
-	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
 	"github.com/pkg/errors"
 )
 
