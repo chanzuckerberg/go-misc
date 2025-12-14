@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.0.0](https://github.com/chanzuckerberg/go-misc/compare/oidc-v4.1.1...oidc-v5.0.0) (2025-12-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* large refactor; delete cache check if exists; store refresh token ([#1139](https://github.com/chanzuckerberg/go-misc/issues/1139))
+
+### Bug Fixes
+
+* large refactor; delete cache check if exists; store refresh token ([#1139](https://github.com/chanzuckerberg/go-misc/issues/1139)) ([083466f](https://github.com/chanzuckerberg/go-misc/commit/083466f5f4c3216bc61111ebbcec8ac8159f39cf))
+
 ## [4.1.1](https://github.com/chanzuckerberg/go-misc/compare/oidc-v4.1.0...oidc-v4.1.1) (2025-12-05)
 
 
