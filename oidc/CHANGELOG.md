@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.1](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.0.0...oidc-v5.0.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* versioning after major version bump ([#1142](https://github.com/chanzuckerberg/go-misc/issues/1142)) ([333ef59](https://github.com/chanzuckerberg/go-misc/commit/333ef59fa84701ef853f5877ca29ecedb9a94956))
+
 ## [5.0.0](https://github.com/chanzuckerberg/go-misc/compare/oidc-v4.1.1...oidc-v5.0.0) (2025-12-14)
 
 
