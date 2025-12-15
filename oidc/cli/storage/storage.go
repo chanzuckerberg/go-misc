@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
 	"github.com/chanzuckerberg/go-misc/osutil"
 	"github.com/mitchellh/go-homedir"
 )
