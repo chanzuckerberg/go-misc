@@ -39,7 +39,10 @@ func TestNewOIDCClientShouldBindFirstAvailablePort(t *testing.T) {
 
 	portStr := strings.Split(client.RedirectURL, "http://localhost:")[1]
 	var boundPort int
-	fmt.Sscanf(portStr, "%d", &boundPort)
+	_, err = fmt.Sscanf(portStr, "%d", &boundPort)
+	if err != nil {
+		t.Fatalf("Failed to parse bound port from redirect URL %q: %v", client.RedirectURL, err)
+	}
 	checkIfBoundPortInRange(t, boundPort)
 }
 
