@@ -91,6 +91,10 @@ func (c *AuthorizationGrantAuthenticator) GetAuthCodeURL(oauthMaterial *oauthMat
 
 // Authenticate will authenticate authenticate with the idp
 func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, client *OIDCClient) (*Token, error) {
+	err := c.server.Bind(c.server.config)
+	if err != nil {
+		return nil, fmt.Errorf("binding to port: %w", err)
+	}
 	oauthMaterial, err := newOauthMaterial()
 	if err != nil {
 		return nil, err

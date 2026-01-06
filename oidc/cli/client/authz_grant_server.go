@@ -54,17 +54,12 @@ func newServer(c *ServerConfig) (*server, error) {
 		return nil, fmt.Errorf("could not validate new server: %w", err)
 	}
 
-	err = s.bind(c)
-	if err != nil {
-		return nil, fmt.Errorf("could not open a port: %w", err)
-	}
-
 	return s, nil
 }
 
-// bind will attempt to open a socket
+// Bind will attempt to open a socket
 // on a port in the range FromPort to ToPort
-func (s *server) bind(c *ServerConfig) error {
+func (s *server) Bind(c *ServerConfig) error {
 	var result *multierror.Error
 
 	for port := c.FromPort; port <= c.ToPort; port++ {
