@@ -54,20 +54,15 @@ func newServer(c *ServerConfig) (*server, error) {
 		return nil, fmt.Errorf("could not validate new server: %w", err)
 	}
 
-	err = s.bind(c)
-	if err != nil {
-		return nil, fmt.Errorf("could not open a port: %w", err)
-	}
-
 	return s, nil
 }
 
-// bind will attempt to open a socket
+// Bind will attempt to open a socket
 // on a port in the range FromPort to ToPort
-func (s *server) bind(c *ServerConfig) error {
+func (s *server) Bind() error {
 	var result *multierror.Error
 
-	for port := c.FromPort; port <= c.ToPort; port++ {
+	for port := s.config.FromPort; port <= s.config.ToPort; port++ {
 		l, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", port))
 		// If we manage to bind, then great use it
 		if err == nil {
@@ -80,7 +75,7 @@ func (s *server) bind(c *ServerConfig) error {
 	}
 
 	// at this point we failed to bind to all ports, error out
-	return fmt.Errorf("binding to any port in range %d-%d: %w", c.FromPort, c.ToPort, result)
+	return fmt.Errorf("binding to any port in range %d-%d: %w", s.config.FromPort, s.config.ToPort, result)
 }
 
 func (s *server) Exchange(ctx context.Context, client *OIDCClient, code, codeVerifier string) (*oauth2.Token, error) {

@@ -68,8 +68,6 @@ func NewAuthorizationGrantAuthenticator(
 		opt(authenticator)
 	}
 
-	oauth2Config.RedirectURL = fmt.Sprintf("http://localhost:%d", authenticator.GetBoundPort())
-
 	return authenticator, nil
 }
 
@@ -91,6 +89,12 @@ func (c *AuthorizationGrantAuthenticator) GetAuthCodeURL(oauthMaterial *oauthMat
 
 // Authenticate will authenticate authenticate with the idp
 func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, client *OIDCClient) (*Token, error) {
+	err := c.server.Bind()
+	if err != nil {
+		return nil, fmt.Errorf("binding to port: %w", err)
+	}
+
+	client.RedirectURL = fmt.Sprintf("http://localhost:%d", c.GetBoundPort())
 	oauthMaterial, err := newOauthMaterial()
 	if err != nil {
 		return nil, err
