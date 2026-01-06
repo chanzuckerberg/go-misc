@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.2](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.0.1...oidc-v5.0.2) (2026-01-06)
+
+
+### Bug Fixes
+
+* only bind to port when actually authenticating ([#1146](https://github.com/chanzuckerberg/go-misc/issues/1146)) ([f929148](https://github.com/chanzuckerberg/go-misc/commit/f9291482ddbd7b2681045e2d685adac856d7ede2))
+
 ## [5.0.1](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.0.0...oidc-v5.0.1) (2025-12-15)
 
 
