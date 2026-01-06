@@ -68,8 +68,6 @@ func NewAuthorizationGrantAuthenticator(
 		opt(authenticator)
 	}
 
-	oauth2Config.RedirectURL = fmt.Sprintf("http://localhost:%d", authenticator.GetBoundPort())
-
 	return authenticator, nil
 }
 
@@ -95,6 +93,8 @@ func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, clie
 	if err != nil {
 		return nil, fmt.Errorf("binding to port: %w", err)
 	}
+
+	client.RedirectURL = fmt.Sprintf("http://localhost:%d", c.GetBoundPort())
 	oauthMaterial, err := newOauthMaterial()
 	if err != nil {
 		return nil, err
