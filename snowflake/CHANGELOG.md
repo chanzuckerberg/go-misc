@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.4](https://github.com/chanzuckerberg/go-misc/compare/snowflake-v3.0.3...snowflake-v3.0.4) (2026-01-12)
+
+
+### Misc
+
+* **deps:** bump golang.org/x/crypto from 0.36.0 to 0.45.0 in /snowflake ([#1133](https://github.com/chanzuckerberg/go-misc/issues/1133)) ([7d5a175](https://github.com/chanzuckerberg/go-misc/commit/7d5a1757c9c2de619a18335e50ddd439bd7fd384))
+
 ## [3.0.3](https://github.com/chanzuckerberg/go-misc/compare/snowflake-v3.0.2...snowflake-v3.0.3) (2025-12-05)
 
 
