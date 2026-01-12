@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.3](https://github.com/chanzuckerberg/go-misc/compare/config-v3.3.2...config-v3.3.3) (2026-01-12)
+
+
+### Misc
+
+* **deps:** bump golang.org/x/crypto from 0.36.0 to 0.45.0 in /config ([#1143](https://github.com/chanzuckerberg/go-misc/issues/1143)) ([8ab6f83](https://github.com/chanzuckerberg/go-misc/commit/8ab6f837b0a765648e30df6842500e71bfe41b45))
+
 ## [3.3.2](https://github.com/chanzuckerberg/go-misc/compare/config-v3.3.1...config-v3.3.2) (2025-04-23)
 
 
