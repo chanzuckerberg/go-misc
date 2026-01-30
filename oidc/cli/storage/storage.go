@@ -57,8 +57,8 @@ func GetOIDC(clientID string, issuerURL string) (Storage, error) {
 		return getFileStorage(clientID, issuerURL)
 	}
 
-	log.Debug("GetOIDC: using file storage (desktop environment)")
-	return getFileStorage(clientID, issuerURL)
+	log.Debug("GetOIDC: using key ring storage (desktop environment)")
+	return NewKeyring(clientID, issuerURL), nil
 }
 
 func getFileStorage(clientID string, issuerURL string) (Storage, error) {
