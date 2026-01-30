@@ -37,10 +37,23 @@ func NewFile(dir string, clientID string, issuerURL string) *File {
 }
 
 func generateKey(dir string, clientID string, issuerURL string) string {
+	log := logging.Get()
+	log.Debug("generateKey: generating storage key",
+		"directory", dir,
+		"client_id", clientID,
+		"issuer_url", issuerURL,
+		"storage_version", storageVersion,
+	)
+
 	k := fmt.Sprintf("%s %s %s", storageVersion, clientID, issuerURL)
 	h := sha256.Sum256([]byte(k))
+	key := path.Join(dir, hex.EncodeToString(h[:]))
 
-	return path.Join(dir, hex.EncodeToString(h[:]))
+	log.Debug("generateKey: key generated",
+		"key_path", key,
+		"hash", hex.EncodeToString(h[:]),
+	)
+	return key
 }
 
 func (f *File) Read(ctx context.Context) (*string, error) {
