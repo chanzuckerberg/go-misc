@@ -5,10 +5,10 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"os"
 	"time"
 
-	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/pkg/browser"
 	"golang.org/x/oauth2"
 )
@@ -56,7 +56,7 @@ func NewAuthorizationGrantAuthenticator(
 	oauth2Config *oauth2.Config,
 	authenticatorOptions ...AuthorizationGrantAuthenticatorOption,
 ) (*AuthorizationGrantAuthenticator, error) {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("NewAuthorizationGrantAuthenticator: creating authenticator",
 		"port_range_from", config.ServerConfig.FromPort,
 		"port_range_to", config.ServerConfig.ToPort,
@@ -94,7 +94,7 @@ func (c *AuthorizationGrantAuthenticator) GetBoundPort() int {
 
 // GetAuthCodeURL gets the url to the oauth2 consent page
 func (c *AuthorizationGrantAuthenticator) GetAuthCodeURL(oauthMaterial *oauthMaterial, client *OIDCClient) string {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("GetAuthCodeURL: generating authorization URL",
 		"client_id", client.ClientID,
 		"scopes", client.Scopes,
@@ -116,7 +116,7 @@ func (c *AuthorizationGrantAuthenticator) GetAuthCodeURL(oauthMaterial *oauthMat
 
 // Authenticate will authenticate authenticate with the idp
 func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, client *OIDCClient) (*Token, error) {
-	log := logging.Get()
+	log := slog.Default()
 	startTime := time.Now()
 
 	log.Info("Authenticate: starting interactive authentication flow")

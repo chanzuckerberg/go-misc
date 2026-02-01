@@ -5,12 +5,12 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"log/slog"
 	"os"
 	"path"
 	"sync"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
-	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/pkg/errors"
 )
 
@@ -22,7 +22,7 @@ type File struct {
 }
 
 func NewFile(dir string, clientID string, issuerURL string) *File {
-	log := logging.Get()
+	log := slog.Default()
 	key := generateKey(dir, clientID, issuerURL)
 	log.Debug("NewFile: creating file storage",
 		"directory", dir,
@@ -37,7 +37,7 @@ func NewFile(dir string, clientID string, issuerURL string) *File {
 }
 
 func generateKey(dir string, clientID string, issuerURL string) string {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("generateKey: generating storage key",
 		"directory", dir,
 		"client_id", clientID,
@@ -57,7 +57,7 @@ func generateKey(dir string, clientID string, issuerURL string) string {
 }
 
 func (f *File) Read(ctx context.Context) (*string, error) {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("File.Read: acquiring mutex lock",
 		"key_path", f.key,
 	)
@@ -91,7 +91,7 @@ func (f *File) Read(ctx context.Context) (*string, error) {
 }
 
 func (f *File) Set(ctx context.Context, value string) error {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("File.Set: acquiring mutex lock",
 		"key_path", f.key,
 	)
@@ -130,7 +130,7 @@ func (f *File) Set(ctx context.Context, value string) error {
 }
 
 func (f *File) Delete(ctx context.Context) error {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("File.Delete: acquiring mutex lock",
 		"key_path", f.key,
 	)

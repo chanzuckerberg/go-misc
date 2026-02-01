@@ -6,10 +6,10 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
-	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/pkg/errors"
@@ -30,7 +30,7 @@ func NewCache(
 	refreshToken func(context.Context, *client.Token) (*client.Token, error),
 	lock *pidlock.Lock,
 ) *Cache {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("NewCache: creating new cache instance",
 		"storage_type", fmt.Sprintf("%T", storage),
 	)
@@ -45,7 +45,7 @@ func NewCache(
 //
 //	if not present or expired, will refresh
 func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
-	log := logging.Get()
+	log := slog.Default()
 	startTime := time.Now()
 
 	log.Debug("Cache.Read: attempting to read token from cache")
@@ -95,7 +95,7 @@ func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 }
 
 func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
-	log := logging.Get()
+	log := slog.Default()
 	startTime := time.Now()
 
 	log.Debug("Cache.refresh: acquiring lock")
@@ -236,7 +236,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 // reads token from storage, potentially returning a nil/expired token
 // users must call IsFresh to check token validty
 func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
-	log := logging.Get()
+	log := slog.Default()
 
 	log.Debug("Cache.readFromStorage: reading from storage backend")
 	cached, err := c.storage.Read(ctx)
@@ -292,7 +292,7 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 }
 
 func compressToken(token string) (string, error) {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("compressToken: starting compression",
 		"input_length", len(token),
 	)
@@ -322,7 +322,7 @@ func compressToken(token string) (string, error) {
 }
 
 func decompressToken(token string) (*string, error) {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("decompressToken: starting decompression",
 		"input_length", len(token),
 	)

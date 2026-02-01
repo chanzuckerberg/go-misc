@@ -3,11 +3,11 @@ package cli
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/cache"
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
-	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
 )
@@ -24,7 +24,7 @@ func GetToken(
 	issuerURL string,
 	clientOptions ...client.OIDCClientOption,
 ) (*client.Token, error) {
-	log := logging.Get()
+	log := slog.Default()
 	startTime := time.Now()
 
 	log.Info("GetToken started",

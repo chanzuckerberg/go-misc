@@ -3,11 +3,11 @@ package client
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net"
 	"net/http"
 	"time"
 
-	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/hashicorp/go-multierror"
 	"golang.org/x/oauth2"
 )
@@ -42,7 +42,7 @@ type server struct {
 
 // newServer returns a new server
 func newServer(c *ServerConfig) (*server, error) {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("newServer: creating callback server",
 		"port_range_from", c.FromPort,
 		"port_range_to", c.ToPort,
@@ -71,7 +71,7 @@ func newServer(c *ServerConfig) (*server, error) {
 // Bind will attempt to open a socket
 // on a port in the range FromPort to ToPort
 func (s *server) Bind() error {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("server.Bind: attempting to bind to a port",
 		"port_range_from", s.config.FromPort,
 		"port_range_to", s.config.ToPort,
@@ -111,7 +111,7 @@ func (s *server) Bind() error {
 }
 
 func (s *server) Exchange(ctx context.Context, client *OIDCClient, code, codeVerifier string) (*oauth2.Token, error) {
-	log := logging.Get()
+	log := slog.Default()
 	startTime := time.Now()
 
 	log.Debug("server.Exchange: exchanging authorization code for token",
@@ -148,7 +148,7 @@ func (s *server) Start(
 	client *OIDCClient,
 	oauthMaterial *oauthMaterial,
 ) {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("server.Start: setting up HTTP handler for OAuth callback",
 		"port", s.port,
 	)
@@ -251,7 +251,7 @@ func (s *server) Start(
 
 // Wait waits for the oauth2 payload
 func (s *server) Wait(ctx context.Context) (*Token, error) {
-	log := logging.Get()
+	log := slog.Default()
 	startTime := time.Now()
 
 	log.Debug("server.Wait: waiting for OAuth callback",

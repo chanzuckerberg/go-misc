@@ -3,9 +3,9 @@ package storage
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
-	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/chanzuckerberg/go-misc/osutil"
 	"github.com/mitchellh/go-homedir"
 )
@@ -26,7 +26,7 @@ type Storage interface {
 }
 
 func GetOIDC(clientID string, issuerURL string) (Storage, error) {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("GetOIDC: determining storage backend",
 		"client_id", clientID,
 		"issuer_url", issuerURL,
@@ -62,7 +62,7 @@ func GetOIDC(clientID string, issuerURL string) (Storage, error) {
 }
 
 func getFileStorage(clientID string, issuerURL string) (Storage, error) {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("getFileStorage: expanding storage directory path",
 		"default_path", defaultFileStorageDir,
 	)

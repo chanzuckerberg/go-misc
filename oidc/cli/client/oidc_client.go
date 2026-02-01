@@ -4,9 +4,9 @@ import (
 	"context"
 	"crypto/subtle"
 	"fmt"
+	"log/slog"
 	"time"
 
-	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
 )
@@ -56,7 +56,7 @@ func WithScopes(scopes []string) OIDCClientOption {
 }
 
 func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOptions ...OIDCClientOption) (*OIDCClient, error) {
-	log := logging.Get()
+	log := slog.Default()
 	startTime := time.Now()
 
 	log.Info("NewOIDCClient: creating OIDC client",
@@ -131,7 +131,7 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 }
 
 func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Token) (*Claims, *oidc.IDToken, string, error) {
-	log := logging.Get()
+	log := slog.Default()
 	log.Debug("ParseAsIDToken: extracting id_token from oauth2 token")
 
 	unverifiedIDToken, ok := oauth2Token.Extra("id_token").(string)
@@ -176,7 +176,7 @@ func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Tok
 
 // RefreshToken will fetch a new token
 func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
-	log := logging.Get()
+	log := slog.Default()
 	startTime := time.Now()
 
 	log.Info("RefreshToken: attempting to refresh token",
@@ -222,7 +222,7 @@ func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token,
 }
 
 func (c *OIDCClient) refreshToken(ctx context.Context, token *Token) (*Token, error) {
-	log := logging.Get()
+	log := slog.Default()
 
 	if token == nil {
 		log.Debug("refreshToken: nil token provided, skipping refresh flow")
