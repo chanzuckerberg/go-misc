@@ -65,7 +65,7 @@ func NewAuthorizationGrantAuthenticator(
 
 	server, err := newServer(config.ServerConfig)
 	if err != nil {
-		log.Error("NewAuthorizationGrantAuthenticator: failed to create server",
+		log.Error("NewAuthorizationGrantAuthenticator: creating server",
 			"error", err,
 		)
 		return nil, err
@@ -119,12 +119,12 @@ func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, clie
 	log := slog.Default()
 	startTime := time.Now()
 
-	log.Info("Authenticate: starting interactive authentication flow")
+	log.Debug("Authenticate: starting interactive authentication flow")
 
 	log.Debug("Authenticate: binding to local port")
 	err := c.server.Bind()
 	if err != nil {
-		log.Error("Authenticate: failed to bind to port",
+		log.Error("Authenticate: binding to port",
 			"error", err,
 		)
 		return nil, fmt.Errorf("binding to port: %w", err)
@@ -142,7 +142,7 @@ func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, clie
 	log.Debug("Authenticate: generating OAuth material (state, nonce, PKCE)")
 	oauthMaterial, err := newOauthMaterial()
 	if err != nil {
-		log.Error("Authenticate: failed to generate OAuth material",
+		log.Error("Authenticate: generating OAuth material",
 			"error", err,
 		)
 		return nil, err
@@ -154,7 +154,7 @@ func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, clie
 	log.Debug("Authenticate: local callback server started")
 
 	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with Okta, hold on a brief second...\n")
-	log.Info("Authenticate: waiting before opening browser",
+	log.Debug("Authenticate: waiting before opening browser",
 		"wait_duration_seconds", 2,
 	)
 	time.Sleep(2 * time.Second)
@@ -166,12 +166,12 @@ func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, clie
 	browser.Stderr = browserStdErr
 
 	authURL := c.GetAuthCodeURL(oauthMaterial, client)
-	log.Info("Authenticate: opening browser for authentication",
+	log.Debug("Authenticate: opening browser for authentication",
 		"port", boundPort,
 	)
 	err = browser.OpenURL(authURL)
 	if err != nil {
-		log.Error("Authenticate: failed to open browser",
+		log.Error("Authenticate: opening browser",
 			"error", err,
 			"browser_stdout", browserStdOut.String(),
 			"browser_stderr", browserStdErr.String(),
@@ -186,14 +186,14 @@ func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, clie
 	log.Debug("Authenticate: waiting for OAuth callback")
 	token, err := c.server.Wait(ctx)
 	if err != nil {
-		log.Error("Authenticate: failed waiting for callback",
+		log.Error("Authenticate: waiting for callback",
 			"error", err,
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)
 		return nil, err
 	}
 
-	log.Info("Authenticate: interactive authentication completed successfully",
+	log.Debug("Authenticate: interactive authentication completed successfully",
 		"elapsed_ms", time.Since(startTime).Milliseconds(),
 		"token_expiry", token.Token.Expiry,
 	)

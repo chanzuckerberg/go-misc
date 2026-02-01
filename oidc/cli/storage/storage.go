@@ -4,17 +4,25 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"os"
+	"path/filepath"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
 	"github.com/chanzuckerberg/go-misc/osutil"
-	"github.com/mitchellh/go-homedir"
 )
 
 const (
-	service               = "aws-oidc"
-	defaultFileStorageDir = "~/.cache/oidc-cli"
-	storageVersion        = "v0"
+	service        = "aws-oidc"
+	storageVersion = "v0"
 )
+
+func getDefaultStorageDir() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("getting user home directory: %w", err)
+	}
+	return filepath.Join(home, ".cache", "oidc-cli"), nil
+}
 
 // Storage represents a storage backend for a cache
 type Storage interface {
@@ -34,7 +42,7 @@ func GetOIDC(clientID string, issuerURL string) (Storage, error) {
 
 	isWSL, err := osutil.IsWSL()
 	if err != nil {
-		log.Error("GetOIDC: failed to check WSL status",
+		log.Error("GetOIDC: checking WSL status",
 			"error", err,
 		)
 		return nil, err
@@ -63,17 +71,13 @@ func GetOIDC(clientID string, issuerURL string) (Storage, error) {
 
 func getFileStorage(clientID string, issuerURL string) (Storage, error) {
 	log := slog.Default()
-	log.Debug("getFileStorage: expanding storage directory path",
-		"default_path", defaultFileStorageDir,
-	)
 
-	dir, err := homedir.Expand(defaultFileStorageDir)
+	dir, err := getDefaultStorageDir()
 	if err != nil {
-		log.Error("getFileStorage: failed to expand path",
+		log.Error("getFileStorage: expanding storage directory path",
 			"error", err,
-			"path", defaultFileStorageDir,
 		)
-		return nil, fmt.Errorf("could not expand path: %w", err)
+		return nil, err
 	}
 
 	log.Debug("getFileStorage: creating file storage",

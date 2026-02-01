@@ -58,7 +58,7 @@ func newServer(c *ServerConfig) (*server, error) {
 
 	err := c.Validate()
 	if err != nil {
-		log.Error("newServer: server config validation failed",
+		log.Error("newServer: validating server config",
 			"error", err,
 		)
 		return nil, fmt.Errorf("could not validate new server: %w", err)
@@ -88,7 +88,7 @@ func (s *server) Bind() error {
 		if err == nil {
 			s.listener = &l
 			s.port = port
-			log.Info("server.Bind: successfully bound to port",
+			log.Debug("server.Bind: successfully bound to port",
 				"port", port,
 			)
 			return nil
@@ -102,7 +102,7 @@ func (s *server) Bind() error {
 	}
 
 	// at this point we failed to bind to all ports, error out
-	log.Error("server.Bind: failed to bind to any port in range",
+	log.Error("server.Bind: binding to port in range",
 		"port_range_from", s.config.FromPort,
 		"port_range_to", s.config.ToPort,
 		"errors", result.Error(),
@@ -127,7 +127,7 @@ func (s *server) Exchange(ctx context.Context, client *OIDCClient, code, codeVer
 		oauth2.SetAuthURLParam("client_id", client.ClientID),
 	)
 	if err != nil {
-		log.Error("server.Exchange: failed to exchange authorization code",
+		log.Error("server.Exchange: exchanging authorization code",
 			"error", err,
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)
@@ -157,7 +157,7 @@ func (s *server) Start(
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
 		requestStartTime := time.Now()
-		log.Info("server.Start: received OAuth callback request",
+		log.Debug("server.Start: received OAuth callback request",
 			"method", req.Method,
 			"url", req.URL.String(),
 			"remote_addr", req.RemoteAddr,
@@ -165,7 +165,7 @@ func (s *server) Start(
 
 		log.Debug("server.Start: validating state parameter")
 		if !bytesAreEqual(oauthMaterial.StateBytes, []byte(req.URL.Query().Get("state"))) {
-			log.Error("server.Start: state parameter mismatch",
+			log.Error("server.Start: validating state parameter",
 				"expected_length", len(oauthMaterial.StateBytes),
 				"received_length", len(req.URL.Query().Get("state")),
 			)
@@ -179,7 +179,7 @@ func (s *server) Start(
 		oauth2Token, err := s.Exchange(ctx, client, req.URL.Query().Get("code"), oauthMaterial.CodeVerifier)
 		if err != nil {
 			errMsg := "failed to exchange token"
-			log.Error("server.Start: token exchange failed",
+			log.Error("server.Start: exchanging token",
 				"error", err,
 			)
 			http.Error(w, errMsg, http.StatusInternalServerError)
@@ -191,7 +191,7 @@ func (s *server) Start(
 		log.Debug("server.Start: parsing OAuth token as ID token")
 		claims, idToken, verifiedIDToken, err := client.ParseAsIDToken(ctx, oauth2Token)
 		if err != nil {
-			log.Error("server.Start: failed to parse/verify ID token",
+			log.Error("server.Start: parsing/verifying ID token",
 				"error", err,
 			)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -202,7 +202,7 @@ func (s *server) Start(
 
 		log.Debug("server.Start: validating nonce")
 		if !bytesAreEqual([]byte(idToken.Nonce), oauthMaterial.NonceBytes) {
-			log.Error("server.Start: nonce mismatch")
+			log.Error("server.Start: validating nonce")
 			s.err <- fmt.Errorf("nonce does not match")
 			return
 		}
@@ -210,14 +210,14 @@ func (s *server) Start(
 
 		_, err = w.Write([]byte(s.config.CustomMessages[oidcStatusSuccess]))
 		if err != nil {
-			log.Error("server.Start: failed to write success response",
+			log.Error("server.Start: writing success response",
 				"error", err,
 			)
 			s.err <- err
 			return
 		}
 
-		log.Info("server.Start: OAuth callback completed successfully, sending token",
+		log.Debug("server.Start: OAuth callback completed successfully, sending token",
 			"elapsed_ms", time.Since(requestStartTime).Milliseconds(),
 			"token_expiry", oauth2Token.Expiry,
 		)
@@ -240,7 +240,7 @@ func (s *server) Start(
 		)
 		err := s.server.Serve(*s.listener)
 		if err != nil && err != http.ErrServerClosed {
-			log.Error("server.Start: HTTP server error",
+			log.Error("server.Start: serving HTTP",
 				"error", err,
 			)
 			panic(err)
@@ -266,19 +266,19 @@ func (s *server) Wait(ctx context.Context) (*Token, error) {
 
 	select {
 	case err := <-s.err:
-		log.Error("server.Wait: received error from callback handler",
+		log.Error("server.Wait: receiving callback",
 			"error", err,
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)
 		return nil, fmt.Errorf("server.Wait failed: %w", err)
 	case token := <-s.result:
-		log.Info("server.Wait: received token from callback",
+		log.Debug("server.Wait: received token from callback",
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 			"token_expiry", token.Token.Expiry,
 		)
 		return token, nil
 	case <-time.After(s.config.Timeout):
-		log.Error("server.Wait: timed out waiting for OAuth callback",
+		log.Error("server.Wait: waiting for OAuth callback (timeout)",
 			"timeout", s.config.Timeout,
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)

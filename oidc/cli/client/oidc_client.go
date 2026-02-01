@@ -59,7 +59,7 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 	log := slog.Default()
 	startTime := time.Now()
 
-	log.Info("NewOIDCClient: creating OIDC client",
+	log.Debug("NewOIDCClient: creating OIDC client",
 		"client_id", clientID,
 		"issuer_url", issuerURL,
 		"num_options", len(clientOptions),
@@ -68,7 +68,7 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 	log.Debug("NewOIDCClient: creating OIDC provider")
 	provider, err := oidc.NewProvider(ctx, issuerURL)
 	if err != nil {
-		log.Error("NewOIDCClient: failed to create OIDC provider",
+		log.Error("NewOIDCClient: creating OIDC provider",
 			"error", err,
 			"issuer_url", issuerURL,
 		)
@@ -101,7 +101,7 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 		)
 		err = clientOption(ctx, oidcClient)
 		if err != nil {
-			log.Error("NewOIDCClient: failed to apply client option",
+			log.Error("NewOIDCClient: applying client option",
 				"error", err,
 				"option_index", i,
 			)
@@ -115,7 +115,7 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 		log.Debug("NewOIDCClient: no authenticator set, creating default AuthzGrantAuthenticator")
 		err = WithAuthzGrantAuthenticator(DefaultAuthorizationGrantConfig)(ctx, oidcClient)
 		if err != nil {
-			log.Error("NewOIDCClient: failed to create default authenticator",
+			log.Error("NewOIDCClient: creating default authenticator",
 				"error", err,
 			)
 			return nil, err
@@ -123,7 +123,7 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 		log.Debug("NewOIDCClient: default authenticator created")
 	}
 
-	log.Info("NewOIDCClient: OIDC client created successfully",
+	log.Debug("NewOIDCClient: OIDC client created successfully",
 		"elapsed_ms", time.Since(startTime).Milliseconds(),
 		"scopes", oidcClient.Scopes,
 	)
@@ -136,7 +136,7 @@ func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Tok
 
 	unverifiedIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
-		log.Error("ParseAsIDToken: no id_token found in oauth2 token")
+		log.Error("ParseAsIDToken: extracting id_token from oauth2 token")
 		return nil, nil, "", fmt.Errorf("no id_token found in oauth2 token")
 	}
 	log.Debug("ParseAsIDToken: id_token extracted",
@@ -146,7 +146,7 @@ func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Tok
 	log.Debug("ParseAsIDToken: verifying ID token")
 	idToken, err := c.Verify(ctx, unverifiedIDToken)
 	if err != nil {
-		log.Error("ParseAsIDToken: failed to verify ID token",
+		log.Error("ParseAsIDToken: verifying ID token",
 			"error", err,
 		)
 		return nil, nil, "", fmt.Errorf("verifying ID token: %w", err)
@@ -162,7 +162,7 @@ func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Tok
 	claims := &Claims{}
 	err = idToken.Claims(claims)
 	if err != nil {
-		log.Error("ParseAsIDToken: failed to unmarshal claims",
+		log.Error("ParseAsIDToken: unmarshalling claims",
 			"error", err,
 		)
 		return nil, nil, "", fmt.Errorf("unmarshalling claims: %w", err)
@@ -179,7 +179,7 @@ func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token,
 	log := slog.Default()
 	startTime := time.Now()
 
-	log.Info("RefreshToken: attempting to refresh token",
+	log.Debug("RefreshToken: attempting to refresh token",
 		"scopes", c.Scopes,
 		"has_old_token", oldToken != nil,
 	)
@@ -194,7 +194,7 @@ func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token,
 	// if we could refresh successfully, do so.
 	// otherwise try a new token
 	if err == nil {
-		log.Info("RefreshToken: token refreshed successfully via refresh_token grant",
+		log.Debug("RefreshToken: token refreshed successfully via refresh_token grant",
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 			"new_expiry", newToken.Token.Expiry,
 		)
@@ -204,17 +204,17 @@ func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token,
 	log.Debug("RefreshToken: refresh_token grant failed, falling back to authentication",
 		"error", err,
 	)
-	log.Info("RefreshToken: initiating interactive authentication")
+	log.Debug("RefreshToken: initiating interactive authentication")
 	token, err := c.authenticator.Authenticate(ctx, c)
 	if err != nil {
-		log.Error("RefreshToken: authentication failed",
+		log.Error("RefreshToken: authenticating",
 			"error", err,
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)
 		return nil, err
 	}
 
-	log.Info("RefreshToken: interactive authentication succeeded",
+	log.Debug("RefreshToken: interactive authentication succeeded",
 		"elapsed_ms", time.Since(startTime).Milliseconds(),
 		"new_expiry", token.Token.Expiry,
 	)
@@ -241,7 +241,7 @@ func (c *OIDCClient) refreshToken(ctx context.Context, token *Token) (*Token, er
 	log.Debug("refreshToken: requesting new token from token endpoint")
 	newOauth2Token, err := c.TokenSource(ctx, token.Token).Token()
 	if err != nil {
-		log.Error("refreshToken: failed to refresh token",
+		log.Error("refreshToken: refreshing token",
 			"error", err,
 		)
 		return nil, fmt.Errorf("refreshing token: %w", err)
@@ -254,7 +254,7 @@ func (c *OIDCClient) refreshToken(ctx context.Context, token *Token) (*Token, er
 	log.Debug("refreshToken: parsing new token as ID token")
 	claims, _, verifiedIDToken, err := c.ParseAsIDToken(ctx, newOauth2Token)
 	if err != nil {
-		log.Error("refreshToken: failed to parse new token",
+		log.Error("refreshToken: parsing new token",
 			"error", err,
 		)
 		return nil, err

@@ -75,7 +75,7 @@ func (f *File) Read(ctx context.Context) (*string, error) {
 		return nil, nil
 	}
 	if err != nil {
-		log.Error("File.Read: failed to read file",
+		log.Error("File.Read: reading file",
 			"error", err,
 			"key_path", f.key,
 		)
@@ -103,7 +103,7 @@ func (f *File) Set(ctx context.Context, value string) error {
 	)
 	err := os.MkdirAll(f.dir, 0700)
 	if err != nil {
-		log.Error("File.Set: failed to create cache directory",
+		log.Error("File.Set: creating cache directory",
 			"error", err,
 			"directory", f.dir,
 		)
@@ -116,7 +116,7 @@ func (f *File) Set(ctx context.Context, value string) error {
 	)
 	err = os.WriteFile(f.key, []byte(value), 0600)
 	if err != nil {
-		log.Error("File.Set: failed to write file",
+		log.Error("File.Set: writing file",
 			"error", err,
 			"key_path", f.key,
 		)
@@ -154,7 +154,7 @@ func (f *File) Delete(ctx context.Context) error {
 	)
 	err = os.Remove(f.key)
 	if err != nil {
-		log.Error("File.Delete: failed to remove file",
+		log.Error("File.Delete: removing file",
 			"error", err,
 			"key_path", f.key,
 		)

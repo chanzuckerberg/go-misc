@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/cache"
@@ -12,9 +14,19 @@ import (
 	"github.com/chanzuckerberg/go-misc/pidlock"
 )
 
-const (
-	lockFilePath = "/tmp/aws-oidc.lock"
-)
+// DefaultLockFilePath returns the default path for the OIDC lock file.
+// The lock file is stored in ~/.oidc_locks/oidc.lock
+func DefaultLockFilePath() (string, error) {
+	const (
+		lockDir  = ".oidc_locks"
+		lockFile = "oidc.lock"
+	)
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("getting user home directory: %w", err)
+	}
+	return filepath.Join(home, lockDir, lockFile), nil
+}
 
 // GetToken gets an oidc token.
 // It handles caching with a default cache and keyring storage.
@@ -27,18 +39,25 @@ func GetToken(
 	log := slog.Default()
 	startTime := time.Now()
 
-	log.Info("GetToken started",
+	log.Debug("GetToken started",
 		"client_id", clientID,
 		"issuer_url", issuerURL,
 		"num_client_options", len(clientOptions),
 	)
 
+	lockFilePath, err := DefaultLockFilePath()
+	if err != nil {
+		log.Error("GetToken: getting default lock file path",
+			"error", err,
+		)
+		return nil, fmt.Errorf("getting lock file path: %w", err)
+	}
 	log.Debug("Creating pid lock",
 		"lock_file_path", lockFilePath,
 	)
 	fileLock, err := pidlock.NewLock(lockFilePath)
 	if err != nil {
-		log.Error("Failed to create pid lock",
+		log.Error("GetToken: creating pid lock",
 			"error", err,
 			"lock_file_path", lockFilePath,
 		)
@@ -52,7 +71,7 @@ func GetToken(
 	)
 	oidcClient, err := client.NewOIDCClient(ctx, clientID, issuerURL, clientOptions...)
 	if err != nil {
-		log.Error("Failed to create OIDC client",
+		log.Error("GetToken: creating OIDC client",
 			"error", err,
 			"client_id", clientID,
 			"issuer_url", issuerURL,
@@ -67,7 +86,7 @@ func GetToken(
 	)
 	storageBackend, err := storage.GetOIDC(clientID, issuerURL)
 	if err != nil {
-		log.Error("Failed to get storage backend",
+		log.Error("GetToken: getting storage backend",
 			"error", err,
 			"client_id", clientID,
 			"issuer_url", issuerURL,
@@ -85,20 +104,20 @@ func GetToken(
 	log.Debug("Reading token from cache")
 	token, err := tokenCache.Read(ctx)
 	if err != nil {
-		log.Error("Failed to read token from cache",
+		log.Error("GetToken: reading token from cache",
 			"error", err,
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)
 		return nil, fmt.Errorf("extracting token from client: %w", err)
 	}
 	if token == nil {
-		log.Error("Received nil token from OIDC-IDP",
+		log.Error("GetToken: received nil token from OIDC-IDP",
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)
 		return nil, fmt.Errorf("nil token from OIDC-IDP")
 	}
 
-	log.Info("GetToken completed successfully",
+	log.Debug("GetToken completed successfully",
 		"elapsed_ms", time.Since(startTime).Milliseconds(),
 		"token_expiry", token.Token.Expiry,
 		"has_refresh_token", token.Token.RefreshToken != "",

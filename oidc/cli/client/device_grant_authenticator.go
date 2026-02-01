@@ -26,12 +26,12 @@ func (c *DeviceGrantAuthenticator) Authenticate(ctx context.Context, client *OID
 	log := slog.Default()
 	startTime := time.Now()
 
-	log.Info("DeviceGrantAuthenticator.Authenticate: starting device authorization flow")
+	log.Debug("DeviceGrantAuthenticator.Authenticate: starting device authorization flow")
 
 	log.Debug("DeviceGrantAuthenticator.Authenticate: requesting device code")
 	response, err := client.DeviceAuth(ctx)
 	if err != nil {
-		log.Error("DeviceGrantAuthenticator.Authenticate: failed to request device code",
+		log.Error("DeviceGrantAuthenticator.Authenticate: requesting device code",
 			"error", err,
 		)
 		return nil, fmt.Errorf("requesting device code: %w", err)
@@ -44,7 +44,7 @@ func (c *DeviceGrantAuthenticator) Authenticate(ctx context.Context, client *OID
 	log.Debug("DeviceGrantAuthenticator.Authenticate: displaying user code")
 	err = c.displayUserCode(response)
 	if err != nil {
-		log.Error("DeviceGrantAuthenticator.Authenticate: failed to display user code",
+		log.Error("DeviceGrantAuthenticator.Authenticate: displaying user code",
 			"error", err,
 		)
 		return nil, err
@@ -53,7 +53,7 @@ func (c *DeviceGrantAuthenticator) Authenticate(ctx context.Context, client *OID
 	log.Debug("DeviceGrantAuthenticator.Authenticate: polling for access token")
 	token, err := client.DeviceAccessToken(ctx, response)
 	if err != nil {
-		log.Error("DeviceGrantAuthenticator.Authenticate: failed to get access token",
+		log.Error("DeviceGrantAuthenticator.Authenticate: getting access token",
 			"error", err,
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)
@@ -68,13 +68,13 @@ func (c *DeviceGrantAuthenticator) Authenticate(ctx context.Context, client *OID
 	log.Debug("DeviceGrantAuthenticator.Authenticate: parsing token as ID token")
 	claims, _, verifiedIDToken, err := client.ParseAsIDToken(ctx, token)
 	if err != nil {
-		log.Error("DeviceGrantAuthenticator.Authenticate: failed to parse ID token",
+		log.Error("DeviceGrantAuthenticator.Authenticate: parsing ID token",
 			"error", err,
 		)
 		return nil, fmt.Errorf("extracting id token: %w", err)
 	}
 
-	log.Info("DeviceGrantAuthenticator.Authenticate: device flow completed successfully",
+	log.Debug("DeviceGrantAuthenticator.Authenticate: device flow completed successfully",
 		"elapsed_ms", time.Since(startTime).Milliseconds(),
 		"token_expiry", token.Expiry,
 	)
@@ -101,7 +101,7 @@ func (c *DeviceGrantAuthenticator) displayUserCode(deviceAuth *oauth2.DeviceAuth
 	}
 	err := renderDeviceAuthTemplate(os.Stderr, data)
 	if err != nil {
-		log.Error("displayUserCode: failed to render template",
+		log.Error("displayUserCode: rendering template",
 			"error", err,
 		)
 		return fmt.Errorf("rendering device auth template: %w", err)

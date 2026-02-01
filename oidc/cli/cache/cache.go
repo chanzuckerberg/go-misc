@@ -52,7 +52,7 @@ func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 
 	cachedToken, err := c.readFromStorage(ctx)
 	if err != nil {
-		log.Error("Cache.Read: failed to read from storage",
+		log.Error("Cache.Read: reading from storage",
 			"error", err,
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)
@@ -61,7 +61,7 @@ func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 
 	// if we have a valid token, use it
 	if cachedToken.IsFresh() {
-		log.Info("Cache.Read: found fresh token in cache",
+		log.Debug("Cache.Read: found fresh token in cache",
 			"token_expiry", cachedToken.Token.Expiry,
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)
@@ -80,14 +80,14 @@ func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 	log.Debug("Cache.Read: initiating token refresh")
 	token, err := c.refresh(ctx)
 	if err != nil {
-		log.Error("Cache.Read: refresh failed",
+		log.Error("Cache.Read: refreshing token",
 			"error", err,
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)
 		return nil, err
 	}
 
-	log.Info("Cache.Read: successfully refreshed token",
+	log.Debug("Cache.Read: successfully refreshed token",
 		"token_expiry", token.Token.Expiry,
 		"elapsed_ms", time.Since(startTime).Milliseconds(),
 	)
@@ -101,7 +101,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	log.Debug("Cache.refresh: acquiring lock")
 	err := c.lock.Lock()
 	if err != nil {
-		log.Error("Cache.refresh: failed to acquire lock",
+		log.Error("Cache.refresh: acquiring lock",
 			"error", err,
 		)
 		return nil, err
@@ -117,14 +117,14 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	log.Debug("Cache.refresh: re-reading from storage after lock acquisition")
 	cachedToken, err := c.readFromStorage(ctx)
 	if err != nil {
-		log.Error("Cache.refresh: failed to read from storage after lock",
+		log.Error("Cache.refresh: reading from storage after lock",
 			"error", err,
 		)
 		return nil, err
 	}
 	// if we have a valid token, use it
 	if cachedToken.IsFresh() {
-		log.Info("Cache.refresh: found fresh token after lock (another process refreshed)",
+		log.Debug("Cache.refresh: found fresh token after lock (another process refreshed)",
 			"token_expiry", cachedToken.Token.Expiry,
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)
@@ -138,7 +138,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	)
 	token, err := c.refreshToken(ctx, cachedToken)
 	if err != nil {
-		log.Error("Cache.refresh: refreshToken function failed",
+		log.Error("Cache.refresh: calling refreshToken function",
 			"error", err,
 			"elapsed_ms", time.Since(startTime).Milliseconds(),
 		)
@@ -150,7 +150,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 
 	// check the new token is good to use
 	if !token.IsFresh() {
-		log.Error("Cache.refresh: fetched token is not fresh",
+		log.Error("Cache.refresh: fetched token not fresh",
 			"token_expiry", token.Token.Expiry,
 		)
 		return nil, fmt.Errorf("invalid token fetched")
@@ -160,7 +160,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	log.Debug("Cache.refresh: marshalling token")
 	strToken, err := token.Marshal(c.storage.MarshalOpts()...)
 	if err != nil {
-		log.Error("Cache.refresh: failed to marshal token",
+		log.Error("Cache.refresh: marshalling token",
 			"error", err,
 		)
 		return nil, fmt.Errorf("marshalling token: %w", err)
@@ -173,7 +173,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	log.Debug("Cache.refresh: compressing token")
 	compressedToken, err := compressToken(strToken)
 	if err != nil {
-		log.Error("Cache.refresh: failed to compress token",
+		log.Error("Cache.refresh: compressing token",
 			"error", err,
 		)
 		return nil, fmt.Errorf("compressing token: %w", err)
@@ -191,7 +191,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 
 			strToken, err := token.Marshal(append(c.storage.MarshalOpts(), client.MarshalOptNoRefresh)...)
 			if err != nil {
-				log.Error("Cache.refresh: failed to marshal token without refresh",
+				log.Error("Cache.refresh: marshalling token without refresh",
 					"error", err,
 				)
 				return nil, fmt.Errorf("marshalling token: %w", err)
@@ -199,7 +199,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 
 			compressedToken, err = compressToken(strToken)
 			if err != nil {
-				log.Error("Cache.refresh: failed to compress token without refresh",
+				log.Error("Cache.refresh: compressing token without refresh",
 					"error", err,
 				)
 				return nil, fmt.Errorf("compressing token: %w", err)
@@ -210,14 +210,14 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 
 			err = c.storage.Set(ctx, compressedToken)
 			if err != nil {
-				log.Error("Cache.refresh: failed to save token without refresh",
+				log.Error("Cache.refresh: saving token without refresh",
 					"error", err,
 				)
 				return nil, fmt.Errorf("caching without the refresh token: %w", err)
 			}
 			log.Debug("Cache.refresh: saved token without refresh token")
 		} else {
-			log.Error("Cache.refresh: failed to save token to storage",
+			log.Error("Cache.refresh: saving token to storage",
 				"error", err,
 			)
 			return nil, fmt.Errorf("caching the strToken: %w", err)
@@ -226,7 +226,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 		log.Debug("Cache.refresh: token saved to storage successfully")
 	}
 
-	log.Info("Cache.refresh: completed successfully",
+	log.Debug("Cache.refresh: completed successfully",
 		"elapsed_ms", time.Since(startTime).Milliseconds(),
 		"token_expiry", token.Token.Expiry,
 	)
@@ -241,7 +241,7 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	log.Debug("Cache.readFromStorage: reading from storage backend")
 	cached, err := c.storage.Read(ctx)
 	if err != nil {
-		log.Error("Cache.readFromStorage: failed to read from storage",
+		log.Error("Cache.readFromStorage: reading from storage",
 			"error", err,
 		)
 		return nil, err
@@ -300,13 +300,13 @@ func compressToken(token string) (string, error) {
 	var buf bytes.Buffer
 	gz := gzip.NewWriter(&buf)
 	if _, err := gz.Write([]byte(token)); err != nil {
-		log.Error("compressToken: failed to write to gzip",
+		log.Error("compressToken: writing to gzip",
 			"error", err,
 		)
 		return "", fmt.Errorf("failed to write to gzip: %w", err)
 	}
 	if err := gz.Close(); err != nil {
-		log.Error("compressToken: failed to close gzip writer",
+		log.Error("compressToken: closing gzip writer",
 			"error", err,
 		)
 		return "", fmt.Errorf("failed to close gzip: %w", err)
@@ -330,20 +330,20 @@ func decompressToken(token string) (*string, error) {
 	reader := bytes.NewReader([]byte(token))
 	gzreader, err := gzip.NewReader(reader)
 	if err != nil {
-		log.Error("decompressToken: failed to create gzip reader",
+		log.Error("decompressToken: creating gzip reader",
 			"error", err,
 		)
 		return nil, fmt.Errorf("failed to create gzip reader: %w", err)
 	}
 	decompressed, err := io.ReadAll(gzreader)
 	if err != nil {
-		log.Error("decompressToken: failed to read gzip data",
+		log.Error("decompressToken: reading gzip data",
 			"error", err,
 		)
 		return nil, fmt.Errorf("failed to read gzip data: %w", err)
 	}
 	if err := gzreader.Close(); err != nil {
-		log.Error("decompressToken: failed to close gzip reader",
+		log.Error("decompressToken: closing gzip reader",
 			"error", err,
 		)
 		return nil, fmt.Errorf("failed to close gzip: %w", err)
