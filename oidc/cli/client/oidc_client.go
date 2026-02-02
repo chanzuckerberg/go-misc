@@ -134,7 +134,12 @@ func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Tok
 	log := slog.Default()
 	log.Debug("ParseAsIDToken: extracting id_token from oauth2 token")
 
-	unverifiedIDToken, ok := oauth2Token.Extra("id_token").(string)
+	unverifiedIDTokenRaw := oauth2Token.Extra("id_token")
+	log.Debug("ParseAsIDToken: unverified ID token",
+		"unverified_id_token", unverifiedIDTokenRaw,
+		"type", fmt.Sprintf("%T", unverifiedIDTokenRaw),
+	)
+	unverifiedIDToken, ok := unverifiedIDTokenRaw.(string)
 	if !ok {
 		log.Error("ParseAsIDToken: extracting id_token from oauth2 token")
 		return nil, nil, "", fmt.Errorf("no id_token found in oauth2 token")
