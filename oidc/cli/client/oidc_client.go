@@ -134,16 +134,12 @@ func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Tok
 	log := slog.Default()
 	log.Debug("ParseAsIDToken: extracting id_token from oauth2 token")
 
-	unverifiedIDTokenRaw := oauth2Token.Extra("id_token")
-	log.Debug("ParseAsIDToken: unverified ID token",
-		"unverified_id_token", unverifiedIDTokenRaw,
-		"type", fmt.Sprintf("%T", unverifiedIDTokenRaw),
-	)
-	unverifiedIDToken, ok := unverifiedIDTokenRaw.(string)
+	unverifiedIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
-		log.Error("ParseAsIDToken: extracting id_token from oauth2 token")
-		return nil, nil, "", fmt.Errorf("no id_token found in oauth2 token")
+		log.Warn("ParseAsIDToken: id_token not found in response; this might be expected")
+		return nil, nil, "", nil
 	}
+
 	log.Debug("ParseAsIDToken: id_token extracted",
 		"token_length", len(unverifiedIDToken),
 	)
@@ -226,25 +222,25 @@ func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token,
 	return token, nil
 }
 
-func (c *OIDCClient) refreshToken(ctx context.Context, token *Token) (*Token, error) {
+func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*Token, error) {
 	log := slog.Default()
 
-	if token == nil {
+	if existingToken == nil {
 		log.Debug("refreshToken: nil token provided, skipping refresh flow")
 		return nil, fmt.Errorf("cannot refresh nil token")
 	}
 
-	if token.Token.RefreshToken == "" {
+	if existingToken.Token.RefreshToken == "" {
 		log.Debug("refreshToken: no refresh_token available, skipping refresh flow")
 		return nil, fmt.Errorf("no refresh token available")
 	}
 
 	log.Debug("refreshToken: refresh token found, attempting refresh flow",
-		"current_expiry", token.Token.Expiry,
+		"current_expiry", existingToken.Token.Expiry,
 	)
 
 	log.Debug("refreshToken: requesting new token from token endpoint")
-	newOauth2Token, err := c.TokenSource(ctx, token.Token).Token()
+	newOauth2Token, err := c.TokenSource(ctx, existingToken.Token).Token()
 	if err != nil {
 		log.Error("refreshToken: refreshing token",
 			"error", err,
@@ -257,7 +253,7 @@ func (c *OIDCClient) refreshToken(ctx context.Context, token *Token) (*Token, er
 	)
 
 	log.Debug("refreshToken: parsing new token as ID token")
-	claims, _, verifiedIDToken, err := c.ParseAsIDToken(ctx, newOauth2Token)
+	claims, verifiedIDToken, verifiedIDTokenStr, err := c.ParseAsIDToken(ctx, newOauth2Token)
 	if err != nil {
 		log.Error("refreshToken: parsing new token",
 			"error", err,
@@ -265,12 +261,24 @@ func (c *OIDCClient) refreshToken(ctx context.Context, token *Token) (*Token, er
 		return nil, err
 	}
 
-	log.Debug("refreshToken: token refresh completed successfully",
-		"new_expiry", newOauth2Token.Expiry,
-	)
+	// Sometimes, the IDP won't send a new ID token, per the spec. It's optional.
+	// For example, if your attempting a refresh flow in Okta, but your ID token is
+	// not expired, it won't send a new ID token. Additionally, if you are using
+	// one of the default applications in Okta and your web session expires, the
+	// refresh flow won't send a new ID token.
+	if verifiedIDToken == nil {
+		log.Debug("refreshToken: no new ID token received, using existing ID token")
+		return &Token{
+			Version: existingToken.Version,
+			IDToken: existingToken.IDToken,
+			Claims:  existingToken.Claims,
+			Token:   newOauth2Token,
+		}, nil
+	}
+
 	return &Token{
-		Version: token.Version,
-		IDToken: verifiedIDToken,
+		Version: existingToken.Version,
+		IDToken: verifiedIDTokenStr,
 		Claims:  *claims,
 		Token:   newOauth2Token,
 	}, nil
