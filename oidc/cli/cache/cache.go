@@ -122,17 +122,7 @@ func (c *Cache) Refresh(ctx context.Context) (*client.Token, error) {
 		)
 		return nil, err
 	}
-	// if we have a valid token, use it
-	if cachedToken.IsFresh() {
-		log.Debug("Cache.refresh: found fresh token after lock (another process refreshed)",
-			"token_expiry", cachedToken.Token.Expiry,
-			"elapsed_ms", time.Since(startTime).Milliseconds(),
-		)
-		return cachedToken, nil
-	}
 
-	// ok, at this point we have the lock and there are no good tokens around
-	// fetch a new one and save it
 	log.Debug("Cache.refresh: calling refreshToken function",
 		"has_cached_token", cachedToken != nil,
 	)
