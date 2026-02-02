@@ -125,9 +125,9 @@ func GetToken(
 	return token, nil
 }
 
-// GetToken gets an oidc token.
+// RefreshToken refreshes an oidc token.
 // It handles caching with a default cache and keyring storage.
-func GetToken(
+func RefreshToken(
 	ctx context.Context,
 	clientID string,
 	issuerURL string,
