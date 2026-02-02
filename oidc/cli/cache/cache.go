@@ -78,7 +78,7 @@ func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 
 	// otherwise, try refreshing
 	log.Debug("Cache.Read: initiating token refresh")
-	token, err := c.refresh(ctx)
+	token, err := c.Refresh(ctx)
 	if err != nil {
 		log.Error("Cache.Read: refreshing token",
 			"error", err,
@@ -94,7 +94,7 @@ func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 	return token, nil
 }
 
-func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
+func (c *Cache) Refresh(ctx context.Context) (*client.Token, error) {
 	log := slog.Default()
 	startTime := time.Now()
 
