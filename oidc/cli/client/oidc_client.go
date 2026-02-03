@@ -93,13 +93,13 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 }
 
 func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Token) (*Claims, *oidc.IDToken, string, error) {
-	unverifiedIDToken, ok := oauth2Token.Extra("id_token").(string)
+	idTokenStr, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
 		// id_token is optional in some flows per OIDC spec
 		return nil, nil, "", nil
 	}
 
-	idToken, err := c.Verify(ctx, unverifiedIDToken)
+	idToken, err := c.Verify(ctx, idTokenStr)
 	if err != nil {
 		return nil, nil, "", fmt.Errorf("verifying ID token: %w", err)
 	}
@@ -110,7 +110,7 @@ func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Tok
 		return nil, nil, "", fmt.Errorf("unmarshalling claims: %w", err)
 	}
 
-	return claims, idToken, unverifiedIDToken, nil
+	return claims, idToken, idTokenStr, nil
 }
 
 // RefreshToken will fetch a new token
