@@ -167,7 +167,7 @@ func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*T
 	}
 
 	// Sometimes, the IDP won't send a new ID token, per the spec. It's optional.
-	// For example, if your attempting a refresh flow in Okta, but your ID token is
+	// For example, if you're attempting a refresh flow in Okta, but your ID token is
 	// not expired, it won't send a new ID token. Additionally, if you are using
 	// one of the default applications in Okta and your web session expires, the
 	// refresh flow won't send a new ID token.
