@@ -73,7 +73,7 @@ func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 }
 
 func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
-	c.log.Debug("Cache.Refresh: acquiring lock")
+	c.log.Debug("Cache.refresh: acquiring lock")
 	err := c.lock.Lock()
 	if err != nil {
 		return nil, err
@@ -89,13 +89,13 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 
 	// Check if another process refreshed while we waited for lock
 	if cachedToken.IsFresh() {
-		c.log.Debug("Cache.Refresh: token was refreshed by another process",
+		c.log.Debug("Cache.refresh: token was refreshed by another process",
 			"token_expiry", cachedToken.Token.Expiry,
 		)
 		return cachedToken, nil
 	}
 
-	c.log.Debug("Cache.Refresh: calling refresh function",
+	c.log.Debug("Cache.refresh: calling refresh function",
 		"has_cached_token", cachedToken != nil,
 		"has_refresh_token", cachedToken != nil && cachedToken.Token.RefreshToken != "",
 	)
@@ -107,7 +107,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 
 	// check the new token is good to use
 	if !token.IsFresh() {
-		c.log.Warn("Cache.Refresh: fetched token is not fresh", "token_expiry", token.Token.Expiry)
+		c.log.Warn("Cache.refresh: fetched token is not fresh", "token_expiry", token.Token.Expiry)
 		return nil, fmt.Errorf("invalid token fetched")
 	}
 
@@ -116,7 +116,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 		return nil, err
 	}
 
-	c.log.Debug("Cache.Refresh: completed",
+	c.log.Debug("Cache.refresh: completed",
 		"token_expiry", token.Token.Expiry,
 		"has_refresh_token", token.Token.RefreshToken != "",
 		"email", token.Claims.Email,
