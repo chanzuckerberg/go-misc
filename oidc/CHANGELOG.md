@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.0](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.0.2...oidc-v5.1.0) (2026-02-03)
+
+
+### Features
+
+* added logging to the oidc go-misc package ([#1149](https://github.com/chanzuckerberg/go-misc/issues/1149)) ([79bb92e](https://github.com/chanzuckerberg/go-misc/commit/79bb92e92212d0af2f05e8cf1d2a0e6b56709cd8))
+
 ## [5.0.2](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.0.1...oidc-v5.0.2) (2026-01-06)
 
 
