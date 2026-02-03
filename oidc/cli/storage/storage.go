@@ -63,5 +63,11 @@ func GetOIDC(ctx context.Context, clientID string, issuerURL string) (Storage, e
 	}
 
 	log.Debug("GetOIDC: using keyring storage backend")
-	return NewKeyring(ctx, clientID, issuerURL), nil
+	// return NewKeyring(ctx, clientID, issuerURL), nil
+	dir, err := getDefaultStorageDir()
+	if err != nil {
+		return nil, err
+	}
+	return NewFile(ctx, dir, clientID, issuerURL), nil
+
 }
