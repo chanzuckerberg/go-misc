@@ -192,7 +192,8 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	cachedToken, err := client.TokenFromString(decompressedStr)
 	if err != nil {
 		c.log.Warn("Cache.readFromStorage: failed to parse cached token, purging", "error", err)
-		if deleteErr := c.storage.Delete(ctx); deleteErr != nil {
+		deleteErr := c.storage.Delete(ctx)
+		if deleteErr != nil {
 			c.log.Warn("Cache.readFromStorage: failed to purge invalid token", "error", deleteErr)
 		}
 		return nil, nil
