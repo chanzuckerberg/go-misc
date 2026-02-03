@@ -93,9 +93,12 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 }
 
 func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Token) (*Claims, *oidc.IDToken, string, error) {
+	log := logging.FromContext(ctx)
+
 	idTokenStr, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
 		// id_token is optional in some flows per OIDC spec
+		log.Warn("ParseAsIDToken: id_token not found in token response")
 		return nil, nil, "", nil
 	}
 
