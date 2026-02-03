@@ -132,14 +132,19 @@ func (s *server) Start(
 			"has_refresh_token", oauth2Token.RefreshToken != "",
 		)
 
-		claims, idToken, verifiedIDToken, err := client.ParseAsIDToken(ctx, oauth2Token)
+		claims, verifiedIDToken, verifiedIDStr, err := client.ParseAsIDToken(ctx, oauth2Token)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			s.err <- fmt.Errorf("could not verify ID token: %w", err)
 			return
 		}
 
-		if !bytesAreEqual([]byte(idToken.Nonce), oauthMaterial.NonceBytes) {
+		if verifiedIDToken == nil {
+			s.log.Warn("server.Start: ID token not found")
+			s.err <- fmt.Errorf("ID token not found")
+		}
+
+		if !bytesAreEqual([]byte(verifiedIDToken.Nonce), oauthMaterial.NonceBytes) {
 			s.log.Debug("server.Start: nonce mismatch")
 			s.err <- fmt.Errorf("nonce does not match")
 			return
@@ -157,7 +162,7 @@ func (s *server) Start(
 		)
 
 		s.result <- &Token{
-			IDToken: verifiedIDToken,
+			IDToken: verifiedIDStr,
 			Claims:  *claims,
 			Token:   oauth2Token,
 		}
