@@ -3,10 +3,12 @@ package client
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net"
 	"net/http"
 	"time"
 
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/hashicorp/go-multierror"
 	"golang.org/x/oauth2"
 )
@@ -30,6 +32,7 @@ func (c *ServerConfig) Validate() error {
 // Server is a server on localhost to capture oauth redirects
 type server struct {
 	config *ServerConfig
+	log    *slog.Logger
 
 	listener *net.Listener
 	port     int
@@ -40,9 +43,10 @@ type server struct {
 }
 
 // newServer returns a new server
-func newServer(_ context.Context, c *ServerConfig) (*server, error) {
+func newServer(ctx context.Context, c *ServerConfig) (*server, error) {
 	s := &server{
 		config: c,
+		log:    logging.FromContext(ctx),
 		result: make(chan *Token, 1),
 		err:    make(chan error, 1),
 	}
@@ -66,6 +70,7 @@ func (s *server) Bind() error {
 		if err == nil {
 			s.listener = &l
 			s.port = port
+			s.log.Debug("server.Bind: bound to port", "port", port)
 			return nil
 		}
 		result = multierror.Append(result, err)
@@ -96,21 +101,36 @@ func (s *server) Start(
 	client *OIDCClient,
 	oauthMaterial *oauthMaterial,
 ) {
+	s.log.Debug("server.Start: starting OAuth callback server", "port", s.port)
+
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		s.log.Debug("server.Start: received OAuth callback",
+			"method", req.Method,
+			"path", req.URL.Path,
+			"has_state", req.URL.Query().Get("state") != "",
+		)
+
 		if !bytesAreEqual(oauthMaterial.StateBytes, []byte(req.URL.Query().Get("state"))) {
+			s.log.Debug("server.Start: state parameter mismatch")
 			http.Error(w, "state did not match", http.StatusBadRequest)
 			s.err <- fmt.Errorf("state did not match")
 			return
 		}
 
+		s.log.Debug("server.Start: exchanging authorization code for token")
 		oauth2Token, err := s.Exchange(ctx, client, req.URL.Query().Get("code"), oauthMaterial.CodeVerifier)
 		if err != nil {
 			http.Error(w, "failed to exchange token", http.StatusInternalServerError)
 			s.err <- fmt.Errorf("failed to exchange token: %w", err)
 			return
 		}
+
+		s.log.Debug("server.Start: token exchange successful",
+			"token_expiry", oauth2Token.Expiry,
+			"has_refresh_token", oauth2Token.RefreshToken != "",
+		)
 
 		claims, idToken, verifiedIDToken, err := client.ParseAsIDToken(ctx, oauth2Token)
 		if err != nil {
@@ -120,6 +140,7 @@ func (s *server) Start(
 		}
 
 		if !bytesAreEqual([]byte(idToken.Nonce), oauthMaterial.NonceBytes) {
+			s.log.Debug("server.Start: nonce mismatch")
 			s.err <- fmt.Errorf("nonce does not match")
 			return
 		}
@@ -129,6 +150,11 @@ func (s *server) Start(
 			s.err <- err
 			return
 		}
+
+		s.log.Debug("server.Start: OAuth flow completed successfully",
+			"email", claims.Email,
+			"token_expiry", oauth2Token.Expiry,
+		)
 
 		s.result <- &Token{
 			IDToken: verifiedIDToken,
@@ -142,15 +168,19 @@ func (s *server) Start(
 	}
 
 	go func() {
+		s.log.Debug("server.Start: HTTP server listening", "port", s.port)
 		err := s.server.Serve(*s.listener)
 		if err != nil && err != http.ErrServerClosed {
 			panic(err)
 		}
+		s.log.Debug("server.Start: HTTP server stopped")
 	}()
 }
 
 // Wait waits for the oauth2 payload
 func (s *server) Wait(ctx context.Context) (*Token, error) {
+	s.log.Debug("server.Wait: waiting for OAuth callback", "timeout", s.config.Timeout)
+
 	// nolint:errcheck
 	defer s.server.Shutdown(ctx)
 
@@ -158,8 +188,10 @@ func (s *server) Wait(ctx context.Context) (*Token, error) {
 	case err := <-s.err:
 		return nil, fmt.Errorf("server.Wait failed: %w", err)
 	case token := <-s.result:
+		s.log.Debug("server.Wait: received token", "email", token.Claims.Email)
 		return token, nil
 	case <-time.After(s.config.Timeout):
+		s.log.Debug("server.Wait: timeout waiting for callback", "timeout", s.config.Timeout)
 		return nil, fmt.Errorf("timed out waiting for oauth callback")
 	}
 }
