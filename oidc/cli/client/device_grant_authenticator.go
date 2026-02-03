@@ -36,6 +36,7 @@ func (c *DeviceGrantAuthenticator) Authenticate(ctx context.Context, client *OID
 	}
 
 	fmt.Fprintf(os.Stderr, "\n✓ Successfully authenticated!\n")
+
 	claims, _, verifiedIDToken, err := client.ParseAsIDToken(ctx, token)
 	if err != nil {
 		return nil, fmt.Errorf("extracting id token: %w", err)
@@ -59,6 +60,5 @@ func (c *DeviceGrantAuthenticator) displayUserCode(deviceAuth *oauth2.DeviceAuth
 	if err != nil {
 		return fmt.Errorf("rendering device auth template: %w", err)
 	}
-
 	return nil
 }

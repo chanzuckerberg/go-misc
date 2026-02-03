@@ -23,7 +23,7 @@ func init() {
 
 func genStorage() storage.Storage {
 	u := uuid.New()
-	return storage.NewKeyring(u.String(), "testo")
+	return storage.NewKeyring(context.Background(), u.String(), "testo")
 }
 
 func TestNewCache(t *testing.T) {
@@ -44,7 +44,7 @@ func TestNewCache(t *testing.T) {
 		return &client.Token{IDToken: u.String(), Token: &oauth2.Token{Expiry: time.Now().Add(time.Hour)}}, nil
 	}
 
-	c := NewCache(s, refresh, fileLock)
+	c := NewCache(ctx, s, refresh, fileLock)
 
 	token, err := c.Read(ctx)
 	r.NoError(err)
@@ -73,7 +73,7 @@ func TestCorruptedCache(t *testing.T) {
 		return &client.Token{IDToken: u.String(), Token: &oauth2.Token{Expiry: time.Now().Add(time.Hour)}}, nil
 	}
 
-	c := NewCache(s, refresh, fileLock)
+	c := NewCache(ctx, s, refresh, fileLock)
 
 	token, err := c.Read(ctx)
 	r.NoError(err)
@@ -126,7 +126,7 @@ func TestCachedToken(t *testing.T) {
 		return nil, fmt.Errorf("always error")
 	}
 
-	c := NewCache(s, refresh, fileLock)
+	c := NewCache(ctx, s, refresh, fileLock)
 
 	token, err := c.Read(ctx)
 	r.Nil(err)
@@ -159,9 +159,9 @@ func TestFileCache(t *testing.T) {
 	fileLock, err := pidlock.NewLock(fileLockPath)
 	r.NoError(err)
 
-	s := storage.NewFile(dir, "client-id", "issuer-url")
+	s := storage.NewFile(ctx, dir, "client-id", "issuer-url")
 
-	c := NewCache(s, refresh, fileLock)
+	c := NewCache(ctx, s, refresh, fileLock)
 
 	token, err := c.Read(ctx)
 	r.NoError(err)

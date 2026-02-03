@@ -55,7 +55,7 @@ func NewAuthorizationGrantAuthenticator(
 	oauth2Config *oauth2.Config,
 	authenticatorOptions ...AuthorizationGrantAuthenticatorOption,
 ) (*AuthorizationGrantAuthenticator, error) {
-	server, err := newServer(config.ServerConfig)
+	server, err := newServer(ctx, config.ServerConfig)
 	if err != nil {
 		return nil, err
 	}
@@ -95,12 +95,14 @@ func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, clie
 	}
 
 	client.RedirectURL = fmt.Sprintf("http://localhost:%d", c.GetBoundPort())
+
 	oauthMaterial, err := newOauthMaterial()
 	if err != nil {
 		return nil, err
 	}
 
 	c.server.Start(ctx, client, oauthMaterial)
+
 	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with Okta, hold on a brief second...\n")
 	time.Sleep(2 * time.Second)
 
@@ -110,7 +112,8 @@ func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, clie
 	browser.Stdout = browserStdOut
 	browser.Stderr = browserStdErr
 
-	err = browser.OpenURL(c.GetAuthCodeURL(oauthMaterial, client))
+	authURL := c.GetAuthCodeURL(oauthMaterial, client)
+	err = browser.OpenURL(authURL)
 	if err != nil {
 		// if we error out, send back stdout, stderr
 		io.Copy(os.Stdout, browserStdOut) //nolint:errcheck

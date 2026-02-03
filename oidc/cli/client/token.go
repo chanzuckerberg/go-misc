@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"log/slog"
 	"time"
 
 	"golang.org/x/oauth2"
@@ -45,7 +44,6 @@ func (vt *Token) IsFresh() bool {
 
 func TokenFromString(tokenString *string, opts ...MarshalOpts) (*Token, error) {
 	if tokenString == nil {
-		slog.Debug("nil token string")
 		return nil, nil
 	}
 	tokenBytes, err := base64.StdEncoding.DecodeString(*tokenString)
