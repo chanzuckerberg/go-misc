@@ -142,6 +142,7 @@ func (s *server) Start(
 		if verifiedIDToken == nil {
 			s.log.Warn("server.Start: ID token not found")
 			s.err <- fmt.Errorf("ID token not found")
+			return
 		}
 
 		if !bytesAreEqual([]byte(verifiedIDToken.Nonce), oauthMaterial.NonceBytes) {
