@@ -7,11 +7,11 @@ import (
 	"path/filepath"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/chanzuckerberg/go-misc/osutil"
 )
 
 const (
-	service        = "aws-oidc"
 	storageVersion = "v0"
 )
 
@@ -33,11 +33,19 @@ type Storage interface {
 }
 
 func GetOIDC(ctx context.Context, clientID string, issuerURL string) (Storage, error) {
+	log := logging.FromContext(ctx)
+
 	isWSL, err := osutil.IsWSL()
 	if err != nil {
 		return nil, err
 	}
 	isDesktop := osutil.IsDesktopEnvironment()
+
+	log.Debug("GetOIDC: detected environment",
+		"is_wsl", isWSL,
+		"is_desktop", isDesktop,
+		"client_id", clientID,
+	)
 
 	// If WSL we use a file storage which does not cache refreshTokens
 	//    we do this because WSL doesn't have a graphical interface
@@ -46,17 +54,14 @@ func GetOIDC(ctx context.Context, clientID string, issuerURL string) (Storage, e
 	//    we disable this part of the flow for WSL. This could change in the future
 	//    when we find a better way to work with a WSL secure storage.
 	if isWSL || !isDesktop {
-		return getFileStorage(ctx, clientID, issuerURL)
+		dir, err := getDefaultStorageDir()
+		if err != nil {
+			return nil, err
+		}
+		log.Debug("GetOIDC: using file storage backend", "dir", dir)
+		return NewFile(ctx, dir, clientID, issuerURL), nil
 	}
 
-	// return NewKeyring(clientID, issuerURL), nil
-	return getFileStorage(ctx, clientID, issuerURL)
-}
-
-func getFileStorage(ctx context.Context, clientID string, issuerURL string) (Storage, error) {
-	dir, err := getDefaultStorageDir()
-	if err != nil {
-		return nil, err
-	}
-	return NewFile(ctx, dir, clientID, issuerURL), nil
+	log.Debug("GetOIDC: using keyring storage backend")
+	return NewKeyring(ctx, clientID, issuerURL), nil
 }

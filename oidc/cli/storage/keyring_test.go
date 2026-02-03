@@ -15,15 +15,16 @@ func init() {
 
 func TestKeyringNilIfMissing(t *testing.T) {
 	r := require.New(t)
+	ctx := context.Background()
 
 	id := guuid.New()
-	k := NewKeyring(id.String(), "testo")
+	k := NewKeyring(ctx, id.String(), "testo")
 
-	res, err := k.Read(context.Background())
+	res, err := k.Read(ctx)
 	r.Nil(err)
 	r.Nil(res)
 
-	err = k.Delete(context.Background())
+	err = k.Delete(ctx)
 	r.Nil(err)
 }
 
@@ -34,7 +35,7 @@ func TestKeyringSetReadDelete(t *testing.T) {
 	val := "testoasfdasdf"
 
 	id := guuid.New()
-	k := NewKeyring(id.String(), "testo")
+	k := NewKeyring(ctx, id.String(), "testo")
 
 	err := k.Set(ctx, val)
 	r.Nil(err)

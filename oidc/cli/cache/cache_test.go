@@ -23,7 +23,7 @@ func init() {
 
 func genStorage() storage.Storage {
 	u := uuid.New()
-	return storage.NewKeyring(u.String(), "testo")
+	return storage.NewKeyring(context.Background(), u.String(), "testo")
 }
 
 func TestNewCache(t *testing.T) {
