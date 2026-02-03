@@ -112,7 +112,8 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	}
 
 	// marshal and save token
-	if err := c.saveToken(ctx, token); err != nil {
+	err = c.saveToken(ctx, token)
+	if err != nil {
 		return nil, err
 	}
 
@@ -139,7 +140,7 @@ func (c *Cache) saveToken(ctx context.Context, token *client.Token) error {
 	err = c.storage.Set(ctx, compressedToken)
 	if err != nil {
 		if errors.Is(err, keyring.ErrSetDataTooBig) {
-			c.log.Warn("Cache: token too big for storage, retrying without refresh token")
+			c.log.Warn("Cache.saveToken: token too big for storage, retrying without refresh token")
 			return c.saveTokenWithoutRefresh(ctx, token)
 		}
 		return fmt.Errorf("caching the token: %w", err)
@@ -211,7 +212,8 @@ func compressToken(token string) (string, error) {
 	if _, err := gz.Write([]byte(token)); err != nil {
 		return "", fmt.Errorf("failed to write to gzip: %w", err)
 	}
-	if err := gz.Close(); err != nil {
+	err := gz.Close()
+	if err != nil {
 		return "", fmt.Errorf("failed to close gzip: %w", err)
 	}
 	return buf.String(), nil
@@ -227,7 +229,8 @@ func decompressToken(token string) (*string, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to read gzip data: %w", err)
 	}
-	if err := gzreader.Close(); err != nil {
+	err = gzreader.Close()
+	if err != nil {
 		return nil, fmt.Errorf("failed to close gzip: %w", err)
 	}
 	decompressedStr := string(decompressed)
