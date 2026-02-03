@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/subtle"
 	"fmt"
+	"log/slog"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/coreos/go-oidc/v3/oidc"
@@ -25,6 +26,7 @@ type OIDCClient struct {
 	authenticator
 	*oauth2.Config
 	*oidc.IDTokenVerifier
+	log *slog.Logger
 }
 
 type OIDCClientOption func(context.Context, *OIDCClient) error
@@ -71,6 +73,7 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 			Scopes:   DefaultScopes,
 		},
 		IDTokenVerifier: provider.Verifier(oidcConfig),
+		log:             logging.FromContext(ctx),
 	}
 
 	for _, clientOption := range clientOptions {
@@ -93,12 +96,10 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 }
 
 func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Token) (*Claims, *oidc.IDToken, string, error) {
-	log := logging.FromContext(ctx)
-
 	idTokenStr, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
 		// id_token is optional in some flows per OIDC spec
-		log.Warn("ParseAsIDToken: id_token not found in token response")
+		c.log.Warn("ParseAsIDToken: id_token not found in token response")
 		return nil, nil, "", nil
 	}
 
@@ -118,12 +119,10 @@ func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Tok
 
 // RefreshToken will fetch a new token
 func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
-	log := logging.FromContext(ctx)
-
 	// Try refresh_token grant first
 	newToken, err := c.refreshToken(ctx, oldToken)
 	if err == nil {
-		log.Debug("OIDCClient.RefreshToken: refreshed via refresh_token grant",
+		c.log.Debug("OIDCClient.RefreshToken: refreshed via refresh_token grant",
 			"new_expiry", newToken.Token.Expiry,
 			"email", newToken.Claims.Email,
 		)
@@ -131,15 +130,13 @@ func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token,
 	}
 
 	// Fall back to interactive authentication
-	log.Debug("OIDCClient.RefreshToken: refresh_token grant failed, falling back to interactive auth",
+	c.log.Debug("OIDCClient.RefreshToken: refresh_token grant failed, falling back to interactive auth",
 		"reason", err.Error(),
 	)
 	return c.authenticator.Authenticate(ctx, c)
 }
 
 func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*Token, error) {
-	log := logging.FromContext(ctx)
-
 	if existingToken == nil {
 		return nil, fmt.Errorf("cannot refresh nil token")
 	}
@@ -148,7 +145,7 @@ func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*T
 		return nil, fmt.Errorf("no refresh token available")
 	}
 
-	log.Debug("OIDCClient.refreshToken: attempting token refresh",
+	c.log.Debug("OIDCClient.refreshToken: attempting token refresh",
 		"current_expiry", existingToken.Token.Expiry,
 		"email", existingToken.Claims.Email,
 	)
@@ -159,7 +156,7 @@ func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*T
 		return nil, fmt.Errorf("refreshing token: %w", err)
 	}
 
-	log.Debug("OIDCClient.refreshToken: received new oauth2 token",
+	c.log.Debug("OIDCClient.refreshToken: received new oauth2 token",
 		"new_expiry", newOauth2Token.Expiry,
 		"has_new_refresh_token", newOauth2Token.RefreshToken != "",
 	)
@@ -175,7 +172,7 @@ func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*T
 	// one of the default applications in Okta and your web session expires, the
 	// refresh flow won't send a new ID token.
 	if verifiedIDToken == nil {
-		log.Debug("OIDCClient.refreshToken: IDP did not return new ID token, reusing existing")
+		c.log.Debug("OIDCClient.refreshToken: IDP did not return new ID token, reusing existing")
 		return &Token{
 			Version: existingToken.Version,
 			IDToken: existingToken.IDToken,
