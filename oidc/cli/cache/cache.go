@@ -69,10 +69,10 @@ func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 		)
 	}
 
-	return c.Refresh(ctx)
+	return c.refresh(ctx)
 }
 
-func (c *Cache) Refresh(ctx context.Context) (*client.Token, error) {
+func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	c.log.Debug("Cache.Refresh: acquiring lock")
 	err := c.lock.Lock()
 	if err != nil {
