@@ -185,15 +185,15 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	decompressedStr, err := decompressToken(*cached)
 	if err != nil {
 		// if we fail to decompress the token we should treat it as a cache miss
-		c.log.Warn("Cache: failed to decompress cached token, treating as cache miss", "error", err)
+		c.log.Warn("Cache.readFromStorage: failed to decompress cached token, treating as cache miss", "error", err)
 		return nil, nil
 	}
 
 	cachedToken, err := client.TokenFromString(decompressedStr)
 	if err != nil {
-		c.log.Warn("Cache: failed to parse cached token, purging", "error", err)
+		c.log.Warn("Cache.readFromStorage: failed to parse cached token, purging", "error", err)
 		if deleteErr := c.storage.Delete(ctx); deleteErr != nil {
-			c.log.Warn("Cache: failed to purge invalid token", "error", deleteErr)
+			c.log.Warn("Cache.readFromStorage: failed to purge invalid token", "error", deleteErr)
 		}
 		return nil, nil
 	}
