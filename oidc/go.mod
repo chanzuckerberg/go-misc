@@ -44,8 +44,6 @@ exclude github.com/zalando/go-keyring v0.2.0
 
 exclude github.com/zalando/go-keyring v0.2.1
 
-replace github.com/chanzuckerberg/go-misc/errors => ../errors
-
 replace github.com/chanzuckerberg/go-misc/osutil => ../osutil
 
 replace github.com/chanzuckerberg/go-misc/pidlock => ../pidlock

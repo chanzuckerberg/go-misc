@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log/slog"
 	"os"
 	"time"
 
@@ -56,34 +55,19 @@ func NewAuthorizationGrantAuthenticator(
 	oauth2Config *oauth2.Config,
 	authenticatorOptions ...AuthorizationGrantAuthenticatorOption,
 ) (*AuthorizationGrantAuthenticator, error) {
-	log := slog.Default()
-	log.Debug("NewAuthorizationGrantAuthenticator: creating authenticator",
-		"port_range_from", config.ServerConfig.FromPort,
-		"port_range_to", config.ServerConfig.ToPort,
-		"timeout", config.ServerConfig.Timeout,
-	)
-
-	server, err := newServer(config.ServerConfig)
+	server, err := newServer(ctx, config.ServerConfig)
 	if err != nil {
-		log.Error("NewAuthorizationGrantAuthenticator: creating server",
-			"error", err,
-		)
 		return nil, err
 	}
-	log.Debug("NewAuthorizationGrantAuthenticator: server created")
 
 	authenticator := &AuthorizationGrantAuthenticator{
 		server: server,
 	}
 
-	log.Debug("NewAuthorizationGrantAuthenticator: applying options",
-		"num_options", len(authenticatorOptions),
-	)
 	for _, opt := range authenticatorOptions {
 		opt(authenticator)
 	}
 
-	log.Debug("NewAuthorizationGrantAuthenticator: authenticator created successfully")
 	return authenticator, nil
 }
 
@@ -94,69 +78,32 @@ func (c *AuthorizationGrantAuthenticator) GetBoundPort() int {
 
 // GetAuthCodeURL gets the url to the oauth2 consent page
 func (c *AuthorizationGrantAuthenticator) GetAuthCodeURL(oauthMaterial *oauthMaterial, client *OIDCClient) string {
-	log := slog.Default()
-	log.Debug("GetAuthCodeURL: generating authorization URL",
-		"client_id", client.ClientID,
-		"scopes", client.Scopes,
-	)
-
-	url := client.AuthCodeURL(
+	return client.AuthCodeURL(
 		oauthMaterial.State,
 		oauth2.SetAuthURLParam("grant_type", "refresh_token"),
 		oauth2.SetAuthURLParam("code_challenge", oauthMaterial.CodeChallenge),
 		oauth2.SetAuthURLParam("code_challenge_method", "S256"),
 		oauth2.SetAuthURLParam("nonce", oauthMaterial.Nonce),
 	)
-
-	log.Debug("GetAuthCodeURL: authorization URL generated",
-		"url_length", len(url),
-	)
-	return url
 }
 
 // Authenticate will authenticate authenticate with the idp
 func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, client *OIDCClient) (*Token, error) {
-	log := slog.Default()
-	startTime := time.Now()
-
-	log.Debug("Authenticate: starting interactive authentication flow")
-
-	log.Debug("Authenticate: binding to local port")
 	err := c.server.Bind()
 	if err != nil {
-		log.Error("Authenticate: binding to port",
-			"error", err,
-		)
 		return nil, fmt.Errorf("binding to port: %w", err)
 	}
-	boundPort := c.GetBoundPort()
-	log.Debug("Authenticate: bound to port",
-		"port", boundPort,
-	)
 
-	client.RedirectURL = fmt.Sprintf("http://localhost:%d", boundPort)
-	log.Debug("Authenticate: set redirect URL",
-		"redirect_url", client.RedirectURL,
-	)
+	client.RedirectURL = fmt.Sprintf("http://localhost:%d", c.GetBoundPort())
 
-	log.Debug("Authenticate: generating OAuth material (state, nonce, PKCE)")
 	oauthMaterial, err := newOauthMaterial()
 	if err != nil {
-		log.Error("Authenticate: generating OAuth material",
-			"error", err,
-		)
 		return nil, err
 	}
-	log.Debug("Authenticate: OAuth material generated")
 
-	log.Debug("Authenticate: starting local callback server")
 	c.server.Start(ctx, client, oauthMaterial)
-	log.Debug("Authenticate: local callback server started")
 
 	fmt.Fprintf(os.Stderr, "Opening browser in order to authenticate with Okta, hold on a brief second...\n")
-	log.Debug("Authenticate: waiting before opening browser",
-		"wait_duration_seconds", 2,
-	)
 	time.Sleep(2 * time.Second)
 
 	// intercept these outputs, send them back on error
@@ -166,37 +113,19 @@ func (c *AuthorizationGrantAuthenticator) Authenticate(ctx context.Context, clie
 	browser.Stderr = browserStdErr
 
 	authURL := c.GetAuthCodeURL(oauthMaterial, client)
-	log.Debug("Authenticate: opening browser for authentication",
-		"port", boundPort,
-	)
 	err = browser.OpenURL(authURL)
 	if err != nil {
-		log.Error("Authenticate: opening browser",
-			"error", err,
-			"browser_stdout", browserStdOut.String(),
-			"browser_stderr", browserStdErr.String(),
-		)
 		// if we error out, send back stdout, stderr
 		io.Copy(os.Stdout, browserStdOut) //nolint:errcheck
 		io.Copy(os.Stderr, browserStdErr) //nolint:errcheck
 		return nil, fmt.Errorf("opening browser: %w", err)
 	}
-	log.Debug("Authenticate: browser opened successfully")
 
-	log.Debug("Authenticate: waiting for OAuth callback")
 	token, err := c.server.Wait(ctx)
 	if err != nil {
-		log.Error("Authenticate: waiting for callback",
-			"error", err,
-			"elapsed_ms", time.Since(startTime).Milliseconds(),
-		)
 		return nil, err
 	}
 
-	log.Debug("Authenticate: interactive authentication completed successfully",
-		"elapsed_ms", time.Since(startTime).Milliseconds(),
-		"token_expiry", token.Token.Expiry,
-	)
 	fmt.Fprintf(os.Stderr, "Successfully authenticated!\n")
 	return token, nil
 }

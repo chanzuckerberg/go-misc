@@ -3,7 +3,6 @@ package storage
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"os"
 	"path/filepath"
 
@@ -33,26 +32,12 @@ type Storage interface {
 	MarshalOpts() []client.MarshalOpts
 }
 
-func GetOIDC(clientID string, issuerURL string) (Storage, error) {
-	log := slog.Default()
-	log.Debug("GetOIDC: determining storage backend",
-		"client_id", clientID,
-		"issuer_url", issuerURL,
-	)
-
+func GetOIDC(ctx context.Context, clientID string, issuerURL string) (Storage, error) {
 	isWSL, err := osutil.IsWSL()
 	if err != nil {
-		log.Error("GetOIDC: checking WSL status",
-			"error", err,
-		)
 		return nil, err
 	}
 	isDesktop := osutil.IsDesktopEnvironment()
-
-	log.Debug("GetOIDC: environment detection complete",
-		"is_wsl", isWSL,
-		"is_desktop", isDesktop,
-	)
 
 	// If WSL we use a file storage which does not cache refreshTokens
 	//    we do this because WSL doesn't have a graphical interface
@@ -61,30 +46,17 @@ func GetOIDC(clientID string, issuerURL string) (Storage, error) {
 	//    we disable this part of the flow for WSL. This could change in the future
 	//    when we find a better way to work with a WSL secure storage.
 	if isWSL || !isDesktop {
-		log.Debug("GetOIDC: using file storage (WSL or non-desktop environment)")
-		return getFileStorage(clientID, issuerURL)
+		return getFileStorage(ctx, clientID, issuerURL)
 	}
 
-	log.Debug("GetOIDC: using key ring storage (desktop environment)")
 	// return NewKeyring(clientID, issuerURL), nil
-	return getFileStorage(clientID, issuerURL)
+	return getFileStorage(ctx, clientID, issuerURL)
 }
 
-func getFileStorage(clientID string, issuerURL string) (Storage, error) {
-	log := slog.Default()
-
+func getFileStorage(ctx context.Context, clientID string, issuerURL string) (Storage, error) {
 	dir, err := getDefaultStorageDir()
 	if err != nil {
-		log.Error("getFileStorage: expanding storage directory path",
-			"error", err,
-		)
 		return nil, err
 	}
-
-	log.Debug("getFileStorage: creating file storage",
-		"directory", dir,
-		"client_id", clientID,
-		"issuer_url", issuerURL,
-	)
-	return NewFile(dir, clientID, issuerURL), nil
+	return NewFile(ctx, dir, clientID, issuerURL), nil
 }

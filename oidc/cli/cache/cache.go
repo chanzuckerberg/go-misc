@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"io"
 	"log/slog"
-	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/pkg/errors"
@@ -20,24 +20,23 @@ import (
 type Cache struct {
 	storage storage.Storage
 	lock    *pidlock.Lock
+	log     *slog.Logger
 
 	refreshToken func(context.Context, *client.Token) (*client.Token, error)
 }
 
-// Cache returns a new cache
+// NewCache returns a new cache
 func NewCache(
+	ctx context.Context,
 	storage storage.Storage,
 	refreshToken func(context.Context, *client.Token) (*client.Token, error),
 	lock *pidlock.Lock,
 ) *Cache {
-	log := slog.Default()
-	log.Debug("NewCache: creating new cache instance",
-		"storage_type", fmt.Sprintf("%T", storage),
-	)
 	return &Cache{
 		storage:      storage,
 		refreshToken: refreshToken,
 		lock:         lock,
+		log:          logging.FromContext(ctx),
 	}
 }
 
@@ -45,304 +44,192 @@ func NewCache(
 //
 //	if not present or expired, will refresh
 func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
-	log := slog.Default()
-	startTime := time.Now()
-
-	log.Debug("Cache.Read: attempting to read token from cache")
-
 	cachedToken, err := c.readFromStorage(ctx)
 	if err != nil {
-		log.Error("Cache.Read: reading from storage",
-			"error", err,
-			"elapsed_ms", time.Since(startTime).Milliseconds(),
-		)
 		return nil, err
 	}
 
 	// if we have a valid token, use it
 	if cachedToken.IsFresh() {
-		log.Debug("Cache.Read: found fresh token in cache",
+		c.log.Debug("Cache.Read: using cached token",
 			"token_expiry", cachedToken.Token.Expiry,
-			"elapsed_ms", time.Since(startTime).Milliseconds(),
+			"has_refresh_token", cachedToken.Token.RefreshToken != "",
+			"email", cachedToken.Claims.Email,
 		)
 		return cachedToken, nil
 	}
 
+	// Log why we need to refresh
 	if cachedToken == nil {
-		log.Debug("Cache.Read: no cached token found, will refresh")
+		c.log.Debug("Cache.Read: no cached token found, will refresh")
 	} else {
-		log.Debug("Cache.Read: cached token is stale, will refresh",
+		c.log.Debug("Cache.Read: cached token is stale, will refresh",
 			"token_expiry", cachedToken.Token.Expiry,
+			"has_refresh_token", cachedToken.Token.RefreshToken != "",
 		)
 	}
 
-	// otherwise, try refreshing
-	log.Debug("Cache.Read: initiating token refresh")
-	token, err := c.Refresh(ctx)
-	if err != nil {
-		log.Error("Cache.Read: refreshing token",
-			"error", err,
-			"elapsed_ms", time.Since(startTime).Milliseconds(),
-		)
-		return nil, err
-	}
-
-	log.Debug("Cache.Read: successfully refreshed token",
-		"token_expiry", token.Token.Expiry,
-		"elapsed_ms", time.Since(startTime).Milliseconds(),
-	)
-	return token, nil
+	return c.Refresh(ctx)
 }
 
 func (c *Cache) Refresh(ctx context.Context) (*client.Token, error) {
-	log := slog.Default()
-	startTime := time.Now()
-
-	log.Debug("Cache.refresh: acquiring lock")
+	c.log.Debug("Cache.Refresh: acquiring lock")
 	err := c.lock.Lock()
 	if err != nil {
-		log.Error("Cache.refresh: acquiring lock",
-			"error", err,
-		)
 		return nil, err
 	}
-	log.Debug("Cache.refresh: lock acquired successfully")
-	defer func() {
-		log.Debug("Cache.refresh: releasing lock")
-		c.lock.Unlock() //nolint:errcheck
-	}()
+	defer c.lock.Unlock() //nolint:errcheck
 
 	// acquire lock, try reading from cache again just in case
 	// someone else got here first
-	log.Debug("Cache.refresh: re-reading from storage after lock acquisition")
 	cachedToken, err := c.readFromStorage(ctx)
 	if err != nil {
-		log.Error("Cache.refresh: reading from storage after lock",
-			"error", err,
-		)
 		return nil, err
 	}
 
-	log.Debug("Cache.refresh: calling refreshToken function",
+	// Check if another process refreshed while we waited for lock
+	if cachedToken.IsFresh() {
+		c.log.Debug("Cache.Refresh: token was refreshed by another process",
+			"token_expiry", cachedToken.Token.Expiry,
+		)
+		return cachedToken, nil
+	}
+
+	c.log.Debug("Cache.Refresh: calling refresh function",
 		"has_cached_token", cachedToken != nil,
+		"has_refresh_token", cachedToken != nil && cachedToken.Token.RefreshToken != "",
 	)
+
 	token, err := c.refreshToken(ctx, cachedToken)
 	if err != nil {
-		log.Error("Cache.refresh: calling refreshToken function",
-			"error", err,
-			"elapsed_ms", time.Since(startTime).Milliseconds(),
-		)
 		return nil, err
 	}
-	log.Debug("Cache.refresh: refreshToken function succeeded",
-		"token_expiry", token.Token.Expiry,
-	)
 
 	// check the new token is good to use
 	if !token.IsFresh() {
-		log.Error("Cache.refresh: fetched token not fresh",
-			"token_expiry", token.Token.Expiry,
-		)
+		c.log.Warn("Cache.Refresh: fetched token is not fresh", "token_expiry", token.Token.Expiry)
 		return nil, fmt.Errorf("invalid token fetched")
 	}
 
-	// marshal token with options
-	log.Debug("Cache.refresh: marshalling token")
-	strToken, err := token.Marshal(c.storage.MarshalOpts()...)
-	if err != nil {
-		log.Error("Cache.refresh: marshalling token",
-			"error", err,
-		)
-		return nil, fmt.Errorf("marshalling token: %w", err)
-	}
-	log.Debug("Cache.refresh: token marshalled",
-		"token_length", len(strToken),
-	)
-
-	// gzip encode and save token to storage
-	log.Debug("Cache.refresh: compressing token")
-	compressedToken, err := compressToken(strToken)
-	if err != nil {
-		log.Error("Cache.refresh: compressing token",
-			"error", err,
-		)
-		return nil, fmt.Errorf("compressing token: %w", err)
-	}
-	log.Debug("Cache.refresh: token compressed",
-		"original_length", len(strToken),
-		"compressed_length", len(compressedToken),
-	)
-
-	log.Debug("Cache.refresh: saving token to storage")
-	err = c.storage.Set(ctx, compressedToken)
-	if err != nil {
-		if errors.Is(err, keyring.ErrSetDataTooBig) {
-			log.Warn("Cache.refresh: token too big for storage, removing refresh token")
-
-			strToken, err := token.Marshal(append(c.storage.MarshalOpts(), client.MarshalOptNoRefresh)...)
-			if err != nil {
-				log.Error("Cache.refresh: marshalling token without refresh",
-					"error", err,
-				)
-				return nil, fmt.Errorf("marshalling token: %w", err)
-			}
-
-			compressedToken, err = compressToken(strToken)
-			if err != nil {
-				log.Error("Cache.refresh: compressing token without refresh",
-					"error", err,
-				)
-				return nil, fmt.Errorf("compressing token: %w", err)
-			}
-			log.Debug("Cache.refresh: compressed token without refresh",
-				"compressed_length", len(compressedToken),
-			)
-
-			err = c.storage.Set(ctx, compressedToken)
-			if err != nil {
-				log.Error("Cache.refresh: saving token without refresh",
-					"error", err,
-				)
-				return nil, fmt.Errorf("caching without the refresh token: %w", err)
-			}
-			log.Debug("Cache.refresh: saved token without refresh token")
-		} else {
-			log.Error("Cache.refresh: saving token to storage",
-				"error", err,
-			)
-			return nil, fmt.Errorf("caching the strToken: %w", err)
-		}
-	} else {
-		log.Debug("Cache.refresh: token saved to storage successfully")
+	// marshal and save token
+	if err := c.saveToken(ctx, token); err != nil {
+		return nil, err
 	}
 
-	log.Debug("Cache.refresh: completed successfully",
-		"elapsed_ms", time.Since(startTime).Milliseconds(),
+	c.log.Debug("Cache.Refresh: completed",
 		"token_expiry", token.Token.Expiry,
+		"has_refresh_token", token.Token.RefreshToken != "",
+		"email", token.Claims.Email,
 	)
 	return token, nil
 }
 
-// reads token from storage, potentially returning a nil/expired token
-// users must call IsFresh to check token validty
-func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
-	log := slog.Default()
+// saveToken marshals, compresses, and saves the token to storage
+func (c *Cache) saveToken(ctx context.Context, token *client.Token) error {
+	strToken, err := token.Marshal(c.storage.MarshalOpts()...)
+	if err != nil {
+		return fmt.Errorf("marshalling token: %w", err)
+	}
 
-	log.Debug("Cache.readFromStorage: reading from storage backend")
+	compressedToken, err := compressToken(strToken)
+	if err != nil {
+		return fmt.Errorf("compressing token: %w", err)
+	}
+
+	err = c.storage.Set(ctx, compressedToken)
+	if err != nil {
+		if errors.Is(err, keyring.ErrSetDataTooBig) {
+			c.log.Warn("Cache: token too big for storage, retrying without refresh token")
+			return c.saveTokenWithoutRefresh(ctx, token)
+		}
+		return fmt.Errorf("caching the token: %w", err)
+	}
+
+	return nil
+}
+
+// saveTokenWithoutRefresh saves the token without the refresh token
+func (c *Cache) saveTokenWithoutRefresh(ctx context.Context, token *client.Token) error {
+	strToken, err := token.Marshal(append(c.storage.MarshalOpts(), client.MarshalOptNoRefresh)...)
+	if err != nil {
+		return fmt.Errorf("marshalling token: %w", err)
+	}
+
+	compressedToken, err := compressToken(strToken)
+	if err != nil {
+		return fmt.Errorf("compressing token: %w", err)
+	}
+
+	err = c.storage.Set(ctx, compressedToken)
+	if err != nil {
+		return fmt.Errorf("caching without the refresh token: %w", err)
+	}
+
+	return nil
+}
+
+// reads token from storage, potentially returning a nil/expired token
+// users must call IsFresh to check token validity
+func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	cached, err := c.storage.Read(ctx)
 	if err != nil {
-		log.Error("Cache.readFromStorage: reading from storage",
-			"error", err,
-		)
 		return nil, err
 	}
 	if cached == nil {
-		log.Debug("Cache.readFromStorage: no cached data found")
+		c.log.Debug("Cache.readFromStorage: no cached data found")
 		return nil, nil
 	}
-	log.Debug("Cache.readFromStorage: cached data found",
-		"cached_length", len(*cached),
-	)
 
 	// decode gzip data
-	log.Debug("Cache.readFromStorage: decompressing token data")
 	decompressedStr, err := decompressToken(*cached)
 	if err != nil {
-		// if we fail to decompress the token we should treat it as a cache miss instead of returning an error
-		log.Warn("Cache.readFromStorage: failed to decompress token, treating as cache miss",
-			"error", err,
-		)
-	} else {
-		log.Debug("Cache.readFromStorage: token decompressed",
-			"decompressed_length", len(*decompressedStr),
-		)
+		// if we fail to decompress the token we should treat it as a cache miss
+		c.log.Warn("Cache: failed to decompress cached token, treating as cache miss", "error", err)
+		return nil, nil
 	}
 
-	log.Debug("Cache.readFromStorage: parsing token from string")
 	cachedToken, err := client.TokenFromString(decompressedStr)
 	if err != nil {
-		log.Warn("Cache.readFromStorage: failed to parse token, purging from storage",
-			"error", err,
-		)
-		err = c.storage.Delete(ctx) // can't read it, so attempt to purge it
-		if err != nil {
-			log.Warn("Cache.readFromStorage: failed to purge invalid token from storage",
-				"error", err,
-			)
-		} else {
-			log.Debug("Cache.readFromStorage: purged invalid token from storage")
+		c.log.Warn("Cache: failed to parse cached token, purging", "error", err)
+		if deleteErr := c.storage.Delete(ctx); deleteErr != nil {
+			c.log.Warn("Cache: failed to purge invalid token", "error", deleteErr)
 		}
-	} else if cachedToken != nil {
-		log.Debug("Cache.readFromStorage: token parsed successfully",
-			"token_expiry", cachedToken.Token.Expiry,
-			"is_fresh", cachedToken.IsFresh(),
-		)
+		return nil, nil
 	}
+
+	c.log.Debug("Cache.readFromStorage: loaded token from cache",
+		"token_expiry", cachedToken.Token.Expiry,
+		"is_fresh", cachedToken.IsFresh(),
+		"has_refresh_token", cachedToken.Token.RefreshToken != "",
+	)
 	return cachedToken, nil
 }
 
 func compressToken(token string) (string, error) {
-	log := slog.Default()
-	log.Debug("compressToken: starting compression",
-		"input_length", len(token),
-	)
-
 	var buf bytes.Buffer
 	gz := gzip.NewWriter(&buf)
 	if _, err := gz.Write([]byte(token)); err != nil {
-		log.Error("compressToken: writing to gzip",
-			"error", err,
-		)
 		return "", fmt.Errorf("failed to write to gzip: %w", err)
 	}
 	if err := gz.Close(); err != nil {
-		log.Error("compressToken: closing gzip writer",
-			"error", err,
-		)
 		return "", fmt.Errorf("failed to close gzip: %w", err)
 	}
-
-	result := buf.String()
-	log.Debug("compressToken: compression complete",
-		"input_length", len(token),
-		"output_length", len(result),
-		"compression_ratio", fmt.Sprintf("%.2f%%", float64(len(result))/float64(len(token))*100),
-	)
-	return result, nil
+	return buf.String(), nil
 }
 
 func decompressToken(token string) (*string, error) {
-	log := slog.Default()
-	log.Debug("decompressToken: starting decompression",
-		"input_length", len(token),
-	)
-
 	reader := bytes.NewReader([]byte(token))
 	gzreader, err := gzip.NewReader(reader)
 	if err != nil {
-		log.Error("decompressToken: creating gzip reader",
-			"error", err,
-		)
 		return nil, fmt.Errorf("failed to create gzip reader: %w", err)
 	}
 	decompressed, err := io.ReadAll(gzreader)
 	if err != nil {
-		log.Error("decompressToken: reading gzip data",
-			"error", err,
-		)
 		return nil, fmt.Errorf("failed to read gzip data: %w", err)
 	}
 	if err := gzreader.Close(); err != nil {
-		log.Error("decompressToken: closing gzip reader",
-			"error", err,
-		)
 		return nil, fmt.Errorf("failed to close gzip: %w", err)
 	}
-
 	decompressedStr := string(decompressed)
-	log.Debug("decompressToken: decompression complete",
-		"input_length", len(token),
-		"output_length", len(decompressedStr),
-	)
 	return &decompressedStr, nil
 }
