@@ -105,12 +105,6 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 		return nil, err
 	}
 
-	// check the new token is good to use
-	if !token.IsFresh() {
-		c.log.Warn("Cache.refresh: fetched token is not fresh", "token_expiry", token.Token.Expiry)
-		return nil, fmt.Errorf("invalid token fetched")
-	}
-
 	// marshal and save token
 	err = c.saveToken(ctx, token)
 	if err != nil {
