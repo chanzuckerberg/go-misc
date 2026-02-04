@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.1](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.1.0...oidc-v5.1.1) (2026-02-04)
+
+
+### Bug Fixes
+
+* missing id_token will never pass this check ([#1151](https://github.com/chanzuckerberg/go-misc/issues/1151)) ([644aeed](https://github.com/chanzuckerberg/go-misc/commit/644aeed524b43a0b2e60f92012dbdefcdcb9cf36))
+
 ## [5.1.0](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.0.2...oidc-v5.1.0) (2026-02-03)
 
 
