@@ -5,10 +5,18 @@ import (
 	"crypto/subtle"
 	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/coreos/go-oidc/v3/oidc"
 	"golang.org/x/oauth2"
+)
+
+const (
+	// maxRefreshRetries is the number of times to retry token refresh when IDP doesn't return an ID token
+	maxRefreshRetries = 5
+	// refreshRetryDelay is the delay between refresh retries
+	refreshRetryDelay = 5 * time.Second
 )
 
 var DefaultScopes = []string{
@@ -150,29 +158,56 @@ func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*T
 		"email", existingToken.Claims.Email,
 	)
 
-	newOauth2Token, err := c.TokenSource(ctx, existingToken.Token).Token()
-	if err != nil {
-		// This is expected if refresh token is expired - not an error severity
-		return nil, fmt.Errorf("refreshing token: %w", err)
+	var newOauth2Token *oauth2.Token
+	var claims *Claims
+	var verifiedIDToken *oidc.IDToken
+	var verifiedIDTokenStr string
+
+	// Retry loop: sometimes the IDP doesn't return an ID token on the first attempt
+	for attempt := 1; attempt <= maxRefreshRetries; attempt++ {
+		var err error
+		newOauth2Token, err = c.TokenSource(ctx, existingToken.Token).Token()
+		if err != nil {
+			// This is expected if refresh token is expired - not an error severity
+			return nil, fmt.Errorf("refreshing token: %w", err)
+		}
+
+		c.log.Debug("OIDCClient.refreshToken: received new oauth2 token",
+			"attempt", attempt,
+			"new_expiry", newOauth2Token.Expiry,
+			"has_new_refresh_token", newOauth2Token.RefreshToken != "",
+		)
+
+		claims, verifiedIDToken, verifiedIDTokenStr, err = c.ParseAsIDToken(ctx, newOauth2Token)
+		if err != nil {
+			return nil, err
+		}
+
+		// If we got an ID token, we're done
+		if verifiedIDToken != nil {
+			break
+		}
+
+		// IDP didn't return an ID token, retry if we have attempts left
+		if attempt < maxRefreshRetries {
+			c.log.Debug("OIDCClient.refreshToken: IDP did not return ID token, retrying",
+				"attempt", attempt,
+				"max_attempts", maxRefreshRetries,
+			)
+			time.Sleep(refreshRetryDelay)
+		}
 	}
 
-	c.log.Debug("OIDCClient.refreshToken: received new oauth2 token",
-		"new_expiry", newOauth2Token.Expiry,
-		"has_new_refresh_token", newOauth2Token.RefreshToken != "",
-	)
-
-	claims, verifiedIDToken, verifiedIDTokenStr, err := c.ParseAsIDToken(ctx, newOauth2Token)
-	if err != nil {
-		return nil, err
-	}
-
+	// After all retries, if we still don't have an ID token, use the existing one
 	// Sometimes, the IDP won't send a new ID token, per the spec. It's optional.
 	// For example, if you're attempting a refresh flow in Okta, but your ID token is
 	// not expired, it won't send a new ID token. Additionally, if you are using
 	// one of the default applications in Okta and your web session expires, the
 	// refresh flow won't send a new ID token.
 	if verifiedIDToken == nil {
-		c.log.Debug("OIDCClient.refreshToken: IDP did not return new ID token, reusing existing")
+		c.log.Debug("OIDCClient.refreshToken: IDP did not return new ID token after retries, reusing existing",
+			"attempts", maxRefreshRetries,
+		)
 		return &Token{
 			Version: existingToken.Version,
 			IDToken: existingToken.IDToken,
