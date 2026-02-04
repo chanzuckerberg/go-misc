@@ -192,6 +192,7 @@ func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*T
 				"attempt", attempt,
 				"new_expiry", newOauth2Token.Expiry,
 				"has_new_refresh_token", newOauth2Token.RefreshToken != "",
+				"email", claims.Email,
 				"preferred_username", claims.PreferredUsername,
 			)
 			return &Token{
