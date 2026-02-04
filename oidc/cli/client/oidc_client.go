@@ -156,6 +156,7 @@ func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*T
 	c.log.Debug("OIDCClient.refreshToken: attempting token refresh",
 		"current_expiry", existingToken.Token.Expiry,
 		"email", existingToken.Claims.Email,
+		"preferred_username", existingToken.Claims.PreferredUsername,
 	)
 
 	// Retry loop: sometimes the IDP doesn't return an ID token on the first attempt
@@ -191,6 +192,7 @@ func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*T
 				"attempt", attempt,
 				"new_expiry", newOauth2Token.Expiry,
 				"has_new_refresh_token", newOauth2Token.RefreshToken != "",
+				"preferred_username", claims.PreferredUsername,
 			)
 			return &Token{
 				Version: existingToken.Version,
