@@ -203,7 +203,11 @@ func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*T
 			}, nil
 		}
 
-		time.Sleep(refreshRetryDelay)
+		select {
+		case <-time.After(refreshRetryDelay):
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		}
 	}
 
 	c.log.Debug("OIDCClient.refreshToken: IDP did not return new ID token after retries, reusing existing",
