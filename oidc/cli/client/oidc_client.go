@@ -187,6 +187,11 @@ func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*T
 
 		// If we got an ID token, we're done
 		if verifiedIDToken != nil {
+			c.log.Debug("OIDCClient.refreshToken: received new ID token",
+				"attempt", attempt,
+				"new_expiry", newOauth2Token.Expiry,
+				"has_new_refresh_token", newOauth2Token.RefreshToken != "",
+			)
 			return &Token{
 				Version: existingToken.Version,
 				IDToken: verifiedIDTokenStr,
