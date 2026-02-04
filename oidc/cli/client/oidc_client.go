@@ -16,7 +16,7 @@ const (
 	// maxRefreshRetries is the number of times to retry token refresh when IDP doesn't return an ID token
 	maxRefreshRetries = 5
 	// refreshRetryDelay is the delay between refresh retries
-	refreshRetryDelay = 5 * time.Second
+	refreshRetryDelay = 15 * time.Second
 )
 
 var DefaultScopes = []string{
