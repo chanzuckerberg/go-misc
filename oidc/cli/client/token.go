@@ -10,8 +10,6 @@ import (
 )
 
 const (
-	timeSkew = 5 * time.Minute
-
 	tokenVersion = 0
 )
 
@@ -39,7 +37,7 @@ func (vt *Token) IsFresh() bool {
 	if vt == nil {
 		return false
 	}
-	return vt.Expiry.After(time.Now().Add(timeSkew))
+	return vt.Expiry.After(time.Now())
 }
 
 func TokenFromString(tokenString *string, opts ...MarshalOpts) (*Token, error) {
