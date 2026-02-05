@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.2](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.1.1...oidc-v5.1.2) (2026-02-05)
+
+
+### Bug Fixes
+
+* okta will not send a new id token if your old token is not expired ([#1153](https://github.com/chanzuckerberg/go-misc/issues/1153)) ([0d86135](https://github.com/chanzuckerberg/go-misc/commit/0d8613566262744bbeb7801bf0f7da9add7e4798))
+
 ## [5.1.1](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.1.0...oidc-v5.1.1) (2026-02-04)
 
 
