@@ -192,17 +192,19 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	// Restore the id_token to the oauth2.Token extras so it can be extracted
 	// via Token.Extra("id_token"). The IDToken field is persisted separately
 	// since oauth2.Token extras don't survive JSON serialization.
-	c.log.Debug("Cache.readFromStorage: restoring id_token to oauth2.Token extras",
-		"id_token_length", len(cachedToken.IDToken),
-	)
-	cachedToken.Token = cachedToken.Token.WithExtra(map[string]interface{}{
-		"id_token": cachedToken.IDToken,
-	})
+	if cachedToken.IDToken != "" {
+		c.log.Debug("Cache.readFromStorage: restoring id_token to oauth2.Token extras",
+			"id_token_length", len(cachedToken.IDToken),
+		)
+		cachedToken.Token = cachedToken.WithExtra(map[string]interface{}{
+			"id_token": cachedToken.IDToken,
+		})
+	}
 
 	c.log.Debug("Cache.readFromStorage: loaded token from cache",
-		"token_expiry", cachedToken.Token.Expiry,
+		"token_expiry", cachedToken.Expiry,
 		"is_valid", cachedToken.Valid(),
-		"has_refresh_token", cachedToken.Token.RefreshToken != "",
+		"has_refresh_token", cachedToken.RefreshToken != "",
 	)
 	return cachedToken, nil
 }

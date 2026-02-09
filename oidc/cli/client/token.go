@@ -34,7 +34,7 @@ type Token struct {
 
 func TokenFromString(tokenString *string, opts ...MarshalOpts) (*Token, error) {
 	if tokenString == nil {
-		return nil, nil
+		return &Token{Token: &oauth2.Token{}}, nil
 	}
 	tokenBytes, err := base64.StdEncoding.DecodeString(*tokenString)
 	if err != nil {

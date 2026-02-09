@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -33,7 +34,7 @@ func TestNewCache(t *testing.T) {
 
 	u := uuid.New()
 
-	fileLockPath := fmt.Sprintf("/tmp/%s", u.String())
+	fileLockPath := filepath.Join(os.TempDir(), u.String())
 	defer os.Remove(fileLockPath)
 
 	fileLock, err := pidlock.NewLock(fileLockPath)
@@ -63,7 +64,7 @@ func TestCorruptedCache(t *testing.T) {
 
 	u := uuid.New()
 
-	fileLockPath := fmt.Sprintf("/tmp/%s", u.String())
+	fileLockPath := filepath.Join(os.TempDir(), u.String())
 	defer os.Remove(fileLockPath)
 	fileLock, err := pidlock.NewLock(fileLockPath)
 	r.NoError(err)
@@ -101,7 +102,7 @@ func TestCachedToken(t *testing.T) {
 
 	u := uuid.New()
 
-	fileLockPath := fmt.Sprintf("/tmp/%s", u.String())
+	fileLockPath := filepath.Join(os.TempDir(), u.String())
 	defer os.Remove(fileLockPath)
 	fileLock, err := pidlock.NewLock(fileLockPath)
 	r.NoError(err)
@@ -155,7 +156,7 @@ func TestFileCache(t *testing.T) {
 	r.NoError(err)
 	defer os.Remove(dir)
 
-	fileLockPath := fmt.Sprintf("/tmp/%s", u.String())
+	fileLockPath := filepath.Join(os.TempDir(), u.String())
 	defer os.Remove(fileLockPath)
 	fileLock, err := pidlock.NewLock(fileLockPath)
 	r.NoError(err)
@@ -207,7 +208,7 @@ func TestFileCacheIDTokenRestored(t *testing.T) {
 	r.NoError(err)
 	defer os.RemoveAll(dir)
 
-	fileLockPath := fmt.Sprintf("/tmp/%s", u.String())
+	fileLockPath := filepath.Join(os.TempDir(), u.String())
 	defer os.Remove(fileLockPath)
 	fileLock, err := pidlock.NewLock(fileLockPath)
 	r.NoError(err)
