@@ -14,6 +14,7 @@ import (
 	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/pkg/errors"
 	"github.com/zalando/go-keyring"
+	"golang.org/x/oauth2"
 )
 
 // Cache to cache credentials
@@ -50,24 +51,19 @@ func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 	}
 
 	// if we have a valid token, use it
-	if cachedToken.IsFresh() {
+	if cachedToken.Valid() {
 		c.log.Debug("Cache.Read: using cached token",
-			"token_expiry", cachedToken.Token.Expiry,
-			"has_refresh_token", cachedToken.Token.RefreshToken != "",
+			"token_expiry", cachedToken.Expiry,
+			"has_refresh_token", cachedToken.RefreshToken != "",
 			"email", cachedToken.Claims.Email,
 		)
 		return cachedToken, nil
 	}
 
-	// Log why we need to refresh
-	if cachedToken == nil {
-		c.log.Debug("Cache.Read: no cached token found, will refresh")
-	} else {
-		c.log.Debug("Cache.Read: cached token is stale, will refresh",
-			"token_expiry", cachedToken.Token.Expiry,
-			"has_refresh_token", cachedToken.Token.RefreshToken != "",
-		)
-	}
+	c.log.Debug("Cache.Read: cached token is stale or empty, will refresh",
+		"token_expiry", cachedToken.Expiry,
+		"has_refresh_token", cachedToken.RefreshToken != "",
+	)
 
 	return c.refresh(ctx)
 }
@@ -88,16 +84,16 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	}
 
 	// Check if another process refreshed while we waited for lock
-	if cachedToken.IsFresh() {
+	if cachedToken.Valid() {
 		c.log.Debug("Cache.refresh: token was refreshed by another process",
-			"token_expiry", cachedToken.Token.Expiry,
+			"token_expiry", cachedToken.Expiry,
 		)
 		return cachedToken, nil
 	}
 
 	c.log.Debug("Cache.refresh: calling refresh function",
-		"has_cached_token", cachedToken != nil,
-		"has_refresh_token", cachedToken != nil && cachedToken.Token.RefreshToken != "",
+		"has_access_token", cachedToken.AccessToken != "",
+		"has_refresh_token", cachedToken.RefreshToken != "",
 	)
 
 	token, err := c.refreshToken(ctx, cachedToken)
@@ -163,8 +159,8 @@ func (c *Cache) saveTokenWithoutRefresh(ctx context.Context, token *client.Token
 	return nil
 }
 
-// reads token from storage, potentially returning a nil/expired token
-// users must call IsFresh to check token validity
+// reads token from storage, potentially returning an empty/expired token
+// users must call Valid to check token validity
 func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	cached, err := c.storage.Read(ctx)
 	if err != nil {
@@ -172,7 +168,7 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	}
 	if cached == nil {
 		c.log.Debug("Cache.readFromStorage: no cached data found")
-		return nil, nil
+		return &client.Token{Token: &oauth2.Token{}}, nil
 	}
 
 	// decode gzip data
@@ -180,7 +176,7 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 	if err != nil {
 		// if we fail to decompress the token we should treat it as a cache miss
 		c.log.Warn("Cache.readFromStorage: failed to decompress cached token, treating as cache miss", "error", err)
-		return nil, nil
+		return &client.Token{Token: &oauth2.Token{}}, nil
 	}
 
 	cachedToken, err := client.TokenFromString(decompressedStr)
@@ -190,13 +186,25 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 		if deleteErr != nil {
 			c.log.Warn("Cache.readFromStorage: failed to purge invalid token", "error", deleteErr)
 		}
-		return nil, nil
+		return &client.Token{Token: &oauth2.Token{}}, nil
+	}
+
+	// Restore the id_token to the oauth2.Token extras so it can be extracted
+	// via Token.Extra("id_token"). The IDToken field is persisted separately
+	// since oauth2.Token extras don't survive JSON serialization.
+	if cachedToken.IDToken != "" {
+		c.log.Debug("Cache.readFromStorage: restoring id_token to oauth2.Token extras",
+			"id_token_length", len(cachedToken.IDToken),
+		)
+		cachedToken.Token = cachedToken.WithExtra(map[string]interface{}{
+			"id_token": cachedToken.IDToken,
+		})
 	}
 
 	c.log.Debug("Cache.readFromStorage: loaded token from cache",
-		"token_expiry", cachedToken.Token.Expiry,
-		"is_fresh", cachedToken.IsFresh(),
-		"has_refresh_token", cachedToken.Token.RefreshToken != "",
+		"token_expiry", cachedToken.Expiry,
+		"is_valid", cachedToken.Valid(),
+		"has_refresh_token", cachedToken.RefreshToken != "",
 	)
 	return cachedToken, nil
 }

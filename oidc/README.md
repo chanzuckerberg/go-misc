@@ -286,8 +286,8 @@ type Token struct {
 ```
 
 **Methods:**
-- `IsFresh() bool` - Returns true if token is valid and not expiring within 5 minutes
 - `Marshal(...MarshalOpts) (string, error)` - Serialize token to base64-encoded JSON
+- `Valid() bool` - Reports whether the token is currently valid (for example, not expired) according to the underlying `oauth2.Token` semantics
 
 #### `client.Claims`
 

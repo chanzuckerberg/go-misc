@@ -4,15 +4,11 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"log/slog"
-	"time"
 
 	"golang.org/x/oauth2"
 )
 
 const (
-	timeSkew = 30 * time.Second
-
 	tokenVersion = 0
 )
 
@@ -36,27 +32,9 @@ type Token struct {
 	Claims  Claims `json:"claims,omitempty"`
 }
 
-func (vt *Token) IsFresh() bool {
-	if vt == nil {
-		return false
-	}
-	now := time.Now()
-	isFresh := vt.Expiry.After(now.Add(timeSkew))
-	// Token is not actually expired but is within the time skew window
-	if !isFresh && vt.Expiry.After(now) {
-		slog.Debug("IsFresh: token not expired but within time skew window",
-			"expiry", vt.Expiry,
-			"now", now,
-			"time_skew", timeSkew,
-			"time_until_expiry", vt.Expiry.Sub(now),
-		)
-	}
-	return isFresh
-}
-
 func TokenFromString(tokenString *string, opts ...MarshalOpts) (*Token, error) {
 	if tokenString == nil {
-		return nil, nil
+		return &Token{Token: &oauth2.Token{}}, nil
 	}
 	tokenBytes, err := base64.StdEncoding.DecodeString(*tokenString)
 	if err != nil {
