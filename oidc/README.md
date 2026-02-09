@@ -286,7 +286,6 @@ type Token struct {
 ```
 
 **Methods:**
-- `IsFresh() bool` - Returns true if token is valid and not expiring within 5 minutes
 - `Marshal(...MarshalOpts) (string, error)` - Serialize token to base64-encoded JSON
 
 #### `client.Claims`
