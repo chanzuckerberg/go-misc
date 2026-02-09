@@ -287,6 +287,7 @@ type Token struct {
 
 **Methods:**
 - `Marshal(...MarshalOpts) (string, error)` - Serialize token to base64-encoded JSON
+- `Valid() bool` - Reports whether the token is currently valid (for example, not expired) according to the underlying `oauth2.Token` semantics
 
 #### `client.Claims`
 
