@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.3](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.1.2...oidc-v5.1.3) (2026-02-09)
+
+
+### Bug Fixes
+
+* replace IsFresh method with Valid check for token validity ([#1155](https://github.com/chanzuckerberg/go-misc/issues/1155)) ([2848dfd](https://github.com/chanzuckerberg/go-misc/commit/2848dfd25b253b0bcd86b3f6a836d8b930acf1ae))
+
 ## [5.1.2](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.1.1...oidc-v5.1.2) (2026-02-05)
 
 
