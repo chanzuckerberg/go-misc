@@ -92,7 +92,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	}
 
 	c.log.Debug("Cache.refresh: calling refresh function",
-		"has_cached_token", cachedToken.AccessToken != "",
+		"has_access_token", cachedToken.AccessToken != "",
 		"has_refresh_token", cachedToken.RefreshToken != "",
 	)
 
