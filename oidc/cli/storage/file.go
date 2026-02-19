@@ -70,9 +70,37 @@ func (f *File) Set(_ context.Context, value string) error {
 		return fmt.Errorf("could not create cache dir %s: %w", f.dir, err)
 	}
 
-	err = os.WriteFile(f.key, []byte(value), 0600)
+	// Write to a temp file then atomically rename into place so that
+	// concurrent readers never observe a truncated/partial file.
+	tmp, err := os.CreateTemp(f.dir, ".oidc-cache-*.tmp")
 	if err != nil {
-		return fmt.Errorf("could not set value to file: %w", err)
+		return fmt.Errorf("creating temp file: %w", err)
+	}
+	tmpName := tmp.Name()
+
+	defer func() {
+		tmp.Close()
+		err := os.Remove(tmpName)
+		if err != nil {
+			f.log.Error("File.Set: could not remove temp file", "path", tmpName, "error", err)
+		}
+	}()
+
+	_, err = tmp.Write([]byte(value))
+	if err != nil {
+		return fmt.Errorf("writing temp file: %w", err)
+	}
+	err = tmp.Close()
+	if err != nil {
+		return fmt.Errorf("closing temp file: %w", err)
+	}
+	err = os.Chmod(tmpName, 0600)
+	if err != nil {
+		return fmt.Errorf("setting temp file permissions: %w", err)
+	}
+	err = os.Rename(tmpName, f.key)
+	if err != nil {
+		return fmt.Errorf("renaming temp file to cache file: %w", err)
 	}
 
 	f.log.Debug("File.Set: saved to cache file", "path", f.key, "size_bytes", len(value))
