@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.4](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.1.3...oidc-v5.1.4) (2026-02-19)
+
+
+### Bug Fixes
+
+* make file writes atomic ([#1157](https://github.com/chanzuckerberg/go-misc/issues/1157)) ([c75be73](https://github.com/chanzuckerberg/go-misc/commit/c75be73c0ce3e313ea675ec696d75926e4bde775))
+
 ## [5.1.3](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.1.2...oidc-v5.1.3) (2026-02-09)
 
 
