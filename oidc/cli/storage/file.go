@@ -95,10 +95,16 @@ func (f *File) Set(_ context.Context, value string) error {
 	if err != nil {
 		return fmt.Errorf("writing temp file: %w", err)
 	}
+	err = tmp.Sync()
+	if err != nil {
+		return fmt.Errorf("syncing temp file: %w", err)
+	}
+
 	err = tmp.Close()
 	if err != nil {
 		return fmt.Errorf("closing temp file: %w", err)
 	}
+
 	err = os.Chmod(tmpName, 0600)
 	if err != nil {
 		return fmt.Errorf("setting temp file permissions: %w", err)
