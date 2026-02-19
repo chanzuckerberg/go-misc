@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -61,11 +62,11 @@ func (f *File) Read(_ context.Context) (*string, error) {
 	return &stringContents, nil
 }
 
-func (f *File) Set(_ context.Context, value string) error {
+func (f *File) Set(_ context.Context, value string) (err error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 
-	err := os.MkdirAll(f.dir, 0700)
+	err = os.MkdirAll(f.dir, 0700)
 	if err != nil {
 		return fmt.Errorf("could not create cache dir %s: %w", f.dir, err)
 	}
@@ -77,16 +78,20 @@ func (f *File) Set(_ context.Context, value string) error {
 		return fmt.Errorf("creating temp file: %w", err)
 	}
 	tmpName := tmp.Name()
-	succeeded := false
+
+	closed := false
+	renamed := false
 	defer func() {
-		err := tmp.Close()
-		if err != nil {
-			f.log.Error("File.Set: could not close temp file", "path", tmpName, "error", err)
+		if !closed {
+			closeErr := tmp.Close()
+			if closeErr != nil {
+				err = errors.Join(err, closeErr)
+			}
 		}
-		if !succeeded {
-			err = os.Remove(tmpName)
-			if err != nil {
-				f.log.Error("File.Set: could not remove temp file", "path", tmpName, "error", err)
+		if !renamed {
+			removeErr := os.Remove(tmpName)
+			if removeErr != nil {
+				err = errors.Join(err, removeErr)
 			}
 		}
 	}()
@@ -95,6 +100,7 @@ func (f *File) Set(_ context.Context, value string) error {
 	if err != nil {
 		return fmt.Errorf("writing temp file: %w", err)
 	}
+
 	err = tmp.Sync()
 	if err != nil {
 		return fmt.Errorf("syncing temp file: %w", err)
@@ -104,16 +110,19 @@ func (f *File) Set(_ context.Context, value string) error {
 	if err != nil {
 		return fmt.Errorf("closing temp file: %w", err)
 	}
+	closed = true
 
 	err = os.Chmod(tmpName, 0600)
 	if err != nil {
 		return fmt.Errorf("setting temp file permissions: %w", err)
 	}
+
 	err = os.Rename(tmpName, f.key)
 	if err != nil {
 		return fmt.Errorf("renaming temp file to cache file: %w", err)
 	}
-	succeeded = true
+	renamed = true
+
 	f.log.Debug("File.Set: saved to cache file", "path", f.key, "size_bytes", len(value))
 	return nil
 }
