@@ -77,15 +77,17 @@ func (f *File) Set(_ context.Context, value string) error {
 		return fmt.Errorf("creating temp file: %w", err)
 	}
 	tmpName := tmp.Name()
-
+	succeeded := false
 	defer func() {
 		err := tmp.Close()
 		if err != nil {
 			f.log.Error("File.Set: could not close temp file", "path", tmpName, "error", err)
 		}
-		err = os.Remove(tmpName)
-		if err != nil {
-			f.log.Error("File.Set: could not remove temp file", "path", tmpName, "error", err)
+		if !succeeded {
+			err = os.Remove(tmpName)
+			if err != nil {
+				f.log.Error("File.Set: could not remove temp file", "path", tmpName, "error", err)
+			}
 		}
 	}()
 
@@ -105,7 +107,7 @@ func (f *File) Set(_ context.Context, value string) error {
 	if err != nil {
 		return fmt.Errorf("renaming temp file to cache file: %w", err)
 	}
-
+	succeeded = true
 	f.log.Debug("File.Set: saved to cache file", "path", f.key, "size_bytes", len(value))
 	return nil
 }
