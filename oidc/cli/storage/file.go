@@ -79,8 +79,11 @@ func (f *File) Set(_ context.Context, value string) error {
 	tmpName := tmp.Name()
 
 	defer func() {
-		tmp.Close()
-		err := os.Remove(tmpName)
+		err := tmp.Close()
+		if err != nil {
+			f.log.Error("File.Set: could not close temp file", "path", tmpName, "error", err)
+		}
+		err = os.Remove(tmpName)
 		if err != nil {
 			f.log.Error("File.Set: could not remove temp file", "path", tmpName, "error", err)
 		}
