@@ -41,16 +41,14 @@ func NewCache(
 	}
 }
 
-// Read will attempt to read a token from the cache
-//
-//	if not present or expired, will refresh
+// Read will attempt to read a token from the cache.
+// If not present or expired, will refresh.
 func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
 	cachedToken, err := c.readFromStorage(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	// if we have a valid token, use it
 	if cachedToken.Valid() {
 		c.log.Debug("Cache.Read: using cached token",
 			"token_expiry", cachedToken.Expiry,
@@ -72,18 +70,17 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	c.log.Debug("Cache.refresh: acquiring lock")
 	err := c.lock.Lock()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("acquiring lock: %w", err)
 	}
 	defer c.lock.Unlock() //nolint:errcheck
 
-	// acquire lock, try reading from cache again just in case
-	// someone else got here first
+	// Re-read inside the lock in case another process refreshed
+	// while we were waiting.
 	cachedToken, err := c.readFromStorage(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	// Check if another process refreshed while we waited for lock
 	if cachedToken.Valid() {
 		c.log.Debug("Cache.refresh: token was refreshed by another process",
 			"token_expiry", cachedToken.Expiry,
@@ -101,7 +98,6 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 		return nil, err
 	}
 
-	// marshal and save token
 	err = c.saveToken(ctx, token)
 	if err != nil {
 		return nil, err

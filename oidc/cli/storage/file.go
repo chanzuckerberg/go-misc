@@ -48,18 +48,37 @@ func (f *File) Read(_ context.Context) (*string, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 
-	contents, err := os.ReadFile(f.key)
-	if os.IsNotExist(err) {
-		f.log.Debug("File.Read: cache file does not exist", "path", f.key)
-		return nil, nil
-	}
+	contents, err := f.readFile()
 	if err != nil {
-		return nil, fmt.Errorf("could not read file: %w", err)
+		return nil, err
+	}
+	if contents == nil {
+		return nil, nil
 	}
 
 	f.log.Debug("File.Read: loaded from cache file", "path", f.key, "size_bytes", len(contents))
 	stringContents := string(contents)
 	return &stringContents, nil
+}
+
+// readFile reads the cache file, retrying once on any transient error
+// (e.g. stale NFS file handle after an atomic rename by another process).
+func (f *File) readFile() ([]byte, error) {
+	const maxAttempts = 2
+	var lastErr error
+	for range maxAttempts {
+		contents, err := os.ReadFile(f.key)
+		if os.IsNotExist(err) {
+			return nil, nil
+		}
+		if err != nil {
+			lastErr = err
+			f.log.Debug("File.readFile: read failed, retrying", "path", f.key, "error", err)
+			continue
+		}
+		return contents, nil
+	}
+	return nil, fmt.Errorf("could not read file: %w", lastErr)
 }
 
 func (f *File) Set(_ context.Context, value string) (err error) {
@@ -131,13 +150,8 @@ func (f *File) Delete(_ context.Context) error {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 
-	_, err := os.Stat(f.key)
-	if os.IsNotExist(err) {
-		return nil
-	}
-
-	err = os.Remove(f.key)
-	if err != nil {
+	err := os.Remove(f.key)
+	if err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("could not delete from file: %w", err)
 	}
 
