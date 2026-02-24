@@ -8,6 +8,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"log/slog"
+	"os"
 )
 
 // sessionIDKey is the context key for the session ID
@@ -28,7 +29,8 @@ func generateSessionID() string {
 func WithSessionID(ctx context.Context) (context.Context, *slog.Logger) {
 	sessionID := generateSessionID()
 	ctx = context.WithValue(ctx, sessionIDKey{}, sessionID)
-	log := slog.Default().With("session_id", sessionID)
+	hostname, _ := os.Hostname()
+	log := slog.Default().With("session_id", sessionID, "hostname", hostname)
 	return ctx, log
 }
 
