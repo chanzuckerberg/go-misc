@@ -92,6 +92,9 @@ func (f *File) readFile() ([]byte, error) {
 	}
 
 	f.logCacheMiss()
+	if os.IsNotExist(lastErr) {
+		return nil, nil
+	}
 	return nil, fmt.Errorf("could not read file after %d attempts: %w", maxAttempts, lastErr)
 }
 
