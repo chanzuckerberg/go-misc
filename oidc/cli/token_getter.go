@@ -32,9 +32,9 @@ func WithLocalCacheDir(dir string) GetTokenOption {
 }
 
 // WithClientOption appends an OIDCClientOption to the underlying OIDC client.
-func WithClientOption(opt client.OIDCClientOption) GetTokenOption {
+func WithClientOptions(opts ...client.OIDCClientOption) GetTokenOption {
 	return func(c *_getTokenConfig) {
-		c.clientOptions = append(c.clientOptions, opt)
+		c.clientOptions = append(c.clientOptions, opts...)
 	}
 }
 
