@@ -200,10 +200,10 @@ func (f *File) bootstrap() error {
 	return nil
 }
 
-// readFileWithRetry reads the cache file, retrying up to 10 times with a delay between
-// attempts. The NFS backend may be eventually consistent across server
-// frontends, so transient ENOENT or stale-handle errors are retried rather
-// than treated as terminal.
+// readFileWithRetry reads the cache file, retrying up to maxAttempts times with a delay
+// of retryDelay between attempts. The NFS backend may be eventually consistent across
+// server frontends, so transient ENOENT or stale-handle errors are retried rather than
+// treated as terminal.
 func (f *File) readFileWithRetry(maxAttempts int, retryDelay time.Duration) ([]byte, error) {
 	var lastErr error
 	for attempt := range maxAttempts {
