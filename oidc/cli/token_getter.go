@@ -201,10 +201,6 @@ func CheckRefreshTokenTTL(
 		return 0, fmt.Errorf("decoding cached token: %w", err)
 	}
 
-	if !cachedToken.Valid() {
-		return 0, fmt.Errorf("cached token is invalid")
-	}
-
 	if cachedToken.RefreshToken == "" {
 		return 0, fmt.Errorf("no refresh token in cache")
 	}
