@@ -15,7 +15,7 @@ const (
 	storageVersion = "v0"
 )
 
-func getDefaultStorageDir() (string, error) {
+func DefaultStorageDir() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", fmt.Errorf("getting user home directory: %w", err)
@@ -30,10 +30,6 @@ type Storage interface {
 	Delete(context.Context) error
 
 	MarshalOpts() []client.MarshalOpts
-
-	// ActivePath returns the filesystem path used for reads/writes.
-	// Used to derive a co-located lock file path.
-	ActivePath() string
 }
 
 func GetOIDC(ctx context.Context, clientID string, issuerURL string, fileOpts ...FileOption) (Storage, error) {
@@ -58,7 +54,7 @@ func GetOIDC(ctx context.Context, clientID string, issuerURL string, fileOpts ..
 	//    we disable this part of the flow for WSL. This could change in the future
 	//    when we find a better way to work with a WSL secure storage.
 	if isWSL || !isDesktop {
-		dir, err := getDefaultStorageDir()
+		dir, err := DefaultStorageDir()
 		if err != nil {
 			return nil, err
 		}

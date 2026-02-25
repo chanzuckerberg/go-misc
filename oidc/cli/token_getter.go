@@ -13,6 +13,7 @@ import (
 )
 
 type _getTokenConfig struct {
+	localCacheDir string
 	fileOptions   []storage.FileOption
 	clientOptions []client.OIDCClientOption
 }
@@ -25,6 +26,7 @@ type GetTokenOption func(*_getTokenConfig)
 // This avoids cross-host NFS lock contention.
 func WithLocalCacheDir(dir string) GetTokenOption {
 	return func(c *_getTokenConfig) {
+		c.localCacheDir = dir
 		c.fileOptions = append(c.fileOptions, storage.WithLocalCacheDir(dir))
 	}
 }
@@ -67,7 +69,10 @@ func GetToken(
 		return nil, err
 	}
 
-	lockPath := storageBackend.ActivePath() + ".lock"
+	lockPath, err := lockFilePath(clientID, issuerURL, cfg.localCacheDir)
+	if err != nil {
+		return nil, err
+	}
 	fileLock, err := pidlock.NewLock(lockPath)
 	if err != nil {
 		return nil, fmt.Errorf("creating lock: %w", err)
@@ -88,4 +93,20 @@ func GetToken(
 		"token_expiry", token.Token.Expiry,
 	)
 	return token, nil
+}
+
+// lockFilePath returns a deterministic lock file path derived from clientID
+// and issuerURL. When localCacheDir is set the lock lives there (local disk);
+// otherwise it falls back to the default storage dir (~/.cache/oidc-cli).
+func lockFilePath(clientID, issuerURL, localCacheDir string) (string, error) {
+	dir := localCacheDir
+	if dir == "" {
+		d, err := storage.DefaultStorageDir()
+		if err != nil {
+			return "", fmt.Errorf("determining lock dir: %w", err)
+		}
+		dir = d
+	}
+
+	return fmt.Sprintf("%s.lock", storage.GenerateKey(dir, clientID, issuerURL)), nil
 }

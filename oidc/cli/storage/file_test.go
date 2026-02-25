@@ -37,17 +37,17 @@ func TestFileReadWriteDefault(t *testing.T) {
 	r.Nil(got)
 }
 
-func TestFileActivePath(t *testing.T) {
+func TestFileCachePath(t *testing.T) {
 	r := require.New(t)
 	ctx := context.Background()
 	dir := t.TempDir()
 
 	f, err := NewFile(ctx, dir, "client-id", "issuer-url")
 	r.NoError(err)
-	r.Contains(f.ActivePath(), dir)
+	r.Contains(f.key, dir)
 }
 
-func TestFileActivePathLocal(t *testing.T) {
+func TestFileCachePathLocal(t *testing.T) {
 	r := require.New(t)
 	ctx := context.Background()
 	nfsDir := t.TempDir()
@@ -59,8 +59,8 @@ func TestFileActivePathLocal(t *testing.T) {
 	hostname, err := os.Hostname()
 	r.NoError(err)
 
-	r.Contains(f.ActivePath(), localDir)
-	r.Contains(f.ActivePath(), hostname)
+	r.Contains(f.key, localDir)
+	r.Contains(f.key, hostname)
 }
 
 func TestFileBootstrapFromRoot(t *testing.T) {
@@ -83,9 +83,8 @@ func TestFileBootstrapFromRoot(t *testing.T) {
 	r.NotNil(got)
 	r.Equal("root-token-data", *got)
 
-	localPath := local.ActivePath()
-	r.Contains(localPath, localDir)
-	_, err = os.Stat(localPath)
+	r.Contains(local.key, localDir)
+	_, err = os.Stat(local.key)
 	r.NoError(err, "local cache file should exist after bootstrap")
 }
 

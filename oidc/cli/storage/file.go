@@ -47,7 +47,7 @@ func NewFile(ctx context.Context, dir string, clientID string, issuerURL string,
 		o(&cfg)
 	}
 
-	rootKey := generateKey(dir, clientID, issuerURL)
+	rootKey := GenerateKey(dir, clientID, issuerURL)
 	log := logging.FromContext(ctx)
 
 	activeKey := rootKey
@@ -79,7 +79,7 @@ func NewFile(ctx context.Context, dir string, clientID string, issuerURL string,
 	}, nil
 }
 
-func generateKey(dir string, clientID string, issuerURL string) string {
+func GenerateKey(dir string, clientID string, issuerURL string) string {
 	k := fmt.Sprintf("%s %s %s", storageVersion, clientID, issuerURL)
 	h := sha256.Sum256([]byte(k))
 	return path.Join(dir, hex.EncodeToString(h[:]))
@@ -188,11 +188,6 @@ func (f *File) bootstrap() error {
 		"size_bytes", len(contents),
 	)
 	return nil
-}
-
-// ActivePath returns the filesystem path used for reads and writes.
-func (f *File) ActivePath() string {
-	return f.key
 }
 
 // readFile reads the cache file, retrying up to 10 times with a delay between
