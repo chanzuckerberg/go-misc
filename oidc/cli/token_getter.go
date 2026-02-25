@@ -25,20 +25,20 @@ var (
 	ErrTokenExpired = errors.New("cached access token is expired")
 )
 
-type _getTokenConfig struct {
+type getTokenConfig struct {
 	localCacheDir string
 	fileOptions   []storage.FileOption
 	clientOptions []client.OIDCClientOption
 }
 
 // GetTokenOption configures GetToken behavior.
-type GetTokenOption func(*_getTokenConfig)
+type GetTokenOption func(*getTokenConfig)
 
 // WithLocalCacheDir stores a per-hostname cache file on node-local disk,
 // bootstrapped from the default (e.g. NFS) cache on first access.
 // This avoids cross-host NFS lock contention.
 func WithLocalCacheDir(dir string) GetTokenOption {
-	return func(c *_getTokenConfig) {
+	return func(c *getTokenConfig) {
 		c.localCacheDir = dir
 		c.fileOptions = append(c.fileOptions, storage.WithLocalCacheDir(dir))
 	}
@@ -46,7 +46,7 @@ func WithLocalCacheDir(dir string) GetTokenOption {
 
 // WithClientOption appends an OIDCClientOption to the underlying OIDC client.
 func WithClientOptions(opts ...client.OIDCClientOption) GetTokenOption {
-	return func(c *_getTokenConfig) {
+	return func(c *getTokenConfig) {
 		c.clientOptions = append(c.clientOptions, opts...)
 	}
 }
@@ -59,7 +59,7 @@ func GetToken(
 	issuerURL string,
 	opts ...GetTokenOption,
 ) (*client.Token, error) {
-	var cfg _getTokenConfig
+	var cfg getTokenConfig
 	for _, o := range opts {
 		o(&cfg)
 	}
@@ -138,7 +138,7 @@ func CheckTokenIsValid(
 	issuerURL string,
 	opts ...GetTokenOption,
 ) error {
-	var cfg _getTokenConfig
+	var cfg getTokenConfig
 	for _, o := range opts {
 		o(&cfg)
 	}
@@ -176,7 +176,7 @@ func CheckRefreshTokenTTL(
 	issuerURL string,
 	opts ...GetTokenOption,
 ) (time.Duration, error) {
-	var cfg _getTokenConfig
+	var cfg getTokenConfig
 	for _, o := range opts {
 		o(&cfg)
 	}

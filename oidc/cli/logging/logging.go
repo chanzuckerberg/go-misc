@@ -13,7 +13,7 @@ import (
 	petname "github.com/dustinkirkland/golang-petname"
 )
 
-type _loggerKey struct{}
+type loggerKey struct{}
 
 func generateSessionID() string {
 	b := make([]byte, 4)
@@ -48,13 +48,13 @@ func NewLogger(ctx context.Context) (context.Context, *slog.Logger) {
 		)
 	}
 
-	return context.WithValue(ctx, _loggerKey{}, logger), logger
+	return context.WithValue(ctx, loggerKey{}, logger), logger
 }
 
 // FromContext returns the logger stored in ctx by NewLogger,
 // falling back to slog.Default() if none is present.
 func FromContext(ctx context.Context) *slog.Logger {
-	if l, ok := ctx.Value(_loggerKey{}).(*slog.Logger); ok {
+	if l, ok := ctx.Value(loggerKey{}).(*slog.Logger); ok {
 		return l
 	}
 	return slog.Default()

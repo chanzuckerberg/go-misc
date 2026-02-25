@@ -26,23 +26,23 @@ type File struct {
 	log *slog.Logger
 }
 
-type _fileConfig struct {
+type fileConfig struct {
 	localCacheDir string
 }
 
 // FileOption configures the File storage backend.
-type FileOption func(*_fileConfig)
+type FileOption func(*fileConfig)
 
 // WithLocalCacheDir stores a per-hostname cache file on node-local disk,
 // bootstrapped from the default (e.g. NFS) cache on first access.
 func WithLocalCacheDir(dir string) FileOption {
-	return func(c *_fileConfig) {
+	return func(c *fileConfig) {
 		c.localCacheDir = dir
 	}
 }
 
 func NewFile(ctx context.Context, dir string, clientID string, issuerURL string, opts ...FileOption) (*File, error) {
-	var cfg _fileConfig
+	var cfg fileConfig
 	for _, o := range opts {
 		o(&cfg)
 	}
