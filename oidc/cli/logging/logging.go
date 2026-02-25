@@ -39,6 +39,7 @@ func NewLogger(ctx context.Context) (context.Context, *slog.Logger) {
 		"session_id", generateSessionID(),
 		"hostname", hostname,
 		"pid", os.Getpid(),
+		"uid", os.Getuid(),
 	)
 
 	if hostnameGenerated {
