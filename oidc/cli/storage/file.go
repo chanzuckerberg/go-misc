@@ -207,11 +207,6 @@ func (f *File) readFileWithRetry(maxAttempts int, retryDelay time.Duration) ([]b
 			return contents, nil
 		}
 
-		if os.IsNotExist(err) {
-			f.logCacheMiss()
-			return nil, nil
-		}
-
 		lastErr = err
 		f.log.Debug("File.readFile: read failed",
 			"path", f.key,
@@ -226,6 +221,9 @@ func (f *File) readFileWithRetry(maxAttempts int, retryDelay time.Duration) ([]b
 	}
 
 	f.logCacheMiss()
+	if os.IsNotExist(lastErr) {
+		return nil, nil
+	}
 	return nil, fmt.Errorf("could not read file after %d attempts: %w", maxAttempts, lastErr)
 }
 
