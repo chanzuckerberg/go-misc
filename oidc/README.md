@@ -74,7 +74,7 @@ token, err := cli.GetToken(
     // Use a node-local cache directory (see "Distributed / NFS Environments" below)
     cli.WithLocalCacheDir("/tmp/oidc-cache"),
     // Customize OAuth2 scopes
-    cli.WithClientOption(client.WithScopes([]string{
+    cli.WithClientOptions(client.WithScopes([]string{
         "openid",
         "profile",
         "email",

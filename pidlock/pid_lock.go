@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"path"
+	"path/filepath"
 	"time"
 
 	"github.com/cenkalti/backoff"
@@ -31,12 +31,12 @@ type Lock struct {
 // NewLock returns a new lock for the given file path.
 // The path must be absolute. The parent directory is created if needed.
 func NewLock(lockFilePath string) (*Lock, error) {
-	if !path.IsAbs(lockFilePath) {
+	if !filepath.IsAbs(lockFilePath) {
 		return nil, fmt.Errorf("%s must be an absolute path", lockFilePath)
 	}
 
-	if err := os.MkdirAll(path.Dir(lockFilePath), 0755); err != nil { // #nosec
-		return nil, fmt.Errorf("creating lock directory %s: %w", path.Dir(lockFilePath), err)
+	if err := os.MkdirAll(filepath.Dir(lockFilePath), 0755); err != nil { // #nosec
+		return nil, fmt.Errorf("creating lock directory %s: %w", filepath.Dir(lockFilePath), err)
 	}
 
 	slog.Debug("Creating flock", "lock_path", lockFilePath)
