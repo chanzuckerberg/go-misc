@@ -2,8 +2,11 @@ package storage
 
 import (
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"log/slog"
+	"path/filepath"
 	"sync"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
@@ -98,4 +101,16 @@ func (k *Keyring) Delete(ctx context.Context) error {
 
 func (k *Keyring) MarshalOpts() []client.MarshalOpts {
 	return []client.MarshalOpts{}
+}
+
+// ActivePath returns a deterministic filesystem path derived from the
+// keyring key. The path itself is not used for storage but allows a
+// co-located lock file to be created alongside it.
+func (k *Keyring) ActivePath() string {
+	dir, err := getDefaultStorageDir()
+	if err != nil {
+		dir = filepath.Join(".cache", "oidc-cli")
+	}
+	h := sha256.Sum256([]byte(k.key))
+	return filepath.Join(dir, hex.EncodeToString(h[:]))
 }

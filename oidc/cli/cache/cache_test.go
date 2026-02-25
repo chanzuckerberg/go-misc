@@ -161,7 +161,8 @@ func TestFileCache(t *testing.T) {
 	fileLock, err := pidlock.NewLock(fileLockPath)
 	r.NoError(err)
 
-	s := storage.NewFile(ctx, dir, "client-id", "issuer-url")
+	s, err := storage.NewFile(ctx, dir, "client-id", "issuer-url")
+	r.NoError(err)
 
 	c := NewCache(ctx, s, refresh, fileLock)
 
@@ -213,7 +214,8 @@ func TestFileCacheIDTokenRestored(t *testing.T) {
 	fileLock, err := pidlock.NewLock(fileLockPath)
 	r.NoError(err)
 
-	s := storage.NewFile(ctx, dir, "client-id", "issuer-url")
+	s, err := storage.NewFile(ctx, dir, "client-id", "issuer-url")
+	r.NoError(err)
 
 	// Manually write the token to storage (simulating a previous save)
 	marshalled, err := originalToken.Marshal()

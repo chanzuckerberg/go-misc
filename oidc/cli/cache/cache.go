@@ -208,10 +208,11 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 func compressToken(token string) (string, error) {
 	var buf bytes.Buffer
 	gz := gzip.NewWriter(&buf)
-	if _, err := gz.Write([]byte(token)); err != nil {
+	_, err := gz.Write([]byte(token))
+	if err != nil {
 		return "", fmt.Errorf("failed to write to gzip: %w", err)
 	}
-	err := gz.Close()
+	err = gz.Close()
 	if err != nil {
 		return "", fmt.Errorf("failed to close gzip: %w", err)
 	}

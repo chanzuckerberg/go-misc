@@ -3,8 +3,6 @@ package cli
 import (
 	"context"
 	"fmt"
-	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/cache"
@@ -14,18 +12,28 @@ import (
 	"github.com/chanzuckerberg/go-misc/pidlock"
 )
 
-// DefaultLockFilePath returns the default path for the OIDC lock file.
-// The lock file is stored in ~/.oidc_locks/oidc.lock
-func DefaultLockFilePath() (string, error) {
-	const (
-		lockDir  = ".oidc_locks"
-		lockFile = "oidc.lock"
-	)
-	home, err := os.UserHomeDir()
-	if err != nil {
-		return "", fmt.Errorf("getting user home directory: %w", err)
+type _getTokenConfig struct {
+	fileOptions   []storage.FileOption
+	clientOptions []client.OIDCClientOption
+}
+
+// GetTokenOption configures GetToken behavior.
+type GetTokenOption func(*_getTokenConfig)
+
+// WithLocalCacheDir stores a per-hostname cache file on node-local disk,
+// bootstrapped from the default (e.g. NFS) cache on first access.
+// This avoids cross-host NFS lock contention.
+func WithLocalCacheDir(dir string) GetTokenOption {
+	return func(c *_getTokenConfig) {
+		c.fileOptions = append(c.fileOptions, storage.WithLocalCacheDir(dir))
 	}
-	return filepath.Join(home, lockDir, lockFile), nil
+}
+
+// WithClientOption appends an OIDCClientOption to the underlying OIDC client.
+func WithClientOption(opt client.OIDCClientOption) GetTokenOption {
+	return func(c *_getTokenConfig) {
+		c.clientOptions = append(c.clientOptions, opt)
+	}
 }
 
 // GetToken gets an oidc token.
@@ -34,8 +42,13 @@ func GetToken(
 	ctx context.Context,
 	clientID string,
 	issuerURL string,
-	clientOptions ...client.OIDCClientOption,
+	opts ...GetTokenOption,
 ) (*client.Token, error) {
+	var cfg _getTokenConfig
+	for _, o := range opts {
+		o(&cfg)
+	}
+
 	ctx, log := logging.WithSessionID(ctx)
 	startTime := time.Now()
 
@@ -44,24 +57,20 @@ func GetToken(
 		"issuer_url", issuerURL,
 	)
 
-	lockFilePath, err := DefaultLockFilePath()
-	if err != nil {
-		return nil, fmt.Errorf("getting lock file path: %w", err)
-	}
-
-	fileLock, err := pidlock.NewLock(lockFilePath)
-	if err != nil {
-		return nil, fmt.Errorf("creating lock: %w", err)
-	}
-
-	oidcClient, err := client.NewOIDCClient(ctx, clientID, issuerURL, clientOptions...)
+	oidcClient, err := client.NewOIDCClient(ctx, clientID, issuerURL, cfg.clientOptions...)
 	if err != nil {
 		return nil, fmt.Errorf("creating oidc client: %w", err)
 	}
 
-	storageBackend, err := storage.GetOIDC(ctx, clientID, issuerURL)
+	storageBackend, err := storage.GetOIDC(ctx, clientID, issuerURL, cfg.fileOptions...)
 	if err != nil {
 		return nil, err
+	}
+
+	lockPath := storageBackend.ActivePath() + ".lock"
+	fileLock, err := pidlock.NewLock(lockPath)
+	if err != nil {
+		return nil, fmt.Errorf("creating lock: %w", err)
 	}
 
 	tokenCache := cache.NewCache(ctx, storageBackend, oidcClient.RefreshToken, fileLock)

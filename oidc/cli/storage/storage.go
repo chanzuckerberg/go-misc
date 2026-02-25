@@ -30,9 +30,13 @@ type Storage interface {
 	Delete(context.Context) error
 
 	MarshalOpts() []client.MarshalOpts
+
+	// ActivePath returns the filesystem path used for reads/writes.
+	// Used to derive a co-located lock file path.
+	ActivePath() string
 }
 
-func GetOIDC(ctx context.Context, clientID string, issuerURL string) (Storage, error) {
+func GetOIDC(ctx context.Context, clientID string, issuerURL string, fileOpts ...FileOption) (Storage, error) {
 	log := logging.FromContext(ctx)
 
 	isWSL, err := osutil.IsWSL()
@@ -59,7 +63,7 @@ func GetOIDC(ctx context.Context, clientID string, issuerURL string) (Storage, e
 			return nil, err
 		}
 		log.Debug("GetOIDC: using file storage backend", "dir", dir)
-		return NewFile(ctx, dir, clientID, issuerURL), nil
+		return NewFile(ctx, dir, clientID, issuerURL, fileOpts...)
 	}
 
 	log.Debug("GetOIDC: using keyring storage backend")

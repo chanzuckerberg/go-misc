@@ -4,12 +4,10 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"log/slog"
 	"os"
 	"path"
-	"sync"
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
@@ -17,27 +15,68 @@ import (
 )
 
 type File struct {
+	// key is the active cache file path (local when localCacheDir is set, otherwise the default/NFS path).
 	key string
+	// dir is the parent directory of key.
 	dir string
-	log *slog.Logger
+	// rootKey is the default/NFS cache file path used for bootstrapping.
+	// Empty when no localCacheDir is configured.
+	rootKey string
 
-	mu sync.Mutex
+	log *slog.Logger
 }
 
-func NewFile(ctx context.Context, dir string, clientID string, issuerURL string) *File {
-	key := generateKey(dir, clientID, issuerURL)
+type _fileConfig struct {
+	localCacheDir string
+}
+
+// FileOption configures the File storage backend.
+type FileOption func(*_fileConfig)
+
+// WithLocalCacheDir stores a per-hostname cache file on node-local disk,
+// bootstrapped from the default (e.g. NFS) cache on first access.
+func WithLocalCacheDir(dir string) FileOption {
+	return func(c *_fileConfig) {
+		c.localCacheDir = dir
+	}
+}
+
+func NewFile(ctx context.Context, dir string, clientID string, issuerURL string, opts ...FileOption) (*File, error) {
+	var cfg _fileConfig
+	for _, o := range opts {
+		o(&cfg)
+	}
+
+	rootKey := generateKey(dir, clientID, issuerURL)
 	log := logging.FromContext(ctx)
 
+	activeKey := rootKey
+	activeDir := dir
+	var rootKeyForBootstrap string
+
+	if cfg.localCacheDir != "" {
+		hostname, err := os.Hostname()
+		if err != nil {
+			return nil, fmt.Errorf("getting hostname: %w", err)
+		}
+		hashBase := path.Base(rootKey)
+		activeKey = path.Join(cfg.localCacheDir, fmt.Sprintf("%s-%s", hashBase, hostname))
+		activeDir = cfg.localCacheDir
+		rootKeyForBootstrap = rootKey
+	}
+
 	log.Debug("File storage initialized",
-		"cache_dir", dir,
-		"cache_file", key,
+		"cache_dir", activeDir,
+		"cache_file", activeKey,
+		"root_file", rootKeyForBootstrap,
 		"client_id", clientID,
 	)
 	return &File{
-		dir: dir,
-		key: key,
-		log: log,
-	}
+		dir:     activeDir,
+		key:     activeKey,
+		rootKey: rootKeyForBootstrap,
+		log:     log,
+	}, nil
 }
 
 func generateKey(dir string, clientID string, issuerURL string) string {
@@ -46,9 +85,57 @@ func generateKey(dir string, clientID string, issuerURL string) string {
 	return path.Join(dir, hex.EncodeToString(h[:]))
 }
 
+// atomicFileWrite writes data to dest via a temp file in dir, using
+// fsync + rename to ensure readers never observe a partial write.
+func atomicFileWrite(dir string, dest string, data []byte) error {
+	tmp, err := os.CreateTemp(dir, ".oidc-cache-*.tmp")
+	if err != nil {
+		return fmt.Errorf("creating temp file: %w", err)
+	}
+	tmpName := tmp.Name()
+
+	cleanup := func() {
+		tmp.Close()
+		os.Remove(tmpName)
+	}
+
+	_, err = tmp.Write(data)
+	if err != nil {
+		cleanup()
+		return fmt.Errorf("writing temp file: %w", err)
+	}
+
+	err = tmp.Sync()
+	if err != nil {
+		cleanup()
+		return fmt.Errorf("syncing temp file: %w", err)
+	}
+
+	err = tmp.Close()
+	if err != nil {
+		os.Remove(tmpName)
+		return fmt.Errorf("closing temp file: %w", err)
+	}
+
+	err = os.Chmod(tmpName, 0600)
+	if err != nil {
+		os.Remove(tmpName)
+		return fmt.Errorf("setting temp file permissions: %w", err)
+	}
+
+	err = os.Rename(tmpName, dest)
+	if err != nil {
+		os.Remove(tmpName)
+		return fmt.Errorf("renaming temp file: %w", err)
+	}
+	return nil
+}
+
 func (f *File) Read(_ context.Context) (*string, error) {
-	f.mu.Lock()
-	defer f.mu.Unlock()
+	err := f.bootstrap()
+	if err != nil {
+		return nil, err
+	}
 
 	contents, err := f.readFile()
 	if err != nil {
@@ -61,6 +148,51 @@ func (f *File) Read(_ context.Context) (*string, error) {
 	f.log.Debug("File.Read: loaded from cache file", "path", f.key, "size_bytes", len(contents))
 	stringContents := string(contents)
 	return &stringContents, nil
+}
+
+// bootstrap copies the root (NFS) cache file into the local cache path
+// on first access. No-op when localCacheDir is not configured or the
+// local file already exists.
+func (f *File) bootstrap() error {
+	if f.rootKey == "" {
+		return nil
+	}
+
+	_, err := os.Stat(f.key)
+	if err == nil {
+		return nil
+	}
+
+	contents, err := os.ReadFile(f.rootKey)
+	if err != nil {
+		if os.IsNotExist(err) {
+			f.log.Debug("File.bootstrap: root file not found, skipping", "root", f.rootKey)
+			return nil
+		}
+		return fmt.Errorf("reading root cache file: %w", err)
+	}
+
+	err = os.MkdirAll(f.dir, 0700)
+	if err != nil {
+		return fmt.Errorf("creating local cache dir: %w", err)
+	}
+
+	err = atomicFileWrite(f.dir, f.key, contents)
+	if err != nil {
+		return fmt.Errorf("bootstrap write: %w", err)
+	}
+
+	f.log.Debug("File.bootstrap: copied root to local cache",
+		"root", f.rootKey,
+		"local", f.key,
+		"size_bytes", len(contents),
+	)
+	return nil
+}
+
+// ActivePath returns the filesystem path used for reads and writes.
+func (f *File) ActivePath() string {
+	return f.key
 }
 
 // readFile reads the cache file, retrying up to 10 times with a delay between
@@ -137,75 +269,22 @@ func (f *File) logCacheMiss() {
 	)
 }
 
-func (f *File) Set(_ context.Context, value string) (err error) {
-	f.mu.Lock()
-	defer f.mu.Unlock()
-
-	err = os.MkdirAll(f.dir, 0700)
+func (f *File) Set(_ context.Context, value string) error {
+	err := os.MkdirAll(f.dir, 0700)
 	if err != nil {
 		return fmt.Errorf("could not create cache dir %s: %w", f.dir, err)
 	}
 
-	// Write to a temp file then atomically rename into place so that
-	// concurrent readers never observe a truncated/partial file.
-	tmp, err := os.CreateTemp(f.dir, ".oidc-cache-*.tmp")
+	err = atomicFileWrite(f.dir, f.key, []byte(value))
 	if err != nil {
-		return fmt.Errorf("creating temp file: %w", err)
+		return fmt.Errorf("writing cache file: %w", err)
 	}
-	tmpName := tmp.Name()
-
-	closed := false
-	renamed := false
-	defer func() {
-		if !closed {
-			closeErr := tmp.Close()
-			if closeErr != nil {
-				err = errors.Join(err, closeErr)
-			}
-		}
-		if !renamed {
-			removeErr := os.Remove(tmpName)
-			if removeErr != nil {
-				err = errors.Join(err, removeErr)
-			}
-		}
-	}()
-
-	_, err = tmp.Write([]byte(value))
-	if err != nil {
-		return fmt.Errorf("writing temp file: %w", err)
-	}
-
-	err = tmp.Sync()
-	if err != nil {
-		return fmt.Errorf("syncing temp file: %w", err)
-	}
-
-	err = tmp.Close()
-	if err != nil {
-		return fmt.Errorf("closing temp file: %w", err)
-	}
-	closed = true
-
-	err = os.Chmod(tmpName, 0600)
-	if err != nil {
-		return fmt.Errorf("setting temp file permissions: %w", err)
-	}
-
-	err = os.Rename(tmpName, f.key)
-	if err != nil {
-		return fmt.Errorf("renaming temp file to cache file: %w", err)
-	}
-	renamed = true
 
 	f.log.Debug("File.Set: saved to cache file", "path", f.key, "size_bytes", len(value))
 	return nil
 }
 
 func (f *File) Delete(_ context.Context) error {
-	f.mu.Lock()
-	defer f.mu.Unlock()
-
 	err := os.Remove(f.key)
 	if err != nil && !os.IsNotExist(err) {
 		return fmt.Errorf("could not delete from file: %w", err)

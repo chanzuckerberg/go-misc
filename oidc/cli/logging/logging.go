@@ -17,7 +17,8 @@ type sessionIDKey struct{}
 // generateSessionID creates a short random session ID for log correlation
 func generateSessionID() string {
 	b := make([]byte, 4)
-	if _, err := rand.Read(b); err != nil {
+	_, err := rand.Read(b)
+	if err != nil {
 		// Fall back to the zero-initialized buffer if randomness is unavailable.
 		return hex.EncodeToString(b)
 	}
