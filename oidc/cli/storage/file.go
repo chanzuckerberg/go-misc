@@ -131,13 +131,18 @@ func atomicFileWrite(dir string, dest string, data []byte) error {
 	return nil
 }
 
+const (
+	maxAttempts = 10
+	retryDelay  = 500 * time.Millisecond
+)
+
 func (f *File) Read(_ context.Context) (*string, error) {
 	err := f.bootstrap()
 	if err != nil {
 		return nil, err
 	}
 
-	contents, err := f.readFile()
+	contents, err := f.readFileWithRetry(maxAttempts, retryDelay)
 	if err != nil {
 		return nil, err
 	}
@@ -190,19 +195,21 @@ func (f *File) bootstrap() error {
 	return nil
 }
 
-// readFile reads the cache file, retrying up to 10 times with a delay between
+// readFileWithRetry reads the cache file, retrying up to 10 times with a delay between
 // attempts. The NFS backend may be eventually consistent across server
 // frontends, so transient ENOENT or stale-handle errors are retried rather
 // than treated as terminal.
-func (f *File) readFile() ([]byte, error) {
-	const maxAttempts = 10
-	const retryDelay = 500 * time.Millisecond
-
+func (f *File) readFileWithRetry(maxAttempts int, retryDelay time.Duration) ([]byte, error) {
 	var lastErr error
 	for attempt := range maxAttempts {
 		contents, err := os.ReadFile(f.key)
 		if err == nil {
 			return contents, nil
+		}
+
+		if os.IsNotExist(err) {
+			f.logCacheMiss()
+			return nil, nil
 		}
 
 		lastErr = err
@@ -219,9 +226,6 @@ func (f *File) readFile() ([]byte, error) {
 	}
 
 	f.logCacheMiss()
-	if os.IsNotExist(lastErr) {
-		return nil, nil
-	}
 	return nil, fmt.Errorf("could not read file after %d attempts: %w", maxAttempts, lastErr)
 }
 

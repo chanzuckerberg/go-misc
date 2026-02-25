@@ -66,12 +66,12 @@ func GetToken(
 
 	storageBackend, err := storage.GetOIDC(ctx, clientID, issuerURL, cfg.fileOptions...)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("getting storage backend: %w", err)
 	}
 
 	lockPath, err := lockFilePath(clientID, issuerURL, cfg.localCacheDir)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("getting lock file path: %w", err)
 	}
 	fileLock, err := pidlock.NewLock(lockPath)
 	if err != nil {
