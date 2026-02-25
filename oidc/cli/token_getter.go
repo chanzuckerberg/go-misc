@@ -51,10 +51,10 @@ func GetToken(
 		o(&cfg)
 	}
 
-	ctx, log := logging.WithSessionID(ctx)
+	ctx, logger := logging.NewLogger(ctx)
 	startTime := time.Now()
 
-	log.Debug("GetToken: started",
+	logger.Debug("GetToken: started",
 		"client_id", clientID,
 		"issuer_url", issuerURL,
 	)
@@ -77,6 +77,11 @@ func GetToken(
 	if err != nil {
 		return nil, fmt.Errorf("creating lock: %w", err)
 	}
+	logger.Debug("GetToken: created refresh lock",
+		"lock_path", lockPath,
+		"client_id", clientID,
+		"issuer_url", issuerURL,
+	)
 
 	tokenCache := cache.NewCache(ctx, storageBackend, oidcClient.RefreshToken, fileLock)
 
@@ -88,7 +93,7 @@ func GetToken(
 		return nil, fmt.Errorf("nil token from OIDC-IDP")
 	}
 
-	log.Debug("GetToken: completed",
+	logger.Debug("GetToken: completed",
 		"elapsed_ms", time.Since(startTime).Milliseconds(),
 		"token_expiry", token.Token.Expiry,
 	)

@@ -9,6 +9,7 @@ require (
 	github.com/chanzuckerberg/go-misc/osutil v0.0.0-20251205003006-0acabbc1617e
 	github.com/chanzuckerberg/go-misc/pidlock v0.0.0-20250725155314-6a5b915d3532
 	github.com/coreos/go-oidc/v3 v3.14.1
+	github.com/dustinkirkland/golang-petname v0.0.0-20260215035315-f0c533e9ce9b
 	github.com/go-jose/go-jose/v4 v4.1.1
 	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/google/uuid v1.6.0
