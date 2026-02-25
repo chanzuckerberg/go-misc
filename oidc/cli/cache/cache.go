@@ -70,7 +70,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	c.log.Debug("Cache.refresh: acquiring lock")
 	err := c.lock.Lock()
 	if err != nil {
-		return nil, fmt.Errorf("acquiring lock: %w", err)
+		return nil, err
 	}
 	defer c.lock.Unlock() //nolint:errcheck
 
