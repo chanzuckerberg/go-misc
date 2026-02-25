@@ -160,8 +160,11 @@ func CheckTokenIsValid(
 		return fmt.Errorf("decoding cached token: %w", err)
 	}
 
+	if cachedToken.AccessToken == "" {
+		return ErrTokenNotFound
+	}
 	if !cachedToken.Valid() {
-		return fmt.Errorf("cached token is invalid")
+		return fmt.Errorf("%w (expired %s ago)", ErrTokenExpired, time.Since(cachedToken.Expiry).Truncate(time.Second))
 	}
 
 	return nil
