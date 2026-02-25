@@ -44,7 +44,7 @@ func NewCache(
 // Read will attempt to read a token from the cache.
 // If not present or expired, will refresh.
 func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
-	cachedToken, err := c.readFromStorage(ctx)
+	cachedToken, err := c.DecodeFromStorage(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -76,7 +76,7 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 
 	// Re-read inside the lock in case another process refreshed
 	// while we were waiting.
-	cachedToken, err := c.readFromStorage(ctx)
+	cachedToken, err := c.DecodeFromStorage(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -157,7 +157,7 @@ func (c *Cache) saveTokenWithoutRefresh(ctx context.Context, token *client.Token
 
 // reads token from storage, potentially returning an empty/expired token
 // users must call Valid to check token validity
-func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
+func (c *Cache) DecodeFromStorage(ctx context.Context) (*client.Token, error) {
 	cached, err := c.storage.Read(ctx)
 	if err != nil {
 		return nil, err
