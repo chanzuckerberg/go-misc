@@ -319,7 +319,7 @@ Main entry point for interactive OIDC authentication.
 cli.WithLocalCacheDir(dir string) GetTokenOption
 
 // Pass an OIDCClientOption through to the underlying OIDC client.
-cli.WithClientOption(opt client.OIDCClientOption) GetTokenOption
+cli.WithClientOptions(opts ...client.OIDCClientOption) GetTokenOption
 ```
 
 #### `client.OIDCClientOption`
