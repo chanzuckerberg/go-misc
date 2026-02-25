@@ -179,6 +179,96 @@ func TestFileCache(t *testing.T) {
 	r.NotEmpty(token.RefreshToken)
 }
 
+func TestDecodeFromStorageEmpty(t *testing.T) {
+	r := require.New(t)
+	s := genStorage()
+	ctx := context.Background()
+
+	c := NewCache(ctx, s, nil, nil)
+	token, err := c.DecodeFromStorage(ctx)
+	r.NoError(err)
+	r.NotNil(token)
+	r.Empty(token.AccessToken)
+	r.False(token.Valid())
+}
+
+func TestDecodeFromStorageValid(t *testing.T) {
+	r := require.New(t)
+	s := genStorage()
+	ctx := context.Background()
+
+	freshToken := &client.Token{
+		IDToken: "test-id-token",
+		Token: &oauth2.Token{
+			AccessToken:  "test-access-token",
+			RefreshToken: "test-refresh-token",
+			Expiry:       time.Now().Add(time.Hour),
+		},
+		Claims: client.Claims{Email: "test@example.com"},
+	}
+
+	marshalled, err := freshToken.Marshal()
+	r.NoError(err)
+	compressed, err := compressToken(marshalled)
+	r.NoError(err)
+	err = s.Set(ctx, compressed)
+	r.NoError(err)
+
+	c := NewCache(ctx, s, nil, nil)
+	token, err := c.DecodeFromStorage(ctx)
+	r.NoError(err)
+	r.NotNil(token)
+	r.True(token.Valid())
+	r.Equal("test-access-token", token.AccessToken)
+	r.Equal("test-refresh-token", token.RefreshToken)
+	r.Equal("test@example.com", token.Claims.Email)
+}
+
+func TestDecodeFromStorageExpired(t *testing.T) {
+	r := require.New(t)
+	s := genStorage()
+	ctx := context.Background()
+
+	expiredToken := &client.Token{
+		Token: &oauth2.Token{
+			AccessToken: "old-access-token",
+			Expiry:      time.Now().Add(-time.Hour),
+		},
+	}
+
+	marshalled, err := expiredToken.Marshal()
+	r.NoError(err)
+	compressed, err := compressToken(marshalled)
+	r.NoError(err)
+	err = s.Set(ctx, compressed)
+	r.NoError(err)
+
+	c := NewCache(ctx, s, nil, nil)
+	token, err := c.DecodeFromStorage(ctx)
+	r.NoError(err)
+	r.NotNil(token)
+	r.False(token.Valid())
+	r.Equal("old-access-token", token.AccessToken)
+}
+
+func TestDecodeFromStorageCorrupted(t *testing.T) {
+	r := require.New(t)
+	s := genStorage()
+	ctx := context.Background()
+
+	compressed, err := compressToken("not valid json or base64")
+	r.NoError(err)
+	err = s.Set(ctx, compressed)
+	r.NoError(err)
+
+	c := NewCache(ctx, s, nil, nil)
+	token, err := c.DecodeFromStorage(ctx)
+	r.NoError(err)
+	r.NotNil(token)
+	r.Empty(token.AccessToken)
+	r.False(token.Valid())
+}
+
 // TestFileCacheIDTokenRestored verifies that when a valid token is read from the file cache,
 // the id_token is properly restored to the oauth2.Token extras so that Token.Extra("id_token")
 // returns the cached id_token value. This is critical because oauth2.Token extras don't survive
