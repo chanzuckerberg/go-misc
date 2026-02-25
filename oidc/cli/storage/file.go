@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"path"
+	"path/filepath"
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
@@ -59,8 +59,8 @@ func NewFile(ctx context.Context, dir string, clientID string, issuerURL string,
 		if err != nil {
 			return nil, fmt.Errorf("getting hostname: %w", err)
 		}
-		hashBase := path.Base(rootKey)
-		activeKey = path.Join(cfg.localCacheDir, fmt.Sprintf("%s-%s", hashBase, hostname))
+		hashBase := filepath.Base(rootKey)
+		activeKey = filepath.Join(cfg.localCacheDir, fmt.Sprintf("%s-%s", hashBase, hostname))
 		activeDir = cfg.localCacheDir
 		rootKeyForBootstrap = rootKey
 	}
@@ -82,7 +82,7 @@ func NewFile(ctx context.Context, dir string, clientID string, issuerURL string,
 func GenerateKey(dir string, clientID string, issuerURL string) string {
 	k := fmt.Sprintf("%s %s %s", storageVersion, clientID, issuerURL)
 	h := sha256.Sum256([]byte(k))
-	return path.Join(dir, hex.EncodeToString(h[:]))
+	return filepath.Join(dir, hex.EncodeToString(h[:]))
 }
 
 // atomicFileWrite writes data to dest via a temp file in dir, using
