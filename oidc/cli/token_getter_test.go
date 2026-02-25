@@ -17,9 +17,9 @@ func TestDiscoverIntrospectionEndpoint(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		r.Equal("/.well-known/openid-configuration", req.URL.Path)
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{
+		r.NoError(json.NewEncoder(w).Encode(map[string]string{
 			"introspection_endpoint": "https://idp.example.com/oauth2/v1/introspect",
-		})
+		}))
 	}))
 	defer srv.Close()
 
@@ -33,9 +33,9 @@ func TestDiscoverIntrospectionEndpointMissing(t *testing.T) {
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{
+		r.NoError(json.NewEncoder(w).Encode(map[string]string{
 			"authorization_endpoint": "https://idp.example.com/oauth2/v1/authorize",
-		})
+		}))
 	}))
 	defer srv.Close()
 
@@ -58,10 +58,10 @@ func TestIntrospectTokenExpiry(t *testing.T) {
 		r.Equal("my-client-id", req.FormValue("client_id"))
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]interface{}{
+		r.NoError(json.NewEncoder(w).Encode(map[string]interface{}{
 			"active": true,
 			"exp":    expiry.Unix(),
-		})
+		}))
 	}))
 	defer srv.Close()
 
@@ -75,9 +75,9 @@ func TestIntrospectTokenExpiryInactive(t *testing.T) {
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]interface{}{
+		r.NoError(json.NewEncoder(w).Encode(map[string]interface{}{
 			"active": false,
-		})
+		}))
 	}))
 	defer srv.Close()
 
@@ -91,9 +91,9 @@ func TestIntrospectTokenExpiryNoExp(t *testing.T) {
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]interface{}{
+		r.NoError(json.NewEncoder(w).Encode(map[string]interface{}{
 			"active": true,
-		})
+		}))
 	}))
 	defer srv.Close()
 
