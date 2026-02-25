@@ -165,7 +165,12 @@ func (f *File) bootstrap() error {
 
 	_, err := os.Stat(f.key)
 	if err == nil {
+		// Local cache file already exists; nothing to bootstrap.
 		return nil
+	}
+	if !os.IsNotExist(err) {
+		// Propagate unexpected filesystem errors instead of treating them as "file missing".
+		return fmt.Errorf("stat local cache file: %w", err)
 	}
 
 	contents, err := os.ReadFile(f.rootKey)
