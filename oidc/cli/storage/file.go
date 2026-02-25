@@ -132,7 +132,7 @@ func atomicFileWrite(dir string, dest string, data []byte) error {
 }
 
 const (
-	maxAttempts = 10
+	maxAttempts = 5
 	retryDelay  = 500 * time.Millisecond
 )
 
