@@ -2,115 +2,155 @@ package cli
 
 import (
 	"context"
-	"encoding/json"
-	"net/http"
-	"net/http/httptest"
 	"testing"
 	"time"
 
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/cache"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/compress"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/storage"
+	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/oauth2"
 )
 
-func TestDiscoverIntrospectionEndpoint(t *testing.T) {
+func storeToken(t *testing.T, s storage.Storage, tok *client.Token) {
+	t.Helper()
 	r := require.New(t)
 
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		r.Equal("/.well-known/openid-configuration", req.URL.Path)
-		w.Header().Set("Content-Type", "application/json")
-		r.NoError(json.NewEncoder(w).Encode(map[string]string{
-			"introspection_endpoint": "https://idp.example.com/oauth2/v1/introspect",
-		}))
-	}))
-	defer srv.Close()
-
-	ep, err := discoverIntrospectionEndpoint(context.Background(), srv.URL)
+	b64, err := tok.Marshal()
 	r.NoError(err)
-	r.Equal("https://idp.example.com/oauth2/v1/introspect", ep)
-}
 
-func TestDiscoverIntrospectionEndpointMissing(t *testing.T) {
-	r := require.New(t)
-
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		r.NoError(json.NewEncoder(w).Encode(map[string]string{
-			"authorization_endpoint": "https://idp.example.com/oauth2/v1/authorize",
-		}))
-	}))
-	defer srv.Close()
-
-	_, err := discoverIntrospectionEndpoint(context.Background(), srv.URL)
-	r.Error(err)
-	r.Contains(err.Error(), "no introspection_endpoint")
-}
-
-func TestIntrospectTokenExpiry(t *testing.T) {
-	r := require.New(t)
-
-	expiry := time.Now().Add(7 * 24 * time.Hour).Truncate(time.Second)
-
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		r.Equal(http.MethodPost, req.Method)
-		r.Equal("application/x-www-form-urlencoded", req.Header.Get("Content-Type"))
-		r.NoError(req.ParseForm())
-		r.Equal("my-refresh-token", req.FormValue("token"))
-		r.Equal("refresh_token", req.FormValue("token_type_hint"))
-		r.Equal("my-client-id", req.FormValue("client_id"))
-
-		w.Header().Set("Content-Type", "application/json")
-		r.NoError(json.NewEncoder(w).Encode(map[string]interface{}{
-			"active": true,
-			"exp":    expiry.Unix(),
-		}))
-	}))
-	defer srv.Close()
-
-	got, err := introspectTokenExpiry(context.Background(), srv.URL, "my-client-id", "my-refresh-token")
+	compressed, err := compress.GzipStr(b64)
 	r.NoError(err)
-	r.Equal(expiry, got)
+
+	r.NoError(s.Set(context.Background(), compressed))
 }
 
-func TestIntrospectTokenExpiryInactive(t *testing.T) {
+func TestSyncFromRootIfNewerUsesRoot(t *testing.T) {
 	r := require.New(t)
+	ctx := context.Background()
+	rootDir := t.TempDir()
+	localDir := t.TempDir()
 
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		r.NoError(json.NewEncoder(w).Encode(map[string]interface{}{
-			"active": false,
-		}))
-	}))
-	defer srv.Close()
+	olderExpiry := time.Now().Add(24 * time.Hour)
+	newerExpiry := time.Now().Add(7 * 24 * time.Hour)
 
-	_, err := introspectTokenExpiry(context.Background(), srv.URL, "client", "token")
-	r.Error(err)
-	r.Contains(err.Error(), "no longer active")
+	rootStorage, err := storage.NewFile(ctx, rootDir, "cid", "issuer")
+	r.NoError(err)
+	storeToken(t, rootStorage, &client.Token{
+		Token: &oauth2.Token{
+			AccessToken:  "root-access",
+			RefreshToken: "root-refresh",
+			Expiry:       time.Now().Add(time.Hour),
+		},
+		RefreshTokenExpiry: &newerExpiry,
+	})
+
+	localStorage, err := storage.NewFile(ctx, localDir, "cid", "issuer")
+	r.NoError(err)
+	storeToken(t, localStorage, &client.Token{
+		Token: &oauth2.Token{
+			AccessToken:  "local-access",
+			RefreshToken: "local-refresh",
+			Expiry:       time.Now().Add(time.Hour),
+		},
+		RefreshTokenExpiry: &olderExpiry,
+	})
+
+	lockPath, err := lockFilePath("cid", "issuer", localDir)
+	r.NoError(err)
+	fileLock, err := pidlock.NewLock(lockPath)
+	r.NoError(err)
+
+	trySyncFromRootIfNewer(ctx, fileLock, rootStorage, localStorage)
+
+	localCache := cache.NewCache(ctx, localStorage, nil, nil)
+	tok, err := localCache.DecodeFromStorage(ctx)
+	r.NoError(err)
+	r.NotNil(tok.RefreshTokenExpiry)
+	r.WithinDuration(newerExpiry, *tok.RefreshTokenExpiry, time.Second,
+		"local should now have root's newer refresh token expiry")
+	r.Equal("root-access", tok.AccessToken)
 }
 
-func TestIntrospectTokenExpiryNoExp(t *testing.T) {
+func TestSyncFromRootIfNewerKeepsLocal(t *testing.T) {
 	r := require.New(t)
+	ctx := context.Background()
+	rootDir := t.TempDir()
+	localDir := t.TempDir()
 
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		r.NoError(json.NewEncoder(w).Encode(map[string]interface{}{
-			"active": true,
-		}))
-	}))
-	defer srv.Close()
+	olderExpiry := time.Now().Add(24 * time.Hour)
+	newerExpiry := time.Now().Add(7 * 24 * time.Hour)
 
-	_, err := introspectTokenExpiry(context.Background(), srv.URL, "client", "token")
-	r.Error(err)
-	r.Contains(err.Error(), "no exp in introspection response")
+	rootStorage, err := storage.NewFile(ctx, rootDir, "cid", "issuer")
+	r.NoError(err)
+	storeToken(t, rootStorage, &client.Token{
+		Token: &oauth2.Token{
+			AccessToken:  "root-access",
+			RefreshToken: "root-refresh",
+			Expiry:       time.Now().Add(time.Hour),
+		},
+		RefreshTokenExpiry: &olderExpiry,
+	})
+
+	localStorage, err := storage.NewFile(ctx, localDir, "cid", "issuer")
+	r.NoError(err)
+	storeToken(t, localStorage, &client.Token{
+		Token: &oauth2.Token{
+			AccessToken:  "local-access",
+			RefreshToken: "local-refresh",
+			Expiry:       time.Now().Add(time.Hour),
+		},
+		RefreshTokenExpiry: &newerExpiry,
+	})
+
+	lockPath, err := lockFilePath("cid", "issuer", localDir)
+	r.NoError(err)
+	fileLock, err := pidlock.NewLock(lockPath)
+	r.NoError(err)
+
+	trySyncFromRootIfNewer(ctx, fileLock, rootStorage, localStorage)
+
+	localCache := cache.NewCache(ctx, localStorage, nil, nil)
+	tok, err := localCache.DecodeFromStorage(ctx)
+	r.NoError(err)
+	r.NotNil(tok.RefreshTokenExpiry)
+	r.WithinDuration(newerExpiry, *tok.RefreshTokenExpiry, time.Second,
+		"local should keep its own newer refresh token expiry")
+	r.Equal("local-access", tok.AccessToken)
 }
 
-func TestIntrospectTokenExpiryServerError(t *testing.T) {
+func TestSyncFromRootIfNewerNoopWhenRootEmpty(t *testing.T) {
 	r := require.New(t)
+	ctx := context.Background()
+	rootDir := t.TempDir()
+	localDir := t.TempDir()
 
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.WriteHeader(http.StatusInternalServerError)
-	}))
-	defer srv.Close()
+	rootStorage, err := storage.NewFile(ctx, rootDir, "cid", "issuer")
+	r.NoError(err)
 
-	_, err := introspectTokenExpiry(context.Background(), srv.URL, "client", "token")
-	r.Error(err)
-	r.Contains(err.Error(), "500")
+	localStorage, err := storage.NewFile(ctx, localDir, "cid", "issuer")
+	r.NoError(err)
+	localExpiry := time.Now().Add(24 * time.Hour)
+	storeToken(t, localStorage, &client.Token{
+		Token: &oauth2.Token{
+			AccessToken:  "local-access",
+			RefreshToken: "local-refresh",
+			Expiry:       time.Now().Add(time.Hour),
+		},
+		RefreshTokenExpiry: &localExpiry,
+	})
+
+	lockPath, err := lockFilePath("cid", "issuer", localDir)
+	r.NoError(err)
+	fileLock, err := pidlock.NewLock(lockPath)
+	r.NoError(err)
+
+	trySyncFromRootIfNewer(ctx, fileLock, rootStorage, localStorage)
+
+	localCache := cache.NewCache(ctx, localStorage, nil, nil)
+	tok, err := localCache.DecodeFromStorage(ctx)
+	r.NoError(err)
+	r.Equal("local-access", tok.AccessToken, "local should be unchanged when root is empty")
 }

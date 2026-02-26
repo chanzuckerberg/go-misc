@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/compress"
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/storage"
 	"golang.org/x/oauth2"
 
@@ -57,7 +58,7 @@ func TestCorruptedCache(t *testing.T) {
 	r := require.New(t)
 	s := genStorage()
 	ctx := context.Background()
-	compressed, err := compressToken("garbage token")
+	compressed, err := compress.GzipStr("garbage token")
 	r.NoError(err)
 	err = s.Set(ctx, compressed)
 	r.NoError(err)
@@ -85,10 +86,10 @@ func TestCorruptedCache(t *testing.T) {
 	r.NoError(err)
 	r.NotNil(cachedToken)
 
-	decompressedToken, err := decompressToken(*cachedToken)
+	decompressedToken, err := compress.GunzipStr(*cachedToken)
 	r.NoError(err)
 
-	tok, err := client.TokenFromString(decompressedToken)
+	tok, err := client.TokenFromString(&decompressedToken)
 	r.NoError(err)
 	r.NotNil(t)
 
@@ -118,7 +119,7 @@ func TestCachedToken(t *testing.T) {
 	marshalled, err := freshToken.Marshal()
 	r.NoError(err)
 
-	compressed, err := compressToken(marshalled)
+	compressed, err := compress.GzipStr(marshalled)
 	r.NoError(err)
 
 	err = s.Set(ctx, compressed)
@@ -209,7 +210,7 @@ func TestDecodeFromStorageValid(t *testing.T) {
 
 	marshalled, err := freshToken.Marshal()
 	r.NoError(err)
-	compressed, err := compressToken(marshalled)
+	compressed, err := compress.GzipStr(marshalled)
 	r.NoError(err)
 	err = s.Set(ctx, compressed)
 	r.NoError(err)
@@ -238,7 +239,7 @@ func TestDecodeFromStorageExpired(t *testing.T) {
 
 	marshalled, err := expiredToken.Marshal()
 	r.NoError(err)
-	compressed, err := compressToken(marshalled)
+	compressed, err := compress.GzipStr(marshalled)
 	r.NoError(err)
 	err = s.Set(ctx, compressed)
 	r.NoError(err)
@@ -256,7 +257,7 @@ func TestDecodeFromStorageCorrupted(t *testing.T) {
 	s := genStorage()
 	ctx := context.Background()
 
-	compressed, err := compressToken("not valid json or base64")
+	compressed, err := compress.GzipStr("not valid json or base64")
 	r.NoError(err)
 	err = s.Set(ctx, compressed)
 	r.NoError(err)
@@ -310,7 +311,7 @@ func TestFileCacheIDTokenRestored(t *testing.T) {
 	// Manually write the token to storage (simulating a previous save)
 	marshalled, err := originalToken.Marshal()
 	r.NoError(err)
-	compressed, err := compressToken(marshalled)
+	compressed, err := compress.GzipStr(marshalled)
 	r.NoError(err)
 	err = s.Set(ctx, compressed)
 	r.NoError(err)

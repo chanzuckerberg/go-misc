@@ -2,12 +2,7 @@ package cli
 
 import (
 	"context"
-	"encoding/json"
-	"errors"
 	"fmt"
-	"net/http"
-	"net/url"
-	"strings"
 	"time"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/cache"
@@ -15,14 +10,6 @@ import (
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
-)
-
-var (
-	// ErrTokenNotFound indicates no usable token was found in the cache.
-	ErrTokenNotFound = errors.New("no valid token in cache")
-
-	// ErrTokenExpired indicates the cached access token has expired.
-	ErrTokenExpired = errors.New("cached access token is expired")
 )
 
 type getTokenConfig struct {
@@ -96,8 +83,16 @@ func GetToken(
 		"issuer_url", issuerURL,
 	)
 
-	tokenCache := cache.NewCache(ctx, storageBackend, oidcClient.RefreshToken, fileLock)
+	if cfg.localCacheDir != "" {
+		rootStorage, rootErr := storage.GetOIDC(ctx, clientID, issuerURL)
+		if rootErr != nil {
+			logger.Warn("GetToken: failed to get root storage backend, skipping sync with root", "error", rootErr)
+		} else {
+			trySyncFromRootIfNewer(ctx, fileLock, rootStorage, storageBackend)
+		}
+	}
 
+	tokenCache := cache.NewCache(ctx, storageBackend, oidcClient.RefreshToken, fileLock)
 	token, err := tokenCache.Read(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("extracting token from client: %w", err)
@@ -161,18 +156,18 @@ func CheckTokenIsValid(
 	}
 
 	if cachedToken.AccessToken == "" {
-		return ErrTokenNotFound
+		return fmt.Errorf("no valid token in cache")
 	}
 	if !cachedToken.Valid() {
-		return fmt.Errorf("%w (expired %s ago)", ErrTokenExpired, time.Since(cachedToken.Expiry).Truncate(time.Second))
+		return fmt.Errorf("cached access token expired %s ago", time.Since(cachedToken.Expiry).Truncate(time.Second))
 	}
 
 	return nil
 }
 
 // CheckRefreshTokenTTL returns the duration until the cached refresh token
-// expires, determined by calling the issuer's introspection endpoint.
-// Returns an error if no refresh token is cached or introspection fails.
+// expires. It prefers the RefreshTokenExpiry stored in the serialized token;
+// if that is absent it falls back to a live introspection call.
 func CheckRefreshTokenTTL(
 	ctx context.Context,
 	clientID string,
@@ -201,18 +196,18 @@ func CheckRefreshTokenTTL(
 		return 0, fmt.Errorf("decoding cached token: %w", err)
 	}
 
-	if cachedToken.RefreshToken == "" {
-		return 0, fmt.Errorf("no refresh token in cache")
-	}
-
-	introspectURL, err := discoverIntrospectionEndpoint(ctx, issuerURL)
-	if err != nil {
-		return 0, fmt.Errorf("discovering introspection endpoint: %w", err)
-	}
-
-	expiry, err := introspectTokenExpiry(ctx, introspectURL, clientID, cachedToken.RefreshToken)
-	if err != nil {
-		return 0, fmt.Errorf("introspecting token expiry: %w", err)
+	var expiry time.Time
+	if cachedToken.RefreshTokenExpiry != nil {
+		expiry = *cachedToken.RefreshTokenExpiry
+	} else {
+		if cachedToken.RefreshToken == "" {
+			return 0, fmt.Errorf("no refresh token in cache to introspect")
+		}
+		logger.Debug("CheckRefreshTokenTTL: no stored expiry, falling back to introspection")
+		expiry, err = client.LookupRefreshExpiry(ctx, clientID, issuerURL, cachedToken.RefreshToken)
+		if err != nil {
+			return 0, fmt.Errorf("introspecting refresh token expiry: %w", err)
+		}
 	}
 
 	ttl := time.Until(expiry)
@@ -227,80 +222,52 @@ func CheckRefreshTokenTTL(
 	return ttl, nil
 }
 
-// discoverIntrospectionEndpoint fetches the OIDC discovery document and
-// returns the introspection_endpoint URL.
-func discoverIntrospectionEndpoint(ctx context.Context, issuerURL string) (string, error) {
-	wellKnown := strings.TrimSuffix(issuerURL, "/") + "/.well-known/openid-configuration"
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, wellKnown, nil)
+// trySyncFromRootIfNewer compares the refresh token expiry stored in the root
+// (NFS) cache with the local node cache. If root's refresh token expiry is
+// later, the root's raw data is copied into local storage so the subsequent
+// cache read uses the fresher refresh token.
+func trySyncFromRootIfNewer(ctx context.Context, fileLock *pidlock.Lock, rootStorage, localStorage storage.Storage) {
+	logger := logging.FromContext(ctx)
+	err := fileLock.Lock()
 	if err != nil {
-		return "", fmt.Errorf("creating discovery request: %w", err)
+		logger.Warn("trySyncFromRootIfNewer: failed to acquire lock", "error", err)
+		return
+	}
+	defer fileLock.Unlock() //nolint:errcheck
+
+	rootCache := cache.NewCache(ctx, rootStorage, nil, nil)
+	rootToken, err := rootCache.DecodeFromStorage(ctx)
+	if err != nil || rootToken.RefreshTokenExpiry == nil {
+		return
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	localCache := cache.NewCache(ctx, localStorage, nil, nil)
+	localToken, err := localCache.DecodeFromStorage(ctx)
 	if err != nil {
-		return "", fmt.Errorf("fetching discovery document: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("discovery endpoint returned %s", resp.Status)
+		return
 	}
 
-	var doc struct {
-		IntrospectionEndpoint string `json:"introspection_endpoint"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&doc); err != nil {
-		return "", fmt.Errorf("decoding discovery document: %w", err)
+	if localToken.RefreshTokenExpiry != nil && !rootToken.RefreshTokenExpiry.After(*localToken.RefreshTokenExpiry) {
+		return
 	}
 
-	if doc.IntrospectionEndpoint == "" {
-		return "", fmt.Errorf("no introspection_endpoint in discovery document")
-	}
+	logger.Debug("syncFromRootIfNewer: root has newer refresh token expiry, syncing to local",
+		"root_expiry", rootToken.RefreshTokenExpiry,
+		"local_expiry", localToken.RefreshTokenExpiry,
+	)
 
-	return doc.IntrospectionEndpoint, nil
-}
-
-// introspectTokenExpiry calls the OAuth 2.0 introspection endpoint (RFC 7662)
-// and returns the token's expiry time.
-func introspectTokenExpiry(ctx context.Context, introspectURL, clientID, token string) (time.Time, error) {
-	form := url.Values{
-		"token":           {token},
-		"token_type_hint": {"refresh_token"},
-		"client_id":       {clientID},
-	}
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, introspectURL, strings.NewReader(form.Encode()))
+	rootRaw, err := rootStorage.Read(ctx)
 	if err != nil {
-		return time.Time{}, fmt.Errorf("creating introspection request: %w", err)
+		logger.Warn("trySyncFromRootIfNewer: failed to read root storage", "error", err)
+		return
 	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	if rootRaw == nil {
+		logger.Warn("trySyncFromRootIfNewer: root storage is empty, skipping sync")
+		return
+	}
 
-	resp, err := http.DefaultClient.Do(req)
+	err = localStorage.Set(ctx, *rootRaw)
 	if err != nil {
-		return time.Time{}, fmt.Errorf("calling introspection endpoint: %w", err)
+		logger.Warn("trySyncFromRootIfNewer: failed to update local storage from root", "error", err)
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return time.Time{}, fmt.Errorf("introspection endpoint returned %s", resp.Status)
-	}
-
-	var result struct {
-		Active bool  `json:"active"`
-		Exp    int64 `json:"exp"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return time.Time{}, fmt.Errorf("decoding introspection response: %w", err)
-	}
-
-	if !result.Active {
-		return time.Time{}, fmt.Errorf("refresh token is no longer active")
-	}
-
-	if result.Exp == 0 {
-		return time.Time{}, fmt.Errorf("no exp in introspection response")
-	}
-
-	return time.Unix(result.Exp, 0), nil
 }

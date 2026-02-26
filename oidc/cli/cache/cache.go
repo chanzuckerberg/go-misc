@@ -1,14 +1,12 @@
 package cache
 
 import (
-	"bytes"
-	"compress/gzip"
 	"context"
 	"fmt"
-	"io"
 	"log/slog"
 
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
+	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/compress"
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/logging"
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/storage"
 	"github.com/chanzuckerberg/go-misc/pidlock"
@@ -118,7 +116,7 @@ func (c *Cache) saveToken(ctx context.Context, token *client.Token) error {
 		return fmt.Errorf("marshalling token: %w", err)
 	}
 
-	compressedToken, err := compressToken(strToken)
+	compressedToken, err := compress.GzipStr(strToken)
 	if err != nil {
 		return fmt.Errorf("compressing token: %w", err)
 	}
@@ -142,7 +140,7 @@ func (c *Cache) saveTokenWithoutRefresh(ctx context.Context, token *client.Token
 		return fmt.Errorf("marshalling token: %w", err)
 	}
 
-	compressedToken, err := compressToken(strToken)
+	compressedToken, err := compress.GzipStr(strToken)
 	if err != nil {
 		return fmt.Errorf("compressing token: %w", err)
 	}
@@ -167,15 +165,13 @@ func (c *Cache) DecodeFromStorage(ctx context.Context) (*client.Token, error) {
 		return &client.Token{Token: &oauth2.Token{}}, nil
 	}
 
-	// decode gzip data
-	decompressedStr, err := decompressToken(*cached)
+	decompressed, err := compress.GunzipStr(*cached)
 	if err != nil {
-		// if we fail to decompress the token we should treat it as a cache miss
 		c.log.Warn("Cache.readFromStorage: failed to decompress cached token, treating as cache miss", "error", err)
 		return &client.Token{Token: &oauth2.Token{}}, nil
 	}
 
-	cachedToken, err := client.TokenFromString(decompressedStr)
+	cachedToken, err := client.TokenFromString(&decompressed)
 	if err != nil {
 		c.log.Warn("Cache.readFromStorage: failed to parse cached token, purging", "error", err)
 		deleteErr := c.storage.Delete(ctx)
@@ -203,36 +199,4 @@ func (c *Cache) DecodeFromStorage(ctx context.Context) (*client.Token, error) {
 		"has_refresh_token", cachedToken.RefreshToken != "",
 	)
 	return cachedToken, nil
-}
-
-func compressToken(token string) (string, error) {
-	var buf bytes.Buffer
-	gz := gzip.NewWriter(&buf)
-	_, err := gz.Write([]byte(token))
-	if err != nil {
-		return "", fmt.Errorf("failed to write to gzip: %w", err)
-	}
-	err = gz.Close()
-	if err != nil {
-		return "", fmt.Errorf("failed to close gzip: %w", err)
-	}
-	return buf.String(), nil
-}
-
-func decompressToken(token string) (*string, error) {
-	reader := bytes.NewReader([]byte(token))
-	gzreader, err := gzip.NewReader(reader)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create gzip reader: %w", err)
-	}
-	decompressed, err := io.ReadAll(gzreader)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read gzip data: %w", err)
-	}
-	err = gzreader.Close()
-	if err != nil {
-		return nil, fmt.Errorf("failed to close gzip: %w", err)
-	}
-	decompressedStr := string(decompressed)
-	return &decompressedStr, nil
 }
