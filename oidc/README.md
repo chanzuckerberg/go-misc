@@ -9,23 +9,24 @@ A Go library for obtaining OAuth2/OIDC access tokens using various authenticatio
 ### Key Features
 
 - **Interactive Browser Authentication**: OIDC authentication flow with automatic browser launching
-- **Token Caching & Storage**: Secure token storage using system keyring with automatic refresh
+- **Token Caching & Storage**: Secure token storage using system keyring or file-based cache with automatic refresh
+- **Node-Local Caching**: Optional local cache for distributed/NFS environments to avoid cross-host contention
 - **KMS-Signed JWT Provider**: Service-to-service authentication using AWS KMS for JWT signing
 - **AWS STS Integration**: Built-in AWS credentials provider using OIDC tokens
 - **Kubernetes Support**: Generates tokens in Kubernetes `ExecCredential` format
-- **Production Ready**: Battle-tested with locking mechanisms to prevent concurrent authentication attempts
+- **Structured Logging**: Session-correlated logging with session ID, hostname, and PID
 
 ## Installation
 
 ```bash
-go get github.com/chanzuckerberg/go-misc/oidc/v4
+go get github.com/chanzuckerberg/go-misc/oidc/v5
 ```
 
 ## Authentication Methods
 
 ### 1. Interactive Browser Flow
 
-The interactive flow opens a browser for user authentication and securely caches tokens in the system keyring.
+The interactive flow opens a browser for user authentication and caches tokens in the system keyring (desktop) or a file (headless/WSL).
 
 #### Basic Usage
 
@@ -37,18 +38,16 @@ import (
     "fmt"
     "log"
 
-    "github.com/chanzuckerberg/go-misc/oidc/v4/cli"
+    "github.com/chanzuckerberg/go-misc/oidc/v5/cli"
 )
 
 func main() {
     ctx := context.Background()
 
-    // GetToken handles the full flow: checking cache, refreshing if needed,
-    // or launching browser for new authentication
     token, err := cli.GetToken(
         ctx,
-        "my-client-id",                        // OAuth2 client ID
-        "https://auth.example.com",            // OIDC issuer URL
+        "my-client-id",
+        "https://auth.example.com",
     )
     if err != nil {
         log.Fatalf("failed to get token: %v", err)
@@ -60,41 +59,37 @@ func main() {
 }
 ```
 
-#### With Custom Options
+#### With Options
 
 ```go
 import (
-    "github.com/chanzuckerberg/go-misc/oidc/v4/cli"
-    "github.com/chanzuckerberg/go-misc/oidc/v4/cli/client"
-    "golang.org/x/oauth2"
+    "github.com/chanzuckerberg/go-misc/oidc/v5/cli"
+    "github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
 )
 
 token, err := cli.GetToken(
     ctx,
     clientID,
     issuerURL,
+    // Use a node-local cache directory (see "Distributed / NFS Environments" below)
+    cli.WithLocalCacheDir("/tmp/oidc-cache"),
     // Customize OAuth2 scopes
-    client.SetScopeOptions([]string{
+    cli.WithClientOptions(client.WithScopes([]string{
         "openid",
         "profile",
         "email",
         "offline_access",
-    }),
-    // Customize success message shown in browser
-    client.SetSuccessMessage("Authentication complete! Close this window."),
-    // Set OAuth2 auth style
-    client.SetOauth2AuthStyle(oauth2.AuthStyleInParams),
+    })),
 )
 ```
 
 #### How It Works
 
-1. **Check Cache**: First checks system keyring for cached valid token
-2. **Refresh if Needed**: If token is expired but refresh token exists, automatically refreshes
-3. **Browser Authentication**: If no valid token, launches browser to OIDC provider
-4. **Local Callback Server**: Starts temporary local server (ports 49152-49215) to receive OAuth callback
-5. **Token Storage**: Securely stores tokens in system keyring for future use
-6. **File Locking**: Uses `/tmp/aws-oidc.lock` to prevent concurrent authentication attempts
+1. **Check Cache**: Checks storage backend (keyring or file) for a cached valid token
+2. **Refresh if Needed**: If the token is expired but a refresh token exists, acquires a file lock and refreshes
+3. **Browser Authentication**: If no valid token exists, launches the browser to the OIDC provider
+4. **Local Callback Server**: Starts a temporary local server (ports 49152-49215) to receive the OAuth callback
+5. **Token Storage**: Stores tokens in the storage backend for future use
 
 ### 2. AWS STS Integration
 
@@ -110,17 +105,16 @@ import (
 
     "github.com/aws/aws-sdk-go/aws/session"
     "github.com/aws/aws-sdk-go/service/sts"
-    "github.com/chanzuckerberg/go-misc/oidc/v4"
+    "github.com/chanzuckerberg/go-misc/oidc/v5"
+    "github.com/chanzuckerberg/go-misc/oidc/v5/cli"
 )
 
 func main() {
     ctx := context.Background()
 
-    // Create AWS session
     sess := session.Must(session.NewSession())
     stsClient := sts.New(sess)
 
-    // Create OIDC credentials provider
     provider, err := oidc.NewAwsOIDCCredsProvider(
         ctx,
         stsClient,
@@ -128,13 +122,16 @@ func main() {
             AWSRoleARN:    "arn:aws:iam::123456789012:role/MyOIDCRole",
             OIDCClientID:  "my-client-id",
             OIDCIssuerURL: "https://auth.example.com",
+            // Pass GetToken options through to the underlying token flow
+            GetTokenOptions: []cli.GetTokenOption{
+                cli.WithLocalCacheDir("/tmp/oidc-cache"),
+            },
         },
     )
     if err != nil {
         log.Fatalf("failed to create provider: %v", err)
     }
 
-    // Get AWS credentials
     creds, err := provider.Get()
     if err != nil {
         log.Fatalf("failed to get credentials: %v", err)
@@ -142,7 +139,6 @@ func main() {
 
     fmt.Printf("AWS Access Key: %s\n", creds.AccessKeyID)
 
-    // You can also fetch the raw OIDC token
     token, err := provider.FetchOIDCToken(ctx)
     if err != nil {
         log.Fatalf("failed to fetch OIDC token: %v", err)
@@ -173,30 +169,27 @@ import (
     "os"
 
     "github.com/aws/aws-sdk-go-v2/config"
-    "github.com/aws/aws-sdk-go-v2/service/kms"
-    "github.com/chanzuckerberg/go-misc/oidc/v4/kms"
+    awskms "github.com/aws/aws-sdk-go-v2/service/kms"
+    "github.com/chanzuckerberg/go-misc/oidc/v5/kms"
 )
 
 func main() {
     ctx := context.Background()
     logger := slog.New(slog.NewJSONHandler(os.Stderr, nil))
 
-    // Load AWS configuration
     cfg, err := config.LoadDefaultConfig(ctx)
     if err != nil {
         log.Fatalf("failed to load AWS config: %v", err)
     }
 
-    kmsClient := kms.NewFromConfig(cfg)
+    kmsClient := awskms.NewFromConfig(cfg)
 
-    // Configure JWT claims
     claims := kms.NewDefaultClaimsValues(
-        "my-service",                          // issuer (client ID)
-        "https://oauth.example.com/token",     // audience (token endpoint)
-        "read:data write:data",                // scopes
+        "my-service",
+        "https://oauth.example.com/token",
+        "read:data write:data",
     )
 
-    // Create KMS token provider
     provider := kms.NewKMSKeyTokenProvider(
         logger,
         kmsClient,
@@ -204,13 +197,11 @@ func main() {
         &claims,
     )
 
-    // Get token in Kubernetes ExecCredential format
     execCred, err := provider.GetExecToken(ctx, "client.authentication.k8s.io/v1")
     if err != nil {
         log.Fatalf("failed to get token: %v", err)
     }
 
-    // Use the access token
     logger.Info("token obtained",
         "expiry", execCred.Status.ExpirationTimestamp,
         "token", execCred.Status.Token)
@@ -223,27 +214,75 @@ Implement custom JWT claims by implementing the `ClaimsValues` interface:
 
 ```go
 type CustomClaims struct {
-    issuer, audience, scope string
+    clientID, issuerURL, scope string
 }
 
 func (c *CustomClaims) GetClaims() jwt.RegisteredClaims {
     return jwt.RegisteredClaims{
-        Issuer:    c.issuer,
-        Subject:   c.issuer,
-        Audience:  []string{c.audience},
+        Issuer:    c.clientID,
+        Subject:   c.clientID,
+        Audience:  []string{c.issuerURL},
         IssuedAt:  jwt.NewNumericDate(time.Now()),
         ExpiresAt: jwt.NewNumericDate(time.Now().Add(30 * time.Minute)),
     }
 }
 
-func (c *CustomClaims) GetScope() string {
-    return c.scope
-}
-
-func (c *CustomClaims) GetAudience() string {
-    return c.audience
-}
+func (c *CustomClaims) GetScope() string     { return c.scope }
+func (c *CustomClaims) GetIssuerURL() string { return c.issuerURL }
 ```
+
+## Caching and Concurrency
+
+### Storage Backends
+
+The library automatically selects a storage backend based on the environment:
+
+| Environment | Backend | Location |
+|---|---|---|
+| Desktop (macOS, Linux with GUI) | System keyring | macOS Keychain, GNOME Keyring, KWallet |
+| WSL / Headless | File | `~/.cache/oidc-cli/<hash>` |
+
+Cache filenames are a SHA-256 hash of the storage version, client ID, and issuer URL, so different OIDC clients do not collide.
+
+### Locking
+
+The library uses `flock`-based file locking (via the `pidlock` package) to coordinate processes on the same host. The lock is scoped to a specific client ID and issuer URL combination.
+
+**What the lock protects:**
+- **Token refresh**: When a cached token expires, the lock prevents multiple processes from calling the IdP's refresh endpoint simultaneously. The first process to acquire the lock performs the refresh and writes the new token; other processes waiting on the lock re-read the cache and find the fresh token.
+- **Cache writes**: The token is written to storage while the lock is held, so concurrent refreshes do not race on the write.
+
+**What the lock does not protect:**
+- **Reads**: Cache reads are lock-free. Reads do not need lock protection because writes use atomic file operations (write to temp file, fsync, rename), so readers always see either the old complete file or the new complete file, never a partial write.
+
+**Lock file location:**
+- Default: `~/.cache/oidc-cli/<hash>.lock`
+- With `WithLocalCacheDir`: `<localCacheDir>/<hash>.lock`
+
+The lock file uses the same hash as the cache file, with a `.lock` suffix appended.
+
+### Distributed / NFS Environments
+
+On NFS filesystems, `flock` is unreliable across hosts and `rename` may not be atomic across NFS server frontends. If you are running on a distributed system where multiple hosts share a home directory over NFS, use `WithLocalCacheDir` to store the cache and lock files on node-local disk:
+
+```go
+token, err := cli.GetToken(
+    ctx,
+    clientID,
+    issuerURL,
+    cli.WithLocalCacheDir("/tmp/oidc-cache"),
+)
+```
+
+When `WithLocalCacheDir` is set:
+
+1. The first time a process on a given host reads the cache, it **bootstraps** by copying the root cache file (on NFS at `~/.cache/oidc-cli/<hash>`) into the local directory as `<localCacheDir>/<hash>-<hostname>`.
+2. All subsequent reads and writes use the local copy.
+3. The lock file is also placed in the local directory (`<localCacheDir>/<hash>.lock`), so locking uses the local filesystem instead of NFS.
+
+This means each host independently refreshes its own token. Since most IdP refresh tokens (e.g. Okta) are not single-use, concurrent refreshes from different hosts are safe -- they simply produce valid but independent access tokens.
+
+The initial root cache file is created by the first human login (interactive browser flow) and serves as the bootstrap source for all hosts.
 
 ## API Reference
 
@@ -256,7 +295,7 @@ func GetToken(
     ctx context.Context,
     clientID string,
     issuerURL string,
-    clientOptions ...client.Option,
+    opts ...GetTokenOption,
 ) (*client.Token, error)
 ```
 
@@ -266,11 +305,35 @@ Main entry point for interactive OIDC authentication.
 - `ctx`: Context for cancellation
 - `clientID`: OAuth2 client ID registered with your OIDC provider
 - `issuerURL`: OIDC provider's issuer URL (e.g., `https://accounts.google.com`)
-- `clientOptions`: Optional configuration options
+- `opts`: Optional `GetTokenOption` values to configure behavior
 
 **Returns:**
 - `*client.Token`: Token with ID token, access token, refresh token, and claims
 - `error`: Any error during authentication
+
+#### `cli.GetTokenOption`
+
+```go
+// Store cache and lock files on node-local disk instead of the default
+// directory. Bootstraps from the default cache on first access.
+cli.WithLocalCacheDir(dir string) GetTokenOption
+
+// Pass an OIDCClientOption through to the underlying OIDC client.
+cli.WithClientOptions(opts ...client.OIDCClientOption) GetTokenOption
+```
+
+#### `client.OIDCClientOption`
+
+```go
+// Customize OAuth2 scopes (default: openid, offline_access, email, groups)
+client.WithScopes([]string{"openid", "email"})
+
+// Use device grant flow instead of browser-based authorization grant
+client.WithDeviceGrantAuthenticator(a *DeviceGrantAuthenticator)
+
+// Use authorization grant flow with custom config
+client.WithAuthzGrantAuthenticator(a *AuthorizationGrantConfig, opts ...AuthorizationGrantAuthenticatorOption)
+```
 
 #### `client.Token`
 
@@ -287,7 +350,7 @@ type Token struct {
 
 **Methods:**
 - `Marshal(...MarshalOpts) (string, error)` - Serialize token to base64-encoded JSON
-- `Valid() bool` - Reports whether the token is currently valid (for example, not expired) according to the underlying `oauth2.Token` semantics
+- `Valid() bool` - Reports whether the token is currently valid (not expired) according to the underlying `oauth2.Token` semantics
 
 #### `client.Claims`
 
@@ -300,19 +363,6 @@ type Claims struct {
     AuthenticationMethods []string `json:"amr"`
     Email                 string   `json:"email"`
 }
-```
-
-#### Client Options
-
-```go
-// Customize OAuth2 scopes (default: openid, offline_access, email, groups)
-client.SetScopeOptions([]string{"openid", "email"})
-
-// Customize success message shown in browser after authentication
-client.SetSuccessMessage("You're all set! Return to your terminal.")
-
-// Set OAuth2 authentication style
-client.SetOauth2AuthStyle(oauth2.AuthStyleInParams)
 ```
 
 ### AWS STS Integration
@@ -333,20 +383,14 @@ Creates an AWS credentials provider that uses OIDC tokens.
 
 ```go
 type AwsOIDCCredsProviderConfig struct {
-    AWSRoleARN    string  // ARN of IAM role to assume
-    OIDCClientID  string  // OIDC client ID
-    OIDCIssuerURL string  // OIDC issuer URL
+    AWSRoleARN      string              // ARN of IAM role to assume
+    OIDCClientID    string              // OIDC client ID
+    OIDCIssuerURL   string              // OIDC issuer URL
+    GetTokenOptions []cli.GetTokenOption // Options forwarded to cli.GetToken
 }
 ```
 
 #### `AWSOIDCCredsProvider`
-
-```go
-type AWSOIDCCredsProvider struct {
-    *credentials.Credentials
-    // ... internal fields
-}
-```
 
 **Methods:**
 - `Get() (credentials.Value, error)` - Get AWS credentials (inherited from `credentials.Credentials`)
@@ -381,14 +425,14 @@ Creates a token provider that uses AWS KMS for JWT signing.
 type ClaimsValues interface {
     GetClaims() jwt.RegisteredClaims
     GetScope() string
-    GetAudience() string
+    GetIssuerURL() string
 }
 ```
 
 #### `kms.DefaultClaimsValues`
 
 ```go
-func NewDefaultClaimsValues(issuer, audience, scopes string) DefaultClaimsValues
+func NewDefaultClaimsValues(clientID, issuerURL, scopes string) DefaultClaimsValues
 ```
 
 Default implementation with 1-hour token expiration.
@@ -406,23 +450,25 @@ type ExecCredential struct {
 
 Kubernetes ExecCredential format for kubectl authentication plugins.
 
+## Logging
+
+The library uses Go's `log/slog` for structured logging. All log entries within a `GetToken` call share the same attributes for correlation:
+
+| Attribute | Description |
+|---|---|
+| `session_id` | Random 8-character hex string unique to each `GetToken` invocation |
+| `hostname` | Machine hostname (or a random pet name if hostname is unavailable) |
+| `pid` | Process ID |
+
+To see debug logs, configure `slog` before calling `GetToken`:
+
+```go
+slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stderr, &slog.HandlerOptions{
+    Level: slog.LevelDebug,
+})))
+```
+
 ## Configuration
-
-### Storage Locations
-
-Tokens are stored securely in the system keyring:
-- **macOS**: Keychain
-- **Linux**: Secret Service API (GNOME Keyring, KWallet)
-- **Windows**: Windows Credential Manager
-
-Keyring service name: `oidc`
-Keyring user format: `{clientID}@{issuerURL}`
-
-### Lock File
-
-Location: `/tmp/aws-oidc.lock`
-
-Prevents multiple concurrent authentication flows from the same machine.
 
 ### Local Callback Server
 
@@ -474,13 +520,11 @@ Your application needs permission to sign with the KMS key:
 Register the public key with your OAuth2/OIDC provider:
 
 ```bash
-# Export public key
 aws kms get-public-key \
   --key-id abcd1234-... \
   --output text \
   --query PublicKey | base64 -d > public_key.der
 
-# Convert to PEM (if needed)
 openssl rsa -pubin -inform DER -in public_key.der \
   -outform PEM -out public_key.pem
 ```
@@ -489,7 +533,7 @@ openssl rsa -pubin -inform DER -in public_key.der \
 
 ### OIDC Identity Provider
 
-First, register your OIDC provider with AWS IAM:
+Register your OIDC provider with AWS IAM:
 
 ```bash
 aws iam create-open-id-connect-provider \
@@ -527,7 +571,8 @@ Create an IAM role with a trust policy that allows your OIDC provider:
 
 ### General
 
-- **Token Storage**: Tokens are stored in system keyring with OS-level encryption
+- **Token Storage**: Tokens are stored in system keyring with OS-level encryption (desktop) or in permission-restricted files (headless)
+- **Atomic Writes**: File-based cache writes use temp file + fsync + rename to prevent partial reads
 - **Token Expiration**: Tokens include 5-minute time skew tolerance for clock differences
 - **Secure Transmission**: All OAuth2/OIDC communication uses HTTPS
 - **State Validation**: OAuth2 state parameter prevents CSRF attacks
@@ -543,7 +588,7 @@ Create an IAM role with a trust policy that allows your OIDC provider:
 
 ### Interactive Flow
 
-- **File Lock**: Prevents race conditions during concurrent authentication attempts
+- **File Lock**: Prevents race conditions during concurrent token refresh
 - **Browser Security**: Uses system default browser with HTTPS OAuth endpoints
 - **Local Server**: Callback server binds to localhost only (not externally accessible)
 - **Token Refresh**: Automatic refresh minimizes exposure window for access tokens
@@ -552,9 +597,10 @@ Create an IAM role with a trust policy that allows your OIDC provider:
 
 ### Interactive Flow
 
-**"unable to create lock"**
-- Check that `/tmp` is writable
-- Verify no stale lock files exist: `rm /tmp/aws-oidc.lock`
+**"acquiring lock" timeout or error**
+- Check that the lock directory (`~/.cache/oidc-cli/` or your `WithLocalCacheDir` path) is writable
+- Verify no stale `.lock` files exist in that directory
+- If on NFS, use `WithLocalCacheDir` to place locks on local disk
 
 **"could not open browser"**
 - Ensure a browser is installed and in PATH
@@ -606,7 +652,7 @@ import (
     "fmt"
     "os"
 
-    "github.com/chanzuckerberg/go-misc/oidc/v4/cli"
+    "github.com/chanzuckerberg/go-misc/oidc/v5/cli"
 )
 
 func main() {
@@ -622,7 +668,6 @@ func main() {
         os.Exit(1)
     }
 
-    // Output token in Kubernetes ExecCredential format
     execCred := map[string]interface{}{
         "apiVersion": "client.authentication.k8s.io/v1",
         "kind":       "ExecCredential",
@@ -649,7 +694,7 @@ import (
     "github.com/aws/aws-sdk-go/aws/session"
     "github.com/aws/aws-sdk-go/service/s3"
     "github.com/aws/aws-sdk-go/service/sts"
-    "github.com/chanzuckerberg/go-misc/oidc/v4"
+    "github.com/chanzuckerberg/go-misc/oidc/v5"
 )
 
 func main() {
@@ -671,7 +716,6 @@ func main() {
         panic(err)
     }
 
-    // Use the credentials with AWS SDK
     s3Client := s3.New(sess, &aws.Config{
         Credentials: provider.Credentials,
     })
@@ -685,6 +729,37 @@ func main() {
     for _, bucket := range result.Buckets {
         fmt.Printf("  - %s\n", *bucket.Name)
     }
+}
+```
+
+### Distributed Environment with Node-Local Cache
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "log"
+
+    "github.com/chanzuckerberg/go-misc/oidc/v5/cli"
+)
+
+func main() {
+    ctx := context.Background()
+
+    token, err := cli.GetToken(
+        ctx,
+        "my-client-id",
+        "https://auth.example.com",
+        // Place cache and lock on local disk to avoid NFS issues
+        cli.WithLocalCacheDir("/tmp/oidc-cache"),
+    )
+    if err != nil {
+        log.Fatalf("failed to get token: %v", err)
+    }
+
+    fmt.Printf("Email: %s\n", token.Claims.Email)
 }
 ```
 

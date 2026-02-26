@@ -41,16 +41,14 @@ func NewCache(
 	}
 }
 
-// Read will attempt to read a token from the cache
-//
-//	if not present or expired, will refresh
+// Read will attempt to read a token from the cache.
+// If not present or expired, will refresh.
 func (c *Cache) Read(ctx context.Context) (*client.Token, error) {
-	cachedToken, err := c.readFromStorage(ctx)
+	cachedToken, err := c.DecodeFromStorage(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	// if we have a valid token, use it
 	if cachedToken.Valid() {
 		c.log.Debug("Cache.Read: using cached token",
 			"token_expiry", cachedToken.Expiry,
@@ -76,14 +74,13 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 	}
 	defer c.lock.Unlock() //nolint:errcheck
 
-	// acquire lock, try reading from cache again just in case
-	// someone else got here first
-	cachedToken, err := c.readFromStorage(ctx)
+	// Re-read inside the lock in case another process refreshed
+	// while we were waiting.
+	cachedToken, err := c.DecodeFromStorage(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	// Check if another process refreshed while we waited for lock
 	if cachedToken.Valid() {
 		c.log.Debug("Cache.refresh: token was refreshed by another process",
 			"token_expiry", cachedToken.Expiry,
@@ -101,7 +98,6 @@ func (c *Cache) refresh(ctx context.Context) (*client.Token, error) {
 		return nil, err
 	}
 
-	// marshal and save token
 	err = c.saveToken(ctx, token)
 	if err != nil {
 		return nil, err
@@ -161,7 +157,7 @@ func (c *Cache) saveTokenWithoutRefresh(ctx context.Context, token *client.Token
 
 // reads token from storage, potentially returning an empty/expired token
 // users must call Valid to check token validity
-func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
+func (c *Cache) DecodeFromStorage(ctx context.Context) (*client.Token, error) {
 	cached, err := c.storage.Read(ctx)
 	if err != nil {
 		return nil, err
@@ -212,10 +208,11 @@ func (c *Cache) readFromStorage(ctx context.Context) (*client.Token, error) {
 func compressToken(token string) (string, error) {
 	var buf bytes.Buffer
 	gz := gzip.NewWriter(&buf)
-	if _, err := gz.Write([]byte(token)); err != nil {
+	_, err := gz.Write([]byte(token))
+	if err != nil {
 		return "", fmt.Errorf("failed to write to gzip: %w", err)
 	}
-	err := gz.Close()
+	err = gz.Close()
 	if err != nil {
 		return "", fmt.Errorf("failed to close gzip: %w", err)
 	}

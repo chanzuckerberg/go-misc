@@ -12,9 +12,10 @@ import (
 )
 
 type AwsOIDCCredsProviderConfig struct {
-	AWSRoleARN    string
-	OIDCClientID  string
-	OIDCIssuerURL string
+	AWSRoleARN      string
+	OIDCClientID    string
+	OIDCIssuerURL   string
+	GetTokenOptions []cli.GetTokenOption
 }
 
 // AWSOIDCCredsProvider providers OIDC tokens and aws:STS credentials
@@ -71,7 +72,7 @@ func (tf *tokenFetcher) fetchFullToken(ctx context.Context) (*client.Token, erro
 	tf.mu.Lock()
 	defer tf.mu.Unlock()
 
-	return cli.GetToken(ctx, tf.conf.OIDCClientID, tf.conf.OIDCIssuerURL)
+	return cli.GetToken(ctx, tf.conf.OIDCClientID, tf.conf.OIDCIssuerURL, tf.conf.GetTokenOptions...)
 }
 
 func (tf *tokenFetcher) FetchToken(ctx context.Context) ([]byte, error) {
