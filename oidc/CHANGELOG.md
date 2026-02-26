@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.2.0](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.1.4...oidc-v5.2.0) (2026-02-26)
+
+
+### Features
+
+* **oidc:** add token validation, per-node caching, and replace pidlock with flock ([#1159](https://github.com/chanzuckerberg/go-misc/issues/1159)) ([be6de26](https://github.com/chanzuckerberg/go-misc/commit/be6de26e37f720f86dfaaea34ab18506f9614558))
+
 ## [5.1.4](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.1.3...oidc-v5.1.4) (2026-02-19)
 
 
