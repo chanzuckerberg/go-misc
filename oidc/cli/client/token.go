@@ -29,8 +29,8 @@ type Claims struct {
 type Token struct {
 	Version int
 	*oauth2.Token
-	IDToken            string    `json:"token,omitempty"`
-	Claims             Claims    `json:"claims,omitempty"`
+	IDToken            string     `json:"token,omitempty"`
+	Claims             Claims     `json:"claims,omitempty"`
 	RefreshTokenExpiry *time.Time `json:"refresh_token_expiry,omitempty"`
 }
 
