@@ -9,6 +9,7 @@ import (
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/client"
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/compress"
 	"github.com/chanzuckerberg/go-misc/oidc/v5/cli/storage"
+	"github.com/chanzuckerberg/go-misc/pidlock"
 	"github.com/stretchr/testify/require"
 	"golang.org/x/oauth2"
 )
@@ -43,7 +44,7 @@ func TestSyncFromRootIfNewerUsesRoot(t *testing.T) {
 			RefreshToken: "root-refresh",
 			Expiry:       time.Now().Add(time.Hour),
 		},
-		RefreshTokenExpiry: newerExpiry,
+		RefreshTokenExpiry: &newerExpiry,
 	})
 
 	localStorage, err := storage.NewFile(ctx, localDir, "cid", "issuer")
@@ -54,15 +55,21 @@ func TestSyncFromRootIfNewerUsesRoot(t *testing.T) {
 			RefreshToken: "local-refresh",
 			Expiry:       time.Now().Add(time.Hour),
 		},
-		RefreshTokenExpiry: olderExpiry,
+		RefreshTokenExpiry: &olderExpiry,
 	})
 
-	trySyncFromRootIfNewer(ctx, rootStorage, localStorage)
+	lockPath, err := lockFilePath("cid", "issuer", localDir)
+	r.NoError(err)
+	fileLock, err := pidlock.NewLock(lockPath)
+	r.NoError(err)
+
+	trySyncFromRootIfNewer(ctx, fileLock, rootStorage, localStorage)
 
 	localCache := cache.NewCache(ctx, localStorage, nil, nil)
 	tok, err := localCache.DecodeFromStorage(ctx)
 	r.NoError(err)
-	r.WithinDuration(newerExpiry, tok.RefreshTokenExpiry, time.Second,
+	r.NotNil(tok.RefreshTokenExpiry)
+	r.WithinDuration(newerExpiry, *tok.RefreshTokenExpiry, time.Second,
 		"local should now have root's newer refresh token expiry")
 	r.Equal("root-access", tok.AccessToken)
 }
@@ -84,7 +91,7 @@ func TestSyncFromRootIfNewerKeepsLocal(t *testing.T) {
 			RefreshToken: "root-refresh",
 			Expiry:       time.Now().Add(time.Hour),
 		},
-		RefreshTokenExpiry: olderExpiry,
+		RefreshTokenExpiry: &olderExpiry,
 	})
 
 	localStorage, err := storage.NewFile(ctx, localDir, "cid", "issuer")
@@ -95,15 +102,21 @@ func TestSyncFromRootIfNewerKeepsLocal(t *testing.T) {
 			RefreshToken: "local-refresh",
 			Expiry:       time.Now().Add(time.Hour),
 		},
-		RefreshTokenExpiry: newerExpiry,
+		RefreshTokenExpiry: &newerExpiry,
 	})
 
-	trySyncFromRootIfNewer(ctx, rootStorage, localStorage)
+	lockPath, err := lockFilePath("cid", "issuer", localDir)
+	r.NoError(err)
+	fileLock, err := pidlock.NewLock(lockPath)
+	r.NoError(err)
+
+	trySyncFromRootIfNewer(ctx, fileLock, rootStorage, localStorage)
 
 	localCache := cache.NewCache(ctx, localStorage, nil, nil)
 	tok, err := localCache.DecodeFromStorage(ctx)
 	r.NoError(err)
-	r.WithinDuration(newerExpiry, tok.RefreshTokenExpiry, time.Second,
+	r.NotNil(tok.RefreshTokenExpiry)
+	r.WithinDuration(newerExpiry, *tok.RefreshTokenExpiry, time.Second,
 		"local should keep its own newer refresh token expiry")
 	r.Equal("local-access", tok.AccessToken)
 }
@@ -119,16 +132,22 @@ func TestSyncFromRootIfNewerNoopWhenRootEmpty(t *testing.T) {
 
 	localStorage, err := storage.NewFile(ctx, localDir, "cid", "issuer")
 	r.NoError(err)
+	localExpiry := time.Now().Add(24 * time.Hour)
 	storeToken(t, localStorage, &client.Token{
 		Token: &oauth2.Token{
 			AccessToken:  "local-access",
 			RefreshToken: "local-refresh",
 			Expiry:       time.Now().Add(time.Hour),
 		},
-		RefreshTokenExpiry: time.Now().Add(24 * time.Hour),
+		RefreshTokenExpiry: &localExpiry,
 	})
 
-	trySyncFromRootIfNewer(ctx, rootStorage, localStorage)
+	lockPath, err := lockFilePath("cid", "issuer", localDir)
+	r.NoError(err)
+	fileLock, err := pidlock.NewLock(lockPath)
+	r.NoError(err)
+
+	trySyncFromRootIfNewer(ctx, fileLock, rootStorage, localStorage)
 
 	localCache := cache.NewCache(ctx, localStorage, nil, nil)
 	tok, err := localCache.DecodeFromStorage(ctx)

@@ -31,7 +31,7 @@ type Token struct {
 	*oauth2.Token
 	IDToken            string    `json:"token,omitempty"`
 	Claims             Claims    `json:"claims,omitempty"`
-	RefreshTokenExpiry time.Time `json:"refresh_token_expiry,omitempty"`
+	RefreshTokenExpiry *time.Time `json:"refresh_token_expiry,omitempty"`
 }
 
 func TokenFromString(tokenString *string, opts ...MarshalOpts) (*Token, error) {
@@ -84,5 +84,5 @@ func MarshalOptNoRefresh(t *Token) {
 		return
 	}
 	t.RefreshToken = ""
-	t.RefreshTokenExpiry = time.Time{}
+	t.RefreshTokenExpiry = nil
 }

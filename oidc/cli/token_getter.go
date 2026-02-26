@@ -69,15 +69,6 @@ func GetToken(
 		return nil, fmt.Errorf("getting storage backend: %w", err)
 	}
 
-	if cfg.localCacheDir != "" {
-		rootStorage, rootErr := storage.GetOIDC(ctx, clientID, issuerURL)
-		if rootErr != nil {
-			logger.Warn("GetToken: failed to get root storage backend, skipping sync with root", "error", rootErr)
-		} else {
-			trySyncFromRootIfNewer(ctx, rootStorage, storageBackend)
-		}
-	}
-
 	lockPath, err := lockFilePath(clientID, issuerURL, cfg.localCacheDir)
 	if err != nil {
 		return nil, fmt.Errorf("getting lock file path: %w", err)
@@ -91,6 +82,15 @@ func GetToken(
 		"client_id", clientID,
 		"issuer_url", issuerURL,
 	)
+
+	if cfg.localCacheDir != "" {
+		rootStorage, rootErr := storage.GetOIDC(ctx, clientID, issuerURL)
+		if rootErr != nil {
+			logger.Warn("GetToken: failed to get root storage backend, skipping sync with root", "error", rootErr)
+		} else {
+			trySyncFromRootIfNewer(ctx, fileLock, rootStorage, storageBackend)
+		}
+	}
 
 	tokenCache := cache.NewCache(ctx, storageBackend, oidcClient.RefreshToken, fileLock)
 	token, err := tokenCache.Read(ctx)
@@ -166,8 +166,8 @@ func CheckTokenIsValid(
 }
 
 // CheckRefreshTokenTTL returns the duration until the cached refresh token
-// expires using the RefreshTokenExpiry stored in the serialized token.
-// Returns an error if no refresh token expiry is stored in the cache.
+// expires. It prefers the RefreshTokenExpiry stored in the serialized token;
+// if that is absent it falls back to a live introspection call.
 func CheckRefreshTokenTTL(
 	ctx context.Context,
 	clientID string,
@@ -196,17 +196,27 @@ func CheckRefreshTokenTTL(
 		return 0, fmt.Errorf("decoding cached token: %w", err)
 	}
 
-	if cachedToken.RefreshTokenExpiry.IsZero() {
-		return 0, fmt.Errorf("no refresh token expiry stored in cache")
+	var expiry time.Time
+	if cachedToken.RefreshTokenExpiry != nil {
+		expiry = *cachedToken.RefreshTokenExpiry
+	} else {
+		if cachedToken.RefreshToken == "" {
+			return 0, fmt.Errorf("no refresh token in cache to introspect")
+		}
+		logger.Debug("CheckRefreshTokenTTL: no stored expiry, falling back to introspection")
+		expiry, err = client.LookupRefreshExpiry(ctx, clientID, issuerURL, cachedToken.RefreshToken)
+		if err != nil {
+			return 0, fmt.Errorf("introspecting refresh token expiry: %w", err)
+		}
 	}
 
-	ttl := time.Until(cachedToken.RefreshTokenExpiry)
+	ttl := time.Until(expiry)
 	if ttl < 0 {
 		return 0, nil
 	}
 
 	logger.Debug("CheckRefreshTokenTTL: computed TTL",
-		"refresh_token_expiry", cachedToken.RefreshTokenExpiry,
+		"refresh_token_expiry", expiry,
 		"ttl", ttl,
 	)
 	return ttl, nil
@@ -216,12 +226,18 @@ func CheckRefreshTokenTTL(
 // (NFS) cache with the local node cache. If root's refresh token expiry is
 // later, the root's raw data is copied into local storage so the subsequent
 // cache read uses the fresher refresh token.
-func trySyncFromRootIfNewer(ctx context.Context, rootStorage, localStorage storage.Storage) {
+func trySyncFromRootIfNewer(ctx context.Context, fileLock *pidlock.Lock, rootStorage, localStorage storage.Storage) {
 	logger := logging.FromContext(ctx)
+	err := fileLock.Lock()
+	if err != nil {
+		logger.Warn("trySyncFromRootIfNewer: failed to acquire lock", "error", err)
+		return
+	}
+	defer fileLock.Unlock() //nolint:errcheck
 
 	rootCache := cache.NewCache(ctx, rootStorage, nil, nil)
 	rootToken, err := rootCache.DecodeFromStorage(ctx)
-	if err != nil || rootToken.RefreshTokenExpiry.IsZero() {
+	if err != nil || rootToken.RefreshTokenExpiry == nil {
 		return
 	}
 
@@ -231,7 +247,7 @@ func trySyncFromRootIfNewer(ctx context.Context, rootStorage, localStorage stora
 		return
 	}
 
-	if !rootToken.RefreshTokenExpiry.After(localToken.RefreshTokenExpiry) {
+	if localToken.RefreshTokenExpiry != nil && !rootToken.RefreshTokenExpiry.After(*localToken.RefreshTokenExpiry) {
 		return
 	}
 

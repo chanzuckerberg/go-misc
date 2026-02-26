@@ -160,12 +160,12 @@ func (c *OIDCClient) tryPopulateRefreshExpiry(ctx context.Context, tok *Token) {
 		return
 	}
 
-	expiry, err := c.lookupRefreshExpiry(ctx, tok.Token.RefreshToken)
+	expiry, err := LookupRefreshExpiry(ctx, c.ClientID, c.issuerURL, tok.Token.RefreshToken)
 	if err != nil {
 		c.log.Warn("introspecting refresh token expiry", "error", err)
 		return
 	}
-	tok.RefreshTokenExpiry = expiry
+	tok.RefreshTokenExpiry = &expiry
 }
 
 func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*Token, error) {

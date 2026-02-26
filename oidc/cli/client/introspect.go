@@ -10,14 +10,14 @@ import (
 	"time"
 )
 
-// lookupRefreshExpiry discovers the issuer's introspection endpoint and
+// LookupRefreshExpiry discovers the issuer's introspection endpoint and
 // returns the expiry time for the given refresh token.
-func (c *OIDCClient) lookupRefreshExpiry(ctx context.Context, refreshToken string) (time.Time, error) {
-	introspectURL, err := discoverIntrospectionEndpoint(ctx, c.issuerURL)
+func LookupRefreshExpiry(ctx context.Context, clientID, issuerURL, refreshToken string) (time.Time, error) {
+	introspectURL, err := discoverIntrospectionEndpoint(ctx, issuerURL)
 	if err != nil {
 		return time.Time{}, fmt.Errorf("discovering introspection endpoint: %w", err)
 	}
-	return introspectTokenExpiry(ctx, introspectURL, c.ClientID, refreshToken)
+	return introspectTokenExpiry(ctx, introspectURL, clientID, refreshToken)
 }
 
 // discoverIntrospectionEndpoint fetches the OIDC discovery document and
