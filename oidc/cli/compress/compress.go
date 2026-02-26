@@ -15,7 +15,8 @@ func GzipStr(data string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("gzip write: %w", err)
 	}
-	if err := gz.Close(); err != nil {
+	err = gz.Close()
+	if err != nil {
 		return "", fmt.Errorf("gzip close: %w", err)
 	}
 	return buf.String(), nil
@@ -31,7 +32,8 @@ func GunzipStr(data string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("gzip read: %w", err)
 	}
-	if err := gzReader.Close(); err != nil {
+	err = gzReader.Close()
+	if err != nil {
 		return "", fmt.Errorf("gzip close: %w", err)
 	}
 	return string(decompressed), nil
