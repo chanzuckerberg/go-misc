@@ -43,7 +43,8 @@ func discoverIntrospectionEndpoint(ctx context.Context, issuerURL string) (strin
 	var doc struct {
 		IntrospectionEndpoint string `json:"introspection_endpoint"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&doc); err != nil {
+	err = json.NewDecoder(resp.Body).Decode(&doc)
+	if err != nil {
 		return "", fmt.Errorf("decoding discovery document: %w", err)
 	}
 
@@ -83,7 +84,8 @@ func introspectTokenExpiry(ctx context.Context, introspectURL, clientID, token s
 		Active bool  `json:"active"`
 		Exp    int64 `json:"exp"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
 		return time.Time{}, fmt.Errorf("decoding introspection response: %w", err)
 	}
 
