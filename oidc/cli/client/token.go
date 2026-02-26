@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"golang.org/x/oauth2"
 )
@@ -28,8 +29,9 @@ type Claims struct {
 type Token struct {
 	Version int
 	*oauth2.Token
-	IDToken string `json:"token,omitempty"`
-	Claims  Claims `json:"claims,omitempty"`
+	IDToken            string    `json:"token,omitempty"`
+	Claims             Claims    `json:"claims,omitempty"`
+	RefreshTokenExpiry time.Time `json:"refresh_token_expiry,omitempty"`
 }
 
 func TokenFromString(tokenString *string, opts ...MarshalOpts) (*Token, error) {
@@ -76,10 +78,11 @@ func (vt *Token) Marshal(opts ...MarshalOpts) (string, error) {
 // MarshalOpts changes a token for marshaling
 type MarshalOpts func(*Token)
 
-// Disables the refresh oauth flow
+// MarshalOptNoRefresh strips the refresh token and its expiry before marshaling.
 func MarshalOptNoRefresh(t *Token) {
 	if t == nil {
 		return
 	}
 	t.RefreshToken = ""
+	t.RefreshTokenExpiry = time.Time{}
 }

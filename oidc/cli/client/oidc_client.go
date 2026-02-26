@@ -34,7 +34,8 @@ type OIDCClient struct {
 	authenticator
 	*oauth2.Config
 	*oidc.IDTokenVerifier
-	log *slog.Logger
+	issuerURL string
+	log       *slog.Logger
 }
 
 type OIDCClientOption func(context.Context, *OIDCClient) error
@@ -81,6 +82,7 @@ func NewOIDCClient(ctx context.Context, clientID, issuerURL string, clientOption
 			Scopes:   DefaultScopes,
 		},
 		IDTokenVerifier: provider.Verifier(oidcConfig),
+		issuerURL:       issuerURL,
 		log:             logging.FromContext(ctx),
 	}
 
@@ -125,7 +127,8 @@ func (c *OIDCClient) ParseAsIDToken(ctx context.Context, oauth2Token *oauth2.Tok
 	return claims, idToken, idTokenStr, nil
 }
 
-// RefreshToken will fetch a new token
+// RefreshToken will fetch a new token. After a successful refresh it
+// introspects the new refresh token to populate RefreshTokenExpiry.
 func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token, error) {
 	// Try refresh_token grant first
 	newToken, err := c.refreshToken(ctx, oldToken)
@@ -134,6 +137,7 @@ func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token,
 			"new_expiry", newToken.Token.Expiry,
 			"email", newToken.Claims.Email,
 		)
+		c.tryPopulateRefreshExpiry(ctx, newToken)
 		return newToken, nil
 	}
 
@@ -141,7 +145,27 @@ func (c *OIDCClient) RefreshToken(ctx context.Context, oldToken *Token) (*Token,
 	c.log.Debug("OIDCClient.RefreshToken: refresh_token grant failed, falling back to interactive auth",
 		"reason", err.Error(),
 	)
-	return c.authenticator.Authenticate(ctx, c)
+	token, err := c.authenticator.Authenticate(ctx, c)
+	if err != nil {
+		return nil, err
+	}
+	c.tryPopulateRefreshExpiry(ctx, token)
+	return token, nil
+}
+
+// tryPopulateRefreshExpiry introspects the token's refresh token and sets
+// RefreshTokenExpiry. Failures are logged but not propagated.
+func (c *OIDCClient) tryPopulateRefreshExpiry(ctx context.Context, tok *Token) {
+	if tok == nil || tok.Token == nil || tok.Token.RefreshToken == "" {
+		return
+	}
+
+	expiry, err := c.lookupRefreshExpiry(ctx, tok.Token.RefreshToken)
+	if err != nil {
+		c.log.Warn("introspecting refresh token expiry", "error", err)
+		return
+	}
+	tok.RefreshTokenExpiry = expiry
 }
 
 func (c *OIDCClient) refreshToken(ctx context.Context, existingToken *Token) (*Token, error) {
