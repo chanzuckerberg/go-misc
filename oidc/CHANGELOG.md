@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.0](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.2.0...oidc-v5.3.0) (2026-02-26)
+
+
+### Features
+
+* enhance token management and synchronization ([#1161](https://github.com/chanzuckerberg/go-misc/issues/1161)) ([5e7d843](https://github.com/chanzuckerberg/go-misc/commit/5e7d8437903b202f7b70dabc4cfed06f4012a52b))
+
 ## [5.2.0](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.1.4...oidc-v5.2.0) (2026-02-26)
 
 
