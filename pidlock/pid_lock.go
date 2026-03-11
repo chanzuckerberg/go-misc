@@ -35,7 +35,8 @@ func NewLock(lockFilePath string) (*Lock, error) {
 		return nil, fmt.Errorf("%s must be an absolute path", lockFilePath)
 	}
 
-	if err := os.MkdirAll(filepath.Dir(lockFilePath), 0755); err != nil { // #nosec
+	err := os.MkdirAll(filepath.Dir(lockFilePath), 0777)
+	if err != nil {
 		return nil, fmt.Errorf("creating lock directory %s: %w", filepath.Dir(lockFilePath), err)
 	}
 

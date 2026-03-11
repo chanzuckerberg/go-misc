@@ -182,7 +182,7 @@ func (f *File) bootstrap() error {
 		return fmt.Errorf("reading root cache file: %w", err)
 	}
 
-	err = os.MkdirAll(f.dir, 0700)
+	err = os.MkdirAll(f.dir, 0777)
 	if err != nil {
 		return fmt.Errorf("creating local cache dir: %w", err)
 	}
