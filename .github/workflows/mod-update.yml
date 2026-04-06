@@ -13,7 +13,7 @@ jobs:
     outputs:
       changedPackages: ${{ steps.changedGoPackages.outputs.changedGoPackages }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Find Changed Go Packages
         id: changedGoPackages
         uses: ./.github/actions/find-changed-packages
@@ -30,11 +30,11 @@ jobs:
     steps:
       - name: Generate token
         id: generate_token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v3
         with:
           app-id: ${{ secrets.GH_ACTIONS_HELPER_APP_ID }}
           private-key: ${{ secrets.GH_ACTIONS_HELPER_PK }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           token: ${{ steps.generate_token.outputs.token }}
           ref: ${{ github.event.pull_request.head.ref }}
@@ -45,7 +45,7 @@ jobs:
       - name: Update go.mod
         run: go mod tidy
         working-directory: ${{ matrix.gopkg }}
-      - uses: EndBug/add-and-commit@v9
+      - uses: EndBug/add-and-commit@v10
         id: commit_go_mod
         with:
           add: -A

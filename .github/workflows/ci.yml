@@ -13,7 +13,7 @@ jobs:
     outputs:
       changedPackages: ${{ steps.changedGoPackages.outputs.changedGoPackages }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Find Changed Go Packages
         id: changedGoPackages
         uses: ./.github/actions/find-changed-packages
@@ -27,7 +27,7 @@ jobs:
         gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-go@v5
         with:
           go-version-file: ${{ matrix.gopkg }}/go.mod
@@ -51,7 +51,7 @@ jobs:
         gopkg: ${{ fromJson(needs.find-changed-packages.outputs.changedPackages) }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: actions/setup-go@v5
         with:
           go-version-file: ${{ matrix.gopkg }}/go.mod
