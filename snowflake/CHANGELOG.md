@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.5](https://github.com/chanzuckerberg/go-misc/compare/snowflake-v3.0.4...snowflake-v3.0.5) (2026-04-22)
+
+
+### Misc
+
+* **deps:** bump github.com/aws/aws-sdk-go-v2/service/s3 from 1.50.1 to 1.97.3 in /snowflake ([#1169](https://github.com/chanzuckerberg/go-misc/issues/1169)) ([92db5fe](https://github.com/chanzuckerberg/go-misc/commit/92db5fe74040389d6d66b4cf1afd561da639897b))
+
 ## [3.0.4](https://github.com/chanzuckerberg/go-misc/compare/snowflake-v3.0.3...snowflake-v3.0.4) (2026-01-12)
 
 

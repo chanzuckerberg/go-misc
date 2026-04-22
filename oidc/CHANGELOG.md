@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.1](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.3.0...oidc-v5.3.1) (2026-04-22)
+
+
+### Misc
+
+* **deps:** bump github.com/go-jose/go-jose/v4 from 4.1.1 to 4.1.4 in /oidc ([#1164](https://github.com/chanzuckerberg/go-misc/issues/1164)) ([bfd09b1](https://github.com/chanzuckerberg/go-misc/commit/bfd09b104eba4f9c4213ce48be5305846dc98f68))
+
 ## [5.3.0](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.2.0...oidc-v5.3.0) (2026-02-26)
 
 
