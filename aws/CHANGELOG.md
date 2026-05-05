@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/chanzuckerberg/go-misc/compare/aws-v2.1.1...aws-v2.1.2) (2026-04-28)
+
+
+### Misc
+
+* [bot] Upgrade AWS Mocks ([#1167](https://github.com/chanzuckerberg/go-misc/issues/1167)) ([2d59c3a](https://github.com/chanzuckerberg/go-misc/commit/2d59c3abef72d49ca320c4c6191cfedd51ee03e5))
+
 ## [2.1.1](https://github.com/chanzuckerberg/go-misc/compare/aws-v2.1.0...aws-v2.1.1) (2024-08-01)
 
 
