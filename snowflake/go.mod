@@ -1,6 +1,6 @@
 module github.com/chanzuckerberg/go-misc/snowflake
 
-go 1.24.0
+go 1.25
 
 require (
 	github.com/chanzuckerberg/go-misc/keypair v0.0.0-20240320212149-709d6d5c338b
@@ -21,7 +21,7 @@ require (
 	github.com/JohnCGriffin/overflow v0.0.0-20211019200055-46fa312c352c // indirect
 	github.com/andybalholm/brotli v1.0.6 // indirect
 	github.com/apache/arrow/go/v12 v12.0.1 // indirect
-	github.com/apache/thrift v0.19.0 // indirect
+	github.com/apache/thrift v0.23.0 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.41.5 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.7.8 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.0 // indirect
