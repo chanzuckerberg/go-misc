@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.3](https://github.com/chanzuckerberg/go-misc/compare/keypair-v2.1.2...keypair-v2.1.3) (2026-07-10)
+
+
+### Misc
+
+* **deps:** bump golang.org/x/crypto from 0.45.0 to 0.52.0 in /keypair ([#1175](https://github.com/chanzuckerberg/go-misc/issues/1175)) ([33b5805](https://github.com/chanzuckerberg/go-misc/commit/33b580536ef3e5881927d070e0718786d225ad5e))
+
 ## [2.1.2](https://github.com/chanzuckerberg/go-misc/compare/keypair-v2.1.1...keypair-v2.1.2) (2026-01-12)
 
 
