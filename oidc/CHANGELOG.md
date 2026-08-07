@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.2](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.3.1...oidc-v5.3.2) (2026-08-06)
+
+
+### Misc
+
+* **deps:** bump golang.org/x/crypto from 0.45.0 to 0.52.0 in /oidc ([#1174](https://github.com/chanzuckerberg/go-misc/issues/1174)) ([a7f10af](https://github.com/chanzuckerberg/go-misc/commit/a7f10af0251a41c37ecf0a9e9fa34367888fc79b))
+
 ## [5.3.1](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.3.0...oidc-v5.3.1) (2026-04-28)
 
 
