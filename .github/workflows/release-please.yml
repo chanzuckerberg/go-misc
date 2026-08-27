@@ -20,3 +20,4 @@ jobs:
           with:
               app_token: ${{ steps.generate_token.outputs.token }}
               include_component_in_tag: true
+              floating_tags: true
