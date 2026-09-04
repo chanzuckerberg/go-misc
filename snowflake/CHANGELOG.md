@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.7](https://github.com/chanzuckerberg/go-misc/compare/snowflake-v3.0.6...snowflake-v3.0.7) (2026-09-04)
+
+
+### Misc
+
+* **deps:** bump github.com/apache/thrift from 0.23.0 to 0.24.0 in /snowflake ([#1180](https://github.com/chanzuckerberg/go-misc/issues/1180)) ([793f6d2](https://github.com/chanzuckerberg/go-misc/commit/793f6d275eb603bf1548cb6e58a885c65d9ba5cd))
+
 ## [3.0.6](https://github.com/chanzuckerberg/go-misc/compare/snowflake-v3.0.5...snowflake-v3.0.6) (2026-06-16)
 
 
