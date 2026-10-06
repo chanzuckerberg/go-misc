@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.8](https://github.com/chanzuckerberg/go-misc/compare/snowflake-v3.0.7...snowflake-v3.0.8) (2026-10-06)
+
+
+### Misc
+
+* **deps:** bump golang.org/x/net from 0.54.0 to 0.55.0 in /snowflake ([#1182](https://github.com/chanzuckerberg/go-misc/issues/1182)) ([1381ca1](https://github.com/chanzuckerberg/go-misc/commit/1381ca1e6c88642caaed2eadab1860182846c82e))
+
 ## [3.0.7](https://github.com/chanzuckerberg/go-misc/compare/snowflake-v3.0.6...snowflake-v3.0.7) (2026-09-04)
 
 
