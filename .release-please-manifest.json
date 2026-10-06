@@ -8,8 +8,8 @@
   "osutil": "2.1.0",
   "pidlock": "2.2.0",
   "sets": "2.0.0",
-  "slack": "2.0.0",
-  "snowflake": "3.0.7",
+  "slack": "2.0.1",
+  "snowflake": "3.0.8",
   "survey": "2.1.0",
   "ver": "2.0.0"
 }
