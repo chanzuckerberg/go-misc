@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.3.3](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.3.2...oidc/v5.3.3) (2026-10-15)
+
+
+### Bug Fixes
+
+* publish Go-compatible module tags (&lt;module&gt;/vX.Y.Z) ([#1184](https://github.com/chanzuckerberg/go-misc/issues/1184)) ([d45eeb5](https://github.com/chanzuckerberg/go-misc/commit/d45eeb5de895e4a7eccca33c3d2f4d81cf780937))
+
 ## [5.3.2](https://github.com/chanzuckerberg/go-misc/compare/oidc-v5.3.1...oidc-v5.3.2) (2026-08-06)
 
 

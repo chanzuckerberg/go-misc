@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.8](https://github.com/chanzuckerberg/go-misc/compare/snowflake-v3.0.7...snowflake/v3.0.8) (2026-10-15)
+
+
+### Bug Fixes
+
+* publish Go-compatible module tags (&lt;module&gt;/vX.Y.Z) ([#1184](https://github.com/chanzuckerberg/go-misc/issues/1184)) ([d45eeb5](https://github.com/chanzuckerberg/go-misc/commit/d45eeb5de895e4a7eccca33c3d2f4d81cf780937))
+
 ## [3.0.7](https://github.com/chanzuckerberg/go-misc/compare/snowflake-v3.0.6...snowflake-v3.0.7) (2026-09-04)
 
 
