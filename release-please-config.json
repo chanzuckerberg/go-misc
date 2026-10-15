@@ -2,7 +2,6 @@
   "include-component-in-tag": true,
   "release-type": "simple",
   "tag-separator": "/",
-  "last-release-sha": "1381ca1e6c88642caaed2eadab1860182846c82e",
   "pull-request-title-pattern": "chore${scope}: release${component} ${version}",
   "bump-minor-pre-major": true,
   "prerelease": false,
