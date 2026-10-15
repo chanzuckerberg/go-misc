@@ -1,8 +1,6 @@
 module github.com/chanzuckerberg/go-misc/kmsauth
 
-go 1.21
-
-toolchain go1.21.1
+go 1.24
 
 require (
 	github.com/chanzuckerberg/go-misc/aws v0.0.0
@@ -13,7 +11,7 @@ require (
 )
 
 require (
-	github.com/aws/aws-sdk-go v1.55.5 // indirect
+	github.com/aws/aws-sdk-go v1.55.8 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
