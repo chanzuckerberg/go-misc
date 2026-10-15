@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.3](https://github.com/chanzuckerberg/go-misc/compare/aws-v2.1.2...aws/v2.1.3) (2026-10-15)
+
+
+### Bug Fixes
+
+* publish Go-compatible module tags (&lt;module&gt;/vX.Y.Z) ([#1184](https://github.com/chanzuckerberg/go-misc/issues/1184)) ([d45eeb5](https://github.com/chanzuckerberg/go-misc/commit/d45eeb5de895e4a7eccca33c3d2f4d81cf780937))
+
 ## [2.1.2](https://github.com/chanzuckerberg/go-misc/compare/aws-v2.1.1...aws-v2.1.2) (2026-04-28)
 
 
