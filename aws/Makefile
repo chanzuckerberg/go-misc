@@ -1,4 +1,3 @@
-
 include ../scripts/common.mk
 
 generate-mocks: ## will generate mocks
